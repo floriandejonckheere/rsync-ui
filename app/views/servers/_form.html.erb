@@ -1,0 +1,120 @@
+<%= form_with model: server, id: "server-form", class: "form" do |f| %>
+  <% content_for :actions do %>
+    <button
+      type="submit"
+      form="server-form"
+      class="btn-icon-outline btn-icon-lg"
+      title="<%= server.persisted? ? I18n.t("servers.form.submit_update") : I18n.t("servers.form.submit_create") %>"
+    >
+      <%= lucide_icon "check", class: "h-6 w-6" %>
+    </button>
+  <% end %>
+
+  <% if server.errors.any? %>
+    <div class="mb-8">
+      <%= render "shared/form_messages", model: server %>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-2 gap-8">
+    <div class="flex flex-col gap-8">
+      <div class="card">
+        <header>
+          <h2><%= I18n.t("servers.form.details") %></h2>
+        </header>
+
+        <section>
+          <div class="flex flex-col gap-6">
+            <div class="field">
+              <%= f.label :name, I18n.t("servers.form.name") %>
+
+              <%= f.text_field :name,
+                               placeholder: I18n.t("servers.form.name_placeholder"),
+                               required: true,
+                               autocomplete: "off" %>
+            </div>
+
+            <div class="field">
+              <%= f.label :description, I18n.t("servers.form.description") %>
+
+              <%= f.text_area :description,
+                              placeholder: I18n.t("servers.form.description_placeholder"),
+                              rows: 3,
+                              autocomplete: "off" %>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card">
+        <header>
+          <h2><%= I18n.t("servers.form.connection") %></h2>
+        </header>
+
+        <section>
+          <div class="flex flex-col gap-6">
+            <div class="field">
+              <%= f.label :host, I18n.t("servers.form.host") %>
+
+              <%= f.text_field :host,
+                               placeholder: I18n.t("servers.form.host_placeholder"),
+                               required: true,
+                               autocomplete: "off" %>
+            </div>
+
+            <div class="field">
+              <%= f.label :port, I18n.t("servers.form.port") %>
+
+              <%= f.number_field :port,
+                                 placeholder: I18n.t("servers.form.port_placeholder"),
+                                 required: true,
+                                 min: 1,
+                                 max: 65_535 %>
+            </div>
+
+            <div class="field">
+              <%= f.label :username, I18n.t("servers.form.username") %>
+
+              <%= f.text_field :username,
+                               placeholder: I18n.t("servers.form.username_placeholder"),
+                               required: true,
+                               autocomplete: "off" %>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="card">
+      <header>
+        <h2><%= I18n.t("servers.form.authentication") %></h2>
+      </header>
+
+      <section>
+        <div class="flex flex-col gap-6">
+          <p class="text-sm text-muted-foreground">
+            <%= I18n.t("servers.form.credentials_hint") %>
+          </p>
+
+          <div class="field">
+            <%= f.label :password, I18n.t("servers.form.password") %>
+
+            <%= f.password_field :password,
+                                 placeholder: server.persisted? ? I18n.t("servers.form.password_placeholder_edit") : I18n.t("servers.form.password_placeholder"),
+                                 autocomplete: "new-password" %>
+          </div>
+
+          <div class="field">
+            <%= f.label :ssh_key, I18n.t("servers.form.ssh_key") %>
+
+            <%= f.text_area :ssh_key,
+                            value: nil,
+                            placeholder: server.persisted? ? I18n.t("servers.form.ssh_key_placeholder_edit") : I18n.t("servers.form.ssh_key_placeholder"),
+                            rows: 8,
+                            class: "font-mono text-xs" %>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+<% end %>

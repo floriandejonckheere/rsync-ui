@@ -1,7 +1,6 @@
 <div class="card">
   <header>
     <h2 class="text-2xl font-bold"><%= I18n.t("application.name") %></h2>
-
   </header>
 
   <% if devise_mapping.try(:omniauthable?) %>
@@ -43,7 +42,6 @@
         <div class="field">
           <%= f.label :password %>
           <%= f.password_field :password, required: true, autocomplete: "current-password" %>
-
 
           <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
             <p>

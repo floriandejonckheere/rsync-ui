@@ -1,5 +1,15 @@
 ---
 en:
+  activerecord:
+    errors:
+      models:
+        server:
+          attributes:
+            base:
+              exclusive_credentials: Exactly one of password or SSH key must be provided.
+            ssh_key:
+              ssh_key_invalid: is not a valid OpenSSH private key.
+              ssh_key_passphrase: must not be protected by a passphrase.
   application:
     name: Rsync UI
   auth:
@@ -24,8 +34,8 @@ en:
     confirm: Confirm
     title: Confirm
   dashboard:
-    title: Dashboard
     subtitle: Monitor recent activity
+    title: Dashboard
   flash:
     types:
       alert: Alert
@@ -39,6 +49,59 @@ en:
     info: Page %{current} of %{total}
     next: Next
     previous: Previous
+  servers:
+    actions:
+      delete: Delete server
+      delete_confirm: Are you sure you want to delete this server? This action cannot be undone.
+      delete_confirm_title: Delete server
+      edit: Edit server
+    create:
+      success: Server was successfully created.
+    destroy:
+      success: Server was successfully deleted.
+    edit:
+      title: Edit server
+    form:
+      authentication: Authentication
+      connection: Connection
+      credentials_hint: Provide either a password or an SSH key (not both).
+      description: Description
+      description_placeholder: Optional description for this server
+      details: Details
+      host: Host
+      host_placeholder: example.com
+      name: Name
+      name_placeholder: My server
+      password: Password
+      password_placeholder: Enter password
+      password_placeholder_edit: Leave blank to keep unchanged
+      port: Port
+      port_placeholder: '22'
+      ssh_key: SSH Key
+      ssh_key_placeholder: "-----BEGIN OPENSSH PRIVATE KEY-----"
+      ssh_key_placeholder_edit: Leave blank to keep unchanged
+      submit_create: Create server
+      submit_update: Update server
+      username: Username
+      username_placeholder: admin
+    index:
+      empty: No servers have been configured yet.
+      new: New server
+      subtitle: Manage remote SSH servers
+      title: Servers
+    new:
+      subtitle: Add a new SSH server
+      title: New server
+    table:
+      credentials: Credentials
+      host: Host
+      name: Name
+      password: Password
+      ssh_key: SSH Key
+      username: Username
+    title: Servers
+    update:
+      success: Server was successfully updated.
   settings:
     account:
       email: Email

@@ -1,0 +1,55 @@
+<% content_for :title do %>
+  <%= I18n.t("servers.index.title") %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= I18n.t("servers.index.subtitle") %>
+<% end %>
+
+<% content_for :actions do %>
+  <%= link_to new_server_path, title: I18n.t("servers.index.new"), class: "btn-icon-outline btn-icon-lg" do %>
+    <%= lucide_icon "plus", class: "h-6 w-6" %>
+  <% end %>
+<% end %>
+
+<% if @servers.empty? %>
+  <div class="card flex flex-col items-center justify-center py-16 gap-4 text-gray-400">
+    <%= lucide_icon "server", class: "h-12 w-12" %>
+
+    <p class="text-lg">
+      <%= I18n.t("servers.index.empty") %>
+    </p>
+  </div>
+<% else %>
+  <div class="card p-0 overflow-hidden">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-gray-100 dark:border-gray-700">
+          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <%= I18n.t("servers.table.name") %>
+          </th>
+
+          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <%= I18n.t("servers.table.host") %>
+          </th>
+
+          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <%= I18n.t("servers.table.username") %>
+          </th>
+
+          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <%= I18n.t("servers.table.credentials") %>
+          </th>
+
+          <th class="px-6 py-4"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @servers.each do |server| %>
+          <%= render "server", server: %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

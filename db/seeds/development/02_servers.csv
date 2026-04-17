@@ -1,0 +1,10 @@
+name,description,host,port,username,password,ssh_key,user_email
+Production,Main production server,prod.example.com,22,deploy,prod-secret-password,,admin@example.com
+Staging,Staging environment for testing,staging.example.com,22,deploy,staging-secret-password,,admin@example.com
+Backup,,backup.example.com,2222,backup,,"-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACD9D+md+7SfoskO5Ec/M/+a7QgAKR+usc0GQRaoYlJX0wAAAIg+hlQpPoZU
+KQAAAAtzc2gtZWQyNTUxOQAAACD9D+md+7SfoskO5Ec/M/+a7QgAKR+usc0GQRaoYlJX0w
+AAAECk9Yb5b6otvn9sGBwgCt5gmiWpfl+tEFvSaqIUpSVQCf0P6Z37tJ+iyQ7kRz8z/5rt
+CAApH66xzQZBFqhiUlfTAAAABHRlc3QB
+-----END OPENSSH PRIVATE KEY-----",admin@example.com

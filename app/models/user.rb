@@ -11,6 +11,9 @@ class User < ApplicationRecord
          :trackable,
          :validatable
 
+  has_many :servers,
+           dependent: :destroy
+
   validates :first_name,
             presence: true
 

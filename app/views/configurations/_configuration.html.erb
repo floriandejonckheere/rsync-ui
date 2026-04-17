@@ -19,8 +19,7 @@
 
         <% if configuration.dependencies.any? %>
           <span class="text-xs text-gray-400 dark:text-gray-500">
-            <%= I18n.t("configurations.index.depends_on") %>
-            :
+            <%= I18n.t("configurations.index.depends_on") %>:
             <% configuration.dependencies.each_with_index do |dep, index| %>
               <a
                 href="#config-<%= dep.tr('.', '-') %>"

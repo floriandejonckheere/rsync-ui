@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   }
 
   resources :configurations, only: [:index, :update]
+  resources :servers
 end
 
 # == Route Map
@@ -36,11 +37,6 @@ end
 #                         new_user_session GET    /users/sign_in(.:format)                                                                          devise/sessions#new
 #                             user_session POST   /users/sign_in(.:format)                                                                          devise/sessions#create
 #                     destroy_user_session DELETE /users/sign_out(.:format)                                                                         devise/sessions#destroy
-#                        new_user_password GET    /users/password/new(.:format)                                                                     devise/passwords#new
-#                       edit_user_password GET    /users/password/edit(.:format)                                                                    devise/passwords#edit
-#                            user_password PATCH  /users/password(.:format)                                                                         devise/passwords#update
-#                                          PUT    /users/password(.:format)                                                                         devise/passwords#update
-#                                          POST   /users/password(.:format)                                                                         devise/passwords#create
 #                 cancel_user_registration GET    /users/cancel(.:format)                                                                           registrations#cancel
 #                    new_user_registration GET    /users/sign_up(.:format)                                                                          registrations#new
 #                   edit_user_registration GET    /users/edit(.:format)                                                                             registrations#edit
@@ -51,6 +47,14 @@ end
 #                           configurations GET    /configurations(.:format)                                                                         configurations#index
 #                            configuration PATCH  /configurations/:id(.:format)                                                                     configurations#update
 #                                          PUT    /configurations/:id(.:format)                                                                     configurations#update
+#                                  servers GET    /servers(.:format)                                                                                servers#index
+#                                          POST   /servers(.:format)                                                                                servers#create
+#                               new_server GET    /servers/new(.:format)                                                                            servers#new
+#                              edit_server GET    /servers/:id/edit(.:format)                                                                       servers#edit
+#                                   server GET    /servers/:id(.:format)                                                                            servers#show
+#                                          PATCH  /servers/:id(.:format)                                                                            servers#update
+#                                          PUT    /servers/:id(.:format)                                                                            servers#update
+#                                          DELETE /servers/:id(.:format)                                                                            servers#destroy
 #         turbo_recede_historical_location GET    /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
 #         turbo_resume_historical_location GET    /resume_historical_location(.:format)                                                             turbo/native/navigation#resume
 #        turbo_refresh_historical_location GET    /refresh_historical_location(.:format)                                                            turbo/native/navigation#refresh

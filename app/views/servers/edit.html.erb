@@ -1,0 +1,13 @@
+<% content_for :title do %>
+  <%= I18n.t("servers.edit.title") %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= @server.name %>
+<% end %>
+
+<% content_for :back do %>
+  <%= render "shared/menu_back", path: servers_path %>
+<% end %>
+
+<%= render "form", server: @server %>

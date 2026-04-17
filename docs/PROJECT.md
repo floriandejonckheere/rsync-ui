@@ -60,20 +60,20 @@ Servers are the remote destinations where the files are synchronized to.
 
 A server has the following attributes:
 
-- [ ] Name
-- [ ] Host
-- [ ] Port
-- [ ] Username
-- [ ] Password (optional)
-- [ ] SSH key (optional)
+- [x] Name
+- [x] Host
+- [x] Port
+- [x] Username
+- [x] Password (optional)
+- [x] SSH key (optional)
 
 Either a password or an SSH key must be provided.
 
-- [ ] Implement servers page
-  - [ ] Create server
+- [x] Implement servers page
+  - [x] Create server
     - [ ] Test connection: check if the server is reachable with the provided credentials
-  - [ ] Update server
-  - [ ] Destroy server
+  - [x] Update server
+  - [x] Destroy server
 
 ### Repositories
 
