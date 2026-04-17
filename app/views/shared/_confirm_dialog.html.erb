@@ -1,0 +1,57 @@
+<dialog
+  id="turbo-confirm-dialog"
+  class="
+    m-auto p-0 rounded-lg shadow-xl
+    bg-white dark:bg-gray-800
+    border border-gray-200 dark:border-gray-700
+    max-w-md w-full
+  "
+  aria-labelledby="turbo-confirm-title"
+  aria-describedby="turbo-confirm-message"
+  data-controller="confirm-dialog"
+>
+  <div class="p-6">
+    <header class="mb-4">
+      <h3
+        id="turbo-confirm-title"
+        class="text-lg font-semibold text-gray-900 dark:text-gray-100"
+        data-confirm-dialog-target="title"
+      >
+        <%= I18n.t("confirm_dialog.title") %>
+      </h3>
+    </header>
+
+    <p
+      id="turbo-confirm-message"
+      class="text-gray-600 dark:text-gray-400"
+      data-confirm-dialog-target="message"
+    ></p>
+  </div>
+
+  <footer
+    class="
+      flex justify-end gap-3 px-6 py-4 bg-gray-50 dark:bg-gray-900
+      rounded-b-lg border-t border-gray-200 dark:border-gray-700
+    "
+  >
+    <button
+      type="button"
+      class="btn-outline"
+      data-action="click->confirm-dialog#cancel"
+      data-confirm-dialog-target="cancelButton"
+    >
+      <%= I18n.t("confirm_dialog.cancel") %>
+    </button>
+
+    <form method="dialog">
+      <button
+        type="submit"
+        value="confirm"
+        class="btn-destructive"
+        data-confirm-dialog-target="confirmButton"
+      >
+        <%= I18n.t("confirm_dialog.confirm") %>
+      </button>
+    </form>
+  </footer>
+</dialog>

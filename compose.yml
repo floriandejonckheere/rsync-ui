@@ -1,0 +1,40 @@
+x-app: &app
+  build: .
+  volumes:
+    - .:/app/:cached
+    - bundle:/usr/local/bundle/
+    - npm:/app/node_modules/
+  tmpfs:
+    - /app/tmp/storage:mode=755,uid=1000,gid=1000
+  depends_on:
+    - postgres
+  env_file:
+    - .development.env
+
+services:
+  postgres:
+    image: postgres:18
+    volumes:
+      - postgres:/var/lib/postgresql/docker/
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  app:
+    <<: *app
+    command: foreman start
+    tty: true
+    ports:
+      - "3000:3000"
+
+  worker:
+    <<: *app
+    command: bin/jobs
+    tty: true
+
+volumes:
+  postgres:
+  bundle:
+  npm:

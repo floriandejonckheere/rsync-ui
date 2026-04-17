@@ -1,0 +1,101 @@
+@import "tailwindcss" source(none);
+@import "basecoat-css";
+
+/* Limit Tailwind's content scanning to only relevant directories */
+@source "../../views";
+@source "../../components";
+@source "../../javascript";
+
+@layer base {
+  html {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer components {
+  /* Confirm dialog styles */
+  dialog#turbo-confirm-dialog {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  dialog#turbo-confirm-dialog[open] {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @starting-style {
+    dialog#turbo-confirm-dialog[open] {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+
+  dialog#turbo-confirm-dialog::backdrop {
+    background-color: rgb(0 0 0 / 0);
+    backdrop-filter: blur(0);
+  }
+
+  dialog#turbo-confirm-dialog[open]::backdrop {
+    background-color: rgb(0 0 0 / 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  @starting-style {
+    dialog#turbo-confirm-dialog[open]::backdrop {
+      background-color: rgb(0 0 0 / 0);
+      backdrop-filter: blur(0);
+    }
+  }
+
+  .alert-warning {
+    @apply text-amber-900 bg-amber-50 border border-amber-200 [&>svg]:text-amber-600;
+    @apply dark:text-amber-100 dark:bg-amber-950 dark:border-amber-800 dark:[&>svg]:text-amber-500;
+
+    > section {
+      @apply text-amber-900 dark:text-amber-100;
+    }
+  }
+
+  .alert-success {
+    @apply text-green-900 bg-green-50 border border-green-200 [&>svg]:text-green-600;
+    @apply dark:text-green-100 dark:bg-green-950 dark:border-green-800 dark:[&>svg]:text-green-500;
+
+    > section {
+      @apply text-green-900 dark:text-green-100;
+    }
+  }
+
+  .alert-info {
+    @apply text-blue-900 bg-blue-50 border border-blue-200 [&>svg]:text-blue-600;
+    @apply dark:text-blue-100 dark:bg-blue-950 dark:border-blue-800 dark:[&>svg]:text-blue-500;
+
+    > section {
+      @apply text-blue-900 dark:text-blue-100;
+    }
+  }
+
+  .btn-icon-lg {
+    @apply h-12 w-12;
+  }
+
+  .alert, .alert-destructive {
+    @apply rounded-md py-8 shadow-sm border-0 dark:border-0 dark:bg-gray-800;
+  }
+
+  .card {
+    @apply rounded-md py-8 shadow-sm border-0 dark:border-0 dark:bg-gray-800;
+
+    > header {
+      @apply px-8;
+    }
+
+    > section {
+      @apply px-8;
+    }
+
+    > footer {
+      @apply px-8;
+    }
+  }
+}

@@ -1,0 +1,37 @@
+version: 2
+
+updates:
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      dependencies:
+        update-types:
+          - "minor"
+          - "patch"
+        exclude-patterns:
+          - "rubocop*"
+      rubocop:
+        patterns:
+          - "rubocop*"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      dependencies:
+        update-types:
+          - "minor"
+          - "patch"

@@ -1,0 +1,15 @@
+<% target ||= "_self" %>
+
+<% if menu_item_active?(controllers, controller_name) %>
+  <%= link_to path, class: "btn-primary justify-start p-8 text-lg gap-8" do %>
+    <%= lucide_icon icon, class: "h-5 w-5" %>
+
+    <%= title %>
+  <% end %>
+<% else %>
+  <%= link_to path, class: "btn-ghost justify-start p-8 text-lg gap-8", target: do %>
+    <%= lucide_icon icon, class: "h-5 w-5" %>
+
+    <%= title %>
+  <% end %>
+<% end %>

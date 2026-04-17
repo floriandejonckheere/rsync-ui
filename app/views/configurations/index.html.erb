@@ -1,0 +1,39 @@
+<% content_for :title do %>
+  <%= I18n.t("configurations.index.title") %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= I18n.t("configurations.index.subtitle") %>
+<% end %>
+
+<div class="grid grid-cols-1 gap-8">
+  <% @configurations.group_by(&:category).each do |category, configurations| %>
+    <details id="category-<%= category %>" class="card group py-0">
+      <summary
+        class="
+          flex items-center justify-between w-full px-8 py-8 cursor-pointer
+          list-none
+        "
+      >
+        <div class="flex flex-col gap-1">
+          <h2 class="text-lg font-semibold">
+            <%= I18n.t("configurations.categories.#{category}.title") %>
+          </h2>
+
+          <div class="text-sm text-muted-foreground">
+            <%= I18n.t("configurations.categories.#{category}.description") %>
+          </div>
+        </div>
+
+        <%= lucide_icon "chevron-down",
+                        class: "h-5 w-5 transition-transform duration-200 group-open:rotate-180" %>
+      </summary>
+
+      <div class="px-8 pb-8">
+        <% configurations.each do |configuration| %>
+          <%= render "configuration", configuration: %>
+        <% end %>
+      </div>
+    </details>
+  <% end %>
+</div>

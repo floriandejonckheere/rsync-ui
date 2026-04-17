@@ -1,0 +1,21 @@
+---
+- key: test.key
+  type: string
+  category: system
+  default: "test_value"
+- key: test.feature
+  type: boolean
+  category: features
+  default: true
+- key: test.dependent
+  type: string
+  category: system
+  default: "dependent_value"
+  dependencies:
+    - test.feature
+- key: test.transitive_dependent
+  type: string
+  category: system
+  default: "transitive_dependent_value"
+  dependencies:
+    - test.dependent

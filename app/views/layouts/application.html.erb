@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title><%= content_for(:title) || I18n.t("application.name") %></title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%# = tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+
+    <script>if (localStorage.getItem("dark-mode") === "true") { document.documentElement.classList.add("dark") }</script>
+  </head>
+
+  <body>
+    <%= render "shared/confirm_dialog" %>
+
+    <% if flash.any? { |_, msg| msg.present? } %>
+      <%= render "shared/message", flash: flash %>
+    <% end %>
+
+    <div class="flex min-h-screen h-full bg-gray-100 dark:bg-gray-900">
+      <aside
+        class="
+          h-screen flex flex-col z-20 w-96 flex-shrink-0 p-12 bg-white dark:bg-gray-800
+          text-gray-800 dark:text-gray-200 fixed
+        "
+      >
+        <div class="my-12 text-center">
+          <%= link_to root_path, class: "text-3xl text-gray-700 dark:text-gray-200", style: "letter-spacing: 0.25em;" do %>
+            <%= I18n.t("application.name") %>
+          <% end %>
+        </div>
+
+        <%= render "shared/menu_item", path: root_path, controllers: ["dashboard"], icon: "circle-gauge", title: I18n.t("dashboard.title") %>
+
+        <div class="grow"></div>
+
+        <% if current_user.admin? %>
+          <%= render "shared/menu_item", path: mission_control_jobs_path, controllers: nil, icon: "construction", title: I18n.t("jobs.title"), target: "_blank" %>
+        <% end %>
+
+        <% if current_user.admin? %>
+          <%= render "shared/menu_item", path: configurations_path, controllers: "configurations", icon: "cog", title: I18n.t("configurations.title") %>
+        <% end %>
+
+        <%= render "shared/menu_item", path: edit_user_registration_path, controllers: "registrations", icon: "settings", title: I18n.t("settings.title") %>
+      </aside>
+
+      <div class="flex flex-col w-full p-24 ml-96">
+        <header>
+          <div class="flex gap-2">
+            <%= yield :back %>
+
+            <div class="grow"></div>
+
+            <div class="text-left flex flex-col px-4 py-2">
+              <div class="text-sm font-medium dark:text-gray-200">
+                <%= current_user.full_name %>
+              </div>
+
+              <div class="text-xs text-muted-foreground dark:text-gray-400">
+                <%= current_user.email %>
+              </div>
+            </div>
+
+            <div data-controller="theme">
+              <input
+                type="checkbox"
+                name="theme-switch"
+                class="theme-switch sr-only"
+                id="theme-switch"
+                data-action="change->theme#toggle"
+                data-theme-target="toggle"
+              >
+
+              <label
+                class="relative btn-icon-outline btn-icon-lg"
+                for="theme-switch"
+              >
+                <%= lucide_icon "sun", class: "h-6 w-6 dark:hidden" %>
+                <%= lucide_icon "moon", class: "h-6 w-6 hidden dark:block" %>
+                <span class="sr-only">Switch light/dark theme</span>
+              </label>
+            </div>
+
+            <%= link_to destroy_user_session_path,
+                        method: :delete,
+                        title: I18n.t("auth.sign_out"),
+                        data: { "turbo-method": :delete },
+                        class: "btn-icon-outline btn-icon-lg" do %>
+              <%= lucide_icon "log-out", class: "h-6 w-6" %>
+            <% end %>
+          </div>
+        </header>
+
+        <main class="mt-12 py-12">
+          <div class="mb-10 flex">
+            <div>
+              <h1 class="mb-3 text-5xl font-semibold dark:text-gray-100">
+                <%= yield :title %>
+              </h1>
+
+              <div class="text-xl font-medium text-gray-400 dark:text-gray-500">
+                <%= yield :subtitle %>
+              </div>
+            </div>
+
+            <div class="flex-grow"></div>
+
+            <div class="flex gap-2"><%= yield :actions %></div>
+          </div>
+
+          <%= yield %>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

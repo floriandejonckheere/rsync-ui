@@ -1,0 +1,24 @@
+<div class="card">
+  <div class="card-body px-8 flex flex-col gap-8">
+    <div>
+      <h2 class="card-title text-2xl font-bold">
+        <%= I18n.t("application.name") %>
+      </h2>
+    </div>
+
+    <%= form_for resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post } do |f| %>
+      <%= render "devise/shared/error_messages" %>
+
+      <div class="flex flex-col gap-8">
+        <label class="form-control flex flex-col gap-2">
+          <%= f.label :email, class: "label text-sm" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "input w-full" %>
+        </label>
+
+        <div class="card-actions justify-end">
+          <%= f.submit I18n.t("devise.unlocks.resend_unlock_instructions"), class: "btn btn-primary w-full" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
