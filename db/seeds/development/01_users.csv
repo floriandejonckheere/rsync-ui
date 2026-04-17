@@ -1,0 +1,4 @@
+email,first_name,last_name,password,role
+admin@example.com,Admin,User,password,admin
+starter@example.com,Starter,User,password,user
+powerreader@example.com,Power,Reader,password,user

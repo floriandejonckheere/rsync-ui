@@ -1,0 +1,60 @@
+---
+en:
+  application:
+    name: Rsync UI
+  auth:
+    sign_out: Sign out
+  configurations:
+    index:
+      cancel: Cancel
+      default: Default
+      depends_on: Depends on
+      edit: Edit
+      revert: Revert to default
+      subtitle: Manage system-wide configuration settings
+      title: Configuration
+      update: Update
+      value_placeholder: Enter configuration value
+    title: Configuration
+    update:
+      error: Failed to update configuration
+      success: Configuration updated successfully
+  confirm_dialog:
+    cancel: Cancel
+    confirm: Confirm
+    title: Confirm
+  dashboard:
+    title: Dashboard
+    subtitle: Monitor recent activity
+  flash:
+    types:
+      alert: Alert
+      error: Error
+      notice: Notice
+      success: Success
+      warning: Warning
+  jobs:
+    title: Background jobs
+  page:
+    info: Page %{current} of %{total}
+    next: Next
+    previous: Previous
+  settings:
+    account:
+      email: Email
+      email_placeholder: email@example.com
+      first_name: First name
+      first_name_placeholder: John
+      last_name: Last name
+      last_name_placeholder: Doe
+    delete_account:
+      button: Delete my account
+      confirm: Are you sure you want to delete your account? This will permanently delete all your data. This action cannot be undone.
+      title: Delete Account
+      warning: Deleting your account will permanently remove all your data!
+    subtitle: Your personal preferences and account settings
+    title: Settings
+    update: Update
+  shared:
+    form_messages:
+      error_title: Something went wrong

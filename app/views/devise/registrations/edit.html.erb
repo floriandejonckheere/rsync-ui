@@ -1,0 +1,83 @@
+<%= content_for :title do %>
+  <%= I18n.t("settings.title") %>
+<% end %>
+
+<%= content_for :subtitle do %>
+  <%= I18n.t("settings.subtitle") %>
+<% end %>
+
+<div class="grid grid-cols-2 gap-8">
+  <div class="card">
+    <header>
+      <h2>Profile</h2>
+    </header>
+
+    <section>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "form" }) do |f| %>
+        <% if current_user.errors.any? %>
+          <%= render "shared/form_messages", model: current_user %>
+        <% end %>
+
+        <div class="flex flex-col gap-6">
+          <div class="field">
+            <%= f.label :first_name, I18n.t("settings.account.first_name") %>
+
+            <%= f.text_field :first_name,
+                             placeholder: I18n.t("settings.account.first_name_placeholder"),
+                             required: true,
+                             autocomplete: "off" %>
+          </div>
+
+          <div class="field">
+            <%= f.label :last_name, I18n.t("settings.account.last_name") %>
+
+            <%= f.text_field :last_name,
+                             placeholder: I18n.t("settings.account.last_name_placeholder"),
+                             required: true,
+                             autocomplete: "off" %>
+          </div>
+
+          <div class="field">
+            <%= f.label :email, I18n.t("settings.account.email") %>
+
+            <%= f.text_field :email,
+                             placeholder: I18n.t("settings.account.email_placeholder"),
+                             required: true,
+                             disabled: true,
+                             autocomplete: "off" %>
+          </div>
+
+          <div>
+            <%= f.submit value: I18n.t("settings.update"), class: "btn-primary" %>
+          </div>
+        </div>
+      <% end %>
+    </section>
+  </div>
+
+  <div class="card">
+    <header>
+      <h2><%= I18n.t("settings.delete_account.title") %></h2>
+    </header>
+
+    <section class="flex flex-col flex-1">
+      <p><%= I18n.t("settings.delete_account.confirm") %></p>
+
+      <p class="mt-2 font-bold">
+        <%= I18n.t("settings.delete_account.warning") %>
+      </p>
+    </section>
+
+    <footer>
+      <%= link_to registration_path(resource), class: "btn-destructive", data: {
+        "turbo-method": :delete,
+        "turbo-confirm": I18n.t("settings.delete_account.confirm"),
+        "turbo-confirm-title": I18n.t("settings.delete_account.title"),
+        "turbo-confirm-button": I18n.t("settings.delete_account.button"),
+        "turbo-confirm-destructive": true
+      } do %>
+        <%= I18n.t("settings.delete_account.button") %>
+      <% end %>
+    </footer>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="flex items-center justify-center gap-2 mt-8">
+  <% if pagy.previous %>
+    <%= link_to pagination_page_path(path_method, pagy.previous, **params), class: "btn-outline", data: { turbo_action: "replace" } do %>
+      <%= lucide_icon "chevron-left", class: "w-5 h-5" %>
+      <%= I18n.t("page.previous") %>
+    <% end %>
+  <% else %>
+    <button disabled class="btn-outline opacity-50 cursor-not-allowed">
+      <%= lucide_icon "chevron-left", class: "w-5 h-5" %>
+      <%= I18n.t("page.previous") %>
+    </button>
+  <% end %>
+
+  <span class="text-sm text-muted-foreground px-4">
+    <%= I18n.t("page.info", current: pagy.page, total: pagy.pages) %>
+  </span>
+
+  <% if pagy.next %>
+    <%= link_to pagination_page_path(path_method, pagy.next, **params), class: "btn-outline", data: { turbo_action: "replace" } do %>
+      <%= I18n.t("page.next") %>
+      <%= lucide_icon "chevron-right", class: "w-5 h-5" %>
+    <% end %>
+  <% else %>
+    <button disabled class="btn-outline opacity-50 cursor-not-allowed">
+      <%= I18n.t("page.next") %>
+      <%= lucide_icon "chevron-right", class: "w-5 h-5" %>
+    </button>
+  <% end %>
+</div>

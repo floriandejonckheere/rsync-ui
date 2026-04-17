@@ -1,0 +1,177 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - '**'
+
+concurrency:
+  group: ${{ github.workflow }}-ci-${{ github.event.repository.name }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test application
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg18-trixie
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USERNAME: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@896e71e063dc0933bb442a54e949d75291991ecb # v1.288.0
+        with:
+          ruby-version: 4.0.1
+          bundler-cache: true
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Set up Node
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 24
+          cache: 'yarn'
+
+      - name: Prepare database
+        env:
+          RAILS_ENV: test
+          PG_HOST: localhost
+          ADMIN_EMAIL: admin@example.com
+          ADMIN_PASSWORD: password
+        run: |
+          bundle exec rails db:create db:prepare --trace
+          bundle exec rails database:seed:production --trace
+          bundle exec rails assets:precompile
+
+      - name: Test
+        env:
+          RAILS_ENV: test
+          PG_HOST: localhost
+        run: bundle exec rspec --format documentation
+
+      - name: Lint Ruby files
+        run: bundle exec rubocop --parallel --display-cop-names
+
+      - name: Lint ERB files
+        run: yarn herb:lint
+
+      - name: Format ERB files
+        run: yarn herb:format:check .
+
+      - name: Check annotations are up to date
+        env:
+          RAILS_ENV: test
+          PG_HOST: localhost
+        run: |
+          bundle exec annotaterb routes
+          bundle exec annotaterb models
+
+          if ! git diff --exit-code config/routes.rb app/; then
+            echo "Error: Annotations are out of date. Please run 'annotaterb routes' and 'annotaterb models' and commit the changes."
+            git diff config/routes.rb app/
+            exit 1
+          fi
+
+      - name: Security vulnerability scan
+        run: |
+          bundle exec brakeman --no-pager
+          bundle exec yarn audit
+
+  integration:
+    name: Integration test application
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg18-trixie
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USERNAME: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@896e71e063dc0933bb442a54e949d75291991ecb # v1.288.0
+        with:
+          ruby-version: 4.0.1
+          bundler-cache: true
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Set up Node
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 24
+          cache: 'yarn'
+
+      - name: Run seed integration
+        env:
+          RAILS_ENV: development
+          PG_HOST: localhost
+          ADMIN_EMAIL: admin@example.com
+          ADMIN_PASSWORD: password
+        run: |
+          bundle exec rails db:drop db:create db:migrate --trace
+          bundle exec rails database:seed:production --trace
+          bundle exec rails database:seed:development --trace
+
+  build:
+    name: Build application
+    runs-on: ubuntu-latest
+    needs: [test, integration]
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+        with:
+          driver-opts: image=moby/buildkit:master
+
+      - name: Login to Github Packages
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USER }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build and push app to GitHub Packages
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        with:
+          file: Dockerfile.prod
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}

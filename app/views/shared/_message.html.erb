@@ -1,0 +1,24 @@
+<div
+  class="
+    fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4
+    sm:max-w-lg
+  "
+>
+  <% flash.each do |type, message| %>
+    <% next if message.blank? %>
+
+    <div
+      role="alert"
+      class="<%= alert_class_for(type) %> mb-4 shadow-lg"
+      data-turbo-temporary
+    >
+      <%= lucide_icon icon_name_for(type), class: "w-4 h-4" %>
+
+      <h2>
+        <%= I18n.t("flash.types.#{type}", default: type.to_s.capitalize) %>
+      </h2>
+
+      <section><%= message %></section>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,9 @@
+en:
+  configurations:
+    categories:
+      system:
+        title: System configuration
+        description: Core system settings and technical parameters
+    keys:
+      maximum_file_size:
+        description: Maximum file size (in MB)

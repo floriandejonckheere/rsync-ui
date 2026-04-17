@@ -1,0 +1,5 @@
+---
+- key: maximum_file_size
+  type: integer
+  category: system
+  default: 10
