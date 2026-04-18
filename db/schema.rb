@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_18_083619) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_18_133511) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -50,6 +50,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_083619) do
     t.datetime "updated_at", null: false
     t.jsonb "value", null: false
     t.index ["key"], name: "index_configurations_on_key", unique: true
+  end
+
+  create_table "jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.uuid "destination_repository_id", null: false
+    t.boolean "enabled", default: true, null: false
+    t.string "name", null: false
+    t.string "schedule"
+    t.uuid "source_repository_id", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.index ["destination_repository_id"], name: "index_jobs_on_destination_repository_id"
+    t.index ["source_repository_id"], name: "index_jobs_on_source_repository_id"
+    t.index ["user_id"], name: "index_jobs_on_user_id"
   end
 
   create_table "repositories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -101,6 +116,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_083619) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "jobs", "repositories", column: "destination_repository_id"
+  add_foreign_key "jobs", "repositories", column: "source_repository_id"
+  add_foreign_key "jobs", "users"
   add_foreign_key "repositories", "servers"
   add_foreign_key "repositories", "users"
   add_foreign_key "servers", "users"

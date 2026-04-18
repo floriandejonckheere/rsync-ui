@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   authenticate :user do
     # Monitor and manage background jobs and scheduled tasks
-    mount MissionControl::Jobs::Engine, at: "/jobs"
+    mount MissionControl::Jobs::Engine, at: "/background_jobs"
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -26,13 +26,14 @@ Rails.application.routes.draw do
   resources :configurations, only: [:index, :update]
   resources :servers
   resources :repositories
+  resources :jobs, except: :show
 end
 
 # == Route Map
 #
 # Routes for application:
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
-#                     mission_control_jobs        /jobs                                                                                             MissionControl::Jobs::Engine
+#                     mission_control_jobs        /background_jobs                                                                                  MissionControl::Jobs::Engine
 #                       rails_health_check GET    /up(.:format)                                                                                     rails/health#show
 #                                     root GET    /                                                                                                 dashboard#index
 #                         new_user_session GET    /users/sign_in(.:format)                                                                          devise/sessions#new
@@ -64,6 +65,13 @@ end
 #                                          PATCH  /repositories/:id(.:format)                                                                       repositories#update
 #                                          PUT    /repositories/:id(.:format)                                                                       repositories#update
 #                                          DELETE /repositories/:id(.:format)                                                                       repositories#destroy
+#                                     jobs GET    /jobs(.:format)                                                                                   jobs#index
+#                                          POST   /jobs(.:format)                                                                                   jobs#create
+#                                  new_job GET    /jobs/new(.:format)                                                                               jobs#new
+#                                 edit_job GET    /jobs/:id/edit(.:format)                                                                          jobs#edit
+#                                      job PATCH  /jobs/:id(.:format)                                                                               jobs#update
+#                                          PUT    /jobs/:id(.:format)                                                                               jobs#update
+#                                          DELETE /jobs/:id(.:format)                                                                               jobs#destroy
 #         turbo_recede_historical_location GET    /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
 #         turbo_resume_historical_location GET    /resume_historical_location(.:format)                                                             turbo/native/navigation#resume
 #        turbo_refresh_historical_location GET    /refresh_historical_location(.:format)                                                            turbo/native/navigation#refresh

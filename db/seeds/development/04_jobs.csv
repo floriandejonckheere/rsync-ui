@@ -1,0 +1,5 @@
+name,description,source_repository_name,destination_repository_name,schedule,enabled,user_email
+System backup,Synchronize system configuration to the backup server,System,System (backup),0 2 * * *,true,admin@example.com
+System mirror,Replicate the backup set to the off-site mirror,System (backup),System (mirror),30 3 * * *,true,admin@example.com
+Documents backup,Synchronize documents from the NAS to the backup server,Documents,Documents (backup),0 */6 * * *,true,admin@example.com
+Docker replica,Refresh the local Docker replica,Docker,Docker (replica),15 * * * *,false,admin@example.com

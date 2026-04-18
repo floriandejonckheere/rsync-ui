@@ -1,0 +1,94 @@
+<%= form_with model: job, id: "job-form", class: "form" do |f| %>
+  <% content_for :actions do %>
+    <button
+      type="submit"
+      form="job-form"
+      class="btn-icon-outline btn-icon-lg"
+      title="<%= job.persisted? ? I18n.t("jobs.form.submit_update") : I18n.t("jobs.form.submit_create") %>"
+    >
+      <%= lucide_icon "check", class: "h-6 w-6" %>
+    </button>
+  <% end %>
+
+  <% if job.errors.any? %>
+    <div class="mb-8">
+      <%= render "shared/form_messages", model: job %>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-2 gap-8">
+    <div class="flex flex-col gap-8">
+      <div class="card h-full">
+        <header>
+          <h2><%= I18n.t("jobs.form.details") %></h2>
+        </header>
+
+        <section>
+          <div class="flex flex-col gap-6">
+            <div class="field">
+              <%= f.label :name, I18n.t("jobs.form.name") %>
+
+              <%= f.text_field :name,
+                               placeholder: I18n.t("jobs.form.name_placeholder"),
+                               required: true,
+                               autocomplete: "off" %>
+            </div>
+
+            <div class="field">
+              <%= f.label :description, I18n.t("jobs.form.description") %>
+
+              <%= f.text_area :description,
+                              placeholder: I18n.t("jobs.form.description_placeholder"),
+                              rows: 3,
+                              autocomplete: "off" %>
+            </div>
+
+            <div class="field">
+              <%= f.label :schedule, I18n.t("jobs.form.schedule") %>
+
+              <%= f.text_field :schedule,
+                               placeholder: I18n.t("jobs.form.schedule_placeholder"),
+                               autocomplete: "off" %>
+            </div>
+
+            <div class="field flex-row items-center gap-4">
+              <%= f.check_box :enabled, role: "switch" %>
+
+              <%= f.label :enabled, I18n.t("jobs.form.enabled") %>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-8">
+      <div class="card">
+        <header>
+          <h2><%= I18n.t("jobs.form.repositories") %></h2>
+        </header>
+
+        <section>
+          <div class="flex flex-col gap-6">
+            <div class="field">
+              <%= f.label :source_repository_id, I18n.t("jobs.form.source_repository") %>
+
+              <%= f.select :source_repository_id,
+                           @repositories.map { |repository| [repository.name, repository.id] },
+                           { include_blank: I18n.t("jobs.form.source_repository_placeholder") },
+                           { required: true } %>
+            </div>
+
+            <div class="field">
+              <%= f.label :destination_repository_id, I18n.t("jobs.form.destination_repository") %>
+
+              <%= f.select :destination_repository_id,
+                           @repositories.map { |repository| [repository.name, repository.id] },
+                           { include_blank: I18n.t("jobs.form.destination_repository_placeholder") },
+                           { required: true } %>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+<% end %>

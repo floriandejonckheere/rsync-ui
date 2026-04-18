@@ -17,6 +17,9 @@ class User < ApplicationRecord
   has_many :repositories,
            dependent: :destroy
 
+  has_many :jobs,
+           dependent: :destroy
+
   validates :first_name,
             presence: true
 

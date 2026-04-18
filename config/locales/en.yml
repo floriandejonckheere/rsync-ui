@@ -3,6 +3,13 @@ en:
   activerecord:
     errors:
       models:
+        job:
+          attributes:
+            destination_repository:
+              read_only: cannot be read-only
+              same_as_source: must be different from the source repository
+            schedule:
+              invalid: must be a valid cron expression
         repository:
           attributes:
             server:
@@ -49,6 +56,54 @@ en:
       success: Success
       warning: Warning
   jobs:
+    actions:
+      delete: Delete job
+      delete_confirm: Are you sure you want to delete this job? This action cannot be undone.
+      delete_confirm_title: Delete job
+      edit: Edit job
+    create:
+      success: Job was successfully created.
+    destroy:
+      success: Job was successfully deleted.
+    edit:
+      title: Edit job
+    enabled:
+      'false': Disabled
+      'true': Enabled
+    form:
+      description: Description
+      description_placeholder: Optional description for this job
+      destination_repository: Destination repository
+      destination_repository_placeholder: Select a destination repository
+      details: Details
+      enabled: Enabled
+      name: Name
+      name_placeholder: Daily backup
+      repositories: Repositories
+      schedule: Schedule
+      schedule_placeholder: 0 2 * * *
+      source_repository: Source repository
+      source_repository_placeholder: Select a source repository
+      submit_create: Create job
+      submit_update: Update job
+    index:
+      empty: No jobs have been configured yet.
+      new: New job
+      subtitle: Manage synchronization tasks between repositories
+      title: Jobs
+    new:
+      subtitle: Add a new synchronization job
+      title: New job
+    table:
+      destination: Destination
+      enabled: Enabled
+      name: Name
+      schedule: Schedule
+      source: Source
+    title: Jobs
+    update:
+      success: Job was successfully updated.
+  monitoring:
     title: Background jobs
   page:
     info: Page %{current} of %{total}

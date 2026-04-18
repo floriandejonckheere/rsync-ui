@@ -7,6 +7,18 @@ class Repository < ApplicationRecord
   belongs_to :server,
              optional: true
 
+  has_many :source_jobs,
+           class_name: "Job",
+           foreign_key: :source_repository_id,
+           inverse_of: :source_repository,
+           dependent: :restrict_with_exception
+
+  has_many :destination_jobs,
+           class_name: "Job",
+           foreign_key: :destination_repository_id,
+           inverse_of: :destination_repository,
+           dependent: :restrict_with_exception
+
   validates :name,
             presence: true
 

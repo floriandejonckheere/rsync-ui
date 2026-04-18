@@ -101,11 +101,11 @@ Jobs are the actual synchronization tasks that are executed by the application.
 
 A job has the following attributes:
 
-- [ ] Name
-- [ ] Description (optional)
-- [ ] Source repository (foreign key)
-- [ ] Destination repository (foreign key)
-- [ ] Schedule: cron expression for scheduling the job (optional)
+- [x] Name
+- [x] Description (optional)
+- [x] Source repository (foreign key)
+- [x] Destination repository (foreign key)
+- [x] Schedule: cron expression for scheduling the job (optional)
 - [ ] Rsync options
   - [ ] Command-line arguments for rsync
     - [ ] Delete extra files on destination (`--delete`)
@@ -132,18 +132,18 @@ A job has the following attributes:
   - [ ] Include patterns
   - [ ] Run rsync as a different user (or sudo)
   - [ ] Alternate path to rsync binary
-- [ ] Enabled (boolean)
-- [ ] User
+- [x] Enabled (boolean)
+- [x] User
 
 Validations:
 
-- [ ] Source repository must exist
-- [ ] Destination repository must exist
-- [ ] Destination repository must be different from source repository
-- [ ] Destination repository must not be read-only
-- [ ] Schedule must be valid cron expression
+- [x] Source repository must exist
+- [x] Destination repository must exist
+- [x] Destination repository must be different from source repository
+- [x] Destination repository must not be read-only
+- [x] Schedule must be valid cron expression
 
-- [ ] Implement jobs page
+- [x] Implement jobs page
   - [x] Create job
   - [x] Update job
   - [x] Destroy job

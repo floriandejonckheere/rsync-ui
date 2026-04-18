@@ -131,7 +131,7 @@
             </div>
 
             <div class="field flex-row items-center gap-4">
-              <%= f.check_box :read_only %>
+              <%= f.check_box :read_only, role: "switch" %>
 
               <%= f.label :read_only, I18n.t("repositories.form.read_only") %>
             </div>
