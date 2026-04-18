@@ -51,6 +51,9 @@ The resource usage shows the total and used storage, aggregated by repository.
 Servers are the remote destinations where the files are synchronized to.
 
 - [ ] Test connection during server setup and editing
+- [ ] Deploy SSH key to the server
+  - [ ] Generate new SSH key pair
+  - [ ] Upload SSH key to the server (using password)
 
 ### Jobs
 
@@ -58,6 +61,10 @@ Jobs are the actual synchronization tasks that are executed by the application.
 
 - [ ] Include/Exclude patterns
 - [ ] Render human-readable cron expression
+
+### Job runs
+
+- [ ] Allow filtering by job, status, and date range
 
 ### Execution and scheduling
 
