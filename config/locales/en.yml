@@ -63,6 +63,8 @@ en:
       delete: Delete job run
       delete_confirm: Are you sure you want to delete this job run? This action cannot be undone.
       delete_confirm_title: Delete job run
+      download_logs: Download logs
+      view_logs: View logs
     create:
       success: Job queued successfully.
     destroy:
@@ -71,9 +73,14 @@ en:
       empty: No job runs have been recorded yet.
       subtitle: Overview of synchronization job executions
       title: Activity log
+    show:
+      output_file: Output
+      subtitle: 'Logs for job: %{job}'
+      title: 'Job run #%{sequence}'
     status:
       canceled: Canceled
       completed: Completed
+      errored: Errored
       failed: Failed
       pending: Pending
       running: Running

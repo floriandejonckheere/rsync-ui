@@ -49,6 +49,19 @@
 
   <td class="px-6 py-4">
     <div class="flex items-center justify-end gap-2">
+      <% if job_run.deletable? && job_run.output.attached? %>
+        <%= link_to job_run_path(job_run),
+                    class: "btn-icon-outline btn-icon-md",
+                    title: I18n.t("job_runs.actions.view_logs") do %>
+          <%= lucide_icon "eye", class: "h-4 w-4" %>
+        <% end %>
+        <%= link_to logs_job_run_path(job_run),
+                    class: "btn-icon-outline btn-icon-md",
+                    title: I18n.t("job_runs.actions.download_logs") do %>
+          <%= lucide_icon "download", class: "h-4 w-4" %>
+        <% end %>
+      <% end %>
+
       <% if job_run.deletable? %>
         <%= link_to job_run_path(job_run),
                     class: "btn-icon-outline btn-icon-md text-red-600 hover:text-red-700 dark:text-red-400",

@@ -2,7 +2,7 @@
 
 class JobRunsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_job_run, only: [:destroy, :cancel]
+  before_action :set_job_run, only: [:show, :logs, :destroy, :cancel]
 
   def index
     @job_runs = authorized_scope(
@@ -11,6 +11,27 @@ class JobRunsController < ApplicationController
     )
 
     authorize! :job_run
+  end
+
+  def show
+    authorize! @job_run
+
+    redirect_to job_runs_path unless @job_run.output.attached?
+  end
+
+  def logs
+    authorize! @job_run
+
+    return head :not_found unless @job_run.output.attached?
+
+    filename = [
+      "job",
+      @job_run.sequence,
+      @job_run.job.name.titleize,
+      @job_run.started_at&.iso8601,
+    ].compact.join("-").concat(".log")
+
+    redirect_to rails_blob_path(@job_run.output, disposition: "attachment; filename=\"#{filename}\""), allow_other_host: true
   end
 
   def create

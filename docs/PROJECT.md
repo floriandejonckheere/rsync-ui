@@ -70,10 +70,10 @@ Jobs are the actual synchronization tasks that are executed by the application.
 
 - [ ] Implement a dynamic job scheduler (cron daemon)
 - [ ] Add a configuration option (feature category) to enable or disable scheduled jobs: `scheduler`
-- [ ] Implement a service that executes jobs ad hoc
+- [x] Implement a service that executes jobs ad hoc
   - [ ] Track real-time progress of jobs
-  - [ ] Capture and save the output of rsync commands
-  - [ ] Allow viewing and downloading the log file
+  - [x] Capture and save the output of rsync commands
+  - [x] Allow viewing and downloading the log file
 - [ ] Add a scheduled job to execute a job if it is due
 
 - [ ] Implement sync hooks

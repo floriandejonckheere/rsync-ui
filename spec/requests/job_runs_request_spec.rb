@@ -24,6 +24,98 @@ RSpec.describe "JobRuns" do
     end
   end
 
+  describe "GET /job_runs/:id" do
+    let(:job_run) { create(:job_run, :completed, user:) }
+
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      context "when output is attached" do
+        before { job_run.output.attach(io: StringIO.new("log content"), filename: "output.log", content_type: "text/plain") }
+
+        it "renders the show page" do
+          get job_run_path(job_run)
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      context "when output is not attached" do
+        it "redirects to the index" do
+          get job_run_path(job_run)
+
+          expect(response).to redirect_to(job_runs_path)
+        end
+      end
+    end
+
+    context "when job run belongs to another user" do
+      let(:job_run) { create(:job_run, :completed, user: other_user) }
+
+      before { sign_in user, scope: :user }
+
+      it "returns forbidden" do
+        get job_run_path(job_run)
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        get job_run_path(job_run)
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe "GET /job_runs/:id/logs" do
+    let(:job_run) { create(:job_run, :completed, user:) }
+
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      context "when output is attached" do
+        before { job_run.output.attach(io: StringIO.new("log content"), filename: "output.log", content_type: "text/plain") }
+
+        it "redirects to the blob download URL" do
+          get logs_job_run_path(job_run)
+
+          expect(response).to have_http_status(:redirect)
+        end
+      end
+
+      context "when output is not attached" do
+        it "returns not found" do
+          get logs_job_run_path(job_run)
+
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+    end
+
+    context "when job run belongs to another user" do
+      let(:job_run) { create(:job_run, :completed, user: other_user) }
+
+      before { sign_in user, scope: :user }
+
+      it "returns forbidden" do
+        get logs_job_run_path(job_run)
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        get logs_job_run_path(job_run)
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
   describe "DELETE /job_runs/:id" do
     let!(:job_run) { create(:job_run, :completed, user:) }
 

@@ -1,0 +1,38 @@
+<% content_for :back do %>
+  <%= render "shared/menu_back", path: job_runs_path %>
+<% end %>
+
+<% content_for :title do %>
+  <%= I18n.t("job_runs.show.title", sequence: @job_run.sequence) %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= I18n.t("job_runs.show.subtitle", job: @job_run.job.name) %>
+<% end %>
+
+<div class="card p-0 overflow-hidden">
+  <div
+    class="
+      flex items-center justify-between px-6 py-4 border-b border-gray-100
+      dark:border-gray-700
+    "
+  >
+    <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+      <%= lucide_icon "file-text", class: "h-4 w-4" %>
+      <span><%= I18n.t("job_runs.show.output_file") %></span>
+    </div>
+
+    <%= link_to logs_job_run_path(@job_run),
+                class: "btn-icon-outline btn-icon-md",
+                title: I18n.t("job_runs.actions.download_logs") do %>
+      <%= lucide_icon "download", class: "h-4 w-4" %>
+    <% end %>
+  </div>
+
+  <pre
+    class="
+      p-6 text-xs font-mono text-gray-800 dark:text-gray-200 overflow-x-auto
+      whitespace-pre-wrap
+    "
+  ><%= @job_run.output.download %></pre>
+</div>

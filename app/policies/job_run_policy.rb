@@ -13,6 +13,14 @@ class JobRunPolicy < ApplicationPolicy
     user.present?
   end
 
+  def show?
+    user.admin? || record.user == user
+  end
+
+  def logs?
+    user.admin? || record.user == user
+  end
+
   def destroy?
     user.admin? || record.user == user
   end
