@@ -37,18 +37,33 @@ Visible elements include:
 **Activity log**
 
 The activity log shows an overview of the jobs executed in reverse chronological order.
+The table name is `job_runs`.
 
-Columns:
+Job runs have the following attributes:
 
-- [ ] Job ID: a human-readable identifier
-- [ ] Schedule ID: a human-readable identifier
-- [ ] Repository: name of the repository
+- [ ] Job (foreign key)
+- [ ] User (foreign key)
+- [ ] Sequence: auto-incremented sequence number
 - [ ] Trigger: manual or scheduled
-- [ ] Status: completed, failed, running
+- [ ] Status: pending (default), running, completed, failed, canceled
 - [ ] Started at: date and time the job started
 - [ ] Duration: time elapsed since the start of the job
 - [ ] Completed/failed at: date and time the job completed or failed
 - [ ] Actions: view log, download log, delete entry (if completed/errored)
+
+- [ ] Implement activity log page (below dashboard link)
+  - [ ] Implement activity log table with the following columns:
+    - [ ] Job ID (sequence number)
+    - [ ] Repository (name)
+    - [ ] Trigger
+    - [ ] Status
+    - [ ] Started at
+    - [ ] Duration (if completed), otherwise running time (since started)
+    - [ ] Completed/failed at
+    - [ ] Action buttons
+      - [ ] View log (out of scope for now)
+      - [ ] Download log (out of scope for now)
+      - [ ] Delete entry (if completed/failed/cancelled), otherwise cancel (if pending/running)
 
 **Resource usage**
 
@@ -64,58 +79,19 @@ Servers are the remote destinations where the files are synchronized to.
 
 Jobs are the actual synchronization tasks that are executed by the application.
 
-#### Rsync options
-
-- [x] Command-line arguments for rsync
-- [x] Basic options
-  - [x] Archive mode (`--archive`), default: false
-  - [x] Recurse into directories (`--recursive`), default: true
-  - [x] Relative path names (`--relative`), default: false
-  - [x] Preserve symbolic links (`--links`), default: true
-  - [x] Preserve timestamps (`--times`), default: true
-  - [x] Preserve permissions (`--perms`), default: false
-  - [x] Preserve ownership (`--owner`), default: false
-  - [x] Preserve group ownership (`--group`), default: false
-  - [x] Do not leave filesystem (`--one-file-system`), default: false
-  - [x] Delete extra files on destination (`--delete`), default: false
-  - [x] Delete excluded files on destination (`--delete-excluded`), default: false
-  - [x] Only update existing files on destination (`--existing`), default: false
-  - [x] Ignore existing files on destination (`--ignore-existing`), default: false
-  - [x] Skip newer files (`--update`), default: false
-  - [x] Dry run (`--dry-run`), default: false
-  - [x] Update files in-place (`--inplace`), default: false
-  - [x] Size only (`--size-only`), default: false
-  - [x] Show progress (`--progress`), default: true
-- [x] Advanced options
-  - [x] Preserve ACLs (`--acls`), default: false
-  - [x] Preserve extended attributes (`--xattrs`), default: false
-  - [x] Preserve hard links (`--hard-links`), default: false
-  - [x] Preserve device numbers (`--devices`), default: false
-  - [x] Preserve special files (`--specials`), default: false
-  - [x] Skip based on checksum (`--checksum`), default: false
-  - [x] Enable compression (`--compress`), default: false
-  - [x] Keep partially transferred files (`--partial`), default: false
-  - [x] Make backups (`--backup`), default: false
-  - [x] Append data onto shorter files (`--append`), default: false
-  - [x] Don't map uid/gid values (`--numeric-ids`), default: false
-  - [x] Show itemized changes list (`--itemize-changes`), default: false
-  - [x] Protect remote args (`--secluded-args`), default: false
-  - [x] Verbose (`--verbose`), default: false
-  - [x] Custom options
-- [ ] Archive mode (`--archive`) expands to `-rlptgoD`
 - [ ] Include/Exclude patterns
-- [x] Run as superuser
-- [x] Alternate path to rsync binary
+- [ ] Render human-readable cron expression
 
 ### Execution and scheduling
 
 - [ ] Implement a dynamic job scheduler (cron daemon)
 - [ ] Add a configuration option (feature category) to enable or disable scheduled jobs: `scheduler`
 - [ ] Implement a service that executes jobs ad hoc
+  - [ ] Track real-time progress of jobs
+  - [ ] Capture and save the output of rsync commands
+  - [ ] Allow viewing and downloading the log file
 - [ ] Add a scheduled job to execute a job if it is due
-- [ ] Track real-time progress of jobs
-- [ ] Capture and save the output of rsync commands
-- [ ] Allow viewing and downloading the log file
+
 - [ ] Implement sync hooks
   - [ ] Pre-/post-hook: command or script to run before or after the sync starts
   - [ ] Success/error hook: command or script to run when the sync succeeds or fails
