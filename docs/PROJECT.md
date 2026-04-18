@@ -66,46 +66,46 @@ Jobs are the actual synchronization tasks that are executed by the application.
 
 #### Rsync options
 
-- [ ] Command-line arguments for rsync
-- [ ] Basic options
-  - [ ] Archive mode (`--archive`), default: false
-  - [ ] Recurse into directories (`--recursive`), default: true
-  - [ ] Relative path names (`--relative`), default: false
-  - [ ] Preserve symbolic links (`--links`), default: true
-  - [ ] Preserve timestamps (`--times`), default: true
-  - [ ] Preserve permissions (`--perms`), default: false
-  - [ ] Preserve ownership (`--owner`), default: false
-  - [ ] Preserve group ownership (`--group`), default: false
-  - [ ] Do not leave filesystem (`--one-file-system`), default: false
-  - [ ] Delete extra files on destination (`--delete`), default: false
-  - [ ] Delete excluded files on destination (`--delete-excluded`), default: false
-  - [ ] Only update existing files on destination (`--existing`), default: false
-  - [ ] Ignore existing files on destination (`--ignore-existing`), default: false
-  - [ ] Skip newer files (`--update`), default: false
-  - [ ] Dry run (`--dry-run`), default: false
-  - [ ] Update files in-place (`--inplace`), default: false
-  - [ ] Size only (`--size-only`), default: false
-  - [ ] Show progress (`--progress`), default: true
-- [ ] Advanced options
-  - [ ] Preserve ACLs (`--acls`), default: false
-  - [ ] Preserve extended attributes (`--xattrs`), default: false
-  - [ ] Preserve hard links (`--hard-links`), default: false
-  - [ ] Preserve device numbers (`--devices`), default: false
-  - [ ] Preserve special files (`--specials`), default: false
-  - [ ] Skip based on checksum (`--checksum`), default: false
-  - [ ] Enable compression (`--compress`), default: false
-  - [ ] Keep partially transferred files (`--partial`), default: false
-  - [ ] Make backups (`--backup`), default: false
-  - [ ] Append data onto shorter files (`--append`), default: false
-  - [ ] Don't map uid/gid values (`--numeric-ids`), default: false
-  - [ ] Show itemized changes list (`--itemize-changes`), default: false
-  - [ ] Protect remote args (`--secluded-args`), default: false
-  - [ ] Verbose (`--verbose`), default: false
-  - [ ] Custom options
+- [x] Command-line arguments for rsync
+- [x] Basic options
+  - [x] Archive mode (`--archive`), default: false
+  - [x] Recurse into directories (`--recursive`), default: true
+  - [x] Relative path names (`--relative`), default: false
+  - [x] Preserve symbolic links (`--links`), default: true
+  - [x] Preserve timestamps (`--times`), default: true
+  - [x] Preserve permissions (`--perms`), default: false
+  - [x] Preserve ownership (`--owner`), default: false
+  - [x] Preserve group ownership (`--group`), default: false
+  - [x] Do not leave filesystem (`--one-file-system`), default: false
+  - [x] Delete extra files on destination (`--delete`), default: false
+  - [x] Delete excluded files on destination (`--delete-excluded`), default: false
+  - [x] Only update existing files on destination (`--existing`), default: false
+  - [x] Ignore existing files on destination (`--ignore-existing`), default: false
+  - [x] Skip newer files (`--update`), default: false
+  - [x] Dry run (`--dry-run`), default: false
+  - [x] Update files in-place (`--inplace`), default: false
+  - [x] Size only (`--size-only`), default: false
+  - [x] Show progress (`--progress`), default: true
+- [x] Advanced options
+  - [x] Preserve ACLs (`--acls`), default: false
+  - [x] Preserve extended attributes (`--xattrs`), default: false
+  - [x] Preserve hard links (`--hard-links`), default: false
+  - [x] Preserve device numbers (`--devices`), default: false
+  - [x] Preserve special files (`--specials`), default: false
+  - [x] Skip based on checksum (`--checksum`), default: false
+  - [x] Enable compression (`--compress`), default: false
+  - [x] Keep partially transferred files (`--partial`), default: false
+  - [x] Make backups (`--backup`), default: false
+  - [x] Append data onto shorter files (`--append`), default: false
+  - [x] Don't map uid/gid values (`--numeric-ids`), default: false
+  - [x] Show itemized changes list (`--itemize-changes`), default: false
+  - [x] Protect remote args (`--secluded-args`), default: false
+  - [x] Verbose (`--verbose`), default: false
+  - [x] Custom options
 - [ ] Archive mode (`--archive`) expands to `-rlptgoD`
 - [ ] Include/Exclude patterns
-- [ ] Run as superuser
-- [ ] Alternate path to rsync binary
+- [x] Run as superuser
+- [x] Alternate path to rsync binary
 
 ### Execution and scheduling
 

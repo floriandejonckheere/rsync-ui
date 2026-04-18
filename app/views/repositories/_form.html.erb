@@ -116,7 +116,8 @@
 
               <%= f.select :server_id,
                            @servers.map { |s| [s.name, s.id] },
-                           { include_blank: I18n.t("repositories.form.server_placeholder") } %>
+                           { include_blank: I18n.t("repositories.form.server_placeholder") },
+                           { class: "w-full" } %>
             </div>
           </div>
 

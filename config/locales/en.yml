@@ -71,6 +71,9 @@ en:
       'false': Disabled
       'true': Enabled
     form:
+      advanced_options: Advanced options
+      basic_options: Basic options
+      custom_options: Custom options
       description: Description
       description_placeholder: Optional description for this job
       destination_repository: Destination repository
@@ -79,6 +82,110 @@ en:
       enabled: Enabled
       name: Name
       name_placeholder: Daily backup
+      opt_acls:
+        description: Preserve ACLs
+        flag: "--acls"
+      opt_append:
+        description: Append data onto shorter files
+        flag: "--append"
+      opt_archive:
+        description: Archive mode
+        flag: "--archive"
+      opt_arguments:
+        description: Additional arguments
+        placeholder: e.g. --bwlimit=1000
+      opt_backup:
+        description: Make backups
+        flag: "--backup"
+      opt_checksum:
+        description: Skip based on checksum
+        flag: "--checksum"
+      opt_compress:
+        description: Enable compression
+        flag: "--compress"
+      opt_delete:
+        description: Delete extra files on destination
+        flag: "--delete"
+      opt_delete_excluded:
+        description: Delete excluded files on destination
+        flag: "--delete-excluded"
+      opt_devices:
+        description: Preserve device numbers
+        flag: "--devices"
+      opt_dry_run:
+        description: Dry run
+        flag: "--dry-run"
+      opt_existing:
+        description: Only update existing files on destination
+        flag: "--existing"
+      opt_group:
+        description: Preserve group ownership
+        flag: "--group"
+      opt_hard_links:
+        description: Preserve hard links
+        flag: "--hard-links"
+      opt_ignore_existing:
+        description: Ignore existing files on destination
+        flag: "--ignore-existing"
+      opt_inplace:
+        description: Update files in-place
+        flag: "--inplace"
+      opt_itemize_changes:
+        description: Show itemized changes list
+        flag: "--itemize-changes"
+      opt_links:
+        description: Preserve symbolic links
+        flag: "--links"
+      opt_numeric_ids:
+        description: Don't map uid/gid values
+        flag: "--numeric-ids"
+      opt_one_file_system:
+        description: Do not leave filesystem
+        flag: "--one-file-system"
+      opt_owner:
+        description: Preserve ownership
+        flag: "--owner"
+      opt_partial:
+        description: Keep partially transferred files
+        flag: "--partial"
+      opt_perms:
+        description: Preserve permissions
+        flag: "--perms"
+      opt_progress:
+        description: Show progress
+        flag: "--progress"
+      opt_recursive:
+        description: Recurse into directories
+        flag: "--recursive"
+      opt_relative:
+        description: Relative path names
+        flag: "--relative"
+      opt_rsync_path:
+        description: Alternate rsync path
+        placeholder: e.g. /usr/local/bin/rsync
+      opt_secluded_args:
+        description: Protect remote args
+        flag: "--secluded-args"
+      opt_size_only:
+        description: Size only
+        flag: "--size-only"
+      opt_specials:
+        description: Preserve special files
+        flag: "--specials"
+      opt_superuser:
+        description: Run as superuser
+      opt_times:
+        description: Preserve timestamps
+        flag: "--times"
+      opt_update:
+        description: Skip newer files
+        flag: "--update"
+      opt_verbose:
+        description: Verbose
+        flag: "--verbose"
+      opt_xattrs:
+        description: Preserve extended attributes
+        flag: "--xattrs"
       repositories: Repositories
       schedule: Schedule
       schedule_placeholder: 0 2 * * *

@@ -49,6 +49,41 @@ end
 #  description               :text
 #  enabled                   :boolean          default(TRUE), not null
 #  name                      :string           not null
+#  opt_acls                  :boolean          default(FALSE), not null
+#  opt_append                :boolean          default(FALSE), not null
+#  opt_archive               :boolean          default(FALSE), not null
+#  opt_arguments             :text
+#  opt_backup                :boolean          default(FALSE), not null
+#  opt_checksum              :boolean          default(FALSE), not null
+#  opt_compress              :boolean          default(FALSE), not null
+#  opt_delete                :boolean          default(FALSE), not null
+#  opt_delete_excluded       :boolean          default(FALSE), not null
+#  opt_devices               :boolean          default(FALSE), not null
+#  opt_dry_run               :boolean          default(FALSE), not null
+#  opt_existing              :boolean          default(FALSE), not null
+#  opt_group                 :boolean          default(FALSE), not null
+#  opt_hard_links            :boolean          default(FALSE), not null
+#  opt_ignore_existing       :boolean          default(FALSE), not null
+#  opt_inplace               :boolean          default(FALSE), not null
+#  opt_itemize_changes       :boolean          default(FALSE), not null
+#  opt_links                 :boolean          default(TRUE), not null
+#  opt_numeric_ids           :boolean          default(FALSE), not null
+#  opt_one_file_system       :boolean          default(FALSE), not null
+#  opt_owner                 :boolean          default(FALSE), not null
+#  opt_partial               :boolean          default(FALSE), not null
+#  opt_perms                 :boolean          default(FALSE), not null
+#  opt_progress              :boolean          default(TRUE), not null
+#  opt_recursive             :boolean          default(TRUE), not null
+#  opt_relative              :boolean          default(FALSE), not null
+#  opt_rsync_path            :string
+#  opt_secluded_args         :boolean          default(FALSE), not null
+#  opt_size_only             :boolean          default(FALSE), not null
+#  opt_specials              :boolean          default(FALSE), not null
+#  opt_superuser             :boolean          default(FALSE), not null
+#  opt_times                 :boolean          default(TRUE), not null
+#  opt_update                :boolean          default(FALSE), not null
+#  opt_verbose               :boolean          default(FALSE), not null
+#  opt_xattrs                :boolean          default(FALSE), not null
 #  schedule                  :string
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null

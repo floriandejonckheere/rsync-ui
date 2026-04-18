@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_18_133511) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_18_133512) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -58,6 +58,41 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_133511) do
     t.uuid "destination_repository_id", null: false
     t.boolean "enabled", default: true, null: false
     t.string "name", null: false
+    t.boolean "opt_acls", default: false, null: false
+    t.boolean "opt_append", default: false, null: false
+    t.boolean "opt_archive", default: false, null: false
+    t.text "opt_arguments"
+    t.boolean "opt_backup", default: false, null: false
+    t.boolean "opt_checksum", default: false, null: false
+    t.boolean "opt_compress", default: false, null: false
+    t.boolean "opt_delete", default: false, null: false
+    t.boolean "opt_delete_excluded", default: false, null: false
+    t.boolean "opt_devices", default: false, null: false
+    t.boolean "opt_dry_run", default: false, null: false
+    t.boolean "opt_existing", default: false, null: false
+    t.boolean "opt_group", default: false, null: false
+    t.boolean "opt_hard_links", default: false, null: false
+    t.boolean "opt_ignore_existing", default: false, null: false
+    t.boolean "opt_inplace", default: false, null: false
+    t.boolean "opt_itemize_changes", default: false, null: false
+    t.boolean "opt_links", default: true, null: false
+    t.boolean "opt_numeric_ids", default: false, null: false
+    t.boolean "opt_one_file_system", default: false, null: false
+    t.boolean "opt_owner", default: false, null: false
+    t.boolean "opt_partial", default: false, null: false
+    t.boolean "opt_perms", default: false, null: false
+    t.boolean "opt_progress", default: true, null: false
+    t.boolean "opt_recursive", default: true, null: false
+    t.boolean "opt_relative", default: false, null: false
+    t.string "opt_rsync_path"
+    t.boolean "opt_secluded_args", default: false, null: false
+    t.boolean "opt_size_only", default: false, null: false
+    t.boolean "opt_specials", default: false, null: false
+    t.boolean "opt_superuser", default: false, null: false
+    t.boolean "opt_times", default: true, null: false
+    t.boolean "opt_update", default: false, null: false
+    t.boolean "opt_verbose", default: false, null: false
+    t.boolean "opt_xattrs", default: false, null: false
     t.string "schedule"
     t.uuid "source_repository_id", null: false
     t.datetime "updated_at", null: false

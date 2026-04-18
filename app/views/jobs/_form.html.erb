@@ -18,7 +18,7 @@
 
   <div class="grid grid-cols-2 gap-8">
     <div class="flex flex-col gap-8">
-      <div class="card h-full">
+      <div class="card">
         <header>
           <h2><%= I18n.t("jobs.form.details") %></h2>
         </header>
@@ -59,9 +59,7 @@
           </div>
         </section>
       </div>
-    </div>
 
-    <div class="flex flex-col gap-8">
       <div class="card">
         <header>
           <h2><%= I18n.t("jobs.form.repositories") %></h2>
@@ -75,7 +73,7 @@
               <%= f.select :source_repository_id,
                            @repositories.map { |repository| [repository.name, repository.id] },
                            { include_blank: I18n.t("jobs.form.source_repository_placeholder") },
-                           { required: true } %>
+                           { required: true, class: "w-full" } %>
             </div>
 
             <div class="field">
@@ -84,11 +82,106 @@
               <%= f.select :destination_repository_id,
                            @repositories.map { |repository| [repository.name, repository.id] },
                            { include_blank: I18n.t("jobs.form.destination_repository_placeholder") },
-                           { required: true } %>
+                           { required: true, class: "w-full" } %>
             </div>
           </div>
         </section>
       </div>
+    </div>
+
+    <div class="flex flex-col gap-8">
+      <details class="card group py-0">
+        <summary
+          class="
+            flex items-center justify-between w-full px-8 py-8
+            cursor-pointer list-none
+          "
+        >
+          <h2 class="text-lg font-semibold">
+            <%= I18n.t("jobs.form.basic_options") %>
+          </h2>
+
+          <%= lucide_icon "chevron-down", class: "h-5 w-5 transition-transform duration-200 group-open:rotate-180" %>
+        </summary>
+
+        <div class="px-8 pb-8">
+          <div class="flex flex-col gap-6">
+            <% %i[opt_archive opt_recursive opt_relative opt_links opt_times opt_perms opt_owner opt_group opt_one_file_system opt_delete opt_delete_excluded opt_existing opt_ignore_existing opt_update opt_dry_run opt_inplace opt_size_only opt_progress].each do |field| %>
+              <div class="field flex-row items-center gap-4">
+                <%= f.check_box field, role: "switch" %>
+                <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), title: I18n.t(:flag, scope: [:jobs, :form, field]) %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </details>
+
+      <details class="card group py-0">
+        <summary
+          class="
+            flex items-center justify-between w-full px-8 py-8
+            cursor-pointer list-none
+          "
+        >
+          <h2 class="text-lg font-semibold">
+            <%= I18n.t("jobs.form.advanced_options") %>
+          </h2>
+
+          <%= lucide_icon "chevron-down", class: "h-5 w-5 transition-transform duration-200 group-open:rotate-180" %>
+        </summary>
+
+        <div class="px-8 pb-8">
+          <div class="flex flex-col gap-6">
+            <% %i[opt_acls opt_xattrs opt_hard_links opt_devices opt_specials opt_checksum opt_compress opt_partial opt_backup opt_append opt_numeric_ids opt_itemize_changes opt_secluded_args opt_verbose].each do |field| %>
+              <div class="field flex-row items-center gap-4">
+                <%= f.check_box field, role: "switch" %>
+                <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), title: I18n.t(:flag, scope: [:jobs, :form, field]) %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </details>
+
+      <details class="card group py-0">
+        <summary
+          class="
+            flex items-center justify-between w-full px-8 py-8
+            cursor-pointer list-none
+          "
+        >
+          <h2 class="text-lg font-semibold">
+            <%= I18n.t("jobs.form.custom_options") %>
+          </h2>
+
+          <%= lucide_icon "chevron-down", class: "h-5 w-5 transition-transform duration-200 group-open:rotate-180" %>
+        </summary>
+
+        <div class="px-8 pb-8">
+          <div class="flex flex-col gap-6">
+            <div class="field flex-row items-center gap-4">
+              <%= f.check_box :opt_superuser, role: "switch" %>
+              <%= f.label :opt_superuser, I18n.t("jobs.form.opt_superuser.description") %>
+            </div>
+
+            <div class="field">
+              <%= f.label :opt_arguments, I18n.t("jobs.form.opt_arguments.description") %>
+
+              <%= f.text_area :opt_arguments,
+                              placeholder: I18n.t("jobs.form.opt_arguments.placeholder"),
+                              rows: 3,
+                              autocomplete: "off" %>
+            </div>
+
+            <div class="field">
+              <%= f.label :opt_rsync_path, I18n.t("jobs.form.opt_rsync_path.description") %>
+
+              <%= f.text_field :opt_rsync_path,
+                               placeholder: I18n.t("jobs.form.opt_rsync_path.placeholder"),
+                               autocomplete: "off" %>
+            </div>
+          </div>
+        </div>
+      </details>
     </div>
   </div>
 <% end %>
