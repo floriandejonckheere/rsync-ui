@@ -20,21 +20,6 @@ class Repository < ApplicationRecord
   validates :server,
             absence: true,
             if: :local?
-
-  # validate :server_presence_for_remote
-  # validate :server_absence_for_local
-
-  # def server_presence_for_remote
-  #   return unless repository_type.present? && remote?
-  #
-  #   errors.add(:server, :blank) if server.nil?
-  # end
-  #
-  # def server_absence_for_local
-  #   return unless repository_type.present? && local?
-  #
-  #   errors.add(:server, :present) if server.present?
-  # end
 end
 
 # == Schema Information
