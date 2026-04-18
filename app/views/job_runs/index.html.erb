@@ -1,0 +1,61 @@
+<% content_for :title do %>
+  <%= I18n.t("job_runs.index.title") %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= I18n.t("job_runs.index.subtitle") %>
+<% end %>
+
+<% if @job_runs.empty? %>
+  <div class="card flex flex-col items-center justify-center py-16 gap-4 text-gray-400">
+    <%= lucide_icon "clock", class: "h-12 w-12" %>
+
+    <p class="text-lg">
+      <%= I18n.t("job_runs.index.empty") %>
+    </p>
+  </div>
+<% else %>
+  <div class="card p-0 overflow-hidden">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-gray-100 dark:border-gray-700">
+          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <%= I18n.t("job_runs.table.sequence") %>
+          </th>
+
+          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <%= I18n.t("job_runs.table.job") %>
+          </th>
+
+          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <%= I18n.t("job_runs.table.trigger") %>
+          </th>
+
+          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <%= I18n.t("job_runs.table.status") %>
+          </th>
+
+          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <%= I18n.t("job_runs.table.started_at") %>
+          </th>
+
+          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <%= I18n.t("job_runs.table.duration") %>
+          </th>
+
+          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <%= I18n.t("job_runs.table.completed_at") %>
+          </th>
+
+          <th class="px-6 py-4"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @job_runs.each do |job_run| %>
+          <%= render "job_run", job_run: %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

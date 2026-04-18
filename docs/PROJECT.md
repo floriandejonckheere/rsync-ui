@@ -41,29 +41,29 @@ The table name is `job_runs`.
 
 Job runs have the following attributes:
 
-- [ ] Job (foreign key)
-- [ ] User (foreign key)
-- [ ] Sequence: auto-incremented sequence number
-- [ ] Trigger: manual or scheduled
-- [ ] Status: pending (default), running, completed, failed, canceled
-- [ ] Started at: date and time the job started
-- [ ] Duration: time elapsed since the start of the job
-- [ ] Completed/failed at: date and time the job completed or failed
+- [x] Job (foreign key)
+- [x] User (foreign key)
+- [x] Sequence: auto-incremented sequence number
+- [x] Trigger: manual or scheduled
+- [x] Status: pending (default), running, completed, failed, canceled
+- [x] Started at: date and time the job started
+- [x] Duration: time elapsed since the start of the job
+- [x] Completed/failed at: date and time the job completed or failed
 - [ ] Actions: view log, download log, delete entry (if completed/errored)
 
-- [ ] Implement activity log page (below dashboard link)
-  - [ ] Implement activity log table with the following columns:
-    - [ ] Job ID (sequence number)
-    - [ ] Repository (name)
-    - [ ] Trigger
-    - [ ] Status
-    - [ ] Started at
-    - [ ] Duration (if completed), otherwise running time (since started)
-    - [ ] Completed/failed at
-    - [ ] Action buttons
+- [x] Implement activity log page (below dashboard link)
+  - [x] Implement activity log table with the following columns:
+    - [x] Job ID (sequence number)
+    - [x] Repository (name)
+    - [x] Trigger
+    - [x] Status
+    - [x] Started at
+    - [x] Duration (if completed), otherwise running time (since started)
+    - [x] Completed/failed at
+    - [x] Action buttons
       - [ ] View log (out of scope for now)
       - [ ] Download log (out of scope for now)
-      - [ ] Delete entry (if completed/failed/cancelled), otherwise cancel (if pending/running)
+      - [x] Delete entry (if completed/failed/cancelled), otherwise cancel (if pending/running)
 
 **Resource usage**
 

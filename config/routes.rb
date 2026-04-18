@@ -27,6 +27,12 @@ Rails.application.routes.draw do
   resources :servers
   resources :repositories
   resources :jobs, except: :show
+
+  resources :job_runs, only: [:index, :destroy] do
+    member do
+      patch :cancel
+    end
+  end
 end
 
 # == Route Map
@@ -72,6 +78,9 @@ end
 #                                      job PATCH  /jobs/:id(.:format)                                                                               jobs#update
 #                                          PUT    /jobs/:id(.:format)                                                                               jobs#update
 #                                          DELETE /jobs/:id(.:format)                                                                               jobs#destroy
+#                           cancel_job_run PATCH  /job_runs/:id/cancel(.:format)                                                                    job_runs#cancel
+#                                 job_runs GET    /job_runs(.:format)                                                                               job_runs#index
+#                                  job_run DELETE /job_runs/:id(.:format)                                                                           job_runs#destroy
 #         turbo_recede_historical_location GET    /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
 #         turbo_resume_historical_location GET    /resume_historical_location(.:format)                                                             turbo/native/navigation#resume
 #        turbo_refresh_historical_location GET    /refresh_historical_location(.:format)                                                            turbo/native/navigation#refresh

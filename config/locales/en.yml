@@ -55,6 +55,38 @@ en:
       notice: Notice
       success: Success
       warning: Warning
+  job_runs:
+    actions:
+      cancel: Cancel job run
+      cancel_confirm: Are you sure you want to cancel this job run?
+      cancel_confirm_title: Cancel job run
+      delete: Delete job run
+      delete_confirm: Are you sure you want to delete this job run? This action cannot be undone.
+      delete_confirm_title: Delete job run
+    destroy:
+      success: Job run was successfully deleted.
+    index:
+      empty: No job runs have been recorded yet.
+      subtitle: Overview of synchronization job executions
+      title: Activity log
+    status:
+      canceled: Canceled
+      completed: Completed
+      failed: Failed
+      pending: Pending
+      running: Running
+    table:
+      completed_at: Completed at
+      duration: Duration
+      job: Job
+      sequence: "#"
+      started_at: Started at
+      status: Status
+      trigger: Trigger
+    title: Activity log
+    trigger:
+      manual: Manual
+      scheduled: Scheduled
   jobs:
     actions:
       delete: Delete job

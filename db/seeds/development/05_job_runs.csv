@@ -1,0 +1,11 @@
+job_name,user_email,days_ago,trigger,status,started_at,completed_at
+System backup,admin@example.com,2,scheduled,completed,02:00:00,02:04:32
+System backup,admin@example.com,1,scheduled,completed,02:00:00,02:05:01
+System backup,admin@example.com,0,scheduled,failed,02:00:00,02:01:12
+System backup,admin@example.com,0,manual,running,09:15:00,
+System mirror,admin@example.com,2,scheduled,completed,03:30:00,03:42:18
+System mirror,admin@example.com,1,scheduled,completed,03:30:00,03:44:55
+System mirror,admin@example.com,0,scheduled,pending,,
+Documents backup,admin@example.com,0,scheduled,completed,00:00:00,00:02:45
+Documents backup,admin@example.com,0,scheduled,failed,06:00:00,06:00:08
+Docker replica,admin@example.com,0,scheduled,canceled,08:15:00,
