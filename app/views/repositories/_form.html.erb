@@ -1,0 +1,143 @@
+<%= form_with model: repository, id: "repository-form", class: "form" do |f| %>
+  <% content_for :actions do %>
+    <button
+      type="submit"
+      form="repository-form"
+      class="btn-icon-outline btn-icon-lg"
+      title="<%= repository.persisted? ? I18n.t("repositories.form.submit_update") : I18n.t("repositories.form.submit_create") %>"
+    >
+      <%= lucide_icon "check", class: "h-6 w-6" %>
+    </button>
+  <% end %>
+
+  <% if repository.errors.any? %>
+    <div class="mb-8">
+      <%= render "shared/form_messages", model: repository %>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-2 gap-8">
+    <div class="flex flex-col gap-8">
+      <div class="card h-full">
+        <header>
+          <h2><%= I18n.t("repositories.form.details") %></h2>
+        </header>
+
+        <section>
+          <div class="flex flex-col gap-6">
+            <div class="field">
+              <%= f.label :name, I18n.t("repositories.form.name") %>
+
+              <%= f.text_field :name,
+                               placeholder: I18n.t("repositories.form.name_placeholder"),
+                               required: true,
+                               autocomplete: "off" %>
+            </div>
+
+            <div class="field">
+              <%= f.label :description, I18n.t("repositories.form.description") %>
+
+              <%= f.text_area :description,
+                              placeholder: I18n.t("repositories.form.description_placeholder"),
+                              rows: 3,
+                              autocomplete: "off" %>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="card">
+      <header>
+        <h2><%= I18n.t("repositories.form.location") %></h2>
+      </header>
+
+      <section>
+        <div
+          class="tabs w-full flex flex-col gap-6"
+          data-controller="repository-type"
+        >
+          <%= f.hidden_field :repository_type, data: { "repository-type-target": "input" } %>
+
+          <nav role="tablist" aria-orientation="horizontal" class="w-full">
+            <button
+              type="button"
+              role="tab"
+              id="repository-type-tab-local"
+              aria-controls="repository-type-panel-local"
+              aria-selected="false"
+              tabindex="0"
+              data-repository-type-target="tab"
+              data-value="local"
+              data-action="click->repository-type#select"
+            >
+              <%= I18n.t("repositories.form.local") %>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              id="repository-type-tab-remote"
+              aria-controls="repository-type-panel-remote"
+              aria-selected="false"
+              tabindex="0"
+              data-repository-type-target="tab"
+              data-value="remote"
+              data-action="click->repository-type#select"
+            >
+              <%= I18n.t("repositories.form.remote") %>
+            </button>
+          </nav>
+
+          <div
+            role="tabpanel"
+            id="repository-type-panel-local"
+            aria-labelledby="repository-type-tab-local"
+            tabindex="-1"
+            data-repository-type-target="panel"
+            data-value="local"
+          >
+            <p class="text-sm text-muted-foreground mt-4">
+              <%= I18n.t("repositories.form.local_hint") %>
+            </p>
+          </div>
+
+          <div
+            role="tabpanel"
+            id="repository-type-panel-remote"
+            aria-labelledby="repository-type-tab-remote"
+            tabindex="-1"
+            data-repository-type-target="panel"
+            data-value="remote"
+            hidden
+          >
+            <div class="field mt-4">
+              <%= f.label :server_id, I18n.t("repositories.form.server") %>
+
+              <%= f.select :server_id,
+                           @servers.map { |s| [s.name, s.id] },
+                           { include_blank: I18n.t("repositories.form.server_placeholder") } %>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-6">
+            <div class="field">
+              <%= f.label :path, I18n.t("repositories.form.path") %>
+
+              <%= f.text_field :path,
+                               placeholder: I18n.t("repositories.form.path_placeholder"),
+                               required: true,
+                               autocomplete: "off" %>
+            </div>
+
+            <div class="field flex-row items-center gap-4">
+              <%= f.check_box :read_only %>
+
+              <%= f.label :read_only, I18n.t("repositories.form.read_only") %>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+<% end %>

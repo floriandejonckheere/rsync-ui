@@ -3,6 +3,11 @@ en:
   activerecord:
     errors:
       models:
+        repository:
+          attributes:
+            server:
+              blank: must be provided for remote repositories
+              present: must be absent for local repositories
         server:
           attributes:
             base:
@@ -49,6 +54,56 @@ en:
     info: Page %{current} of %{total}
     next: Next
     previous: Previous
+  repositories:
+    actions:
+      delete: Delete repository
+      delete_confirm: Are you sure you want to delete this repository? This action cannot be undone.
+      delete_confirm_title: Delete repository
+      edit: Edit repository
+    create:
+      success: Repository was successfully created.
+    destroy:
+      success: Repository was successfully deleted.
+    edit:
+      title: Edit repository
+    form:
+      description: Description
+      description_placeholder: Optional description for this repository
+      details: Details
+      local: Local
+      local_hint: This repository is stored on the machine running Rsync UI.
+      location: Location
+      name: Name
+      name_placeholder: My repository
+      path: Path
+      path_placeholder: "/data/backups"
+      read_only: Read-only
+      remote: Remote
+      server: Server
+      server_placeholder: Select a server
+      submit_create: Create repository
+      submit_update: Update repository
+      type: Type
+    index:
+      empty: No repositories have been configured yet.
+      new: New repository
+      subtitle: Manage local and remote directories
+      title: Repositories
+    new:
+      subtitle: Add a new repository
+      title: New repository
+    table:
+      name: Name
+      path: Path
+      read_only: Read-only
+      server: Server
+      type: Type
+    title: Repositories
+    types:
+      local: Local
+      remote: Remote
+    update:
+      success: Repository was successfully updated.
   servers:
     actions:
       delete: Delete server

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_17_223213) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_18_083619) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -52,6 +52,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_223213) do
     t.index ["key"], name: "index_configurations_on_key", unique: true
   end
 
+  create_table "repositories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.string "path", null: false
+    t.boolean "read_only", default: false, null: false
+    t.string "repository_type", null: false
+    t.uuid "server_id"
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.index ["server_id"], name: "index_repositories_on_server_id"
+    t.index ["user_id"], name: "index_repositories_on_user_id"
+  end
+
   create_table "servers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
@@ -87,5 +101,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_223213) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "repositories", "servers"
+  add_foreign_key "repositories", "users"
   add_foreign_key "servers", "users"
 end

@@ -98,4 +98,18 @@
       @apply px-8;
     }
   }
+
+  .tabs {
+    [role="tablist"] {
+      @apply dark:bg-input/30;
+    }
+
+    [role="tab"] {
+      @apply dark:border-transparent;
+    }
+
+    [role="tab"][aria-selected="true"] {
+      @apply dark:border-input;
+    }
+  }
 }

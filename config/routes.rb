@@ -25,6 +25,7 @@ Rails.application.routes.draw do
 
   resources :configurations, only: [:index, :update]
   resources :servers
+  resources :repositories
 end
 
 # == Route Map
@@ -55,6 +56,14 @@ end
 #                                          PATCH  /servers/:id(.:format)                                                                            servers#update
 #                                          PUT    /servers/:id(.:format)                                                                            servers#update
 #                                          DELETE /servers/:id(.:format)                                                                            servers#destroy
+#                             repositories GET    /repositories(.:format)                                                                           repositories#index
+#                                          POST   /repositories(.:format)                                                                           repositories#create
+#                           new_repository GET    /repositories/new(.:format)                                                                       repositories#new
+#                          edit_repository GET    /repositories/:id/edit(.:format)                                                                  repositories#edit
+#                               repository GET    /repositories/:id(.:format)                                                                       repositories#show
+#                                          PATCH  /repositories/:id(.:format)                                                                       repositories#update
+#                                          PUT    /repositories/:id(.:format)                                                                       repositories#update
+#                                          DELETE /repositories/:id(.:format)                                                                       repositories#destroy
 #         turbo_recede_historical_location GET    /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
 #         turbo_resume_historical_location GET    /resume_historical_location(.:format)                                                             turbo/native/navigation#resume
 #        turbo_refresh_historical_location GET    /refresh_historical_location(.:format)                                                            turbo/native/navigation#refresh

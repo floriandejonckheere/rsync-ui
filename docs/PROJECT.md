@@ -82,18 +82,18 @@ They can be located locally, or on a remote server.
 
 A repository has the following attributes:
 
-- [ ] Name
-- [ ] Description (optional)
-- [ ] Type (local, remote)
-- [ ] Server (if remote)
-- [ ] Path
-- [ ] Read-only (boolean)
-- [ ] User
+- [x] Name
+- [x] Description (optional)
+- [x] Type (local, remote)
+- [x] Server (if remote)
+- [x] Path
+- [x] Read-only (boolean)
+- [x] User
 
-- [ ] Implement repositories page
-  - [ ] Create repository
-  - [ ] Update repository
-  - [ ] Destroy repository
+- [x] Implement repositories page
+  - [x] Create repository
+  - [x] Update repository
+  - [x] Destroy repository
 
 ### Jobs
 

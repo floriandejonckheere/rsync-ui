@@ -1,7 +1,7 @@
 name,description,host,port,username,password,ssh_key,user_email
-Production,Main production server,prod.example.com,22,deploy,prod-secret-password,,admin@example.com
-Staging,Staging environment for testing,staging.example.com,22,deploy,staging-secret-password,,admin@example.com
-Backup,,backup.example.com,2222,backup,,"-----BEGIN OPENSSH PRIVATE KEY-----
+NAS,Local NAS server,192.168.1.101,22,backup,nas-password,,admin@example.com
+Backup,Backup server,backup.example.com,22,backup,backup-password,,admin@example.com
+Mirror,Encrypted off-site mirrored backup server,mirror.example.com,22,backup,,"-----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
 QyNTUxOQAAACD9D+md+7SfoskO5Ec/M/+a7QgAKR+usc0GQRaoYlJX0wAAAIg+hlQpPoZU
 KQAAAAtzc2gtZWQyNTUxOQAAACD9D+md+7SfoskO5Ec/M/+a7QgAKR+usc0GQRaoYlJX0w

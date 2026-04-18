@@ -18,3 +18,6 @@ application.register("theme", ThemeController)
 
 import DialogController from "./dialog_controller"
 application.register("dialog", DialogController)
+
+import RepositoryTypeController from "./repository_type_controller"
+application.register("repository-type", RepositoryTypeController)

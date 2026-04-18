@@ -49,6 +49,7 @@
 
         <%= render "shared/menu_item", path: root_path, controllers: ["dashboard"], icon: "circle-gauge", title: I18n.t("dashboard.title") %>
         <%= render "shared/menu_item", path: servers_path, controllers: "servers", icon: "server", title: I18n.t("servers.title") %>
+        <%= render "shared/menu_item", path: repositories_path, controllers: "repositories", icon: "folders", title: I18n.t("repositories.title") %>
 
         <div class="grow"></div>
 
