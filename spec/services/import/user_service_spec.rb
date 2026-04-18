@@ -37,8 +37,9 @@ RSpec.describe Import::UserService do
     end
 
     context "when the CSV file does not exist" do
-      it "does nothing" do
-        expect { service.call }.not_to change(User, :count)
+      it "raises an error" do
+        expect { service.call }
+          .to raise_error ArgumentError
       end
     end
   end

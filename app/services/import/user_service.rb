@@ -2,18 +2,18 @@
 
 module Import
   class UserService < BaseService
-    def call
-      file = path.join("01_users.csv")
+    private
 
-      return unless file.exist?
+    def csv_filename
+      "01_users.csv"
+    end
 
-      CSV.foreach(file, headers: true) do |row|
-        User
-          .create_with(
-            row.to_h.slice("first_name", "last_name", "password", "role"),
-          )
-          .find_or_create_by!(email: row["email"])
-      end
+    def import(row)
+      User
+        .create_with(
+          row.to_h.slice("first_name", "last_name", "password", "role"),
+        )
+        .find_or_create_by!(email: row["email"])
     end
   end
 end

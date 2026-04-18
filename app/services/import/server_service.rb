@@ -2,21 +2,21 @@
 
 module Import
   class ServerService < BaseService
-    def call
-      file = path.join("02_servers.csv")
+    private
 
-      return unless file.exist?
+    def csv_filename
+      "02_servers.csv"
+    end
 
-      CSV.foreach(file, headers: true) do |row|
-        user = User.find_by!(email: row["user_email"])
+    def import(row)
+      user = User.find_by!(email: row["user_email"])
 
-        user
-          .servers
-          .create_with(
-            row.to_h.slice("description", "host", "port", "username", "password", "ssh_key"),
-          )
-          .find_or_create_by!(name: row["name"])
-      end
+      user
+        .servers
+        .create_with(
+          row.to_h.slice("description", "host", "port", "username", "password", "ssh_key"),
+        )
+        .find_or_create_by!(name: row["name"])
     end
   end
 end

@@ -13,7 +13,7 @@ module Import
     def call
       file = path.join(csv_filename)
 
-      return unless file.exist?
+      raise ArgumentError, "File does not exist: #{file}" unless file.exist?
 
       CSV.foreach(file, headers: true) do |row|
         import(row)
