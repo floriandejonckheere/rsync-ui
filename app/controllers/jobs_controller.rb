@@ -6,7 +6,7 @@ class JobsController < ApplicationController
   before_action :set_repositories, only: [:new, :edit, :create, :update]
 
   def index
-    @jobs = authorized_scope(Job.includes(:source_repository, :destination_repository).order(:name), type: :relation)
+    @pagy, @jobs = pagy(authorized_scope(Job.includes(:source_repository, :destination_repository).order(:name), type: :relation))
 
     authorize! :job
   end

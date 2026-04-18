@@ -5,9 +5,11 @@ class JobRunsController < ApplicationController
   before_action :set_job_run, only: [:show, :logs, :destroy, :cancel]
 
   def index
-    @job_runs = authorized_scope(
-      JobRun.includes(job: [:source_repository, :destination_repository]).order(created_at: :desc),
-      type: :relation,
+    @pagy, @job_runs = pagy(
+      authorized_scope(
+        JobRun.includes(job: [:source_repository, :destination_repository]).order(created_at: :desc),
+        type: :relation,
+      ),
     )
 
     authorize! :job_run

@@ -6,7 +6,7 @@ class RepositoriesController < ApplicationController
   before_action :set_servers, only: [:new, :edit, :create, :update]
 
   def index
-    @repositories = authorized_scope(Repository.order(:name), type: :relation)
+    @pagy, @repositories = pagy(authorized_scope(Repository.order(:name), type: :relation))
 
     authorize! :repository
   end

@@ -5,7 +5,7 @@ class ServersController < ApplicationController
   before_action :set_server, only: [:edit, :update, :destroy]
 
   def index
-    @servers = authorized_scope(Server.order(:name), type: :relation)
+    @pagy, @servers = pagy(authorized_scope(Server.order(:name), type: :relation))
 
     authorize! :server
   end
