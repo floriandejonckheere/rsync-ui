@@ -17,11 +17,11 @@ RSpec.describe User do
     it { is_expected.to validate_inclusion_of(:role).in_array ["user", "admin"] }
 
     it "downcases the email before saving" do
-      user.email = "ADMIN@EXAMPLE.COM"
+      user.email = user.email.upcase
 
       user.save!
 
-      expect(user.email).to eq "admin@example.com"
+      expect(user.email).to eq user.email.downcase
     end
   end
 
