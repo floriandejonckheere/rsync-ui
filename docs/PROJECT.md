@@ -58,112 +58,69 @@ The resource usage shows the total and used storage, aggregated by repository.
 
 Servers are the remote destinations where the files are synchronized to.
 
-A server has the following attributes:
-
-- [x] Name
-- [x] Host
-- [x] Port
-- [x] Username
-- [x] Password (optional)
-- [x] SSH key (optional)
-
-Either a password or an SSH key must be provided.
-
-- [x] Implement servers page
-  - [x] Create server
-    - [ ] Test connection: check if the server is reachable with the provided credentials
-  - [x] Update server
-  - [x] Destroy server
-
-### Repositories
-
-Repositories are the local or remote directories where the files are synchronized from.
-They can be located locally, or on a remote server.
-
-A repository has the following attributes:
-
-- [x] Name
-- [x] Description (optional)
-- [x] Type (local, remote)
-- [x] Server (if remote)
-- [x] Path
-- [x] Read-only (boolean)
-- [x] User
-
-- [x] Implement repositories page
-  - [x] Create repository
-  - [x] Update repository
-  - [x] Destroy repository
+- [ ] Test connection during server setup and editing
 
 ### Jobs
 
 Jobs are the actual synchronization tasks that are executed by the application.
 
-A job has the following attributes:
+#### Rsync options
 
-- [x] Name
-- [x] Description (optional)
-- [x] Source repository (foreign key)
-- [x] Destination repository (foreign key)
-- [x] Schedule: cron expression for scheduling the job (optional)
-- [ ] Rsync options
-  - [ ] Command-line arguments for rsync
-  - [ ] Basic options
-    - [ ] Archive mode (`--archive`), default: false
-    - [ ] Recurse into directories (`--recursive`), default: true
-    - [ ] Relative path names (`--relative`), default: false
-    - [ ] Preserve symbolic links (`--links`), default: true
-    - [ ] Preserve timestamps (`--times`), default: true
-    - [ ] Preserve permissions (`--perms`), default: false
-    - [ ] Preserve ownership (`--owner`), default: false
-    - [ ] Preserve group ownership (`--group`), default: false
-    - [ ] Do not leave filesystem (`--one-file-system`), default: false
-    - [ ] Delete extra files on destination (`--delete`), default: false
-    - [ ] Delete excluded files on destination (`--delete-excluded`), default: false
-    - [ ] Only update existing files on destination (`--existing`), default: false
-    - [ ] Ignore existing files on destination (`--ignore-existing`), default: false
-    - [ ] Skip newer files (`--update`), default: false
-    - [ ] Dry run (`--dry-run`), default: false
-    - [ ] Update files in-place (`--inplace`), default: false
-    - [ ] Size only (`--size-only`), default: false
-    - [ ] Show progress (`--progress`), default: true
-  - [ ] Advanced options
-    - [ ] Preserve ACLs (`--acls`), default: false
-    - [ ] Preserve extended attributes (`--xattrs`), default: false
-    - [ ] Preserve hard links (`--hard-links`), default: false
-    - [ ] Preserve device numbers (`--devices`), default: false
-    - [ ] Preserve special files (`--specials`), default: false
-    - [ ] Skip based on checksum (`--checksum`), default: false
-    - [ ] Enable compression (`--compress`), default: false
-    - [ ] Keep partially transferred files (`--partial`), default: false
-    - [ ] Make backups (`--backup`), default: false
-    - [ ] Append data onto shorter files (`--append`), default: false
-    - [ ] Don't map uid/gid values (`--numeric-ids`), default: false
-    - [ ] Show itemized changes list (`--itemize-changes`), default: false
-    - [ ] Protect remote args (`--secluded-args`), default: false
-    - [ ] Verbose (`--verbose`), default: false
-    - [ ] Custom options
-  - [ ] Archive mode (`--archive`) expands to `-rlptgoD`
-  - [ ] Include/Exclude patterns
-  - [ ] Run as superuser
-  - [ ] Alternate path to rsync binary
-- [x] Enabled (boolean)
-- [x] User
+- [ ] Command-line arguments for rsync
+- [ ] Basic options
+  - [ ] Archive mode (`--archive`), default: false
+  - [ ] Recurse into directories (`--recursive`), default: true
+  - [ ] Relative path names (`--relative`), default: false
+  - [ ] Preserve symbolic links (`--links`), default: true
+  - [ ] Preserve timestamps (`--times`), default: true
+  - [ ] Preserve permissions (`--perms`), default: false
+  - [ ] Preserve ownership (`--owner`), default: false
+  - [ ] Preserve group ownership (`--group`), default: false
+  - [ ] Do not leave filesystem (`--one-file-system`), default: false
+  - [ ] Delete extra files on destination (`--delete`), default: false
+  - [ ] Delete excluded files on destination (`--delete-excluded`), default: false
+  - [ ] Only update existing files on destination (`--existing`), default: false
+  - [ ] Ignore existing files on destination (`--ignore-existing`), default: false
+  - [ ] Skip newer files (`--update`), default: false
+  - [ ] Dry run (`--dry-run`), default: false
+  - [ ] Update files in-place (`--inplace`), default: false
+  - [ ] Size only (`--size-only`), default: false
+  - [ ] Show progress (`--progress`), default: true
+- [ ] Advanced options
+  - [ ] Preserve ACLs (`--acls`), default: false
+  - [ ] Preserve extended attributes (`--xattrs`), default: false
+  - [ ] Preserve hard links (`--hard-links`), default: false
+  - [ ] Preserve device numbers (`--devices`), default: false
+  - [ ] Preserve special files (`--specials`), default: false
+  - [ ] Skip based on checksum (`--checksum`), default: false
+  - [ ] Enable compression (`--compress`), default: false
+  - [ ] Keep partially transferred files (`--partial`), default: false
+  - [ ] Make backups (`--backup`), default: false
+  - [ ] Append data onto shorter files (`--append`), default: false
+  - [ ] Don't map uid/gid values (`--numeric-ids`), default: false
+  - [ ] Show itemized changes list (`--itemize-changes`), default: false
+  - [ ] Protect remote args (`--secluded-args`), default: false
+  - [ ] Verbose (`--verbose`), default: false
+  - [ ] Custom options
+- [ ] Archive mode (`--archive`) expands to `-rlptgoD`
+- [ ] Include/Exclude patterns
+- [ ] Run as superuser
+- [ ] Alternate path to rsync binary
 
-Validations:
+### Execution and scheduling
 
-- [x] Source repository must exist
-- [x] Destination repository must exist
-- [x] Destination repository must be different from source repository
-- [x] Destination repository must not be read-only
-- [x] Schedule must be valid cron expression
+- [ ] Implement a dynamic job scheduler (cron daemon)
+- [ ] Add a configuration option (feature category) to enable or disable scheduled jobs: `scheduler`
+- [ ] Implement a service that executes jobs ad hoc
+- [ ] Add a scheduled job to execute a job if it is due
+- [ ] Track real-time progress of jobs
+- [ ] Capture and save the output of rsync commands
+- [ ] Allow viewing and downloading the log file
+- [ ] Implement sync hooks
+  - [ ] Pre-/post-hook: command or script to run before or after the sync starts
+  - [ ] Success/error hook: command or script to run when the sync succeeds or fails
 
-- [x] Implement jobs page
-  - [x] Create job
-  - [x] Update job
-  - [x] Destroy job
-
-## Notifications
+### Notifications
 
 Notifications can be sent to users when a job starts, completes, or fails.
 The user can configure notification services (e.g. email, Slack, ...) to receive these notifications.
@@ -185,51 +142,41 @@ This relationship has the following attributes:
 - [ ] Events (on start, on success, on failure)
 - [ ] Enabled (boolean)
 
-Tasks:
-
 - [ ] Implement notification services page
   - [ ] Create notification service
-    - [ ] Test notification service
+  - [ ] Test notification service
   - [ ] Update notification service
   - [ ] Destroy notification service
 
-## Browse repositories
+### Browse repositories
 
 Allow the user to browse the repositories and their contents.
 This is useful for debugging and troubleshooting.
 For local repositories, the contents can be viewed directly in the browser.
 For remote repositories, the server should be mounted as a local directory, and the contents can be viewed in the browser.
 
-## Tasks
+### Visualization and monitoring
 
-- [ ] Implement a dynamic job scheduler (cron daemon)
-- [ ] Execution
-  - [ ] Add a configuration option (feature category) to enable/disable scheduled jobs: `scheduler`
-  - [ ] Implement a service that executes jobs ad-hoc
-  - [ ] Add a scheduled job to execute a job if it is due
-  - [ ] Track real-time progress of jobs
-  - [ ] Capture and save the output of rsync commands
-    - [ ] Allow viewing and downloading the log file
-  - [ ] Implement sync hooks
-    - [ ] Pre-/Post hook: command or script to run before/after the sync starts
-    - [ ] Success/error hook: command or script to run when the sync succeeds/fails
-- [ ] Real-time visualization on dashboard
-  - [ ] Show visualization of repositories (vertices) and schedules (edges) between them
-  - [ ] Mark healthy, unhealthy, and ongoing jobs in different colors
-  - [ ] Add real-time progress (stretch goal, depends on implementation of the executor)
-- [ ] Resource usage
-  - [ ] Implement a service that checks a server's resources (CPU, memory, disk space)
-  - [ ] Add a configuration option (feature category) to enable/disable resource usage: `resource_usage`
-  - [ ] Add a configuration option (feature category) to set the update interval: `resource_usage.interval`, default to 15 minutes
-  - [ ] Implement a service that updates the resource usage of a server
-  - [ ] Add a scheduled job to update the resource usage of all servers (if enabled)
-- [ ] Job creation wizard
-  - [ ] Implement a wizard that guides the user through the process of creating a sync job
-  - [ ] Step one (source): repository name, description, type (local/remote), server (if remote), path
-  - [ ] Step two (destination): repository name, description, type (local/remote), server (if remote), path
-  - [ ] Step three: schedule, rsync options, enabled
+- [ ] Show a real-time visualization of repositories (vertices) and schedules (edges) on the dashboard
+- [ ] Mark healthy, unhealthy, and ongoing jobs in different colors
+- [ ] Add real-time progress to the visualization
 
-## Backlog
+### Resource usage
+
+- [ ] Implement a service that checks a server's resources (CPU, memory, disk space)
+- [ ] Add a configuration option (feature category) to enable or disable resource usage: `resource_usage`
+- [ ] Add a configuration option (feature category) to set the update interval: `resource_usage.interval`, default `15 minutes`
+- [ ] Implement a service that updates the resource usage of a server
+- [ ] Add a scheduled job to update the resource usage of all servers when enabled
+
+### Job creation wizard
+
+- [ ] Implement a wizard that guides the user through the process of creating a sync job
+- [ ] Step one (source): repository name, description, type (local/remote), server (if remote), path
+- [ ] Step two (destination): repository name, description, type (local/remote), server (if remote), path
+- [ ] Step three: schedule, rsync options, enabled
+
+### Future enhancements
 
 - [ ] Update branding
 - [ ] Implement support for OAuth2 authentication
