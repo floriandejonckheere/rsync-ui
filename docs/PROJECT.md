@@ -144,9 +144,46 @@ Validations:
 - [ ] Schedule must be valid cron expression
 
 - [ ] Implement jobs page
-  - [ ] Create job
-  - [ ] Update job
-  - [ ] Destroy job
+  - [x] Create job
+  - [x] Update job
+  - [x] Destroy job
+
+## Notifications
+
+Notifications can be sent to users when a job starts, completes, or fails.
+The user can configure notification services (e.g. email, Slack, ...) to receive these notifications.
+Each job can be configured to send notifications on specific events to specific notification targets.
+
+Notifications have the following attributes:
+
+- [ ] Name
+- [ ] Description (optional)
+- [ ] URL (Apprise URL)
+- [ ] Enabled (boolean)
+- [ ] User
+
+Notifications have a many-to-many relationship with jobs.
+This relationship has the following attributes:
+
+- [ ] Job (foreign key)
+- [ ] Notification target (foreign key)
+- [ ] Events (on start, on success, on failure)
+- [ ] Enabled (boolean)
+
+Tasks:
+
+- [ ] Implement notification services page
+  - [ ] Create notification service
+    - [ ] Test notification service
+  - [ ] Update notification service
+  - [ ] Destroy notification service
+
+## Browse repositories
+
+Allow the user to browse the repositories and their contents.
+This is useful for debugging and troubleshooting.
+For local repositories, the contents can be viewed directly in the browser.
+For remote repositories, the server should be mounted as a local directory, and the contents can be viewed in the browser.
 
 ## Tasks
 
@@ -158,6 +195,13 @@ Validations:
   - [ ] Track real-time progress of jobs
   - [ ] Capture and save the output of rsync commands
     - [ ] Allow viewing and downloading the log file
+  - [ ] Implement sync hooks
+    - [ ] Pre-/Post hook: command or script to run before/after the sync starts
+    - [ ] Success/error hook: command or script to run when the sync succeeds/fails
+- [ ] Real-time visualization on dashboard
+  - [ ] Show visualization of repositories (vertices) and schedules (edges) between them
+  - [ ] Mark healthy, unhealthy, and ongoing jobs in different colors
+  - [ ] Add real-time progress (stretch goal, depends on implementation of the executor)
 - [ ] Resource usage
   - [ ] Implement a service that checks a server's resources (CPU, memory, disk space)
   - [ ] Add a configuration option (feature category) to enable/disable resource usage: `resource_usage`
