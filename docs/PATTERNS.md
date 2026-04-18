@@ -225,6 +225,13 @@ RSpec.describe "Models" do
       expect(response).to have_http_status(:success)
     end
   end
+
+  describe "POST /models" do
+    it "creates a new Model" do
+      expect { post models_path, params: { name: } }
+      .to change(Model, :count).by(1)
+    end
+  end
 end
 ```
 

@@ -186,7 +186,7 @@ spec
     - Test relation scoping
 
 12. **Seeds**: Create database seed in `db/seeds/` (production) or `db/seeds/development/`
-    - Use factories when possible: `FactoryBot.create(:{model})`
+    - Use a CSV for storing the data, and an import service (inheriting from `app/services/import_service.rb`) to load the data
     - Ensure idempotency (safe to run multiple times)
 
 13. **Verify**: Run full test suite and linters

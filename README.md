@@ -108,6 +108,11 @@ git push origin master
 git push origin v1.0.0
 ```
 
+## Disclaimer on Artificial Intelligence
+
+Artificial Intelligence (AI) is used to aid in the development of this project.
+However, every change proposed by AI is thoroughly reviewed, tested, and verified manually to ensure the highest quality and security standards.
+
 ## License
 
 Copyright 2026 Florian Dejonckheere
