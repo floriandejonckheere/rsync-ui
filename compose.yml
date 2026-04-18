@@ -15,7 +15,7 @@ services:
   postgres:
     image: postgres:18
     volumes:
-      - postgres:/var/lib/postgresql/docker/
+      - postgres:/var/lib/postgresql/18/docker/
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
