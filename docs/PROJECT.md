@@ -108,29 +108,44 @@ A job has the following attributes:
 - [x] Schedule: cron expression for scheduling the job (optional)
 - [ ] Rsync options
   - [ ] Command-line arguments for rsync
-    - [ ] Delete extra files on destination (`--delete`)
-    - [ ] Delete extra files on source (`--delete-excluded`)
-    - [ ] Preserve permissions (`--perms`)
-    - [ ] Preserve ownership (`--owner`)
-    - [ ] Preserve group ownership (`--group`)
-    - [ ] Preserve timestamps (`--times`)
-    - [ ] Preserve ACLs (`--acls`)
-    - [ ] Preserve extended attributes (`--xattrs`)
-    - [ ] Preserve hard links (`--hard-links`)
-    - [ ] Preserve symbolic links (`--symlink-times`)
-    - [ ] Preserve device numbers (`--devices`)
-    - [ ] Preserve special files (`--specials`)
-    - [ ] Preserve inode numbers (`--inodes`)
-    - [ ] Preserve extended attributes (`--xattrs`)
-    - [ ] Preserve ACLs (`--acls`)
-    - [ ] Preserve extended attributes (`--xattrs`)
-    - [ ] Preserve hard links (`--hard-links`)
-    - [ ] Preserve symbolic links (`--symlink-times`)
-    - [ ] Preserve device numbers (`--devices`)
-    - [ ] Preserve special files (`--specials`)
-  - [ ] Exclude patterns
-  - [ ] Include patterns
-  - [ ] Run rsync as a different user (or sudo)
+  - [ ] Basic options
+    - [ ] Archive mode (`--archive`), default: false
+    - [ ] Recurse into directories (`--recursive`), default: true
+    - [ ] Relative path names (`--relative`), default: false
+    - [ ] Preserve symbolic links (`--links`), default: true
+    - [ ] Preserve timestamps (`--times`), default: true
+    - [ ] Preserve permissions (`--perms`), default: false
+    - [ ] Preserve ownership (`--owner`), default: false
+    - [ ] Preserve group ownership (`--group`), default: false
+    - [ ] Do not leave filesystem (`--one-file-system`), default: false
+    - [ ] Delete extra files on destination (`--delete`), default: false
+    - [ ] Delete excluded files on destination (`--delete-excluded`), default: false
+    - [ ] Only update existing files on destination (`--existing`), default: false
+    - [ ] Ignore existing files on destination (`--ignore-existing`), default: false
+    - [ ] Skip newer files (`--update`), default: false
+    - [ ] Dry run (`--dry-run`), default: false
+    - [ ] Update files in-place (`--inplace`), default: false
+    - [ ] Size only (`--size-only`), default: false
+    - [ ] Show progress (`--progress`), default: true
+  - [ ] Advanced options
+    - [ ] Preserve ACLs (`--acls`), default: false
+    - [ ] Preserve extended attributes (`--xattrs`), default: false
+    - [ ] Preserve hard links (`--hard-links`), default: false
+    - [ ] Preserve device numbers (`--devices`), default: false
+    - [ ] Preserve special files (`--specials`), default: false
+    - [ ] Skip based on checksum (`--checksum`), default: false
+    - [ ] Enable compression (`--compress`), default: false
+    - [ ] Keep partially transferred files (`--partial`), default: false
+    - [ ] Make backups (`--backup`), default: false
+    - [ ] Append data onto shorter files (`--append`), default: false
+    - [ ] Don't map uid/gid values (`--numeric-ids`), default: false
+    - [ ] Show itemized changes list (`--itemize-changes`), default: false
+    - [ ] Protect remote args (`--secluded-args`), default: false
+    - [ ] Verbose (`--verbose`), default: false
+    - [ ] Custom options
+  - [ ] Archive mode (`--archive`) expands to `-rlptgoD`
+  - [ ] Include/Exclude patterns
+  - [ ] Run as superuser
   - [ ] Alternate path to rsync binary
 - [x] Enabled (boolean)
 - [x] User
