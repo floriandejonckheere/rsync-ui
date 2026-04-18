@@ -39,31 +39,8 @@ Visible elements include:
 The activity log shows an overview of the jobs executed in reverse chronological order.
 The table name is `job_runs`.
 
-Job runs have the following attributes:
-
-- [x] Job (foreign key)
-- [x] User (foreign key)
-- [x] Sequence: auto-incremented sequence number
-- [x] Trigger: manual or scheduled
-- [x] Status: pending (default), running, completed, failed, canceled
-- [x] Started at: date and time the job started
-- [x] Duration: time elapsed since the start of the job
-- [x] Completed/failed at: date and time the job completed or failed
-- [ ] Actions: view log, download log, delete entry (if completed/errored)
-
-- [x] Implement activity log page (below dashboard link)
-  - [x] Implement activity log table with the following columns:
-    - [x] Job ID (sequence number)
-    - [x] Repository (name)
-    - [x] Trigger
-    - [x] Status
-    - [x] Started at
-    - [x] Duration (if completed), otherwise running time (since started)
-    - [x] Completed/failed at
-    - [x] Action buttons
-      - [ ] View log (out of scope for now)
-      - [ ] Download log (out of scope for now)
-      - [x] Delete entry (if completed/failed/cancelled), otherwise cancel (if pending/running)
+- [ ] View log (out of scope for now)
+- [ ] Download log (out of scope for now)
 
 **Resource usage**
 
