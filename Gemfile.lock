@@ -491,6 +491,7 @@ DEPENDENCIES
   factory_bot_rails
   ffaker
   foreman
+  fugit
   herb
   i18n-tasks
   image_processing
