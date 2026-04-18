@@ -83,10 +83,12 @@ They can be located locally, or on a remote server.
 A repository has the following attributes:
 
 - [ ] Name
+- [ ] Description (optional)
 - [ ] Type (local, remote)
 - [ ] Server (if remote)
 - [ ] Path
 - [ ] Read-only (boolean)
+- [ ] User
 
 - [ ] Implement repositories page
   - [ ] Create repository
@@ -103,9 +105,43 @@ A job has the following attributes:
 - [ ] Description (optional)
 - [ ] Source repository (foreign key)
 - [ ] Destination repository (foreign key)
-- [ ] Schedule: cron expression for scheduling the job
-- [ ] Rsync options: command-line arguments for rsync
+- [ ] Schedule: cron expression for scheduling the job (optional)
+- [ ] Rsync options
+  - [ ] Command-line arguments for rsync
+    - [ ] Delete extra files on destination (`--delete`)
+    - [ ] Delete extra files on source (`--delete-excluded`)
+    - [ ] Preserve permissions (`--perms`)
+    - [ ] Preserve ownership (`--owner`)
+    - [ ] Preserve group ownership (`--group`)
+    - [ ] Preserve timestamps (`--times`)
+    - [ ] Preserve ACLs (`--acls`)
+    - [ ] Preserve extended attributes (`--xattrs`)
+    - [ ] Preserve hard links (`--hard-links`)
+    - [ ] Preserve symbolic links (`--symlink-times`)
+    - [ ] Preserve device numbers (`--devices`)
+    - [ ] Preserve special files (`--specials`)
+    - [ ] Preserve inode numbers (`--inodes`)
+    - [ ] Preserve extended attributes (`--xattrs`)
+    - [ ] Preserve ACLs (`--acls`)
+    - [ ] Preserve extended attributes (`--xattrs`)
+    - [ ] Preserve hard links (`--hard-links`)
+    - [ ] Preserve symbolic links (`--symlink-times`)
+    - [ ] Preserve device numbers (`--devices`)
+    - [ ] Preserve special files (`--specials`)
+  - [ ] Exclude patterns
+  - [ ] Include patterns
+  - [ ] Run rsync as a different user (or sudo)
+  - [ ] Alternate path to rsync binary
 - [ ] Enabled (boolean)
+- [ ] User
+
+Validations:
+
+- [ ] Source repository must exist
+- [ ] Destination repository must exist
+- [ ] Destination repository must be different from source repository
+- [ ] Destination repository must not be read-only
+- [ ] Schedule must be valid cron expression
 
 - [ ] Implement jobs page
   - [ ] Create job
@@ -114,14 +150,32 @@ A job has the following attributes:
 
 ## Tasks
 
-- [ ] Resource probe: check the server's resources (CPU, memory, disk space)
-- [ ] Implement a job scheduler (cron daemon)
-- [ ] Implement job execution: run the rsync command
+- [ ] Implement a dynamic job scheduler (cron daemon)
+- [ ] Execution
+  - [ ] Add a configuration option (feature category) to enable/disable scheduled jobs: `scheduler`
+  - [ ] Implement a service that executes jobs ad-hoc
+  - [ ] Add a scheduled job to execute a job if it is due
   - [ ] Track real-time progress of jobs
-  - [ ] Implement job log: view or download the log file
+  - [ ] Capture and save the output of rsync commands
+    - [ ] Allow viewing and downloading the log file
+- [ ] Resource usage
+  - [ ] Implement a service that checks a server's resources (CPU, memory, disk space)
+  - [ ] Add a configuration option (feature category) to enable/disable resource usage: `resource_usage`
+  - [ ] Add a configuration option (feature category) to set the update interval: `resource_usage.interval`, default to 15 minutes
+  - [ ] Implement a service that updates the resource usage of a server
+  - [ ] Add a scheduled job to update the resource usage of all servers (if enabled)
+- [ ] Job creation wizard
+  - [ ] Implement a wizard that guides the user through the process of creating a sync job
+  - [ ] Step one (source): repository name, description, type (local/remote), server (if remote), path
+  - [ ] Step two (destination): repository name, description, type (local/remote), server (if remote), path
+  - [ ] Step three: schedule, rsync options, enabled
 
 ## Backlog
 
-- [ ] Allow sudo to run rsync commands
-- [ ] Allow alternate rsync binary (path)
-- [ ] Validate SSH keys (no password etc.)
+- [ ] Update branding
+- [ ] Implement support for OAuth2 authentication
+- [ ] Allow duplicating jobs
+
+## Open questions
+
+- [ ] Should some job options be stored on the repository/server instead of the job? For example: include/exclude patterns, run as different user, path to rsync binary
