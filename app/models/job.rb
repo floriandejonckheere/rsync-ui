@@ -9,6 +9,9 @@ class Job < ApplicationRecord
   belongs_to :destination_repository,
              class_name: "Repository"
 
+  has_many :job_runs,
+           dependent: :destroy
+
   validates :name,
             presence: true
 

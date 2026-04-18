@@ -36,5 +36,13 @@ FactoryBot.define do
       started_at { nil }
       completed_at { nil }
     end
+
+    trait :errored do
+      status { :errored }
+      started_at { 10.minutes.ago }
+      completed_at { 5.minutes.ago }
+      error_class { "RuntimeError" }
+      error_messages { "something went wrong" }
+    end
   end
 end

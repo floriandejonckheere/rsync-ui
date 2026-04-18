@@ -6,6 +6,8 @@ RSpec.describe JobRun do
   describe "associations" do
     it { is_expected.to belong_to(:job) }
     it { is_expected.to belong_to(:user) }
+
+    it { is_expected.to have_one_attached(:output) }
   end
 
   describe "validations" do
@@ -24,7 +26,7 @@ RSpec.describe JobRun do
     it "defines an enum for status" do
       expect(job_run)
         .to define_enum_for(:status)
-        .with_values(pending: "pending", running: "running", completed: "completed", failed: "failed", canceled: "canceled")
+        .with_values(pending: "pending", running: "running", completed: "completed", failed: "failed", canceled: "canceled", errored: "errored")
         .backed_by_column_of_type(:string)
     end
   end
@@ -33,6 +35,7 @@ RSpec.describe JobRun do
     it { expect(build(:job_run, :completed)).to be_deletable }
     it { expect(build(:job_run, :failed)).to be_deletable }
     it { expect(build(:job_run, :canceled)).to be_deletable }
+    it { expect(build(:job_run, :errored)).to be_deletable }
     it { expect(build(:job_run, :pending)).not_to be_deletable }
     it { expect(build(:job_run, :running)).not_to be_deletable }
   end

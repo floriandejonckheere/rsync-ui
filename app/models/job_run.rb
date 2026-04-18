@@ -4,6 +4,8 @@ class JobRun < ApplicationRecord
   belongs_to :job
   belongs_to :user
 
+  has_one_attached :output
+
   enum :trigger, {
     manual: "manual",
     scheduled: "scheduled",
@@ -15,6 +17,7 @@ class JobRun < ApplicationRecord
     completed: "completed",
     failed: "failed",
     canceled: "canceled",
+    errored: "errored",
   }, validate: true
 
   validates :trigger,
@@ -30,7 +33,7 @@ class JobRun < ApplicationRecord
   end
 
   def deletable?
-    completed? || failed? || canceled?
+    completed? || failed? || canceled? || errored?
   end
 end
 
@@ -38,16 +41,18 @@ end
 #
 # Table name: job_runs
 #
-#  id           :uuid             not null, primary key
-#  completed_at :datetime
-#  sequence     :integer          not null
-#  started_at   :datetime
-#  status       :string           default("pending"), not null
-#  trigger      :string           not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  job_id       :uuid             not null, indexed
-#  user_id      :uuid             not null, indexed
+#  id             :uuid             not null, primary key
+#  completed_at   :datetime
+#  error_class    :string
+#  error_messages :text
+#  sequence       :integer          not null
+#  started_at     :datetime
+#  status         :string           default("pending"), not null
+#  trigger        :string           not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  job_id         :uuid             not null, indexed
+#  user_id        :uuid             not null, indexed
 #
 # Indexes
 #

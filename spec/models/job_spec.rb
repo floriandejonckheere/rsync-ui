@@ -7,6 +7,8 @@ RSpec.describe Job do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:source_repository).class_name("Repository") }
     it { is_expected.to belong_to(:destination_repository).class_name("Repository") }
+
+    it { is_expected.to have_many(:job_runs).dependent(:destroy) }
   end
 
   describe "validations" do
