@@ -186,6 +186,7 @@ en:
       opt_xattrs:
         description: Preserve extended attributes
         flag: "--xattrs"
+      preview: Preview
       repositories: Repositories
       schedule: Schedule
       schedule_placeholder: 0 2 * * *

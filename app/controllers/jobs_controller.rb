@@ -15,10 +15,14 @@ class JobsController < ApplicationController
     @job = current_user.jobs.build(enabled: true)
 
     authorize! @job
+
+    @command = Rsync::CommandService.call(job: @job)
   end
 
   def edit
     authorize! @job
+
+    @command = Rsync::CommandService.call(job: @job)
   end
 
   def create
@@ -29,6 +33,7 @@ class JobsController < ApplicationController
     if @job.save
       redirect_to jobs_path, notice: t(".success")
     else
+      @command = Rsync::CommandService.call(job: @job)
       render :new, status: :unprocessable_content
     end
   end
@@ -39,6 +44,7 @@ class JobsController < ApplicationController
     if @job.update(job_params)
       redirect_to jobs_path, notice: t(".success")
     else
+      @command = Rsync::CommandService.call(job: @job)
       render :edit, status: :unprocessable_content
     end
   end
