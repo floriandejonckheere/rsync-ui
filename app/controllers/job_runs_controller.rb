@@ -13,6 +13,16 @@ class JobRunsController < ApplicationController
     authorize! :job_run
   end
 
+  def create
+    job = Job.find(params[:job_id])
+    authorize! JobRun.new(job:)
+
+    return head :unprocessable_content unless job.enabled?
+
+    JobExecutionJob.perform_later(job, trigger: "manual")
+    redirect_to job_runs_path, notice: t(".success")
+  end
+
   def destroy
     authorize! @job_run
 

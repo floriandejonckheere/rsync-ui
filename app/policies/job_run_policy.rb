@@ -20,4 +20,8 @@ class JobRunPolicy < ApplicationPolicy
   def cancel?
     user.admin? || record.user == user
   end
+
+  def create?
+    user.admin? || record.job.user == user
+  end
 end

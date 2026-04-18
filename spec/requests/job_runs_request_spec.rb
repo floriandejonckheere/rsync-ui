@@ -87,6 +87,72 @@ RSpec.describe "JobRuns" do
     end
   end
 
+  describe "POST /job_runs" do
+    let!(:job) { create(:job, user:) }
+
+    before { allow(JobExecutionJob).to receive(:perform_later) }
+
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      it "enqueues JobExecutionJob and redirects" do
+        post job_runs_path, params: { job_id: job.id }
+
+        expect(JobExecutionJob).to have_received(:perform_later).with(job, trigger: "manual")
+        expect(response).to redirect_to(job_runs_path)
+      end
+
+      it "displays success message" do
+        post job_runs_path, params: { job_id: job.id }
+        follow_redirect!
+
+        expect(response.body).to include(I18n.t("job_runs.create.success"))
+      end
+
+      context "when the job is disabled" do
+        let!(:job) { create(:job, user:, enabled: false) }
+
+        it "returns unprocessable content" do
+          post job_runs_path, params: { job_id: job.id }
+
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "does not enqueue JobExecutionJob" do
+          post job_runs_path, params: { job_id: job.id }
+
+          expect(JobExecutionJob).not_to have_received(:perform_later)
+        end
+      end
+    end
+
+    context "when job belongs to another user" do
+      let!(:job) { create(:job, user: other_user) }
+
+      before { sign_in user, scope: :user }
+
+      it "returns forbidden" do
+        post job_runs_path, params: { job_id: job.id }
+
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "does not enqueue JobExecutionJob" do
+        post job_runs_path, params: { job_id: job.id }
+
+        expect(JobExecutionJob).not_to have_received(:perform_later)
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        post job_runs_path, params: { job_id: job.id }
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
   describe "PATCH /job_runs/:id/cancel" do
     let(:job_run) { create(:job_run, :pending, user:) }
 

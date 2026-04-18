@@ -28,7 +28,7 @@ Rails.application.routes.draw do
   resources :repositories
   resources :jobs, except: :show
 
-  resources :job_runs, only: [:index, :destroy] do
+  resources :job_runs, only: [:index, :create, :destroy] do
     member do
       patch :cancel
     end
@@ -80,6 +80,7 @@ end
 #                                          DELETE /jobs/:id(.:format)                                                                               jobs#destroy
 #                           cancel_job_run PATCH  /job_runs/:id/cancel(.:format)                                                                    job_runs#cancel
 #                                 job_runs GET    /job_runs(.:format)                                                                               job_runs#index
+#                                          POST   /job_runs(.:format)                                                                               job_runs#create
 #                                  job_run DELETE /job_runs/:id(.:format)                                                                           job_runs#destroy
 #         turbo_recede_historical_location GET    /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
 #         turbo_resume_historical_location GET    /resume_historical_location(.:format)                                                             turbo/native/navigation#resume

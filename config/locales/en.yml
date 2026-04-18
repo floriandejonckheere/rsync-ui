@@ -63,6 +63,8 @@ en:
       delete: Delete job run
       delete_confirm: Are you sure you want to delete this job run? This action cannot be undone.
       delete_confirm_title: Delete job run
+    create:
+      success: Job queued successfully.
     destroy:
       success: Job run was successfully deleted.
     index:
@@ -93,6 +95,7 @@ en:
       delete_confirm: Are you sure you want to delete this job? This action cannot be undone.
       delete_confirm_title: Delete job
       edit: Edit job
+      run: Run job
     create:
       success: Job was successfully created.
     destroy:

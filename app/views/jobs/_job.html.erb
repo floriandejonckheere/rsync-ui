@@ -48,6 +48,15 @@
         <%= lucide_icon "pencil", class: "h-4 w-4" %>
       <% end %>
 
+      <%= button_to job_runs_path,
+                    params: { job_id: job.id },
+                    class: "btn-icon-outline btn-icon-md#{" cursor-not-allowed text-gray-400 dark:text-gray-600" unless job.enabled?}",
+                    disabled: !job.enabled?,
+                    form_class: "contents",
+                    title: I18n.t("jobs.actions.run") do %>
+        <%= lucide_icon "play", class: "h-4 w-4" %>
+      <% end %>
+
       <%= link_to job_path(job),
                   class: "btn-icon-outline btn-icon-md text-red-600 hover:text-red-700 dark:text-red-400",
                   title: I18n.t("jobs.actions.delete"),

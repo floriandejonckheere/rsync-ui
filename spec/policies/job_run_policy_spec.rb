@@ -45,6 +45,24 @@ RSpec.describe JobRunPolicy do
     end
   end
 
+  describe "#create?" do
+    let(:record) { build(:job_run, job: build(:job, user: owner)) }
+
+    it { is_expected.to be_create }
+
+    context "when user is another user" do
+      let(:user) { other_user }
+
+      it { is_expected.not_to be_create }
+    end
+
+    context "when user is admin" do
+      let(:user) { admin }
+
+      it { is_expected.to be_create }
+    end
+  end
+
   describe ".relation_scope" do
     subject(:scope) { policy.apply_scope(JobRun.all, type: :relation) }
 
