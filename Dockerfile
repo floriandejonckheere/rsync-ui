@@ -1,7 +1,7 @@
 FROM ruby:4.0.2-alpine3.23
 
 LABEL maintainer="Florian Dejonckheere <florian@floriandejonckheere.be>"
-LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/falqon-web
+LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/rsync-ui
 
 ENV RUNTIME_DEPS postgresql gmp vips
 ENV BUILD_DEPS build-base curl-dev git postgresql-dev yaml-dev cmake nodejs-current npm gmp-dev libffi-dev esbuild perl
