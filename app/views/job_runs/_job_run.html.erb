@@ -25,10 +25,8 @@
     </span>
   </td>
 
-  <td class="px-6 py-4">
-    <span class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs <%= job_run_status_classes(job_run.status) %>">
-      <%= I18n.t("job_runs.status.#{job_run.status}") %>
-    </span>
+  <td class="px-6 py-4 text-sm <%= job_run_status_classes(job_run.status) %>">
+    <%= I18n.t("job_runs.status.#{job_run.status}") %>
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
