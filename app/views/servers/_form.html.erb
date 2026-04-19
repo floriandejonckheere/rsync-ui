@@ -90,28 +90,80 @@
         <h2><%= I18n.t("servers.form.authentication") %></h2>
       </header>
 
+      <% auth_type = server.ssh_key.present? ? "ssh_key" : "password" %>
+
       <section>
-        <div class="flex flex-col gap-6">
-          <p class="text-sm text-muted-foreground">
-            <%= I18n.t("servers.form.credentials_hint") %>
-          </p>
+        <div
+          class="tabs w-full flex flex-col gap-6"
+          data-controller="server-auth"
+          data-value="<%= auth_type %>"
+        >
+          <nav role="tablist" aria-orientation="horizontal" class="w-full">
+            <button
+              type="button"
+              role="tab"
+              id="server-auth-tab-password"
+              aria-controls="server-auth-panel-password"
+              aria-selected="<%= auth_type == 'password' %>"
+              tabindex="0"
+              data-server-auth-target="tab"
+              data-value="password"
+              data-action="click->server-auth#select"
+            >
+              <%= I18n.t("servers.form.password") %>
+            </button>
 
-          <div class="field">
-            <%= f.label :password, I18n.t("servers.form.password") %>
+            <button
+              type="button"
+              role="tab"
+              id="server-auth-tab-ssh-key"
+              aria-controls="server-auth-panel-ssh-key"
+              aria-selected="<%= auth_type == 'ssh_key' %>"
+              tabindex="0"
+              data-server-auth-target="tab"
+              data-value="ssh_key"
+              data-action="click->server-auth#select"
+            >
+              <%= I18n.t("servers.form.ssh_key") %>
+            </button>
+          </nav>
 
-            <%= f.password_field :password,
-                                 placeholder: server.persisted? ? I18n.t("servers.form.password_placeholder_edit") : I18n.t("servers.form.password_placeholder"),
-                                 autocomplete: "new-password" %>
+          <div
+            role="tabpanel"
+            id="server-auth-panel-password"
+            aria-labelledby="server-auth-tab-password"
+            tabindex="-1"
+            data-server-auth-target="panel"
+            data-value="password"
+            <%= "hidden" if auth_type != "password" %>
+          >
+            <div class="field mt-4">
+              <%= f.label :password, I18n.t("servers.form.password") %>
+
+              <%= f.password_field :password,
+                                   placeholder: server.persisted? ? I18n.t("servers.form.password_placeholder_edit") : I18n.t("servers.form.password_placeholder"),
+                                   autocomplete: "new-password" %>
+            </div>
           </div>
 
-          <div class="field">
-            <%= f.label :ssh_key, I18n.t("servers.form.ssh_key") %>
+          <div
+            role="tabpanel"
+            id="server-auth-panel-ssh-key"
+            aria-labelledby="server-auth-tab-ssh-key"
+            tabindex="-1"
+            data-server-auth-target="panel"
+            data-value="ssh_key"
+            <%= "hidden" if auth_type != "ssh_key" %>
+          >
+            <div class="field mt-4">
+              <%= f.label :ssh_key, I18n.t("servers.form.ssh_key") %>
 
-            <%= f.text_area :ssh_key,
-                            value: nil,
-                            placeholder: server.persisted? ? I18n.t("servers.form.ssh_key_placeholder_edit") : I18n.t("servers.form.ssh_key_placeholder"),
-                            rows: 8,
-                            class: "font-mono text-xs" %>
+              <%= f.text_area :ssh_key,
+                              value: nil,
+                              placeholder: server.persisted? ? I18n.t("servers.form.ssh_key_placeholder_edit") : I18n.t("servers.form.ssh_key_placeholder"),
+                              rows: 8,
+                              class: "font-mono text-xs" %>
+            </div>
           </div>
         </div>
       </section>
