@@ -1,9 +1,28 @@
 en:
   configurations:
     categories:
+      resource_usage:
+        description: Settings for server resource usage probe (CPU, memory, disk)
+        title: Resource usage
       system:
-        title: System configuration
         description: Core system settings and technical parameters
+        title: System configuration
     keys:
       maximum_file_size:
         description: Maximum file size (in MB)
+      resource_usage:
+        description: Enable or disable server resource usage probe
+        cpu_critical:
+          description: CPU usage percentage at which status is shown as critical (red)
+        cpu_warning:
+          description: CPU usage percentage at which status is shown as a warning (orange)
+        disk_critical:
+          description: Disk usage percentage at which status is shown as critical (red)
+        disk_warning:
+          description: Disk usage percentage at which status is shown as a warning (orange)
+        interval:
+          description: Interval in minutes between server resource usage probes
+        memory_critical:
+          description: Memory usage percentage at which status is shown as critical (red)
+        memory_warning:
+          description: Memory usage percentage at which status is shown as a warning (orange)

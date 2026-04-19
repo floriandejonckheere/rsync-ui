@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_18_175817) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_19_054850) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -132,12 +132,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_175817) do
     t.index ["user_id"], name: "index_repositories_on_user_id"
   end
 
+  create_table "resource_usages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "cpu_count"
+    t.float "cpu_usage"
+    t.datetime "created_at", null: false
+    t.bigint "disk_total"
+    t.bigint "disk_used"
+    t.float "load_avg_1"
+    t.float "load_avg_15"
+    t.float "load_avg_5"
+    t.bigint "memory_total"
+    t.bigint "memory_used"
+    t.string "probe_error_class"
+    t.text "probe_error_message"
+    t.datetime "probed_at"
+    t.uuid "server_id", null: false
+    t.string "status"
+    t.datetime "updated_at", null: false
+    t.bigint "uptime_seconds"
+    t.index ["server_id"], name: "index_resource_usages_on_server_id", unique: true
+  end
+
   create_table "servers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
     t.string "host", null: false
     t.string "name", null: false
     t.text "password"
+    t.string "path", default: "/", null: false
     t.integer "port", default: 22, null: false
     t.text "ssh_key"
     t.datetime "updated_at", null: false
@@ -174,5 +196,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_175817) do
   add_foreign_key "jobs", "users"
   add_foreign_key "repositories", "servers"
   add_foreign_key "repositories", "users"
+  add_foreign_key "resource_usages", "servers"
   add_foreign_key "servers", "users"
 end

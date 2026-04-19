@@ -1,0 +1,41 @@
+<% bar_color = case health
+              when :ok then "bg-green-500"
+              when :warning then "bg-yellow-400"
+              when :critical then "bg-red-500"
+              else "bg-gray-300 dark:bg-gray-600"
+              end %>
+
+<% text_color = case health
+               when :ok then "text-green-500"
+               when :warning then "text-yellow-400"
+               when :critical then "text-red-500"
+               else "text-gray-400 dark:text-gray-500"
+               end %>
+
+<div class="flex flex-col gap-1 flex-1">
+  <div class="flex flex-col">
+    <span class="text-3xl font-bold <%= text_color %>">
+      <% if percent.present? %>
+        <%= number_to_percentage(percent, precision: 1) %>
+      <% else %>
+        —
+      <% end %>
+    </span>
+
+    <span class="text-xs text-gray-400 dark:text-gray-500">
+      <%= label %>
+
+      <% if detail.present? %>
+        <br />
+        <%= detail %>
+      <% end %>
+    </span>
+  </div>
+
+  <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
+    <div
+      class="<%= bar_color %> h-2.5 rounded-full transition-all duration-300"
+      style="width: <%= percent.present? ? percent.clamp(0, 100) : 0 %>%"
+    ></div>
+  </div>
+</div>

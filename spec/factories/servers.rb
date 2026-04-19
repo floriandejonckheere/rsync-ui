@@ -19,5 +19,11 @@ FactoryBot.define do
       password { nil }
       ssh_key { Rails.root.join("spec/support/fixtures/ssh_key").read }
     end
+
+    trait :with_resource_usage do
+      after(:create) do |server|
+        create(:resource_usage, server:)
+      end
+    end
   end
 end

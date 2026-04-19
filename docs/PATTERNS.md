@@ -93,7 +93,12 @@ end
 **In Model:**
 ```ruby
 class Model < ApplicationRecord
-  enum :state, { pending: "pending", processing: "processing", completed: "completed", failed: "failed" }
+  enum :status, {
+    pending: "pending",
+    processing: "processing",
+    completed: "completed",
+    failed: "failed",
+  }, validate: true
 
   # Generated methods:
   # - model.pending? / model.processing? / model.completed? / model.failed?

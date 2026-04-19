@@ -1,0 +1,16 @@
+---CPU---
+4
+cpu  1000 0 500 8000 0 0 0 0 0 0
+cpu  1100 0 550 8350 0 0 0 0 0 0
+---MEM---
+MemTotal:        8000000 kB
+MemFree:         1000000 kB
+MemAvailable:    2000000 kB
+Buffers:           50000 kB
+Cached:           500000 kB
+---UPTIME---
+123456.78 987654.32
+0.42 0.55 0.60 1/234 5678
+---DISK---
+Filesystem     1B-blocks         Used    Available Capacity Mounted on
+/dev/sda1  107374182400  53687091200  53687091200      50% /

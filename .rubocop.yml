@@ -57,6 +57,9 @@ Metrics/PerceivedComplexity:
 Naming/MethodParameterName:
   Enabled: false
 
+Naming/VariableNumber:
+  Enabled: false
+
 Rails:
   Enabled: true
 

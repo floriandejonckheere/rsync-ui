@@ -123,11 +123,12 @@ For remote repositories, the server should be mounted as a local directory, and 
 
 ### Resource usage
 
-- [ ] Implement a service that checks a server's resources (CPU, memory, disk space)
-- [ ] Add a configuration option (feature category) to enable or disable resource usage: `resource_usage`
-- [ ] Add a configuration option (feature category) to set the update interval: `resource_usage.interval`, default `15 minutes`
-- [ ] Implement a service that updates the resource usage of a server
-- [ ] Add a scheduled job to update the resource usage of all servers when enabled
+- [x] Implement a service that checks a server's resources (CPU, memory, disk space)
+- [x] Add a configuration option (feature category) to enable or disable resource usage: `resource_usage`
+- [x] Add a configuration option (feature category) to set the update interval: `resource_usage.interval`, default `15 minutes`
+- [x] Implement a service that updates the resource usage of a server
+- [x] Add a scheduled job to update the resource usage of all servers when enabled
+- [ ] Add a real-time visualization of resource usage on the dashboard
 
 ### Job creation wizard
 
@@ -145,6 +146,8 @@ For remote repositories, the server should be mounted as a local directory, and 
 ### Technical TODOs
 
 - [ ] Do not bind to port 5432, otherwise you can't use git worktrees
+- [ ] Use SolidQueue's [dynamic scheduling](https://github.com/rails/solid_queue#scheduling-and-unscheduling-recurring-tasks-dynamically) instead of the Servers::ResourceUsageSchedulerJob
+- [ ] Add a `with_configuration` helper
 
 ## Open questions
 

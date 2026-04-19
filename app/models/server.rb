@@ -6,6 +6,9 @@ class Server < ApplicationRecord
 
   belongs_to :user
 
+  has_one :resource_usage,
+          dependent: :destroy
+
   validates :name,
             presence: true
 
@@ -67,6 +70,7 @@ end
 #  host        :string           not null
 #  name        :string           not null
 #  password    :text
+#  path        :string           default("/"), not null
 #  port        :integer          default(22), not null
 #  ssh_key     :text
 #  username    :string           not null

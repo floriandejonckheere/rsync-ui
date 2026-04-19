@@ -46,6 +46,20 @@ en:
     confirm: Confirm
     title: Confirm
   dashboard:
+    server_health:
+      cores: "%{count} cores"
+      cpu: CPU
+      disabled: Resource usage disabled
+      disk: Disk
+      failed: Probe failed
+      last_probed: Last probed %{time} ago
+      load: Load
+      memory: Memory
+      never_probed: Never probed
+      no_servers: No servers configured
+      path: 'Path: %{path}'
+      title: Server health
+      uptime: Uptime
     subtitle: Monitor recent activity
     title: Dashboard
   flash:

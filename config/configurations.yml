@@ -3,3 +3,49 @@
   type: integer
   category: system
   default: 10
+- key: resource_usage
+  type: boolean
+  category: resource_usage
+  default: true
+- key: resource_usage.interval
+  type: integer
+  category: resource_usage
+  default: 15
+  dependencies:
+    - resource_usage
+- key: resource_usage.cpu_warning
+  type: integer
+  category: resource_usage
+  default: 75
+  dependencies:
+    - resource_usage
+- key: resource_usage.cpu_critical
+  type: integer
+  category: resource_usage
+  default: 90
+  dependencies:
+    - resource_usage
+- key: resource_usage.memory_warning
+  type: integer
+  category: resource_usage
+  default: 80
+  dependencies:
+    - resource_usage
+- key: resource_usage.memory_critical
+  type: integer
+  category: resource_usage
+  default: 95
+  dependencies:
+    - resource_usage
+- key: resource_usage.disk_warning
+  type: integer
+  category: resource_usage
+  default: 80
+  dependencies:
+    - resource_usage
+- key: resource_usage.disk_critical
+  type: integer
+  category: resource_usage
+  default: 95
+  dependencies:
+    - resource_usage

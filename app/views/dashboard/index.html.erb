@@ -5,3 +5,26 @@
 <% content_for :subtitle do %>
   <%= I18n.t("dashboard.subtitle") %>
 <% end %>
+
+<% if Configuration.get("resource_usage") %>
+  <% if @servers.empty? %>
+    <div
+      class="
+        card flex flex-col items-center justify-center py-16 gap-4
+        text-gray-400
+      "
+    >
+      <%= lucide_icon "server", class: "h-12 w-12" %>
+
+      <p class="text-lg">
+        <%= I18n.t("dashboard.server_health.no_servers") %>
+      </p>
+    </div>
+  <% else %>
+    <div class="flex flex-wrap gap-6">
+      <% @servers.each do |server| %>
+        <%= render "dashboard/server_card", server: %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
