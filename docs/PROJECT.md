@@ -142,6 +142,10 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Implement support for OAuth2 authentication
 - [ ] Allow duplicating jobs
 
+### Technical TODOs
+
+- [ ] Do not bind to port 5432, otherwise you can't use git worktrees
+
 ## Open questions
 
 - [ ] Should some job options be stored on the repository/server instead of the job? For example: include/exclude patterns, run as different user, path to rsync binary
