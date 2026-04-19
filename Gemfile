@@ -26,6 +26,9 @@ gem "propshaft"
 # PostgreSQL relational database [https://www.postgresql.org/]
 gem "pg", "~> 1.6"
 
+# SSH client [https://github.com/net-ssh/net-ssh]
+gem "net-ssh", "~> 7.3"
+
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
