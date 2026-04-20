@@ -106,6 +106,7 @@ GEM
     ast (2.4.3)
     base64 (0.3.0)
     bcrypt (3.1.22)
+    bcrypt_pbkdf (1.1.2)
     bigdecimal (4.1.1)
     bindex (0.8.1)
     bootsnap (1.23.0)
@@ -135,6 +136,7 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.6.2)
     drb (2.2.3)
+    ed25519 (1.4.0)
     erb (6.0.3)
     erubi (1.13.1)
     et-orbi (1.4.0)
@@ -480,6 +482,7 @@ DEPENDENCIES
   active_storage_validations
   annotaterb!
   appsignal
+  bcrypt_pbkdf (>= 1.0, < 2.0)
   bigdecimal
   bootsnap
   brakeman
@@ -488,6 +491,7 @@ DEPENDENCIES
   csv
   debug
   devise
+  ed25519 (>= 1.2, < 2.0)
   factory_bot
   factory_bot_rails
   ffaker
@@ -553,6 +557,7 @@ CHECKSUMS
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
   bcrypt (3.1.22) sha256=1f0072e88c2d705d94aff7f2c5cb02eb3f1ec4b8368671e19112527489f29032
+  bcrypt_pbkdf (1.1.2) sha256=c2414c23ce66869b3eb9f643d6a3374d8322dfb5078125c82792304c10b94cf6
   bigdecimal (4.1.1) sha256=1c09efab961da45203c8316b0cdaec0ff391dfadb952dd459584b63ebf8054ca
   bindex (0.8.1) sha256=7b1ecc9dc539ed8bccfc8cb4d2732046227b09d6f37582ff12e50a5047ceb17e
   bootsnap (1.23.0) sha256=c1254f458d58558b58be0f8eb8f6eec2821456785b7cdd1e16248e2020d3f214
@@ -570,6 +575,7 @@ CHECKSUMS
   devise (5.0.3) sha256=c4c065051cdc4ace11547b2b7f5c3c4c97d0f1269250f5fe90f614ff78f29546
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
+  ed25519 (1.4.0) sha256=16e97f5198689a154247169f3453ef4cfd3f7a47481fde0ae33206cdfdcac506
   erb (6.0.3) sha256=e43685a8a0a0ea6a924871b2162e8953ef73147ce46b75b36d1f6774fd286e91
   erubi (1.13.1) sha256=a082103b0885dbc5ecf1172fede897f9ebdb745a4b97a5e8dc63953db1ee4ad9
   et-orbi (1.4.0) sha256=6c7e3c90779821f9e3b324c5e96fda9767f72995d6ae435b96678a4f3e2de8bc

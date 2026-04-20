@@ -27,6 +27,8 @@ gem "propshaft"
 gem "pg", "~> 1.6"
 
 # SSH client [https://github.com/net-ssh/net-ssh]
+gem "bcrypt_pbkdf", ">= 1.0", "< 2.0"
+gem "ed25519", ">= 1.2", "< 2.0"
 gem "net-ssh", "~> 7.3"
 
 # Use the Puma web server [https://github.com/puma/puma]
