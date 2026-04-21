@@ -312,6 +312,13 @@ en:
     index:
       empty: No repositories have been configured yet.
       new: New repository
+      search:
+        close: Close search
+        no_results:
+          description: Try adjusting your search terms.
+          title: No repositories found
+        placeholder: Search by name or description...
+        title: Search repositories
       subtitle: Manage local and remote directories
       title: Repositories
     new:

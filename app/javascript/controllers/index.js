@@ -22,6 +22,9 @@ application.register("dialog", DialogController)
 import RepositoryTypeController from "./repository_type_controller"
 application.register("repository-type", RepositoryTypeController)
 
+import SearchController from "./search_controller"
+application.register("search", SearchController)
+
 import ServerAuthController from "./server_auth_controller"
 application.register("server-auth", ServerAuthController)
 

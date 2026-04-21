@@ -7,54 +7,131 @@
 <% end %>
 
 <% content_for :actions do %>
+  <div
+    class="flex gap-2"
+    data-controller="search"
+    data-action="turbo:submit-end->search#restoreFocus"
+  >
+    <button
+      type="button"
+      title="<%= I18n.t('repositories.index.search.title') %>"
+      class="btn-icon-outline btn-icon-lg"
+      data-search-target="button"
+      data-action="search#toggle"
+    >
+      <%= lucide_icon "search", class: "h-6 w-6" %>
+    </button>
+
+    <%= form_with url: repositories_path, method: :get, class: "hidden flex gap-2", data: { turbo_frame: "repositories_list", search_target: "form" } do |f| %>
+      <%= f.text_field :query,
+                       value: @query,
+                       placeholder: I18n.t("repositories.index.search.placeholder"),
+                       class: "input w-64 h-12 bg-white dark:bg-gray-800",
+                       data: {
+                         search_target: "input",
+                         action: "input->search#handleInput keydown->search#handleKeydown",
+                       } %>
+
+      <button
+        type="button"
+        title="<%= I18n.t('repositories.index.search.close') %>"
+        class="btn-icon-outline btn-icon-lg"
+        data-action="search#close"
+      >
+        <%= lucide_icon "x", class: "h-6 w-6" %>
+      </button>
+    <% end %>
+  </div>
+
   <%= link_to new_repository_path, data: { tooltip: I18n.t("repositories.index.new") }, class: "btn-icon-outline btn-icon-lg" do %>
     <%= lucide_icon "plus", class: "h-6 w-6" %>
   <% end %>
 <% end %>
 
-<% if @repositories.empty? %>
-  <div class="card flex flex-col items-center justify-center py-16 gap-4 text-gray-400">
-    <%= lucide_icon "folders", class: "h-12 w-12" %>
+<%= turbo_frame_tag "repositories_list" do %>
+  <% if @repositories.empty? && @query.present? %>
+    <div class="card text-center py-10">
+      <section>
+        <%= lucide_icon "search-x", class: "w-16 h-16 mx-auto mb-4 text-muted-foreground" %>
 
-    <p class="text-lg">
-      <%= I18n.t("repositories.index.empty") %>
-    </p>
-  </div>
-<% else %>
-  <div class="card p-0 overflow-hidden">
-    <table class="w-full text-sm">
-      <thead>
-        <tr class="border-b border-gray-100 dark:border-gray-700">
-          <th class="py-4"></th>
+        <h3 class="text-xl font-semibold mb-2">
+          <%= I18n.t("repositories.index.search.no_results.title") %>
+        </h3>
 
-          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
-            <%= I18n.t("repositories.table.name") %>
-          </th>
+        <p class="text-muted-foreground">
+          <%= I18n.t("repositories.index.search.no_results.description") %>
+        </p>
+      </section>
+    </div>
+  <% elsif @repositories.empty? %>
+    <div
+      class="
+        card flex flex-col items-center justify-center py-16 gap-4
+        text-gray-400
+      "
+    >
+      <%= lucide_icon "folders", class: "h-12 w-12" %>
 
-          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
-            <%= I18n.t("repositories.table.type") %>
-          </th>
+      <p class="text-lg">
+        <%= I18n.t("repositories.index.empty") %>
+      </p>
+    </div>
+  <% else %>
+    <div class="card p-0 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-100 dark:border-gray-700">
+            <th class="py-4"></th>
 
-          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
-            <%= I18n.t("repositories.table.path") %>
-          </th>
+            <th
+              class="
+                px-6 py-4 text-left font-medium text-gray-500
+                dark:text-gray-400
+              "
+            >
+              <%= I18n.t("repositories.table.name") %>
+            </th>
 
-          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
-            <%= I18n.t("repositories.table.server") %>
-          </th>
+            <th
+              class="
+                px-6 py-4 text-left font-medium text-gray-500
+                dark:text-gray-400
+              "
+            >
+              <%= I18n.t("repositories.table.type") %>
+            </th>
 
-          <th class="px-6 py-4"></th>
-        </tr>
-      </thead>
+            <th
+              class="
+                px-6 py-4 text-left font-medium text-gray-500
+                dark:text-gray-400
+              "
+            >
+              <%= I18n.t("repositories.table.path") %>
+            </th>
 
-      <tbody>
-        <% @repositories.each do |repository| %>
-          <%= render "repository", repository: %>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-  <% if @pagy.pages > 1 %>
-    <%= render "shared/pagination", pagy: @pagy, path_method: :repositories_path %>
+            <th
+              class="
+                px-6 py-4 text-left font-medium text-gray-500
+                dark:text-gray-400
+              "
+            >
+              <%= I18n.t("repositories.table.server") %>
+            </th>
+
+            <th class="px-6 py-4"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @repositories.each do |repository| %>
+            <%= render "repository", repository: %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if @pagy.pages > 1 %>
+      <%= render "shared/pagination", pagy: @pagy, path_method: :repositories_path %>
+    <% end %>
   <% end %>
 <% end %>

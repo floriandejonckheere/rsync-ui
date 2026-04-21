@@ -6,7 +6,12 @@ class RepositoriesController < ApplicationController
   before_action :set_servers, only: [:new, :edit, :create, :update]
 
   def index
-    @pagy, @repositories = pagy(authorized_scope(Repository.order(:name), type: :relation))
+    repositories = authorized_scope(Repository.order(:name), type: :relation)
+
+    repositories = repositories.where("name ILIKE :query OR description ILIKE :query", query: "%#{Repository.sanitize_sql_like(params[:query])}%") if params[:query].present?
+
+    @query = params[:query]
+    @pagy, @repositories = pagy(repositories)
 
     authorize! :repository
   end

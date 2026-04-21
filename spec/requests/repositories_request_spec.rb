@@ -13,6 +13,53 @@ RSpec.describe "Repositories" do
 
         expect(response).to have_http_status(:ok)
       end
+
+      context "when a query parameter is present" do
+        it "filters repositories by name" do
+          matching_repository = create(:repository, user:, name: "System files")
+          non_matching_repository = create(:repository, user:, name: "Documents")
+
+          get repositories_path, params: { query: "system" }
+
+          expect(response.body).to include(matching_repository.name)
+          expect(response.body).not_to include(non_matching_repository.name)
+        end
+
+        it "filters repositories by description" do
+          matching_repository = create(:repository, user:, description: "System configuration")
+          non_matching_repository = create(:repository, user:, description: "Important stuff")
+
+          get repositories_path, params: { query: "configuration" }
+
+          expect(response.body).to include(matching_repository.description)
+          expect(response.body).not_to include(non_matching_repository.description)
+        end
+
+        it "is case insensitive" do
+          repository = create(:repository, user:, name: "System files")
+
+          get repositories_path, params: { query: "SYSTEM" }
+
+          expect(response.body).to include(repository.name)
+        end
+
+        it "handles special SQL characters safely" do
+          repository = create(:repository, user:, name: "$$$ files")
+
+          get repositories_path, params: { query: "$$$" }
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(repository.name)
+        end
+
+        it "returns empty results for non-matching query" do
+          create(:repository, user:, name: "Some Repository")
+
+          get repositories_path, params: { query: "nonexistent" }
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
     end
 
     context "when not authenticated" do
