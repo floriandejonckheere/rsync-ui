@@ -31,8 +31,15 @@
         data-cron-preview-placeholder-value=""
         data-cron-preview-invalid-value="<%= job.schedule %>"
       >
-        <input type="hidden" data-cron-preview-target="input" value="<%= job.schedule %>">
-        <span class="text-xs" data-cron-preview-target="output"><%= job.schedule %></span>
+        <input
+          type="hidden"
+          data-cron-preview-target="input"
+          value="<%= job.schedule %>"
+        >
+
+        <span class="text-xs" data-cron-preview-target="output">
+          <%= job.schedule %>
+        </span>
       </span>
     <% else %>
       —
