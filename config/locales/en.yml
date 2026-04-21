@@ -246,6 +246,8 @@ en:
       repositories: Repositories
       schedule: Schedule
       schedule_placeholder: 0 2 * * *
+      schedule_preview_invalid: Invalid cron expression
+      schedule_preview_placeholder: Enter a cron expression to see a preview
       source_repository: Source repository
       source_repository_placeholder: Select a source repository
       submit_create: Create job

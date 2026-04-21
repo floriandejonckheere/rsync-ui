@@ -43,12 +43,23 @@
                               autocomplete: "off" %>
             </div>
 
-            <div class="field">
+            <div
+              class="field"
+              data-controller="cron-preview"
+              data-cron-preview-placeholder-value="<%= I18n.t("jobs.form.schedule_preview_placeholder") %>"
+              data-cron-preview-invalid-value="<%= I18n.t("jobs.form.schedule_preview_invalid") %>"
+            >
               <%= f.label :schedule, I18n.t("jobs.form.schedule") %>
 
               <%= f.text_field :schedule,
                                placeholder: I18n.t("jobs.form.schedule_placeholder"),
-                               autocomplete: "off" %>
+                               autocomplete: "off",
+                               data: { cron_preview_target: "input", action: "input->cron-preview#update" } %>
+
+              <span
+                class="text-muted-foreground mt-1 text-sm"
+                data-cron-preview-target="output"
+              ></span>
             </div>
 
             <div class="field flex-row items-center gap-4">

@@ -48,4 +48,26 @@ RSpec.describe Job do
       expect(job).to be_valid
     end
   end
+
+  describe "#scheduled_next_run" do
+    it "returns nil when the job is disabled" do
+      job = build(:job, schedule: "0 2 * * *", enabled: false)
+
+      expect(job.scheduled_next_run).to be_nil
+    end
+
+    it "returns nil when no schedule is set" do
+      job = build(:job, schedule: nil)
+
+      expect(job.scheduled_next_run).to be_nil
+    end
+
+    it "returns the next tick of the cron expression" do
+      travel_to(Time.zone.local(2026, 4, 19, 12, 0, 0)) do
+        job = build(:job, schedule: "0 2 * * *", enabled: true)
+
+        expect(job.scheduled_next_run).to eq(Time.zone.local(2026, 4, 20, 2, 0, 0))
+      end
+    end
+  end
 end

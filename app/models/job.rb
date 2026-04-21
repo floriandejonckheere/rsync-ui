@@ -15,26 +15,35 @@ class Job < ApplicationRecord
   validates :name,
             presence: true
 
-  validate :different_repositories
-  validate :destination_repository_writable
-  validate :valid_schedule
+  validate :validate_different_repositories
+  validate :validate_destination_repository_writable
+  validate :validate_schedule
+
+  def scheduled_next_run
+    return unless enabled? && schedule.present?
+
+    Fugit
+      .parse_cron(schedule)
+      &.next_time(Time.zone.now)
+      &.to_t
+  end
 
   private
 
-  def different_repositories
+  def validate_different_repositories
     return if source_repository.blank? || destination_repository.blank?
     return if source_repository != destination_repository
 
     errors.add(:destination_repository, :same_as_source)
   end
 
-  def destination_repository_writable
+  def validate_destination_repository_writable
     return if destination_repository.blank? || !destination_repository.read_only?
 
     errors.add(:destination_repository, :read_only)
   end
 
-  def valid_schedule
+  def validate_schedule
     return if schedule.blank?
     return if Fugit.parse_cron(schedule).present?
 

@@ -24,3 +24,6 @@ application.register("repository-type", RepositoryTypeController)
 
 import ServerAuthController from "./server_auth_controller"
 application.register("server-auth", ServerAuthController)
+
+import CronPreviewController from "./cron_preview_controller"
+application.register("cron-preview", CronPreviewController)
