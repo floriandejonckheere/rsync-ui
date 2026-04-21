@@ -60,7 +60,6 @@ Servers are the remote destinations where the files are synchronized to.
 Jobs are the actual synchronization tasks that are executed by the application.
 
 - [ ] Include/Exclude patterns
-- [x] Render human-readable cron expression
 
 ### Job runs
 
@@ -68,13 +67,8 @@ Jobs are the actual synchronization tasks that are executed by the application.
 
 ### Execution and scheduling
 
-- [x] Implement a dynamic job scheduler (cron daemon)
 - [ ] Add a configuration option (feature category) to enable or disable scheduled jobs: `scheduler`
-- [x] Implement a service that executes jobs ad hoc
-  - [ ] Track real-time progress of jobs
-  - [x] Capture and save the output of rsync commands
-  - [x] Allow viewing and downloading the log file
-- [x] Add a scheduled job to execute a job if it is due
+- [ ] Track real-time progress of jobs
 
 - [ ] Implement sync hooks
   - [ ] Pre-/post-hook: command or script to run before or after the sync starts
@@ -120,15 +114,6 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Show a real-time visualization of repositories (vertices) and schedules (edges) on the dashboard
 - [ ] Mark healthy, unhealthy, and ongoing jobs in different colors
 - [ ] Add real-time progress to the visualization
-
-### Resource usage
-
-- [x] Implement a service that checks a server's resources (CPU, memory, disk space)
-- [x] Add a configuration option (feature category) to enable or disable resource usage: `resource_usage`
-- [x] Add a configuration option (feature category) to set the update interval: `resource_usage.interval`, default `15 minutes`
-- [x] Implement a service that updates the resource usage of a server
-- [x] Add a scheduled job to update the resource usage of all servers when enabled
-- [ ] Add a real-time visualization of resource usage on the dashboard
 
 ### Job creation wizard
 
