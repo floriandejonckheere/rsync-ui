@@ -4,7 +4,7 @@
       type="submit"
       form="job-form"
       class="btn-icon-outline btn-icon-lg"
-      title="<%= job.persisted? ? I18n.t("jobs.form.submit_update") : I18n.t("jobs.form.submit_create") %>"
+      data-tooltip="<%= job.persisted? ? I18n.t("jobs.form.submit_update") : I18n.t("jobs.form.submit_create") %>"
     >
       <%= lucide_icon "check", class: "h-6 w-6" %>
     </button>
@@ -130,7 +130,7 @@
             <% %i[opt_archive opt_recursive opt_relative opt_links opt_times opt_perms opt_owner opt_group opt_one_file_system opt_delete opt_delete_excluded opt_existing opt_ignore_existing opt_update opt_dry_run opt_inplace opt_size_only opt_progress].each do |field| %>
               <div class="field flex-row items-center gap-4">
                 <%= f.check_box field, role: "switch" %>
-                <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), title: I18n.t(:flag, scope: [:jobs, :form, field]) %>
+                <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), data: { tooltip: I18n.t(:flag, scope: [:jobs, :form, field]) } %>
               </div>
             <% end %>
           </div>
@@ -156,7 +156,7 @@
             <% %i[opt_acls opt_xattrs opt_hard_links opt_devices opt_specials opt_checksum opt_compress opt_partial opt_backup opt_append opt_numeric_ids opt_itemize_changes opt_secluded_args opt_verbose].each do |field| %>
               <div class="field flex-row items-center gap-4">
                 <%= f.check_box field, role: "switch" %>
-                <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), title: I18n.t(:flag, scope: [:jobs, :form, field]) %>
+                <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), data: { tooltip: I18n.t(:flag, scope: [:jobs, :form, field]) } %>
               </div>
             <% end %>
           </div>

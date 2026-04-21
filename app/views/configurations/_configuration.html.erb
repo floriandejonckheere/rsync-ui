@@ -65,7 +65,7 @@
               type="button"
               class="btn-icon-outline btn-icon-md"
               data-action="configuration#toggle"
-              title="<%= I18n.t("configurations.index.edit") %>"
+              data-tooltip="<%= I18n.t("configurations.index.edit") %>"
             >
               <%= lucide_icon "pencil", class: "h-5 w-5" %>
             </button>
@@ -79,7 +79,7 @@
                   type="button"
                   class="btn-icon-outline btn-icon-md"
                   data-action="configuration#revert"
-                  title="<%= I18n.t("configurations.index.revert") %>"
+                  data-tooltip="<%= I18n.t("configurations.index.revert") %>"
                 >
                   <%= lucide_icon "undo", class: "h-5 w-5" %>
                 </button>
@@ -104,7 +104,7 @@
                 <button
                   type="submit"
                   class="btn-icon-primary btn-icon-md"
-                  title="<%= I18n.t("configurations.index.update") %>"
+                  data-tooltip="<%= I18n.t("configurations.index.update") %>"
                 >
                   <%= lucide_icon "check", class: "h-5 w-5" %>
                 </button>
@@ -113,7 +113,7 @@
                   type="button"
                   class="btn-icon-outline btn-icon-md"
                   data-action="configuration#toggle"
-                  title="<%= I18n.t("configurations.index.cancel") %>"
+                  data-tooltip="<%= I18n.t("configurations.index.cancel") %>"
                 >
                   <%= lucide_icon "x", class: "h-5 w-5" %>
                 </button>

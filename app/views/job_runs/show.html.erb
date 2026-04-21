@@ -24,7 +24,7 @@
 
     <%= link_to logs_job_run_path(@job_run),
                 class: "btn-icon-outline btn-icon-md",
-                title: I18n.t("job_runs.actions.download_logs") do %>
+                data: { tooltip: I18n.t("job_runs.actions.download_logs") } do %>
       <%= lucide_icon "download", class: "h-4 w-4" %>
     <% end %>
   </div>

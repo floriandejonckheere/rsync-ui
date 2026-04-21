@@ -4,7 +4,7 @@
       type="submit"
       form="repository-form"
       class="btn-icon-outline btn-icon-lg"
-      title="<%= repository.persisted? ? I18n.t("repositories.form.submit_update") : I18n.t("repositories.form.submit_create") %>"
+      data-tooltip="<%= repository.persisted? ? I18n.t("repositories.form.submit_update") : I18n.t("repositories.form.submit_create") %>"
     >
       <%= lucide_icon "check", class: "h-6 w-6" %>
     </button>

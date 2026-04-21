@@ -96,17 +96,16 @@
               <label
                 class="relative btn-icon-outline btn-icon-lg"
                 for="theme-switch"
+                data-tooltip="<%= I18n.t("auth.toggle_theme") %>"
               >
                 <%= lucide_icon "sun", class: "h-6 w-6 dark:hidden" %>
                 <%= lucide_icon "moon", class: "h-6 w-6 hidden dark:block" %>
-                <span class="sr-only">Switch light/dark theme</span>
               </label>
             </div>
 
             <%= link_to destroy_user_session_path,
                         method: :delete,
-                        title: I18n.t("auth.sign_out"),
-                        data: { "turbo-method": :delete },
+                        data: { "turbo-method": :delete, tooltip: I18n.t("auth.sign_out") },
                         class: "btn-icon-outline btn-icon-lg" do %>
               <%= lucide_icon "log-out", class: "h-6 w-6" %>
             <% end %>

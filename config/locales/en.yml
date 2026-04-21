@@ -26,6 +26,7 @@ en:
     name: Rsync UI
   auth:
     sign_out: Sign out
+    toggle_theme: Toggle theme
   configurations:
     index:
       cancel: Cancel

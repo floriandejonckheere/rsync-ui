@@ -4,7 +4,7 @@
       type="submit"
       form="server-form"
       class="btn-icon-outline btn-icon-lg"
-      title="<%= server.persisted? ? I18n.t("servers.form.submit_update") : I18n.t("servers.form.submit_create") %>"
+      data-tooltip="<%= server.persisted? ? I18n.t("servers.form.submit_update") : I18n.t("servers.form.submit_create") %>"
     >
       <%= lucide_icon "check", class: "h-6 w-6" %>
     </button>
