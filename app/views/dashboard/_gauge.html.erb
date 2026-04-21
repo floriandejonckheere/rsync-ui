@@ -1,10 +1,3 @@
-<% bar_color = case health
-              when :ok then "bg-green-500"
-              when :warning then "bg-yellow-400"
-              when :critical then "bg-red-500"
-              else "bg-gray-300 dark:bg-gray-600"
-              end %>
-
 <% text_color = case health
                when :ok then "text-green-500"
                when :warning then "text-yellow-400"
@@ -12,30 +5,34 @@
                else "text-gray-400 dark:text-gray-500"
                end %>
 
-<div class="flex flex-col gap-1 flex-1">
-  <div class="flex flex-col">
-    <span class="text-3xl font-bold <%= text_color %>">
-      <% if percent.present? %>
-        <%= number_to_percentage(percent, precision: 1) %>
-      <% else %>
-        —
-      <% end %>
-    </span>
+<div class="flex flex-col items-center gap-2 flex-1">
+  <div
+    class="relative w-20 h-20"
+    data-controller="gauge"
+    data-gauge-percent-value="<%= percent.present? ? percent.clamp(0, 100) : 0 %>"
+    data-gauge-health-value="<%= health %>"
+  >
+    <canvas data-gauge-target="canvas"></canvas>
 
-    <span class="text-xs text-gray-400 dark:text-gray-500">
-      <%= label %>
-
-      <% if detail.present? %>
-        <br />
-        <%= detail %>
-      <% end %>
-    </span>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <span class="text-sm font-bold <%= text_color %>">
+        <% if percent.present? %>
+          <%= number_to_percentage(percent, precision: 0) %>
+        <% else %>
+          &mdash;
+        <% end %>
+      </span>
+    </div>
   </div>
 
-  <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
-    <div
-      class="<%= bar_color %> h-2.5 rounded-full transition-all duration-300"
-      style="width: <%= percent.present? ? percent.clamp(0, 100) : 0 %>%"
-    ></div>
+  <div class="text-center">
+    <span class="text-xs text-gray-500 dark:text-gray-400"><%= label %></span>
+
+    <% if detail.present? %>
+      <br>
+      <span class="text-xs text-gray-400 dark:text-gray-500">
+        <%= detail %>
+      </span>
+    <% end %>
   </div>
 </div>

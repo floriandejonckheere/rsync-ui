@@ -51,15 +51,16 @@ en:
       cpu: CPU
       disabled: Resource usage disabled
       disk: Disk
-      failed: Probe failed
-      last_probed: Last probed %{time} ago
+      failed: Failed to retrieve resource usage
+      last_probed: "%{time} ago"
       load: Load
       memory: Memory
       never_probed: Never probed
       no_servers: No servers configured
+      of: of
       path: 'Path: %{path}'
       title: Server health
-      uptime: Uptime
+      uptime: Up %{time}
     subtitle: Monitor recent activity
     title: Dashboard
   flash:
@@ -271,6 +272,8 @@ en:
       success: Job was successfully updated.
   monitoring:
     title: Background jobs
+  nav:
+    toggle_sidebar: Toggle sidebar
   page:
     info: Page %{current} of %{total}
     next: Next

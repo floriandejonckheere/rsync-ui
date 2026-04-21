@@ -28,13 +28,13 @@
                    label: I18n.t("dashboard.server_health.disk"),
                    percent: ru.disk_percent,
                    health: ru.disk_health,
-                   detail: ru.disk_percent.present? ? number_to_human_size(ru.disk_used) + "/" + number_to_human_size(ru.disk_total) : nil %>
+                   detail: ru.disk_percent.present? ? number_to_human_size(ru.disk_used) + " " + I18n.t("dashboard.server_health.of") + " " + number_to_human_size(ru.disk_total) : nil %>
 
         <%= render "dashboard/gauge",
                    label: I18n.t("dashboard.server_health.memory"),
                    percent: ru.memory_percent,
                    health: ru.memory_health,
-                   detail: ru.memory_percent.present? ? number_to_human_size(ru.memory_used) + "/" + number_to_human_size(ru.memory_total) : nil %>
+                   detail: ru.memory_percent.present? ? number_to_human_size(ru.memory_used) + " " + I18n.t("dashboard.server_health.of") + " " + number_to_human_size(ru.memory_total) : nil %>
 
         <%= render "dashboard/gauge",
                    label: I18n.t("dashboard.server_health.cpu"),
@@ -56,12 +56,9 @@
       <%= lucide_icon "clock", class: "h-3 w-3" %>
 
       <% if ru&.uptime_seconds.present? %>
-        <%= I18n.t("dashboard.server_health.uptime") %>
-        :
-        <%= distance_of_time_in_words(0, ru.uptime_seconds) %>
+        <%= I18n.t("dashboard.server_health.uptime", time: distance_of_time_in_words(0, ru.uptime_seconds)) %>
       <% else %>
-        <%= I18n.t("dashboard.server_health.uptime") %>
-        : —
+        -
       <% end %>
     </div>
 
