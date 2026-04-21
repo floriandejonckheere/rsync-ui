@@ -142,12 +142,15 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Update branding
 - [ ] Implement support for OAuth2 authentication
 - [ ] Allow duplicating jobs
+- [ ] Add search functionality on servers, repositories, jobs, and job runs page
+- [ ] Add filter functionality on servers, repositories, jobs, and job runs page
 
 ### Technical TODOs
 
 - [ ] Do not bind to port 5432, otherwise you can't use git worktrees
 - [ ] Use SolidQueue's [dynamic scheduling](https://github.com/rails/solid_queue#scheduling-and-unscheduling-recurring-tasks-dynamically) instead of the Servers::ResourceUsageSchedulerJob
 - [ ] Add a `with_configuration` helper
+- [ ] Make menubar responsive
 
 ## Open questions
 
