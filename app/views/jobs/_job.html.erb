@@ -24,8 +24,19 @@
     <%= job.destination_repository.name %>
   </td>
 
-  <td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-300">
-    <%= job.schedule.presence || "—" %>
+  <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
+    <% if job.schedule.present? %>
+      <span
+        data-controller="cron-preview"
+        data-cron-preview-placeholder-value=""
+        data-cron-preview-invalid-value="<%= job.schedule %>"
+      >
+        <input type="hidden" data-cron-preview-target="input" value="<%= job.schedule %>">
+        <span class="text-xs" data-cron-preview-target="output"><%= job.schedule %></span>
+      </span>
+    <% else %>
+      —
+    <% end %>
   </td>
 
   <td class="px-6 py-4">
