@@ -282,6 +282,64 @@ Configuration keys should use snake_case and be namespaced appropriately.
 Configurations can have the following categories: features, system, other 
 Configuration values can be of the following types: string, integer, float, boolean.
 
+## Search Pattern
+
+Use the `Searchable` concern to add search to an index action. It sets `@query` from params and provides `search_for` to apply a case-insensitive ILIKE filter across any number of columns.
+
+**Controller:**
+```ruby
+class ModelsController < ApplicationController
+  include Searchable
+
+  def index
+    models = authorized_scope(Model.order(:name), type: :relation)
+    models = search_for(models, "name", "description")
+
+    @pagy, @models = pagy(models)
+
+    authorize! :model
+  end
+end
+```
+
+**View (`app/views/models/index.html.erb`):**
+```erb
+<% content_for :actions do %>
+  <%= render "shared/search",
+             url: models_path,
+             query: @query,
+             frame: "models_list",
+             placeholder: I18n.t("models.index.search.placeholder"),
+             title: I18n.t("models.index.search.title") %>
+<% end %>
+
+<%= turbo_frame_tag "models_list" do %>
+  <% if @models.empty? && @query.present? %>
+    <%= render "shared/search_no_results", title: I18n.t("models.index.search.no_results.title") %>
+  <% elsif @models.empty? %>
+    <%# empty state %>
+  <% else %>
+    <%# table %>
+  <% end %>
+<% end %>
+```
+
+**Locale (`config/locales/en.yml`):**
+```yaml
+models:
+  index:
+    search:
+      no_results:
+        title: No models found
+      placeholder: Search by name or description...
+      title: Search models
+```
+
+**Notes:**
+- The `shared/search` partial renders a toggle button in the actions bar; the form submits to the Turbo Frame so the list updates without a full page reload.
+- The search input auto-expands when `@query` is present (e.g. on page load with a pre-filled query).
+- Debouncing is built into `search_controller.js` (300 ms default).
+
 ## Collapsible Card Pattern
 
 Use native `<details>` elements with Basecoat card styling for expandable/collapsible sections.
