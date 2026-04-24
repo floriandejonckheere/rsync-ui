@@ -13,6 +13,63 @@ RSpec.describe "Servers" do
 
         expect(response).to have_http_status(:ok)
       end
+
+      context "when a query parameter is present" do
+        it "filters servers by name" do
+          matching_server = create(:server, user:, name: "Production server")
+          non_matching_server = create(:server, user:, name: "Staging")
+
+          get servers_path, params: { query: "production" }
+
+          expect(response.body).to include(matching_server.name)
+          expect(response.body).not_to include(non_matching_server.name)
+        end
+
+        it "filters servers by description" do
+          matching_server = create(:server, user:, description: "Primary web server")
+          non_matching_server = create(:server, user:, description: "Backup storage")
+
+          get servers_path, params: { query: "primary" }
+
+          expect(response.body).to include(matching_server.description)
+          expect(response.body).not_to include(non_matching_server.description)
+        end
+
+        it "filters servers by host" do
+          matching_server = create(:server, user:, host: "prod.example.com")
+          non_matching_server = create(:server, user:, host: "staging.example.com")
+
+          get servers_path, params: { query: "prod.example" }
+
+          expect(response.body).to include(matching_server.host)
+          expect(response.body).not_to include(non_matching_server.host)
+        end
+
+        it "is case insensitive" do
+          server = create(:server, user:, name: "Production server")
+
+          get servers_path, params: { query: "PRODUCTION" }
+
+          expect(response.body).to include(server.name)
+        end
+
+        it "handles special SQL characters safely" do
+          server = create(:server, user:, name: "$$$ server")
+
+          get servers_path, params: { query: "$$$" }
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(server.name)
+        end
+
+        it "returns empty results for non-matching query" do
+          create(:server, user:, name: "Some Server")
+
+          get servers_path, params: { query: "nonexistent" }
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
     end
 
     context "when not authenticated" do

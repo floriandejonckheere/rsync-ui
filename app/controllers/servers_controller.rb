@@ -5,7 +5,12 @@ class ServersController < ApplicationController
   before_action :set_server, only: [:edit, :update, :destroy]
 
   def index
-    @pagy, @servers = pagy(authorized_scope(Server.order(:name), type: :relation))
+    servers = authorized_scope(Server.order(:name), type: :relation)
+
+    servers = servers.where("name ILIKE :query OR description ILIKE :query OR host ILIKE :query", query: "%#{Server.sanitize_sql_like(params[:query])}%") if params[:query].present?
+
+    @query = params[:query]
+    @pagy, @servers = pagy(servers)
 
     authorize! :server
   end
