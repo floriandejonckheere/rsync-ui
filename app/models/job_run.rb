@@ -26,6 +26,13 @@ class JobRun < ApplicationRecord
   validates :status,
             presence: true
 
+  scope :by_job, ->(job_id) { where(job_id:) if job_id.present? }
+  scope :by_trigger, ->(trigger) { where(trigger:) if trigger.present? }
+  scope :by_status, ->(status) { where(status:) if status.present? }
+
+  scope :started_from, ->(from) { where(started_at: from..) if from.present? }
+  scope :started_to, ->(to) { where(started_at: ..to) if to.present? }
+
   def duration
     return unless started_at
 

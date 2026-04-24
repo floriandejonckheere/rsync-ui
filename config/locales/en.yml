@@ -87,6 +87,18 @@ en:
       success: Job run was successfully deleted.
     index:
       empty: No job runs have been recorded yet.
+      empty_filtered: No job runs match the selected filters.
+      filters:
+        all_jobs: All jobs
+        all_statuses: All statuses
+        all_triggers: All triggers
+        clear: Clear filters
+        job: Job
+        search_jobs: Search jobs...
+        started_at_from: Started from
+        started_at_to: Started to
+        status: Status
+        trigger: Trigger
       subtitle: Overview of synchronization job executions
       title: Activity log
     show:
