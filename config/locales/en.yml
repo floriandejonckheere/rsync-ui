@@ -95,6 +95,7 @@ en:
         search_jobs: Search jobs...
         started_at_from: Started from
         started_at_to: Started to
+        status: Status
       subtitle: Overview of synchronization job executions
       title: Activity log
     show:
