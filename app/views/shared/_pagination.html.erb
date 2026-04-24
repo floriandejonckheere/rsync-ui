@@ -1,6 +1,6 @@
 <div class="flex items-center justify-center gap-2 mt-8">
   <% if pagy.previous %>
-    <%= link_to pagination_page_path(path_method, pagy.previous, **params), class: "btn-outline", data: { turbo_action: "replace" } do %>
+    <%= link_to pagination_page_path(path_method, pagy.previous, **params.except(:controller, :action).to_unsafe_h.symbolize_keys), class: "btn-outline", data: { turbo_action: "replace" } do %>
       <%= lucide_icon "chevron-left", class: "w-5 h-5" %>
       <%= I18n.t("page.previous") %>
     <% end %>
@@ -16,7 +16,7 @@
   </span>
 
   <% if pagy.next %>
-    <%= link_to pagination_page_path(path_method, pagy.next, **params), class: "btn-outline", data: { turbo_action: "replace" } do %>
+    <%= link_to pagination_page_path(path_method, pagy.next, **params.except(:controller, :action).to_unsafe_h.symbolize_keys), class: "btn-outline", data: { turbo_action: "replace" } do %>
       <%= I18n.t("page.next") %>
       <%= lucide_icon "chevron-right", class: "w-5 h-5" %>
     <% end %>
