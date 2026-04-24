@@ -269,7 +269,6 @@ en:
       title: New job
     table:
       destination: Destination
-      enabled: Enabled
       name: Name
       schedule: Schedule
       source: Source
