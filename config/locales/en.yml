@@ -387,7 +387,6 @@ en:
       name: Name
       password: Password
       ssh_key: SSH Key
-      username: Username
     title: Servers
     update:
       success: Server was successfully updated.
