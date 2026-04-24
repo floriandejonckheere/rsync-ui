@@ -4,108 +4,41 @@
                data: { turbo_frame: "job_runs_list", controller: "filter" } do %>
     <div class="flex flex-row flex-wrap gap-4 items-end px-6 py-4">
 
-      <%# Job — combobox select with search %>
-      <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium text-gray-500 dark:text-gray-400">
-          <%= I18n.t("job_runs.index.filters.job") %>
-        </label>
+      <%= render "shared/filter_combobox",
+                 label: I18n.t("job_runs.table.job"),
+                 name: "filter[job_id]",
+                 options: @jobs.map { |j| [j.name, j.id] },
+                 value: @filters[:job_id],
+                 blank_label: I18n.t("job_runs.index.filters.all_jobs"),
+                 placeholder: I18n.t("job_runs.index.filters.search_jobs") %>
 
-        <div class="select" data-action="change->filter#submit">
-          <button type="button" class="btn-outline" aria-haspopup="listbox" aria-expanded="false">
-            <span>
-              <%- if @filters[:job_id].present? %>
-                <%= @jobs.find { |j| j.id.to_s == @filters[:job_id] }&.name || I18n.t("job_runs.index.filters.all_jobs") %>
-              <%- else %>
-                <%= I18n.t("job_runs.index.filters.all_jobs") %>
-              <%- end %>
-            </span>
-            <%= lucide_icon "chevron-down", class: "h-4 w-4 opacity-50" %>
-          </button>
+      <%= render "shared/filter_select",
+                 label: I18n.t("job_runs.table.trigger"),
+                 name: "filter[trigger]",
+                 options: JobRun.triggers.keys.map { |t| [I18n.t("job_runs.trigger.#{t}"), t] },
+                 selected: @filters[:trigger],
+                 blank_label: I18n.t("job_runs.index.filters.all_triggers") %>
 
-          <input type="hidden" name="filter[job_id]" value="<%= @filters[:job_id] %>">
+      <%= render "shared/filter_select",
+                 label: I18n.t("job_runs.table.status"),
+                 name: "filter[status]",
+                 options: JobRun.statuses.keys.map { |s| [I18n.t("job_runs.status.#{s}"), s] },
+                 selected: @filters[:status],
+                 blank_label: I18n.t("job_runs.index.filters.all_statuses") %>
 
-          <div data-popover aria-hidden="true">
-            <header>
-              <%= lucide_icon "search", class: "h-4 w-4 opacity-50" %>
-              <input type="text" role="combobox" placeholder="<%= I18n.t("job_runs.index.filters.search_jobs") %>">
-            </header>
+      <%= render "shared/filter_datetime",
+                 label: I18n.t("job_runs.index.filters.started_at_from"),
+                 name: "filter[started_at_from]",
+                 value: @filters[:started_at_from] %>
 
-            <div role="listbox">
-              <div role="option" data-value=""><%= I18n.t("job_runs.index.filters.all_jobs") %></div>
-              <% @jobs.each do |job| %>
-                <div role="option" data-value="<%= job.id %>"><%= job.name %></div>
-              <% end %>
-            </div>
-          </div>
-        </div>
-      </div>
+      <%= render "shared/filter_datetime",
+                 label: I18n.t("job_runs.index.filters.started_at_to"),
+                 name: "filter[started_at_to]",
+                 value: @filters[:started_at_to] %>
 
-      <%# Trigger — native select %>
-      <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium text-gray-500 dark:text-gray-400">
-          <%= I18n.t("job_runs.index.filters.trigger") %>
-        </label>
-
-        <%= select_tag "filter[trigger]",
-                       options_for_select(
-                         [[I18n.t("job_runs.index.filters.all_triggers"), ""]] +
-                           JobRun.triggers.keys.map { |t| [I18n.t("job_runs.trigger.#{t}"), t] },
-                         @filters[:trigger],
-                       ),
-                       class: "select",
-                       data: { action: "change->filter#submit" } %>
-      </div>
-
-      <%# Status — native select %>
-      <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium text-gray-500 dark:text-gray-400">
-          <%= I18n.t("job_runs.index.filters.status") %>
-        </label>
-
-        <%= select_tag "filter[status]",
-                       options_for_select(
-                         [[I18n.t("job_runs.index.filters.all_statuses"), ""]] +
-                           JobRun.statuses.keys.map { |s| [I18n.t("job_runs.status.#{s}"), s] },
-                         @filters[:status],
-                       ),
-                       class: "select",
-                       data: { action: "change->filter#submit" } %>
-      </div>
-
-      <%# Started at from — datetime input %>
-      <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium text-gray-500 dark:text-gray-400">
-          <%= I18n.t("job_runs.index.filters.started_at_from") %>
-        </label>
-
-        <input
-          type="datetime-local"
-          name="filter[started_at_from]"
-          value="<%= @filters[:started_at_from] %>"
-          class="input w-auto"
-          data-action="change->filter#submitDebounced"
-        >
-      </div>
-
-      <%# Started at to — datetime input %>
-      <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium text-gray-500 dark:text-gray-400">
-          <%= I18n.t("job_runs.index.filters.started_at_to") %>
-        </label>
-
-        <input
-          type="datetime-local"
-          name="filter[started_at_to]"
-          value="<%= @filters[:started_at_to] %>"
-          class="input w-auto"
-          data-action="change->filter#submitDebounced"
-        >
-      </div>
-
-      <%# Clear filters — always visible, pushed to the right %>
       <%= link_to job_runs_path, class: "btn-outline flex items-center gap-2 ml-auto" do %>
         <%= lucide_icon "x", class: "h-4 w-4" %>
-        <%= I18n.t("job_runs.index.filters.clear") %>
+        <%= I18n.t("shared.filters.clear") %>
       <% end %>
 
     </div>

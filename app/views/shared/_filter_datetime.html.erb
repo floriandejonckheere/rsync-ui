@@ -1,0 +1,14 @@
+<%# locals: (label:, name:, value:) %>
+<div class="flex flex-col gap-1.5">
+  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">
+    <%= label %>
+  </label>
+
+  <input
+    type="datetime-local"
+    name="<%= name %>"
+    value="<%= value %>"
+    class="input w-auto"
+    data-action="change->filter#submitDebounced"
+  >
+</div>

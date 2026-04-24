@@ -92,13 +92,9 @@ en:
         all_jobs: All jobs
         all_statuses: All statuses
         all_triggers: All triggers
-        clear: Clear filters
-        job: Job
         search_jobs: Search jobs...
         started_at_from: Started from
         started_at_to: Started to
-        status: Status
-        trigger: Trigger
       subtitle: Overview of synchronization job executions
       title: Activity log
     show:
@@ -424,6 +420,8 @@ en:
     title: Settings
     update: Update
   shared:
+    filters:
+      clear: Clear filters
     form_messages:
       error_title: Something went wrong
     search:

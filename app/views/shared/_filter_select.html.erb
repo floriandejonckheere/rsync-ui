@@ -1,0 +1,11 @@
+<%# locals: (label:, name:, options:, selected:, blank_label:) %>
+<div class="flex flex-col gap-1.5">
+  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">
+    <%= label %>
+  </label>
+
+  <%= select_tag name,
+                 options_for_select([[blank_label, ""]] + options, selected),
+                 class: "select",
+                 data: { action: "change->filter#submit" } %>
+</div>

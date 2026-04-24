@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 class JobRunsController < ApplicationController
+  include Filterable
+
   before_action :authenticate_user!
   before_action :set_job_run, only: [:show, :logs, :destroy, :cancel]
 
   def index
     @jobs = authorized_scope(Job.order(:name), type: :relation)
-    @filters = filter_params
-    @filters_active = @filters.values.any?(&:present?)
 
     scope = authorized_scope(
       JobRun.includes(job: [:source_repository, :destination_repository]).order(created_at: :desc),
@@ -16,7 +16,6 @@ class JobRunsController < ApplicationController
     scope = scope.by_job(@filters[:job_id])
     scope = scope.by_trigger(@filters[:trigger])
     scope = scope.by_status(@filters[:status])
-
     scope = scope.started_from(parse_datetime(@filters[:started_at_from]))
     scope = scope.started_to(parse_datetime(@filters[:started_at_to]))
 
@@ -91,11 +90,5 @@ class JobRunsController < ApplicationController
         :started_at_from,
         :started_at_to,
       )
-  end
-
-  def parse_datetime(value)
-    Time.zone.parse(value) if value.present?
-  rescue ArgumentError
-    nil
   end
 end
