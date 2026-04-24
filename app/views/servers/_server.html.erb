@@ -36,7 +36,7 @@
     <div class="flex items-center justify-end gap-2">
       <%= link_to edit_server_path(server),
                   class: "btn-icon-outline btn-icon-md",
-                  data: { tooltip: I18n.t("servers.actions.edit") } do %>
+                  data: { tooltip: I18n.t("servers.actions.edit"), turbo_frame: "_top" } do %>
         <%= lucide_icon "pencil", class: "h-4 w-4" %>
       <% end %>
 
