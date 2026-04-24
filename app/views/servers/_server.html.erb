@@ -7,11 +7,11 @@
   <td class="pl-6 py-4">
     <% if server.password.present? %>
       <div data-tooltip="<%= I18n.t("servers.table.password") %>">
-        <%= lucide_icon "key-round", class: "h-4 w-4 text-blue-500" %>
+        <%= lucide_icon "rectangle-ellipsis", class: "h-4 w-4 text-blue-500" %>
       </div>
     <% elsif server.ssh_key.present? %>
       <div data-tooltip="<%= I18n.t("servers.table.ssh_key") %>">
-        <%= lucide_icon "key", class: "h-4 w-4 text-green-500" %>
+        <%= lucide_icon "key-round", class: "h-4 w-4 text-green-500" %>
       </div>
     <% end %>
   </td>
