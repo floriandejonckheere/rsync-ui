@@ -167,6 +167,13 @@
           </div>
         </div>
       </section>
+
+      <footer>
+        <p class="text-sm text-muted-foreground flex items-center gap-2">
+          <%= lucide_icon "lock", class: "h-4 w-4 shrink-0" %>
+          <%= I18n.t("servers.form.credentials_encrypted_hint") %>
+        </p>
+      </footer>
     </div>
   </div>
 <% end %>

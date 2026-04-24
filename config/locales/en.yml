@@ -349,6 +349,7 @@ en:
     form:
       authentication: Authentication
       connection: Connection
+      credentials_encrypted_hint: Credentials are securely encrypted and stored in the database
       credentials_hint: Provide either a password or an SSH key (not both).
       description: Description
       description_placeholder: Optional description for this server
