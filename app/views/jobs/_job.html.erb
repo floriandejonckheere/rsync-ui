@@ -8,7 +8,7 @@
   <td class="pl-6 py-4">
     <% unless job.enabled? %>
       <div data-tooltip="<%= I18n.t("jobs.enabled.false") %>">
-        <%= lucide_icon "circle-off", class: "h-4 w-4 text-gray-400" %>
+        <%= lucide_icon "refresh-cw-off", class: "h-4 w-4 text-gray-400" %>
       </div>
     <% end %>
   </td>
@@ -61,6 +61,15 @@
                   class: "btn-icon-outline btn-icon-md",
                   data: { tooltip: I18n.t("jobs.actions.edit"), turbo_frame: "_top" } do %>
         <%= lucide_icon "pencil", class: "h-4 w-4" %>
+      <% end %>
+
+      <%= button_to job_path(job),
+                    params: { job: { enabled: !job.enabled? } },
+                    method: :patch,
+                    class: "btn-icon-outline btn-icon-md",
+                    form_class: "contents",
+                    data: { tooltip: I18n.t(job.enabled? ? "jobs.actions.disable" : "jobs.actions.enable") } do %>
+        <%= lucide_icon(job.enabled? ? "refresh-cw" : "refresh-cw-off", class: "h-4 w-4") %>
       <% end %>
 
       <%= button_to job_runs_path,

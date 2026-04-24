@@ -125,7 +125,9 @@ en:
       delete: Delete job
       delete_confirm: Are you sure you want to delete this job? This action cannot be undone.
       delete_confirm_title: Delete job
+      disable: Disable job
       edit: Edit job
+      enable: Enable job
       run: Run job
     create:
       success: Job was successfully created.
