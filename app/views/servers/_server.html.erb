@@ -4,7 +4,19 @@
     hover:bg-gray-50 dark:hover:bg-gray-700/50
   "
 >
-  <td class="px-6 py-4">
+  <td class="pl-6 py-4">
+    <% if server.password.present? %>
+      <div data-tooltip="<%= I18n.t("servers.table.password") %>">
+        <%= lucide_icon "key-round", class: "h-4 w-4 text-blue-500" %>
+      </div>
+    <% elsif server.ssh_key.present? %>
+      <div data-tooltip="<%= I18n.t("servers.table.ssh_key") %>">
+        <%= lucide_icon "key", class: "h-4 w-4 text-green-500" %>
+      </div>
+    <% end %>
+  </td>
+
+  <td class="pl-3 pr-6 py-4">
     <div class="font-medium text-gray-900 dark:text-gray-100">
       <%= server.name %>
     </div>
@@ -22,36 +34,6 @@
 
   <td class="px-6 py-4 font-mono text-gray-600 dark:text-gray-300">
     <%= server.username %>
-  </td>
-
-  <td class="px-6 py-4">
-    <div class="flex gap-2">
-      <% if server.password.present? %>
-        <span
-          class="
-            inline-flex items-center gap-1 rounded-full bg-blue-50
-            dark:bg-blue-900/30 px-2 py-1 text-xs text-blue-700
-            dark:text-blue-300
-          "
-        >
-          <%= lucide_icon "key-round", class: "h-3 w-3" %>
-          <%= I18n.t("servers.table.password") %>
-        </span>
-      <% end %>
-
-      <% if server.ssh_key.present? %>
-        <span
-          class="
-            inline-flex items-center gap-1 rounded-full bg-green-50
-            dark:bg-green-900/30 px-2 py-1 text-xs text-green-700
-            dark:text-green-300
-          "
-        >
-          <%= lucide_icon "key", class: "h-3 w-3" %>
-          <%= I18n.t("servers.table.ssh_key") %>
-        </span>
-      <% end %>
-    </div>
   </td>
 
   <td class="px-6 py-4">

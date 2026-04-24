@@ -383,7 +383,6 @@ en:
       subtitle: Add a new SSH server
       title: New server
     table:
-      credentials: Credentials
       host: Host
       name: Name
       password: Password
