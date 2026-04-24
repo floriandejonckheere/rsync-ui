@@ -313,9 +313,7 @@ en:
       empty: No repositories have been configured yet.
       new: New repository
       search:
-        close: Close search
         no_results:
-          description: Try adjusting your search terms.
           title: No repositories found
         placeholder: Search by name or description...
         title: Search repositories
@@ -375,9 +373,7 @@ en:
       empty: No servers have been configured yet.
       new: New server
       search:
-        close: Close search
         no_results:
-          description: Try adjusting your search terms.
           title: No servers found
         placeholder: Search by name, description, or host...
         title: Search servers
@@ -415,3 +411,7 @@ en:
   shared:
     form_messages:
       error_title: Something went wrong
+    search:
+      close: Close search
+      no_results:
+        description: Try adjusting your search terms.

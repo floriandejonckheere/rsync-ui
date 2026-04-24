@@ -7,41 +7,12 @@
 <% end %>
 
 <% content_for :actions do %>
-  <div
-    class="flex gap-2"
-    data-controller="search"
-    data-action="turbo:submit-end->search#restoreFocus"
-  >
-    <button
-      type="button"
-      title="<%= I18n.t('servers.index.search.title') %>"
-      class="btn-icon-outline btn-icon-lg"
-      data-search-target="button"
-      data-action="search#toggle"
-    >
-      <%= lucide_icon "search", class: "h-6 w-6" %>
-    </button>
-
-    <%= form_with url: servers_path, method: :get, class: "hidden flex gap-2", data: { turbo_frame: "servers_list", search_target: "form" } do |f| %>
-      <%= f.text_field :query,
-                       value: @query,
-                       placeholder: I18n.t("servers.index.search.placeholder"),
-                       class: "input w-64 h-12 bg-white dark:bg-gray-800",
-                       data: {
-                         search_target: "input",
-                         action: "input->search#handleInput keydown->search#handleKeydown",
-                       } %>
-
-      <button
-        type="button"
-        title="<%= I18n.t('servers.index.search.close') %>"
-        class="btn-icon-outline btn-icon-lg"
-        data-action="search#close"
-      >
-        <%= lucide_icon "x", class: "h-6 w-6" %>
-      </button>
-    <% end %>
-  </div>
+  <%= render "shared/search",
+             url: servers_path,
+             query: @query,
+             frame: "servers_list",
+             placeholder: I18n.t("servers.index.search.placeholder"),
+             title: I18n.t("servers.index.search.title") %>
 
   <%= link_to new_server_path, data: { tooltip: I18n.t("servers.index.new") }, class: "btn-icon-outline btn-icon-lg" do %>
     <%= lucide_icon "plus", class: "h-6 w-6" %>
@@ -50,19 +21,7 @@
 
 <%= turbo_frame_tag "servers_list" do %>
   <% if @servers.empty? && @query.present? %>
-    <div class="card text-center py-10">
-      <section>
-        <%= lucide_icon "search-x", class: "w-16 h-16 mx-auto mb-4 text-muted-foreground" %>
-
-        <h3 class="text-xl font-semibold mb-2">
-          <%= I18n.t("servers.index.search.no_results.title") %>
-        </h3>
-
-        <p class="text-muted-foreground">
-          <%= I18n.t("servers.index.search.no_results.description") %>
-        </p>
-      </section>
-    </div>
+    <%= render "shared/search_no_results", title: I18n.t("servers.index.search.no_results.title") %>
   <% elsif @servers.empty? %>
     <div
       class="

@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 class RepositoriesController < ApplicationController
+  include Searchable
+
   before_action :authenticate_user!
   before_action :set_repository, only: [:edit, :update, :destroy]
   before_action :set_servers, only: [:new, :edit, :create, :update]
 
   def index
     repositories = authorized_scope(Repository.order(:name), type: :relation)
+    repositories = search_for(repositories, "name", "description")
 
-    repositories = repositories.where("name ILIKE :query OR description ILIKE :query", query: "%#{Repository.sanitize_sql_like(params[:query])}%") if params[:query].present?
-
-    @query = params[:query]
     @pagy, @repositories = pagy(repositories)
 
     authorize! :repository

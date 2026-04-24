@@ -1,0 +1,36 @@
+<%# locals: (url:, query:, frame:, placeholder:, title:) %>
+<div
+  class="flex gap-2"
+  data-controller="search"
+  data-action="turbo:submit-end->search#restoreFocus"
+>
+  <button
+    type="button"
+    title="<%= title %>"
+    class="btn-icon-outline btn-icon-lg"
+    data-search-target="button"
+    data-action="search#toggle"
+  >
+    <%= lucide_icon "search", class: "h-6 w-6" %>
+  </button>
+
+  <%= form_with url:, method: :get, class: "hidden flex gap-2", data: { turbo_frame: frame, search_target: "form" } do |f| %>
+    <%= f.text_field :query,
+                     value: query,
+                     placeholder:,
+                     class: "input w-64 h-12 bg-white dark:bg-gray-800",
+                     data: {
+                       search_target: "input",
+                       action: "input->search#handleInput keydown->search#handleKeydown",
+                     } %>
+
+    <button
+      type="button"
+      title="<%= I18n.t('shared.search.close') %>"
+      class="btn-icon-outline btn-icon-lg"
+      data-action="search#close"
+    >
+      <%= lucide_icon "x", class: "h-6 w-6" %>
+    </button>
+  <% end %>
+</div>
