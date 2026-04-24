@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 
 class JobsController < ApplicationController
+  include Searchable
+
   before_action :authenticate_user!
   before_action :set_job, only: [:edit, :update, :destroy]
   before_action :set_repositories, only: [:new, :edit, :create, :update]
 
   def index
-    @pagy, @jobs = pagy(authorized_scope(Job.includes(:source_repository, :destination_repository).order(:name), type: :relation))
+    jobs = authorized_scope(Job.includes(:source_repository, :destination_repository).order(:name), type: :relation)
+    jobs = search_for(jobs, "name", "description")
+
+    @pagy, @jobs = pagy(jobs)
 
     authorize! :job
   end

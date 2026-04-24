@@ -7,56 +7,67 @@
 <% end %>
 
 <% content_for :actions do %>
+  <%= render "shared/search",
+             url: jobs_path,
+             query: @query,
+             frame: "jobs_list",
+             placeholder: I18n.t("jobs.index.search.placeholder"),
+             title: I18n.t("jobs.index.search.title") %>
+
   <%= link_to new_job_path, data: { tooltip: I18n.t("jobs.index.new") }, class: "btn-icon-outline btn-icon-lg" do %>
     <%= lucide_icon "plus", class: "h-6 w-6" %>
   <% end %>
 <% end %>
 
-<% if @jobs.empty? %>
-  <div class="card flex flex-col items-center justify-center py-16 gap-4 text-gray-400">
-    <%= lucide_icon "arrow-right-left", class: "h-12 w-12" %>
+<%= turbo_frame_tag "jobs_list" do %>
+  <% if @jobs.empty? && @query.present? %>
+    <%= render "shared/search_no_results", title: I18n.t("jobs.index.search.no_results.title") %>
+  <% elsif @jobs.empty? %>
+    <div class="card flex flex-col items-center justify-center py-16 gap-4 text-gray-400">
+      <%= lucide_icon "arrow-right-left", class: "h-12 w-12" %>
 
-    <p class="text-lg">
-      <%= I18n.t("jobs.index.empty") %>
-    </p>
-  </div>
-<% else %>
-  <div class="card p-0 overflow-hidden">
-    <table class="w-full text-sm">
-      <thead>
-        <tr class="border-b border-gray-100 dark:border-gray-700">
-          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
-            <%= I18n.t("jobs.table.name") %>
-          </th>
+      <p class="text-lg">
+        <%= I18n.t("jobs.index.empty") %>
+      </p>
+    </div>
+  <% else %>
+    <div class="card p-0 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-100 dark:border-gray-700">
+            <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+              <%= I18n.t("jobs.table.name") %>
+            </th>
 
-          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
-            <%= I18n.t("jobs.table.source") %>
-          </th>
+            <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+              <%= I18n.t("jobs.table.source") %>
+            </th>
 
-          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
-            <%= I18n.t("jobs.table.destination") %>
-          </th>
+            <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+              <%= I18n.t("jobs.table.destination") %>
+            </th>
 
-          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
-            <%= I18n.t("jobs.table.schedule") %>
-          </th>
+            <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+              <%= I18n.t("jobs.table.schedule") %>
+            </th>
 
-          <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
-            <%= I18n.t("jobs.table.enabled") %>
-          </th>
+            <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+              <%= I18n.t("jobs.table.enabled") %>
+            </th>
 
-          <th class="px-6 py-4"></th>
-        </tr>
-      </thead>
+            <th class="px-6 py-4"></th>
+          </tr>
+        </thead>
 
-      <tbody>
-        <% @jobs.each do |job| %>
-          <%= render "job", job: %>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-  <% if @pagy.pages > 1 %>
-    <%= render "shared/pagination", pagy: @pagy, path_method: :jobs_path %>
+        <tbody>
+          <% @jobs.each do |job| %>
+            <%= render "job", job: %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if @pagy.pages > 1 %>
+      <%= render "shared/pagination", pagy: @pagy, path_method: :jobs_path %>
+    <% end %>
   <% end %>
 <% end %>

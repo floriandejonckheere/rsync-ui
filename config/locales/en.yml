@@ -257,6 +257,11 @@ en:
     index:
       empty: No jobs have been configured yet.
       new: New job
+      search:
+        no_results:
+          title: No jobs found
+        placeholder: Search by name or description...
+        title: Search jobs
       subtitle: Manage synchronization tasks between repositories
       title: Jobs
     new:
