@@ -64,7 +64,7 @@ class ServersController < ApplicationController
   def server_params
     params
       .require(:server)
-      .permit(:name, :description, :host, :port, :username, :password, :ssh_key)
+      .permit(:name, :description, :path, :host, :port, :username, :password, :ssh_key)
   end
 
   def update_params

@@ -42,6 +42,22 @@
                               rows: 3,
                               autocomplete: "off" %>
             </div>
+
+            <div class="field">
+              <%= f.label :path, I18n.t("servers.form.path") %>
+
+              <%= f.text_field :path,
+                               placeholder: I18n.t("servers.form.path_placeholder"),
+                               required: true,
+                               autocomplete: "off" %>
+
+              <% if Configuration.get("resource_usage") %>
+                <p class="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+                  <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
+                  <%= I18n.t("servers.form.path_hint") %>
+                </p>
+              <% end %>
+            </div>
           </div>
         </section>
       </div>

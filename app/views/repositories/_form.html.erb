@@ -42,6 +42,12 @@
                               rows: 3,
                               autocomplete: "off" %>
             </div>
+
+            <div class="field flex-row items-center gap-4">
+              <%= f.check_box :read_only, role: "switch" %>
+
+              <%= f.label :read_only, I18n.t("repositories.form.read_only") %>
+            </div>
           </div>
         </section>
       </div>
@@ -55,7 +61,7 @@
       <section>
         <div
           class="tabs w-full flex flex-col gap-6"
-          data-controller="repository-type"
+          data-controller="repository-type server-path"
         >
           <%= f.hidden_field :repository_type, data: { "repository-type-target": "input" } %>
 
@@ -115,9 +121,10 @@
               <%= f.label :server_id, I18n.t("repositories.form.server") %>
 
               <%= f.select :server_id,
-                           @servers.map { |s| [s.name, s.id] },
+                           @servers.map { |s| [s.name, s.id, { data: { path: s.path } }] },
                            { include_blank: I18n.t("repositories.form.server_placeholder") },
-                           { class: "w-full" } %>
+                           { class: "w-full",
+                             data: { "server-path-target": "select", action: "change->server-path#prefill" } } %>
             </div>
           </div>
 
@@ -128,13 +135,8 @@
               <%= f.text_field :path,
                                placeholder: I18n.t("repositories.form.path_placeholder"),
                                required: true,
-                               autocomplete: "off" %>
-            </div>
-
-            <div class="field flex-row items-center gap-4">
-              <%= f.check_box :read_only, role: "switch" %>
-
-              <%= f.label :read_only, I18n.t("repositories.form.read_only") %>
+                               autocomplete: "off",
+                               data: { "server-path-target": "path" } %>
             </div>
           </div>
         </div>

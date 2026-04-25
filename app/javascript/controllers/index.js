@@ -28,6 +28,9 @@ application.register("search", SearchController)
 import ServerAuthController from "./server_auth_controller"
 application.register("server-auth", ServerAuthController)
 
+import ServerPathController from "./server_path_controller"
+application.register("server-path", ServerPathController)
+
 import CronPreviewController from "./cron_preview_controller"
 application.register("cron-preview", CronPreviewController)
 

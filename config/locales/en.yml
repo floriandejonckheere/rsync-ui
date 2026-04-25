@@ -376,6 +376,9 @@ en:
       password: Password
       password_placeholder: Enter password
       password_placeholder_edit: Leave blank to keep unchanged
+      path: Default path
+      path_hint: The default path is used for measuring storage resource usage
+      path_placeholder: "/"
       port: Port
       port_placeholder: '22'
       ssh_key: SSH Key
