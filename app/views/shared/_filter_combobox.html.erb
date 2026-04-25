@@ -5,8 +5,16 @@
   </label>
 
   <div class="select" data-action="change->filter#submit">
-    <button type="button" class="btn-outline" aria-haspopup="listbox" aria-expanded="false">
-      <span><%= options.find { |_, v| v.to_s == value.to_s }&.first || blank_label %></span>
+    <button
+      type="button"
+      class="btn-outline"
+      aria-haspopup="listbox"
+      aria-expanded="false"
+    >
+      <span>
+        <%= options.find { |_, v| v.to_s == value.to_s }&.first || blank_label %>
+      </span>
+
       <%= lucide_icon "chevron-down", class: "h-4 w-4 opacity-50" %>
     </button>
 
@@ -15,13 +23,17 @@
     <div data-popover aria-hidden="true">
       <header>
         <%= lucide_icon "search", class: "h-4 w-4 opacity-50" %>
+
         <input type="text" role="combobox" placeholder="<%= placeholder %>">
       </header>
 
       <div role="listbox">
         <div role="option" data-value=""><%= blank_label %></div>
+
         <% options.each do |option_label, option_value| %>
-          <div role="option" data-value="<%= option_value %>"><%= option_label %></div>
+          <div role="option" data-value="<%= option_value %>">
+            <%= option_label %>
+          </div>
         <% end %>
       </div>
     </div>

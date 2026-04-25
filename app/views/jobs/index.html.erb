@@ -23,7 +23,12 @@
   <% if @jobs.empty? && @query.present? %>
     <%= render "shared/search_no_results", title: I18n.t("jobs.index.search.no_results.title") %>
   <% elsif @jobs.empty? %>
-    <div class="card flex flex-col items-center justify-center py-16 gap-4 text-gray-400">
+    <div
+      class="
+        card flex flex-col items-center justify-center py-16 gap-4
+        text-gray-400
+      "
+    >
       <%= lucide_icon "arrow-right-left", class: "h-12 w-12" %>
 
       <p class="text-lg">
@@ -37,19 +42,39 @@
           <tr class="border-b border-gray-100 dark:border-gray-700">
             <th class="py-4"></th>
 
-            <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <th
+              class="
+                px-6 py-4 text-left font-medium text-gray-500
+                dark:text-gray-400
+              "
+            >
               <%= I18n.t("jobs.table.name") %>
             </th>
 
-            <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <th
+              class="
+                px-6 py-4 text-left font-medium text-gray-500
+                dark:text-gray-400
+              "
+            >
               <%= I18n.t("jobs.table.source") %>
             </th>
 
-            <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <th
+              class="
+                px-6 py-4 text-left font-medium text-gray-500
+                dark:text-gray-400
+              "
+            >
               <%= I18n.t("jobs.table.destination") %>
             </th>
 
-            <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+            <th
+              class="
+                px-6 py-4 text-left font-medium text-gray-500
+                dark:text-gray-400
+              "
+            >
               <%= I18n.t("jobs.table.schedule") %>
             </th>
 

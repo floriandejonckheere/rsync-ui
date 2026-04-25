@@ -2,7 +2,6 @@
   <%= form_with url: job_runs_path, method: :get,
                data: { turbo_frame: "job_runs_list", controller: "filter" } do %>
     <div class="flex flex-row flex-wrap gap-4 items-end px-6">
-
       <%= render "shared/filter_select",
                  label: I18n.t("job_runs.table.trigger"),
                  name: "filter[trigger]",
@@ -39,7 +38,6 @@
         <%= lucide_icon "x", class: "h-4 w-4" %>
         <%= I18n.t("shared.filters.clear") %>
       <% end %>
-
     </div>
   <% end %>
 </div>
