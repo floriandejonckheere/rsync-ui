@@ -39,9 +39,6 @@ Visible elements include:
 The activity log shows an overview of the jobs executed in reverse chronological order.
 The table name is `job_runs`.
 
-- [ ] View log (out of scope for now)
-- [ ] Download log (out of scope for now)
-
 **Resource usage**
 
 The resource usage shows the total and used storage, aggregated by repository.
@@ -60,10 +57,6 @@ Servers are the remote destinations where the files are synchronized to.
 Jobs are the actual synchronization tasks that are executed by the application.
 
 - [ ] Include/Exclude patterns
-
-### Job runs
-
-- [ ] Allow filtering by job, status, and date range
 
 ### Execution and scheduling
 
@@ -109,6 +102,10 @@ This is useful for debugging and troubleshooting.
 For local repositories, the contents can be viewed directly in the browser.
 For remote repositories, the server should be mounted as a local directory, and the contents can be viewed in the browser.
 
+- [ ] Implement repository browsing
+  - [ ] Local repositories
+  - [ ] Remote repositories
+
 ### Visualization and monitoring
 
 - [ ] Show a real-time visualization of repositories (vertices) and schedules (edges) on the dashboard
@@ -128,15 +125,11 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Implement support for OAuth2 authentication
 - [ ] Allow duplicating jobs
 - [x] Add search functionality
-  - [x] Servers
-  - [x] Repositories
-  - [x] Jobs
   - [ ] Job runs page
 - [ ] Add filter functionality
   - [ ] Servers
   - [ ] Repositories
   - [ ] Jobs
-  - [x] Job runs page
 - [ ] Add sort functionality
   - [ ] Servers
   - [ ] Repositories
@@ -149,6 +142,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Use SolidQueue's [dynamic scheduling](https://github.com/rails/solid_queue#scheduling-and-unscheduling-recurring-tasks-dynamically) instead of the Servers::ResourceUsageSchedulerJob
 - [ ] Add a `with_configuration` helper
 - [ ] Make menubar responsive
+- [ ] Tooltips are not always on top, they clip on table edges
 
 ## Open questions
 
