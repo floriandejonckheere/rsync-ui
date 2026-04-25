@@ -5,6 +5,7 @@
 @source "../../views";
 @source "../../components";
 @source "../../javascript";
+@source "../../helpers";
 
 @layer base {
   html {
