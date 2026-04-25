@@ -127,8 +127,21 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Update branding
 - [ ] Implement support for OAuth2 authentication
 - [ ] Allow duplicating jobs
-- [ ] Add search functionality on servers, repositories, jobs, and job runs page
-- [ ] Add filter functionality on servers, repositories, jobs, and job runs page
+- [x] Add search functionality
+  - [x] Servers
+  - [x] Repositories
+  - [x] Jobs
+  - [ ] Job runs page
+- [ ] Add filter functionality
+  - [ ] Servers
+  - [ ] Repositories
+  - [ ] Jobs
+  - [x] Job runs page
+- [ ] Add sort functionality
+  - [ ] Servers
+  - [ ] Repositories
+  - [ ] Jobsd
+  - [ ] Job runs page
 
 ### Technical TODOs
 

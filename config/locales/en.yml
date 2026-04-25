@@ -332,7 +332,7 @@ en:
           title: No repositories found
         placeholder: Search by name or description...
         title: Search repositories
-      subtitle: Manage local and remote directories
+      subtitle: Manage local and remote repositories
       title: Repositories
     new:
       subtitle: Add a new repository
@@ -433,4 +433,4 @@ en:
     search:
       close: Close search
       no_results:
-        description: Try adjusting your search terms.
+        description: Try adjusting your search terms
