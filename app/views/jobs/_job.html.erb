@@ -69,7 +69,7 @@
                     class: "btn-icon-outline btn-icon-md",
                     form_class: "contents",
                     data: { tooltip: I18n.t(job.enabled? ? "jobs.actions.disable" : "jobs.actions.enable") } do %>
-        <%= lucide_icon(job.enabled? ? "refresh-cw" : "refresh-cw-off", class: "h-4 w-4") %>
+        <%= lucide_icon(job.enabled? ? "refresh-cw-off" : "refresh-cw", class: "h-4 w-4") %>
       <% end %>
 
       <%= button_to job_runs_path,
