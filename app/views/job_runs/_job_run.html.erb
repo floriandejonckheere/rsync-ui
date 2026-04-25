@@ -51,7 +51,7 @@
       <% if job_run.deletable? && job_run.output.attached? %>
         <%= link_to job_run_path(job_run),
                     class: "btn-icon-outline btn-icon-md",
-                    data: { tooltip: I18n.t("job_runs.actions.view_logs") } do %>
+                    data: { tooltip: I18n.t("job_runs.actions.view_logs"), turbo_frame: "_top" } do %>
           <%= lucide_icon "eye", class: "h-4 w-4" %>
         <% end %>
         <%= link_to logs_job_run_path(job_run),
