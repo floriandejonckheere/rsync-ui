@@ -51,7 +51,7 @@ class JobRunsController < ApplicationController
 
     return head :unprocessable_content unless job.enabled?
 
-    JobExecutionJob.perform_later(job, trigger: "manual")
+    Jobs::ExecuteJob.perform_later(job, trigger: "manual")
     redirect_to job_runs_path, notice: t(".success")
   end
 

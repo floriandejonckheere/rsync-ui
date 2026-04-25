@@ -182,15 +182,15 @@ RSpec.describe "JobRuns" do
   describe "POST /job_runs" do
     let!(:job) { create(:job, user:) }
 
-    before { allow(JobExecutionJob).to receive(:perform_later) }
+    before { allow(Jobs::ExecuteJob).to receive(:perform_later) }
 
     context "when authenticated" do
       before { sign_in user, scope: :user }
 
-      it "enqueues JobExecutionJob and redirects" do
+      it "enqueues Jobs::ExecuteJob and redirects" do
         post job_runs_path, params: { job_id: job.id }
 
-        expect(JobExecutionJob).to have_received(:perform_later).with(job, trigger: "manual")
+        expect(Jobs::ExecuteJob).to have_received(:perform_later).with(job, trigger: "manual")
         expect(response).to redirect_to(job_runs_path)
       end
 
@@ -210,10 +210,10 @@ RSpec.describe "JobRuns" do
           expect(response).to have_http_status(:unprocessable_content)
         end
 
-        it "does not enqueue JobExecutionJob" do
+        it "does not enqueue Jobs::ExecuteJob" do
           post job_runs_path, params: { job_id: job.id }
 
-          expect(JobExecutionJob).not_to have_received(:perform_later)
+          expect(Jobs::ExecuteJob).not_to have_received(:perform_later)
         end
       end
     end
@@ -229,10 +229,10 @@ RSpec.describe "JobRuns" do
         expect(response).to have_http_status(:forbidden)
       end
 
-      it "does not enqueue JobExecutionJob" do
+      it "does not enqueue Jobs::ExecuteJob" do
         post job_runs_path, params: { job_id: job.id }
 
-        expect(JobExecutionJob).not_to have_received(:perform_later)
+        expect(Jobs::ExecuteJob).not_to have_received(:perform_later)
       end
     end
 

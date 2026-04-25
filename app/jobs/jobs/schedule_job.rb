@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class JobSchedulerJob < ApplicationJob
+class Jobs::ScheduleJob < ApplicationJob
   def perform
     now = Time.zone.now
 
@@ -9,7 +9,9 @@ class JobSchedulerJob < ApplicationJob
 
       next unless cron
 
-      prev_tick = cron.previous_time(now).to_t
+      prev_tick = cron
+        .previous_time(now)
+        .to_t
 
       last_scheduled_run = job
         .job_runs
@@ -19,7 +21,7 @@ class JobSchedulerJob < ApplicationJob
 
       next if last_scheduled_run && last_scheduled_run.created_at >= prev_tick
 
-      JobExecutionJob.perform_later(job, trigger: "scheduled")
+      Jobs::ExecuteJob.perform_later(job, trigger: "scheduled")
     end
   end
 end
