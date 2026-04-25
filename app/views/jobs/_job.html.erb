@@ -77,7 +77,7 @@
                     class: "btn-icon-outline btn-icon-md#{" cursor-not-allowed text-gray-400 dark:text-gray-600" unless job.enabled?}",
                     disabled: !job.enabled?,
                     form_class: "contents",
-                    data: { tooltip: I18n.t("jobs.actions.run") } do %>
+                    data: { tooltip: I18n.t("jobs.actions.run"), turbo_frame: "_top" } do %>
         <%= lucide_icon "play", class: "h-4 w-4" %>
       <% end %>
 
