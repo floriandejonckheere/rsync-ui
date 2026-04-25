@@ -89,9 +89,9 @@ en:
       empty: No job runs have been recorded yet.
       empty_filtered: No job runs match the selected filters.
       filters:
-        all_jobs: All jobs
-        all_statuses: All statuses
-        all_triggers: All triggers
+        all_jobs: All
+        all_statuses: All
+        all_triggers: All
         search_jobs: Search jobs...
         started_at_from: Started from
         started_at_to: Started to

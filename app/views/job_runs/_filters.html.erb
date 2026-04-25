@@ -4,6 +4,13 @@
                data: { turbo_frame: "job_runs_list", controller: "filter" } do %>
     <div class="flex flex-row flex-wrap gap-4 items-end px-6 py-4">
 
+      <%= render "shared/filter_select",
+                 label: I18n.t("job_runs.table.trigger"),
+                 name: "filter[trigger]",
+                 options: JobRun.triggers.keys.map { |t| [I18n.t("job_runs.trigger.#{t}"), t] },
+                 selected: @filters[:trigger],
+                 blank_label: I18n.t("job_runs.index.filters.all_triggers") %>
+
       <%= render "shared/filter_combobox",
                  label: I18n.t("job_runs.table.job"),
                  name: "filter[job_id]",
@@ -11,13 +18,6 @@
                  value: @filters[:job_id],
                  blank_label: I18n.t("job_runs.index.filters.all_jobs"),
                  placeholder: I18n.t("job_runs.index.filters.search_jobs") %>
-
-      <%= render "shared/filter_select",
-                 label: I18n.t("job_runs.table.trigger"),
-                 name: "filter[trigger]",
-                 options: JobRun.triggers.keys.map { |t| [I18n.t("job_runs.trigger.#{t}"), t] },
-                 selected: @filters[:trigger],
-                 blank_label: I18n.t("job_runs.index.filters.all_triggers") %>
 
       <%= render "shared/filter_select",
                  label: I18n.t("job_runs.table.status"),
