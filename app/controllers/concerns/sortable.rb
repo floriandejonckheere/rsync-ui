@@ -17,8 +17,12 @@ module Sortable
 
   def sort_for(scope, allowed:, default:)
     if @sort_column&.in?(allowed.map(&:to_s)) && @sort_direction
+      @active_sort_column = @sort_column
+      @active_sort_direction = @sort_direction
       scope.reorder(@sort_column => @sort_direction)
     else
+      @active_sort_column = default.keys.first.to_s
+      @active_sort_direction = default.values.first.to_s
       scope.reorder(default)
     end
   end

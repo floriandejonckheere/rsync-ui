@@ -1,6 +1,7 @@
 <%# locals: (column:, label:) %>
-<% active = @sort_column == column.to_s
-  next_direction = if active
+<% showing_active = @active_sort_column == column.to_s
+  param_active = @sort_column == column.to_s
+  next_direction = if param_active
     @sort_direction == "asc" ? "desc" : nil
   else
     "asc"
@@ -19,9 +20,9 @@
               class: "flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200 whitespace-nowrap" do %>
     <%= label %>
 
-    <% if active && @sort_direction == "asc" %>
+    <% if showing_active && @active_sort_direction == "asc" %>
       <%= lucide_icon "chevron-up", class: "h-3.5 w-3.5 shrink-0" %>
-    <% elsif active && @sort_direction == "desc" %>
+    <% elsif showing_active && @active_sort_direction == "desc" %>
       <%= lucide_icon "chevron-down", class: "h-3.5 w-3.5 shrink-0" %>
     <% end %>
   <% end %>

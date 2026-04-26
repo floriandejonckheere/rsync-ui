@@ -19,7 +19,7 @@ class JobRunsController < ApplicationController
     scope = scope.by_status(@filters[:status])
     scope = scope.started_from(parse_datetime(@filters[:started_at_from]))
     scope = scope.started_to(parse_datetime(@filters[:started_at_to]))
-    scope = sort_for(scope, allowed: ["sequence", "status", "started_at", "completed_at"], default: { started_at: :desc })
+    scope = sort_for(scope, allowed: ["sequence", "status", "started_at", "completed_at"], default: { sequence: :desc })
 
     @pagy, @job_runs = pagy(scope)
 
