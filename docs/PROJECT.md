@@ -128,6 +128,7 @@ For remote repositories, the server should be mounted as a local directory, and 
   - [ ] Repositories
   - [ ] Jobs
 - [ ] Allow streaming logs
+- [ ] Dashboard: add a "7-day status": number of jobs succeeded/failed, average duration
 
 ### Technical TODOs
 
