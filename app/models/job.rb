@@ -72,10 +72,12 @@ end
 #  opt_delete_excluded       :boolean          default(FALSE), not null
 #  opt_devices               :boolean          default(FALSE), not null
 #  opt_dry_run               :boolean          default(FALSE), not null
+#  opt_exclude               :text             default([]), not null, is an Array
 #  opt_existing              :boolean          default(FALSE), not null
 #  opt_group                 :boolean          default(FALSE), not null
 #  opt_hard_links            :boolean          default(FALSE), not null
 #  opt_ignore_existing       :boolean          default(FALSE), not null
+#  opt_include               :text             default([]), not null, is an Array
 #  opt_inplace               :boolean          default(FALSE), not null
 #  opt_itemize_changes       :boolean          default(FALSE), not null
 #  opt_links                 :boolean          default(TRUE), not null

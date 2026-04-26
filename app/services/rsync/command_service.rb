@@ -59,6 +59,8 @@ module Rsync
         *boolean_flags(ADVANCED_FLAGS),
         *rsync_path_flag,
         *custom_argument_flags,
+        *include_flags,
+        *exclude_flags,
 
         # Mandatory flags
         "--info=progress2", # Show total progress
@@ -98,6 +100,14 @@ module Rsync
 
     def custom_argument_flags
       job.opt_arguments.present? ? [job.opt_arguments.strip] : []
+    end
+
+    def include_flags
+      job.opt_include.map { |pattern| "--include=#{pattern}" }
+    end
+
+    def exclude_flags
+      job.opt_exclude.map { |pattern| "--exclude=#{pattern}" }
     end
 
     def non_standard_port

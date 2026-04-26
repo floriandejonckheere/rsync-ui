@@ -119,10 +119,14 @@ class JobsController < ApplicationController
         :opt_superuser,
         :opt_arguments,
         :opt_rsync_path,
+        opt_include: [],
+        opt_exclude: [],
       )
 
     permitted[:source_repository_id] = permitted_repository_id(permitted[:source_repository_id]) if permitted.key?(:source_repository_id)
     permitted[:destination_repository_id] = permitted_repository_id(permitted[:destination_repository_id]) if permitted.key?(:destination_repository_id)
+    permitted[:opt_include] = permitted.fetch(:opt_include, []).compact_blank
+    permitted[:opt_exclude] = permitted.fetch(:opt_exclude, []).compact_blank
 
     permitted
   end

@@ -106,6 +106,32 @@ RSpec.describe "Jobs" do
         expect(response.body).to include(I18n.t("jobs.create.success"))
       end
 
+      it "saves opt_include patterns" do
+        post jobs_path, params: {
+          job: valid_params[:job].merge(opt_include: ["*.log", "docs/"], opt_exclude: []),
+        }
+
+        expect(user.jobs.last.opt_include).to eq(["*.log", "docs/"])
+      end
+
+      it "saves opt_exclude patterns" do
+        post jobs_path, params: {
+          job: valid_params[:job].merge(opt_include: [], opt_exclude: ["*.tmp"]),
+        }
+
+        expect(user.jobs.last.opt_exclude).to eq ["*.tmp"]
+      end
+
+      it "saves empty arrays when blank pattern values are submitted" do
+        post jobs_path, params: {
+          job: valid_params[:job].merge(opt_include: ["", ""], opt_exclude: [""]),
+        }
+
+        job = user.jobs.last
+        expect(job.opt_include).to be_empty
+        expect(job.opt_exclude).to be_empty
+      end
+
       context "with invalid params" do
         let(:invalid_params) do
           {

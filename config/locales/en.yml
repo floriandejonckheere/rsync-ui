@@ -109,7 +109,7 @@ en:
       failed: Failed
       pending: Pending
       running: Running
-      running_progress: "Running (%{progress}%)"
+      running_progress: Running (%{progress}%)
     table:
       completed_at: Completed at
       duration: Duration
@@ -141,6 +141,7 @@ en:
       'false': Disabled
       'true': Enabled
     form:
+      add_pattern: Add pattern
       advanced_options: Advanced options
       basic_options: Basic options
       custom_options: Custom options
@@ -150,6 +151,9 @@ en:
       destination_repository_placeholder: Select a destination repository
       details: Details
       enabled: Enabled
+      exclude_patterns: Exclude patterns
+      include_exclude_patterns: Include/exclude patterns
+      include_patterns: Include patterns
       name: Name
       name_placeholder: Daily backup
       opt_acls:
@@ -256,6 +260,7 @@ en:
       opt_xattrs:
         description: Preserve extended attributes
         flag: "--xattrs"
+      pattern_placeholder: e.g. *.log
       preview: Preview
       repositories: Repositories
       schedule: Schedule

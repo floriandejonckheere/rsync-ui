@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_26_194122) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_26_201155) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -92,10 +92,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_194122) do
     t.boolean "opt_delete_excluded", default: false, null: false
     t.boolean "opt_devices", default: false, null: false
     t.boolean "opt_dry_run", default: false, null: false
+    t.text "opt_exclude", default: [], null: false, array: true
     t.boolean "opt_existing", default: false, null: false
     t.boolean "opt_group", default: false, null: false
     t.boolean "opt_hard_links", default: false, null: false
     t.boolean "opt_ignore_existing", default: false, null: false
+    t.text "opt_include", default: [], null: false, array: true
     t.boolean "opt_inplace", default: false, null: false
     t.boolean "opt_itemize_changes", default: false, null: false
     t.boolean "opt_links", default: true, null: false

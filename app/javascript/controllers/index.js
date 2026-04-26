@@ -13,11 +13,20 @@ application.register("configuration", ConfigurationController)
 import ConfirmDialogController from "./confirm_dialog_controller"
 application.register("confirm-dialog", ConfirmDialogController)
 
-import ThemeController from "./theme_controller"
-application.register("theme", ThemeController)
+import CronPreviewController from "./cron_preview_controller"
+application.register("cron-preview", CronPreviewController)
 
 import DialogController from "./dialog_controller"
 application.register("dialog", DialogController)
+
+import FilterController from "./filter_controller"
+application.register("filter", FilterController)
+
+import GaugeController from "./gauge_controller"
+application.register("gauge", GaugeController)
+
+import PatternListController from "./pattern_list_controller"
+application.register("pattern-list", PatternListController)
 
 import RepositoryTypeController from "./repository_type_controller"
 application.register("repository-type", RepositoryTypeController)
@@ -31,11 +40,5 @@ application.register("server-auth", ServerAuthController)
 import ServerPathController from "./server_path_controller"
 application.register("server-path", ServerPathController)
 
-import CronPreviewController from "./cron_preview_controller"
-application.register("cron-preview", CronPreviewController)
-
-import FilterController from "./filter_controller"
-application.register("filter", FilterController)
-
-import GaugeController from "./gauge_controller"
-application.register("gauge", GaugeController)
+import ThemeController from "./theme_controller"
+application.register("theme", ThemeController)

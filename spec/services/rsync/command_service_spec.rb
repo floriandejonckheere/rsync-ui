@@ -114,6 +114,59 @@ RSpec.describe Rsync::CommandService do
     end
   end
 
+  describe "opt_include" do
+    context "when patterns are present" do
+      before { job.opt_include = ["*.log", "docs/"] }
+
+      it "adds a --include flag for each pattern" do
+        expect(command).to include("--include=*.log")
+        expect(command).to include("--include=docs/")
+      end
+
+      it "places include flags before the source path" do
+        expect(command.index("--include=*.log")).to be < command.index("/data/source")
+      end
+    end
+
+    context "when empty" do
+      before { job.opt_include = [] }
+
+      it "adds no --include flags" do
+        expect(command).not_to include("--include=")
+      end
+    end
+  end
+
+  describe "opt_exclude" do
+    context "when patterns are present" do
+      before { job.opt_exclude = ["*.tmp", ".cache/"] }
+
+      it "adds a --exclude flag for each pattern" do
+        expect(command).to include("--exclude=*.tmp")
+        expect(command).to include("--exclude=.cache/")
+      end
+    end
+
+    context "when empty" do
+      before { job.opt_exclude = [] }
+
+      it "adds no --exclude flags" do
+        expect(command).not_to include("--exclude=")
+      end
+    end
+  end
+
+  describe "include/exclude ordering" do
+    before do
+      job.opt_include = ["*.log"]
+      job.opt_exclude = ["*.tmp"]
+    end
+
+    it "places all --include flags before all --exclude flags" do
+      expect(command.index("--include=*.log")).to be < command.index("--exclude=*.tmp")
+    end
+  end
+
   describe "missing repositories" do
     let(:job) { build(:job, source_repository: nil, destination_repository: nil) }
 

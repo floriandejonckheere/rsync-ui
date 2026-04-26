@@ -56,7 +56,7 @@ Servers are the remote destinations where the files are synchronized to.
 
 Jobs are the actual synchronization tasks that are executed by the application.
 
-- [ ] Include/Exclude patterns
+- [x] Include/Exclude patterns
 
 ### Execution and scheduling
 
