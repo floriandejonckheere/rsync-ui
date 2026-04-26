@@ -60,7 +60,7 @@ Jobs are the actual synchronization tasks that are executed by the application.
 
 ### Execution and scheduling
 
-- [ ] Add a configuration option (feature category) to enable or disable scheduled jobs: `scheduler`
+- [x] Add a configuration option (feature category) to enable or disable scheduled jobs: `scheduler`
 - [ ] Track real-time progress of jobs
 
 - [ ] Implement sync hooks

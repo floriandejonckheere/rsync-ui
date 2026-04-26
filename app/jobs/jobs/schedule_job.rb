@@ -3,6 +3,8 @@
 module Jobs
   class ScheduleJob < ApplicationJob
     def perform
+      return unless Configuration.get("scheduler")
+
       now = Time.zone.now
 
       Job.where(enabled: true).where.not(schedule: [nil, ""]).find_each do |job|

@@ -11,7 +11,7 @@
 
 default: &default
   server_resource_usage:
-    class: "Servers::ResourceUsageSchedulerJob"
+    class: "Servers::ResourceUsageScheduleJob"
     schedule: every minute
   job_scheduler:
     class: "Jobs::ScheduleJob"

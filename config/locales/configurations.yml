@@ -24,3 +24,5 @@ en:
           description: Memory usage percentage at which status is shown as critical (red)
         memory_warning:
           description: Memory usage percentage at which status is shown as a warning (orange)
+      scheduler:
+        description: Enable or disable scheduled jobs

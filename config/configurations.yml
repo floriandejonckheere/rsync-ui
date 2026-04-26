@@ -45,3 +45,7 @@
   default: 95
   dependencies:
     - resource_usage
+- key: scheduler
+  type: boolean
+  category: system
+  default: true

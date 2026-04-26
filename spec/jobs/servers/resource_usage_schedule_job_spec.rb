@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Servers::ResourceUsageSchedulerJob do
+RSpec.describe Servers::ResourceUsageScheduleJob do
   let!(:never_probed) { create(:server, :with_password) }
 
   let!(:recent) do

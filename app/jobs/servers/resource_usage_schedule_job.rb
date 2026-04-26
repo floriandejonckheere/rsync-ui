@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Servers
-  class ResourceUsageSchedulerJob < ApplicationJob
+  class ResourceUsageScheduleJob < ApplicationJob
     def perform
       return unless Configuration.get("resource_usage")
 
