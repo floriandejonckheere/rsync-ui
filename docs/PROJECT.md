@@ -60,9 +60,6 @@ Jobs are the actual synchronization tasks that are executed by the application.
 
 ### Execution and scheduling
 
-- [x] Add a configuration option (feature category) to enable or disable scheduled jobs: `scheduler`
-- [x] Track real-time progress of jobs
-
 - [ ] Implement sync hooks
   - [ ] Pre-/post-hook: command or script to run before or after the sync starts
   - [ ] Success/error hook: command or script to run when the sync succeeds or fails
@@ -130,6 +127,7 @@ For remote repositories, the server should be mounted as a local directory, and 
   - [ ] Servers
   - [ ] Repositories
   - [ ] Jobs
+- [ ] Allow streaming logs
 
 ### Technical TODOs
 
