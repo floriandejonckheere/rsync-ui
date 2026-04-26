@@ -60,10 +60,14 @@ module Rsync
         *rsync_path_flag,
         *custom_argument_flags,
 
+        # Mandatory flags
+        "--info=progress2", # Show total progress
+        "--no-inc-recursive", # Compute total files to transfer upfront
+
         # Source and destination paths
         source_path,
         destination_path,
-      ].join(" ")
+      ].compact.uniq.join(" ")
     end
 
     private
