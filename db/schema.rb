@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_26_124808) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_26_194122) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -54,11 +54,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_124808) do
   end
 
   create_table "job_runs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "bytes_copied", default: 0, null: false
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.string "error_class"
     t.text "error_messages"
     t.uuid "job_id", null: false
+    t.integer "progress", default: 0, null: false
     t.serial "sequence", null: false
     t.datetime "started_at"
     t.string "status", default: "pending", null: false

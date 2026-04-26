@@ -49,9 +49,11 @@ end
 # Table name: job_runs
 #
 #  id             :uuid             not null, primary key
+#  bytes_copied   :bigint           default(0), not null
 #  completed_at   :datetime         indexed
 #  error_class    :string
 #  error_messages :text
+#  progress       :integer          default(0), not null
 #  sequence       :integer          not null, indexed
 #  started_at     :datetime         indexed
 #  status         :string           default("pending"), not null, indexed

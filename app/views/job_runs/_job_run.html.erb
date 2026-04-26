@@ -27,7 +27,26 @@
   </td>
 
   <td class="px-6 py-4 text-sm <%= job_run_status_classes(job_run.status) %>">
-    <%= I18n.t("job_runs.status.#{job_run.status}") %>
+    <% if job_run.running? && job_run.progress.present? %>
+      <%= I18n.t("job_runs.status.running_progress", progress: job_run.progress) %>
+      <div
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="<%= job_run.progress %>"
+        class="
+          relative mt-1.5 h-1.5 w-full overflow-hidden rounded-full
+          bg-blue-100 dark:bg-blue-950
+        "
+      >
+        <div
+          class="h-full w-full flex-1 bg-blue-600 dark:bg-blue-400 transition-all"
+          style="transform: translateX(-<%= 100 - job_run.progress %>%)"
+        ></div>
+      </div>
+    <% else %>
+      <%= I18n.t("job_runs.status.#{job_run.status}") %>
+    <% end %>
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">

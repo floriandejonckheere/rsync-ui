@@ -109,6 +109,7 @@ en:
       failed: Failed
       pending: Pending
       running: Running
+      running_progress: "Running (%{progress}%)"
     table:
       completed_at: Completed at
       duration: Duration
