@@ -130,11 +130,6 @@ For remote repositories, the server should be mounted as a local directory, and 
   - [ ] Servers
   - [ ] Repositories
   - [ ] Jobs
-- [x] Add sort functionality
-  - [x] Servers
-  - [x] Repositories
-  - [x] Jobs
-  - [x] Job runs page
 
 ### Technical TODOs
 
@@ -143,6 +138,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Add a `with_configuration` helper
 - [ ] Make menubar responsive
 - [ ] Tooltips are not always on top, they clip on table edges
+- [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
 
 ## Open questions
 
