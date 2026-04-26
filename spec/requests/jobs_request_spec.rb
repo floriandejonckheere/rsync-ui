@@ -13,6 +13,34 @@ RSpec.describe "Jobs" do
 
         expect(response).to have_http_status(:ok)
       end
+
+      context "when sort parameters are present" do
+        it "sorts jobs by name ascending" do
+          z_job = create(:job, user:, name: "Zebra job")
+          a_job = create(:job, user:, name: "Alpha job")
+
+          get jobs_path, params: { sort: "name", direction: "asc" }
+
+          expect(response.body.index(a_job.name)).to be < response.body.index(z_job.name)
+        end
+
+        it "sorts jobs by name descending" do
+          z_job = create(:job, user:, name: "Zebra job")
+          a_job = create(:job, user:, name: "Alpha job")
+
+          get jobs_path, params: { sort: "name", direction: "desc" }
+
+          expect(response.body.index(z_job.name)).to be < response.body.index(a_job.name)
+        end
+
+        it "falls back to default sort when column is not allowed" do
+          create(:job, user:)
+
+          get jobs_path, params: { sort: "opt_delete", direction: "asc" }
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
     end
 
     context "when not authenticated" do

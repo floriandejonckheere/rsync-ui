@@ -2,6 +2,7 @@
 
 class JobRunsController < ApplicationController
   include Filterable
+  include Sortable
 
   before_action :authenticate_user!
   before_action :set_job_run, only: [:show, :logs, :destroy, :cancel]
@@ -10,7 +11,7 @@ class JobRunsController < ApplicationController
     @jobs = authorized_scope(Job.order(:name), type: :relation)
 
     scope = authorized_scope(
-      JobRun.includes(job: [:source_repository, :destination_repository]).order(created_at: :desc),
+      JobRun.includes(job: [:source_repository, :destination_repository]).all,
       type: :relation,
     )
     scope = scope.by_job(@filters[:job_id])
@@ -18,6 +19,7 @@ class JobRunsController < ApplicationController
     scope = scope.by_status(@filters[:status])
     scope = scope.started_from(parse_datetime(@filters[:started_at_from]))
     scope = scope.started_to(parse_datetime(@filters[:started_at_to]))
+    scope = sort_for(scope, allowed: ["sequence", "status", "started_at", "completed_at"], default: { started_at: :desc })
 
     @pagy, @job_runs = pagy(scope)
 

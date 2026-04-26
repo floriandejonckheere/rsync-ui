@@ -2,14 +2,16 @@
 
 class JobsController < ApplicationController
   include Searchable
+  include Sortable
 
   before_action :authenticate_user!
   before_action :set_job, only: [:edit, :update, :destroy]
   before_action :set_repositories, only: [:new, :edit, :create, :update]
 
   def index
-    jobs = authorized_scope(Job.includes(:source_repository, :destination_repository).order(:name), type: :relation)
+    jobs = authorized_scope(Job.includes(:source_repository, :destination_repository).all, type: :relation)
     jobs = search_for(jobs, "name", "description")
+    jobs = sort_for(jobs, allowed: ["name", "schedule"], default: { name: :asc })
 
     @pagy, @jobs = pagy(jobs)
 

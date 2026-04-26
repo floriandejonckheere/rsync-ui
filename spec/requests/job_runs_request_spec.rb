@@ -13,6 +13,36 @@ RSpec.describe "JobRuns" do
 
         expect(response).to have_http_status(:ok)
       end
+
+      context "when sort parameters are present" do
+        it "sorts job runs by sequence ascending" do
+          job = create(:job, user:)
+          first_run = create(:job_run, :completed, user:, job:)
+          second_run = create(:job_run, :completed, user:, job:)
+
+          get job_runs_path, params: { sort: "sequence", direction: "asc" }
+
+          expect(response.body.index(first_run.sequence.to_s)).to be < response.body.index(second_run.sequence.to_s)
+        end
+
+        it "sorts job runs by sequence descending" do
+          job = create(:job, user:)
+          first_run = create(:job_run, :completed, user:, job:)
+          second_run = create(:job_run, :completed, user:, job:)
+
+          get job_runs_path, params: { sort: "sequence", direction: "desc" }
+
+          expect(response.body.index(second_run.sequence.to_s)).to be < response.body.index(first_run.sequence.to_s)
+        end
+
+        it "falls back to default sort when column is not allowed" do
+          create(:job_run, :completed, user:)
+
+          get job_runs_path, params: { sort: "trigger", direction: "asc" }
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
     end
 
     context "when not authenticated" do

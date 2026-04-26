@@ -2,13 +2,15 @@
 
 class ServersController < ApplicationController
   include Searchable
+  include Sortable
 
   before_action :authenticate_user!
   before_action :set_server, only: [:edit, :update, :destroy]
 
   def index
-    servers = authorized_scope(Server.order(:name), type: :relation)
+    servers = authorized_scope(Server.all, type: :relation)
     servers = search_for(servers, "name", "description", "host")
+    servers = sort_for(servers, allowed: ["name", "host"], default: { name: :asc })
 
     @pagy, @servers = pagy(servers)
 

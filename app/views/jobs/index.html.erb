@@ -42,14 +42,7 @@
           <tr class="border-b border-gray-100 dark:border-gray-700">
             <th class="py-4"></th>
 
-            <th
-              class="
-                px-6 py-4 text-left font-medium text-gray-500
-                dark:text-gray-400
-              "
-            >
-              <%= I18n.t("jobs.table.name") %>
-            </th>
+            <%= render "shared/sort_header", column: "name", label: I18n.t("jobs.table.name") %>
 
             <th
               class="
@@ -69,14 +62,7 @@
               <%= I18n.t("jobs.table.destination") %>
             </th>
 
-            <th
-              class="
-                px-6 py-4 text-left font-medium text-gray-500
-                dark:text-gray-400
-              "
-            >
-              <%= I18n.t("jobs.table.schedule") %>
-            </th>
+            <%= render "shared/sort_header", column: "schedule", label: I18n.t("jobs.table.schedule") %>
 
             <th class="px-6 py-4"></th>
           </tr>

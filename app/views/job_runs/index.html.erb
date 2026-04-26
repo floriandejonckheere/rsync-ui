@@ -42,14 +42,7 @@
           <tr class="border-b border-gray-100 dark:border-gray-700">
             <th class="py-4"></th>
 
-            <th
-              class="
-                pl-3 pr-6 py-4 text-left font-medium text-gray-500
-                dark:text-gray-400
-              "
-            >
-              <%= I18n.t("job_runs.table.sequence") %>
-            </th>
+            <%= render "shared/sort_header", column: "sequence", label: I18n.t("job_runs.table.sequence") %>
 
             <th
               class="
@@ -60,23 +53,9 @@
               <%= I18n.t("job_runs.table.job") %>
             </th>
 
-            <th
-              class="
-                px-6 py-4 text-left font-medium text-gray-500
-                dark:text-gray-400
-              "
-            >
-              <%= I18n.t("job_runs.table.status") %>
-            </th>
+            <%= render "shared/sort_header", column: "status", label: I18n.t("job_runs.table.status") %>
 
-            <th
-              class="
-                px-6 py-4 text-left font-medium text-gray-500
-                dark:text-gray-400
-              "
-            >
-              <%= I18n.t("job_runs.table.started_at") %>
-            </th>
+            <%= render "shared/sort_header", column: "started_at", label: I18n.t("job_runs.table.started_at") %>
 
             <th
               class="
@@ -87,14 +66,7 @@
               <%= I18n.t("job_runs.table.duration") %>
             </th>
 
-            <th
-              class="
-                px-6 py-4 text-left font-medium text-gray-500
-                dark:text-gray-400
-              "
-            >
-              <%= I18n.t("job_runs.table.completed_at") %>
-            </th>
+            <%= render "shared/sort_header", column: "completed_at", label: I18n.t("job_runs.table.completed_at") %>
 
             <th class="px-6 py-4"></th>
           </tr>

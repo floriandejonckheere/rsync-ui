@@ -130,11 +130,11 @@ For remote repositories, the server should be mounted as a local directory, and 
   - [ ] Servers
   - [ ] Repositories
   - [ ] Jobs
-- [ ] Add sort functionality
-  - [ ] Servers
-  - [ ] Repositories
-  - [ ] Jobsd
-  - [ ] Job runs page
+- [x] Add sort functionality
+  - [x] Servers
+  - [x] Repositories
+  - [x] Jobs
+  - [x] Job runs page
 
 ### Technical TODOs
 

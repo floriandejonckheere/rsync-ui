@@ -2,14 +2,16 @@
 
 class RepositoriesController < ApplicationController
   include Searchable
+  include Sortable
 
   before_action :authenticate_user!
   before_action :set_repository, only: [:edit, :update, :destroy]
   before_action :set_servers, only: [:new, :edit, :create, :update]
 
   def index
-    repositories = authorized_scope(Repository.order(:name), type: :relation)
+    repositories = authorized_scope(Repository.all, type: :relation)
     repositories = search_for(repositories, "name", "description")
+    repositories = sort_for(repositories, allowed: ["name", "repository_type", "path"], default: { name: :asc })
 
     @pagy, @repositories = pagy(repositories)
 

@@ -42,32 +42,11 @@
           <tr class="border-b border-gray-100 dark:border-gray-700">
             <th class="py-4"></th>
 
-            <th
-              class="
-                px-6 py-4 text-left font-medium text-gray-500
-                dark:text-gray-400
-              "
-            >
-              <%= I18n.t("repositories.table.name") %>
-            </th>
+            <%= render "shared/sort_header", column: "name", label: I18n.t("repositories.table.name") %>
 
-            <th
-              class="
-                px-6 py-4 text-left font-medium text-gray-500
-                dark:text-gray-400
-              "
-            >
-              <%= I18n.t("repositories.table.type") %>
-            </th>
+            <%= render "shared/sort_header", column: "repository_type", label: I18n.t("repositories.table.type") %>
 
-            <th
-              class="
-                px-6 py-4 text-left font-medium text-gray-500
-                dark:text-gray-400
-              "
-            >
-              <%= I18n.t("repositories.table.path") %>
-            </th>
+            <%= render "shared/sort_header", column: "path", label: I18n.t("repositories.table.path") %>
 
             <th
               class="

@@ -60,6 +60,34 @@ RSpec.describe "Repositories" do
           expect(response).to have_http_status(:ok)
         end
       end
+
+      context "when sort parameters are present" do
+        it "sorts repositories by name ascending" do
+          z_repo = create(:repository, user:, name: "Zebra repo")
+          a_repo = create(:repository, user:, name: "Alpha repo")
+
+          get repositories_path, params: { sort: "name", direction: "asc" }
+
+          expect(response.body.index(a_repo.name)).to be < response.body.index(z_repo.name)
+        end
+
+        it "sorts repositories by name descending" do
+          z_repo = create(:repository, user:, name: "Zebra repo")
+          a_repo = create(:repository, user:, name: "Alpha repo")
+
+          get repositories_path, params: { sort: "name", direction: "desc" }
+
+          expect(response.body.index(z_repo.name)).to be < response.body.index(a_repo.name)
+        end
+
+        it "falls back to default sort when column is not allowed" do
+          create(:repository, user:)
+
+          get repositories_path, params: { sort: "read_only", direction: "asc" }
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
     end
 
     context "when not authenticated" do

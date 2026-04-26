@@ -70,6 +70,51 @@ RSpec.describe "Servers" do
           expect(response).to have_http_status(:ok)
         end
       end
+
+      context "when sort parameters are present" do
+        it "sorts servers by name ascending" do
+          zebra = create(:server, user:, name: "Zebra server")
+          alpha = create(:server, user:, name: "Alpha server")
+
+          get servers_path, params: { sort: "name", direction: "asc" }
+
+          expect(response.body.index(alpha.name)).to be < response.body.index(zebra.name)
+        end
+
+        it "sorts servers by name descending" do
+          zebra = create(:server, user:, name: "Zebra server")
+          alpha = create(:server, user:, name: "Alpha server")
+
+          get servers_path, params: { sort: "name", direction: "desc" }
+
+          expect(response.body.index(zebra.name)).to be < response.body.index(alpha.name)
+        end
+
+        it "sorts servers by host ascending" do
+          z_server = create(:server, user:, host: "z.example.com")
+          a_server = create(:server, user:, host: "a.example.com")
+
+          get servers_path, params: { sort: "host", direction: "asc" }
+
+          expect(response.body.index(a_server.host)).to be < response.body.index(z_server.host)
+        end
+
+        it "falls back to default name sort when direction is invalid" do
+          create(:server, user:, name: "Beta server")
+
+          get servers_path, params: { sort: "name", direction: "invalid" }
+
+          expect(response).to have_http_status(:ok)
+        end
+
+        it "falls back to default sort when column is not allowed" do
+          create(:server, user:, name: "Beta server")
+
+          get servers_path, params: { sort: "password", direction: "asc" }
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
     end
 
     context "when not authenticated" do

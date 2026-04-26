@@ -1,0 +1,28 @@
+<%# locals: (column:, label:) %>
+<% active = @sort_column == column.to_s
+  next_direction = if active
+    @sort_direction == "asc" ? "desc" : nil
+  else
+    "asc"
+  end
+
+  base = params.except(:controller, :action).to_unsafe_h
+  sort_params = if next_direction
+    base.merge("sort" => column, "direction" => next_direction)
+  else
+    base.except("sort", "direction")
+  end %>
+
+<th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+  <%= link_to url_for(sort_params),
+              data: { turbo_action: "replace" },
+              class: "flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200 whitespace-nowrap" do %>
+    <%= label %>
+
+    <% if active && @sort_direction == "asc" %>
+      <%= lucide_icon "chevron-up", class: "h-3.5 w-3.5 shrink-0" %>
+    <% elsif active && @sort_direction == "desc" %>
+      <%= lucide_icon "chevron-down", class: "h-3.5 w-3.5 shrink-0" %>
+    <% end %>
+  <% end %>
+</th>
