@@ -22,7 +22,7 @@ RSpec.describe "JobRuns" do
 
           get job_runs_path, params: { sort: "sequence", direction: "asc" }
 
-          expect(response.body.index(first_run.sequence.to_s)).to be < response.body.index(second_run.sequence.to_s)
+          expect(response.body.index(first_run.id)).to be < response.body.index(second_run.id)
         end
 
         it "sorts job runs by sequence descending" do
@@ -32,7 +32,7 @@ RSpec.describe "JobRuns" do
 
           get job_runs_path, params: { sort: "sequence", direction: "desc" }
 
-          expect(response.body.index(second_run.sequence.to_s)).to be < response.body.index(first_run.sequence.to_s)
+          expect(response.body.index(second_run.id)).to be < response.body.index(first_run.id)
         end
 
         it "falls back to default sort when column is not allowed" do

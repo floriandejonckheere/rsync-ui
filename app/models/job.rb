@@ -58,9 +58,9 @@ end
 # Table name: jobs
 #
 #  id                        :uuid             not null, primary key
-#  description               :text
+#  description               :text             indexed
 #  enabled                   :boolean          default(TRUE), not null
-#  name                      :string           not null
+#  name                      :string           not null, indexed, indexed
 #  opt_acls                  :boolean          default(FALSE), not null
 #  opt_append                :boolean          default(FALSE), not null
 #  opt_archive               :boolean          default(FALSE), not null
@@ -96,7 +96,7 @@ end
 #  opt_update                :boolean          default(FALSE), not null
 #  opt_verbose               :boolean          default(FALSE), not null
 #  opt_xattrs                :boolean          default(FALSE), not null
-#  schedule                  :string
+#  schedule                  :string           indexed
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
 #  destination_repository_id :uuid             not null, indexed
@@ -105,7 +105,11 @@ end
 #
 # Indexes
 #
+#  index_jobs_on_description_trgm           (description) USING gin
 #  index_jobs_on_destination_repository_id  (destination_repository_id)
+#  index_jobs_on_name                       (name)
+#  index_jobs_on_name_trgm                  (name) USING gin
+#  index_jobs_on_schedule                   (schedule)
 #  index_jobs_on_source_repository_id       (source_repository_id)
 #  index_jobs_on_user_id                    (user_id)
 #

@@ -49,12 +49,12 @@ end
 # Table name: job_runs
 #
 #  id             :uuid             not null, primary key
-#  completed_at   :datetime
+#  completed_at   :datetime         indexed
 #  error_class    :string
 #  error_messages :text
-#  sequence       :integer          not null
-#  started_at     :datetime
-#  status         :string           default("pending"), not null
+#  sequence       :integer          not null, indexed
+#  started_at     :datetime         indexed
+#  status         :string           default("pending"), not null, indexed
 #  trigger        :string           not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
@@ -63,8 +63,12 @@ end
 #
 # Indexes
 #
-#  index_job_runs_on_job_id   (job_id)
-#  index_job_runs_on_user_id  (user_id)
+#  index_job_runs_on_completed_at  (completed_at)
+#  index_job_runs_on_job_id        (job_id)
+#  index_job_runs_on_sequence      (sequence)
+#  index_job_runs_on_started_at    (started_at)
+#  index_job_runs_on_status        (status)
+#  index_job_runs_on_user_id       (user_id)
 #
 # Foreign Keys
 #

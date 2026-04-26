@@ -66,9 +66,9 @@ end
 # Table name: servers
 #
 #  id          :uuid             not null, primary key
-#  description :text
-#  host        :string           not null
-#  name        :string           not null
+#  description :text             indexed
+#  host        :string           not null, indexed, indexed
+#  name        :string           not null, indexed, indexed
 #  password    :text
 #  path        :string           default("/"), not null
 #  port        :integer          default(22), not null
@@ -80,7 +80,12 @@ end
 #
 # Indexes
 #
-#  index_servers_on_user_id  (user_id)
+#  index_servers_on_description_trgm  (description) USING gin
+#  index_servers_on_host              (host)
+#  index_servers_on_host_trgm         (host) USING gin
+#  index_servers_on_name              (name)
+#  index_servers_on_name_trgm         (name) USING gin
+#  index_servers_on_user_id           (user_id)
 #
 # Foreign Keys
 #

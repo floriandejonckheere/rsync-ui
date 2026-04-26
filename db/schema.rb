@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_19_054850) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_26_124808) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pg_trgm"
   enable_extension "pgcrypto"
 
   create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -64,7 +65,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_19_054850) do
     t.string "trigger", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
+    t.index ["completed_at"], name: "index_job_runs_on_completed_at"
     t.index ["job_id"], name: "index_job_runs_on_job_id"
+    t.index ["sequence"], name: "index_job_runs_on_sequence"
+    t.index ["started_at"], name: "index_job_runs_on_started_at"
+    t.index ["status"], name: "index_job_runs_on_status"
     t.index ["user_id"], name: "index_job_runs_on_user_id"
   end
 
@@ -113,7 +118,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_19_054850) do
     t.uuid "source_repository_id", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
+    t.index ["description"], name: "index_jobs_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["destination_repository_id"], name: "index_jobs_on_destination_repository_id"
+    t.index ["name"], name: "index_jobs_on_name"
+    t.index ["name"], name: "index_jobs_on_name_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["schedule"], name: "index_jobs_on_schedule"
     t.index ["source_repository_id"], name: "index_jobs_on_source_repository_id"
     t.index ["user_id"], name: "index_jobs_on_user_id"
   end
@@ -128,6 +137,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_19_054850) do
     t.uuid "server_id"
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
+    t.index ["description"], name: "index_repositories_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["name"], name: "index_repositories_on_name"
+    t.index ["name"], name: "index_repositories_on_name_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["path"], name: "index_repositories_on_path"
+    t.index ["repository_type"], name: "index_repositories_on_repository_type"
     t.index ["server_id"], name: "index_repositories_on_server_id"
     t.index ["user_id"], name: "index_repositories_on_user_id"
   end
@@ -165,6 +179,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_19_054850) do
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
     t.string "username", null: false
+    t.index ["description"], name: "index_servers_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["host"], name: "index_servers_on_host"
+    t.index ["host"], name: "index_servers_on_host_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["name"], name: "index_servers_on_name"
+    t.index ["name"], name: "index_servers_on_name_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["user_id"], name: "index_servers_on_user_id"
   end
 

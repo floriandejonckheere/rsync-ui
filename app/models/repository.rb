@@ -39,11 +39,11 @@ end
 # Table name: repositories
 #
 #  id              :uuid             not null, primary key
-#  description     :text
-#  name            :string           not null
-#  path            :string           not null
+#  description     :text             indexed
+#  name            :string           not null, indexed, indexed
+#  path            :string           not null, indexed
 #  read_only       :boolean          default(FALSE), not null
-#  repository_type :string           not null
+#  repository_type :string           not null, indexed
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  server_id       :uuid             indexed
@@ -51,8 +51,13 @@ end
 #
 # Indexes
 #
-#  index_repositories_on_server_id  (server_id)
-#  index_repositories_on_user_id    (user_id)
+#  index_repositories_on_description_trgm  (description) USING gin
+#  index_repositories_on_name              (name)
+#  index_repositories_on_name_trgm         (name) USING gin
+#  index_repositories_on_path              (path)
+#  index_repositories_on_repository_type   (repository_type)
+#  index_repositories_on_server_id         (server_id)
+#  index_repositories_on_user_id           (user_id)
 #
 # Foreign Keys
 #
