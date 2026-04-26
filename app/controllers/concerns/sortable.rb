@@ -5,9 +5,27 @@ module Sortable
 
   included do
     before_action :set_sort
+    helper_method :sort_url_for
   end
 
   private
+
+  def sort_url_for(column)
+    next_direction = if @sort_column == column.to_s
+                       @sort_direction == "asc" ? "desc" : nil
+                     else
+                       "asc"
+                     end
+
+    query = {}
+    query[:query] = @query if defined?(@query) && @query.present?
+    query[:filter] = @filters.to_h if defined?(@filters) && @filters.present?
+    if next_direction
+      query[:sort] = column
+      query[:direction] = next_direction
+    end
+    [request.path, query.to_query.presence].compact.join("?")
+  end
 
   def set_sort
     @sort_column = params[:sort].presence
