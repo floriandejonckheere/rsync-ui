@@ -30,9 +30,11 @@
   <body>
     <%= render "shared/confirm_dialog" %>
 
-    <% if flash.any? { |_, msg| msg.present? } %>
-      <%= render "shared/message", flash: flash %>
-    <% end %>
+    <div id="notifications">
+      <% if flash.any? { |_, msg| msg.present? } %>
+        <%= render "shared/message", flash: flash %>
+      <% end %>
+    </div>
 
     <div class="flex min-h-screen h-full bg-gray-100 dark:bg-gray-900">
       <aside

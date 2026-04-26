@@ -361,6 +361,9 @@ en:
       delete_confirm: Are you sure you want to delete this server? This action cannot be undone.
       delete_confirm_title: Delete server
       edit: Edit server
+    connection:
+      failure: Connection failed
+      success: Connection successful
     create:
       success: Server was successfully created.
     destroy:
@@ -392,6 +395,7 @@ en:
       ssh_key_placeholder_edit: Leave blank to keep unchanged
       submit_create: Create server
       submit_update: Update server
+      test_connection: Test connection
       username: Username
       username_placeholder: admin
     index:

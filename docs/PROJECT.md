@@ -47,7 +47,7 @@ The resource usage shows the total and used storage, aggregated by repository.
 
 Servers are the remote destinations where the files are synchronized to.
 
-- [ ] Test connection during server setup and editing
+- [x] Test connection during server setup and editing
 - [ ] Deploy SSH key to the server
   - [ ] Generate new SSH key pair
   - [ ] Upload SSH key to the server (using password)

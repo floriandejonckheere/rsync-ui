@@ -1,5 +1,39 @@
 <%= form_with model: server, id: "server-form", class: "form", data: { controller: "unsaved-changes" } do |f| %>
   <% content_for :actions do %>
+    <%= form_with url: connection_servers_path,
+                  method: :post,
+                  data: {
+                    turbo_stream: true,
+                    controller: "server-connection",
+                    "server-connection-source-form-value": "server-form",
+                  } do |cf| %>
+      <%= cf.hidden_field :server_id,
+                          value: server.persisted? ? server.id : nil,
+                          data: { "server-connection-target": "serverId" } %>
+
+      <%= cf.hidden_field :host, data: { "server-connection-target": "host" } %>
+      <%= cf.hidden_field :port, data: { "server-connection-target": "port" } %>
+      <%= cf.hidden_field :username, data: { "server-connection-target": "username" } %>
+      <%= cf.hidden_field :password, data: { "server-connection-target": "password" } %>
+      <%= cf.hidden_field :ssh_key, data: { "server-connection-target": "sshKey" } %>
+
+      <button
+        type="submit"
+        class="btn-icon-outline btn-icon-lg"
+        data-server-connection-target="button"
+        data-action="click->server-connection#sync"
+        data-tooltip="<%= I18n.t("servers.form.test_connection") %>"
+      >
+        <%= lucide_icon "plug",
+                        class: "h-6 w-6",
+                        data: { "server-connection-target": "icon" } %>
+
+        <%= lucide_icon "loader-circle",
+                        class: "h-6 w-6 hidden animate-spin",
+                        data: { "server-connection-target": "spinner" } %>
+      </button>
+    <% end %>
+
     <button
       type="submit"
       form="server-form"

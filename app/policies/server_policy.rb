@@ -28,4 +28,8 @@ class ServerPolicy < ApplicationPolicy
   def destroy?
     user.admin? || record.user == user
   end
+
+  def connection?
+    user.admin? || record.user == user
+  end
 end

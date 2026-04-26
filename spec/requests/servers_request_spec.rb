@@ -340,4 +340,122 @@ RSpec.describe "Servers" do
       end
     end
   end
+
+  describe "POST /servers/connection" do
+    let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
+
+    before do
+      allow(Net::SSH)
+        .to receive(:start)
+        .and_yield(ssh_session)
+
+      allow(ssh_session)
+        .to receive(:exec!)
+        .and_return("ok\n")
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        post connection_servers_path, params: { host: "example.com", port: 22, username: "admin", password: "secret" }
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "when authenticated (new server form, no server_id)" do
+      before { sign_in user, scope: :user }
+
+      it "returns a Turbo Stream response" do
+        post connection_servers_path,
+             params: { host: "example.com", port: 22, username: "admin", password: "secret" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      end
+
+      it "renders a success notification when SSH connects" do
+        post connection_servers_path,
+             params: { host: "example.com", port: 22, username: "admin", password: "secret" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response.body).to include(I18n.t("servers.connection.success"))
+      end
+
+      it "uses password when provided" do
+        post connection_servers_path,
+             params: { host: "example.com", port: 22, username: "admin", password: "password" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH)
+          .to have_received(:start)
+          .with(anything, anything, hash_including(password: "password"))
+
+        expect(response.body).to include(I18n.t("servers.connection.success"))
+      end
+
+      it "uses ssh_key when provided" do
+        post connection_servers_path,
+             params: { host: "example.com", port: 22, username: "admin", ssh_key: "ssh_key" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH)
+          .to have_received(:start)
+          .with(anything, anything, hash_including(key_data: ["ssh_key"]))
+
+        expect(response.body).to include(I18n.t("servers.connection.success"))
+      end
+
+      it "renders a failure notification when SSH fails" do
+        allow(Net::SSH)
+          .to receive(:start)
+          .and_raise(Net::SSH::AuthenticationFailed, "Authentication failed")
+
+        post connection_servers_path,
+             params: { host: "example.com", port: 22, username: "admin", password: "wrong" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response.body).to include(I18n.t("servers.connection.failure"))
+        expect(response.body).to include("Net::SSH::AuthenticationFailed")
+      end
+    end
+
+    context "when authenticated (edit form, server_id provided)" do
+      let(:server) { create(:server, :with_password, user:) }
+
+      before { sign_in user, scope: :user }
+
+      it "succeeds using submitted credentials when present" do
+        post connection_servers_path,
+             params: { server_id: server.id, host: server.host, port: server.port, username: server.username, password: "newpass" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response.body).to include(I18n.t("servers.connection.success"))
+      end
+
+      it "falls back to stored credentials when password and ssh_key params are blank" do
+        post connection_servers_path,
+             params: { server_id: server.id, host: server.host, port: server.port, username: server.username, password: "", ssh_key: "" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH)
+          .to have_received(:start)
+          .with(anything, anything, hash_including(password: server.password))
+
+        expect(response.body).to include(I18n.t("servers.connection.success"))
+      end
+
+      context "when server belongs to another user" do
+        let(:server) { create(:server, :with_password, user: other_user) }
+
+        it "returns forbidden" do
+          post connection_servers_path,
+               params: { server_id: server.id, host: server.host, port: server.port, username: server.username, password: "" },
+               headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+          expect(response).to have_http_status(:forbidden)
+        end
+      end
+    end
+  end
 end

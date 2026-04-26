@@ -1,0 +1,24 @@
+<div
+  class="
+    fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4
+    sm:max-w-lg
+  "
+>
+  <div
+    role="alert"
+    class="<%= alert_class_for(result[:success] ? :success : :alert) %> mb-4 shadow-lg"
+    data-turbo-temporary
+  >
+    <%= lucide_icon icon_name_for(result[:success] ? :success : :alert), class: "w-4 h-4" %>
+
+    <h2>
+      <%= result[:success] ? t("servers.connection.success") : t("servers.connection.failure") %>
+    </h2>
+
+    <% unless result[:success] %>
+      <section>
+        <pre class="text-xs whitespace-pre-wrap"><%= result[:message] %></pre>
+      </section>
+    <% end %>
+  </div>
+</div>

@@ -65,6 +65,22 @@ RSpec.describe ServerPolicy do
     end
   end
 
+  describe "#connection?" do
+    it { is_expected.to be_connection }
+
+    context "when user is another user" do
+      let(:user) { other_user }
+
+      it { is_expected.not_to be_connection }
+    end
+
+    context "when user is admin" do
+      let(:user) { admin }
+
+      it { is_expected.to be_connection }
+    end
+  end
+
   describe ".relation_scope" do
     subject(:scope) { policy.apply_scope(Server.all, type: :relation) }
 

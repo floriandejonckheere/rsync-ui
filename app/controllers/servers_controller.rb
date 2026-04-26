@@ -57,6 +57,27 @@ class ServersController < ApplicationController
     redirect_to servers_path, notice: t(".success"), status: :see_other
   end
 
+  def connection
+    @server = params[:server_id] ? Server.find(params[:server_id]) : Server.new
+    @server.user ||= current_user
+
+    authorize! @server, to: :connection?
+
+    @server.host = params[:host].presence || @server.host
+    @server.port = params[:port].presence || @server.port
+    @server.username = params[:username].presence || @server.username
+    @server.password = params[:password].presence || @server.password
+    @server.ssh_key = params[:ssh_key].presence || @server.ssh_key
+
+    result = Servers::ConnectionService.call(@server)
+
+    render turbo_stream: turbo_stream.prepend(
+      "notifications",
+      partial: "servers/connection_result",
+      locals: { result: },
+    )
+  end
+
   private
 
   def set_server
@@ -66,7 +87,16 @@ class ServersController < ApplicationController
   def server_params
     params
       .require(:server)
-      .permit(:name, :description, :path, :host, :port, :username, :password, :ssh_key)
+      .permit(
+        :name,
+        :description,
+        :path,
+        :host,
+        :port,
+        :username,
+        :password,
+        :ssh_key,
+      )
   end
 
   def update_params

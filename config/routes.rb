@@ -24,7 +24,11 @@ Rails.application.routes.draw do
   }
 
   resources :configurations, only: [:index, :update]
-  resources :servers
+  resources :servers do
+    collection do
+      post :connection
+    end
+  end
   resources :repositories
   resources :jobs, except: :show do
     collection do
@@ -60,6 +64,7 @@ end
 #                           configurations GET    /configurations(.:format)                                                                         configurations#index
 #                            configuration PATCH  /configurations/:id(.:format)                                                                     configurations#update
 #                                          PUT    /configurations/:id(.:format)                                                                     configurations#update
+#                       connection_servers POST   /servers/connection(.:format)                                                                     servers#connection
 #                                  servers GET    /servers(.:format)                                                                                servers#index
 #                                          POST   /servers(.:format)                                                                                servers#create
 #                               new_server GET    /servers/new(.:format)                                                                            servers#new
