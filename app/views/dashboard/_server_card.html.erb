@@ -1,9 +1,9 @@
 <% ru = server.resource_usage %>
 
-<div class="card p-0 flex flex-col w-80">
+<div class="card p-0 flex flex-col w-60">
   <%# Header %>
-  <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
-    <div class="font-semibold text-gray-900 dark:text-gray-100">
+  <div class="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700">
+    <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">
       <%= server.name %>
     </div>
 
@@ -13,7 +13,7 @@
   </div>
 
   <%# Body %>
-  <div class="px-6 py-5 flex flex-col gap-5 flex-1">
+  <div class="px-4 py-3 flex flex-col gap-3 flex-1">
     <% if ru.nil? %>
       <div class="text-sm text-gray-400 dark:text-gray-500 text-center py-4">
         <%= I18n.t("dashboard.server_health.never_probed") %>
@@ -23,7 +23,7 @@
         <%= I18n.t("dashboard.server_health.failed") %>
       </div>
     <% else %>
-      <div class="flex gap-4 w-full">
+      <div class="flex gap-3 w-full">
         <%= render "dashboard/gauge",
                    label: I18n.t("dashboard.server_health.disk"),
                    percent: ru.disk_percent,
@@ -48,7 +48,7 @@
   <%# Footer %>
   <div
     class="
-      px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex
+      px-4 py-2 border-t border-gray-100 dark:border-gray-700 flex
       items-center justify-between text-xs text-gray-500 dark:text-gray-400
     "
   >
