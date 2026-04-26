@@ -8,8 +8,6 @@ en:
         description: Core system settings and technical parameters
         title: System configuration
     keys:
-      maximum_file_size:
-        description: Maximum file size (in MB)
       resource_usage:
         description: Enable or disable server resource usage probe
         cpu_critical:

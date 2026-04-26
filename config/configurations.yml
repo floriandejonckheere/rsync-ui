@@ -1,8 +1,4 @@
 ---
-- key: maximum_file_size
-  type: integer
-  category: system
-  default: 10
 - key: resource_usage
   type: boolean
   category: resource_usage
