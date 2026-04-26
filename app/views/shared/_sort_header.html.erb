@@ -7,15 +7,14 @@
     "asc"
   end
 
-  base = params.except(:controller, :action).to_unsafe_h
-  sort_params = if next_direction
-    base.merge("sort" => column, "direction" => next_direction)
-  else
-    base.except("sort", "direction")
-  end %>
+  sort_query = {}
+  sort_query[:query] = @query if @query.present?
+  sort_query[:filter] = @filters.to_h if @filters.present?
+  sort_query.merge!(sort: column, direction: next_direction) if next_direction
+  sort_href = [request.path, sort_query.to_query.presence].compact.join("?") %>
 
 <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
-  <%= link_to url_for(sort_params),
+  <%= link_to sort_href,
               data: { turbo_action: "replace" },
               class: "flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200 whitespace-nowrap" do %>
     <%= label %>
