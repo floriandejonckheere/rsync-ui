@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Import::JobRunService do
+RSpec.describe JobRuns::ImportService do
   subject(:service) { described_class.new(path: tmp_path) }
 
   let(:tmp_path) { Pathname.new(Dir.mktmpdir) }

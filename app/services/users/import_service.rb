@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Import
-  class UserService < BaseService
+module Users
+  class ImportService < ::ImportService
     private
 
     def csv_filename

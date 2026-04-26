@@ -2,6 +2,6 @@
 
 puts "Seeding jobs..."
 
-Import::JobService.call(path: Rails.root.join("db/seeds/development"))
+Jobs::ImportService.call(path: Rails.root.join("db/seeds/development"))
 
 puts "  Done."

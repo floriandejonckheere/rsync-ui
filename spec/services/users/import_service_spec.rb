@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Import::UserService do
+RSpec.describe Users::ImportService do
   subject(:service) { described_class.new(path: tmp_path) }
 
   let(:tmp_path) { Pathname.new(Dir.mktmpdir) }

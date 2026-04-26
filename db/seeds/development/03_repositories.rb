@@ -2,6 +2,6 @@
 
 puts "Seeding repositories..."
 
-Import::RepositoryService.call(path: Rails.root.join("db/seeds/development"))
+Repositories::ImportService.call(path: Rails.root.join("db/seeds/development"))
 
 puts "  Done."

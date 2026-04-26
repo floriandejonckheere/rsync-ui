@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Export
-  class UserService < BaseService
+module Users
+  class ExportService < ::ExportService
     private
 
     def headers = ["first_name", "last_name", "email", "password", "role"]
