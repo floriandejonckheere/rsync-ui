@@ -85,19 +85,25 @@
             <div class="field">
               <%= f.label :source_repository_id, I18n.t("jobs.form.source_repository") %>
 
-              <%= f.select :source_repository_id,
-                           @repositories.map { |repository| [repository.name, repository.id] },
-                           { include_blank: I18n.t("jobs.form.source_repository_placeholder") },
-                           { required: true, class: "w-full" } %>
+              <%= render "shared/combobox",
+                         name: f.field_name(:source_repository_id),
+                         value: job.source_repository_id,
+                         options: @repositories.map { |repository| [repository.name, repository.id] },
+                         blank_label: I18n.t("jobs.form.source_repository_placeholder"),
+                         placeholder: I18n.t("jobs.form.source_repository_search_placeholder"),
+                         required: true %>
             </div>
 
             <div class="field">
               <%= f.label :destination_repository_id, I18n.t("jobs.form.destination_repository") %>
 
-              <%= f.select :destination_repository_id,
-                           @repositories.map { |repository| [repository.name, repository.id] },
-                           { include_blank: I18n.t("jobs.form.destination_repository_placeholder") },
-                           { required: true, class: "w-full" } %>
+              <%= render "shared/combobox",
+                         name: f.field_name(:destination_repository_id),
+                         value: job.destination_repository_id,
+                         options: @repositories.map { |repository| [repository.name, repository.id] },
+                         blank_label: I18n.t("jobs.form.destination_repository_placeholder"),
+                         placeholder: I18n.t("jobs.form.destination_repository_search_placeholder"),
+                         required: true %>
             </div>
           </div>
         </section>

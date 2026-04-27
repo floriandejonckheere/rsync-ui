@@ -1,0 +1,40 @@
+<%# locals: (name:, value:, options:, blank_label:, placeholder:, required: false) %>
+<div class="select">
+  <button
+    type="button"
+    class="btn-outline w-full"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+  >
+    <span>
+      <%= options.find { |_, v| v.to_s == value.to_s }&.first || blank_label %>
+    </span>
+
+    <%= lucide_icon "chevron-down", class: "h-4 w-4 opacity-50" %>
+  </button>
+
+  <input
+    type="hidden"
+    name="<%= name %>"
+    value="<%= value %>"
+    <%= "required" if required %>
+  >
+
+  <div data-popover aria-hidden="true">
+    <header>
+      <%= lucide_icon "search", class: "h-4 w-4 opacity-50" %>
+
+      <input type="text" role="combobox" placeholder="<%= placeholder %>">
+    </header>
+
+    <div role="listbox">
+      <div role="option" data-value=""><%= blank_label %></div>
+
+      <% options.each do |option_label, option_value| %>
+        <div role="option" data-value="<%= option_value %>">
+          <%= option_label %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

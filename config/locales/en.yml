@@ -151,6 +151,7 @@ en:
       description_placeholder: Optional description for this job
       destination_repository: Destination repository
       destination_repository_placeholder: Select a destination repository
+      destination_repository_search_placeholder: Search repositories...
       details: Details
       enabled: Enabled
       exclude_patterns: Exclude patterns
@@ -271,6 +272,7 @@ en:
       schedule_preview_placeholder: Enter a cron expression to see a preview
       source_repository: Source repository
       source_repository_placeholder: Select a source repository
+      source_repository_search_placeholder: Search repositories...
       submit_create: Create job
       submit_update: Update job
     index:
