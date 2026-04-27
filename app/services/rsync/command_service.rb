@@ -55,13 +55,12 @@ module Rsync
     def parts
       [
         # Command
-        "rsync",
+        rsync_path,
 
         # Flags
         *ssh_flags,
         *boolean_flags(BASIC_FLAGS),
         *boolean_flags(ADVANCED_FLAGS),
-        *rsync_path_flag,
         *custom_argument_flags,
         *include_flags,
         *exclude_flags,
@@ -73,10 +72,17 @@ module Rsync
         # Source and destination paths
         source_path,
         destination_path,
-      ].compact.join(" ")
+      ].compact
     end
 
     private
+
+    def rsync_path
+      [
+        ("sudo" if job.opt_superuser),
+        job.opt_rsync_path.presence || "rsync",
+      ].compact.join(" ")
+    end
 
     def boolean_flags(map)
       map.filter_map { |attr, flag| flag if job.public_send(attr) }
@@ -87,19 +93,6 @@ module Rsync
       return [] unless port
 
       ["-e \"ssh -p #{port}\""]
-    end
-
-    def rsync_path_flag
-      path =
-        if job.opt_superuser && job.opt_rsync_path.present?
-          "sudo #{job.opt_rsync_path}"
-        elsif job.opt_superuser
-          "sudo rsync"
-        elsif job.opt_rsync_path.present?
-          job.opt_rsync_path
-        end
-
-      path ? ["--rsync-path=\"#{path}\""] : []
     end
 
     def custom_argument_flags

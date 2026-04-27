@@ -7,10 +7,6 @@ RSpec.describe Rsync::CommandService do
   let(:destination) { build(:repository, :local, path: "/data/destination") }
   let(:job) { build(:job, source_repository: source, destination_repository: destination) }
 
-  it "starts with rsync" do
-    expect(command).to start_with("rsync ")
-  end
-
   it "ends with source and destination paths" do
     expect(command).to end_with("/data/source /data/destination")
   end
@@ -60,33 +56,24 @@ RSpec.describe Rsync::CommandService do
     end
   end
 
-  describe "opt_superuser" do
-    context "when enabled without a custom rsync path" do
+  describe "opt_superuser and opt_rsync_path" do
+    it "defaults to rsync" do
+      expect(command).to start_with("rsync ")
+    end
+
+    context "when opt_superuser is enabled" do
       before { job.opt_superuser = true }
 
-      it "adds --rsync-path with sudo rsync" do
-        expect(command).to include('--rsync-path="sudo rsync"')
-      end
-    end
-
-    context "when enabled with a custom rsync path" do
-      before do
-        job.opt_superuser = true
-        job.opt_rsync_path = "/usr/local/bin/rsync"
+      it "defaults to sudo rsync" do
+        expect(command).to start_with("sudo rsync ")
       end
 
-      it "adds --rsync-path with sudo and the custom path" do
-        expect(command).to include('--rsync-path="sudo /usr/local/bin/rsync"')
-      end
-    end
-  end
+      context "when opt_rsync_path is set" do
+        before { job.opt_rsync_path = "/usr/local/bin/rsync" }
 
-  describe "opt_rsync_path" do
-    context "when set without superuser" do
-      before { job.opt_rsync_path = "/usr/local/bin/rsync" }
-
-      it "adds --rsync-path with the custom path" do
-        expect(command).to include('--rsync-path="/usr/local/bin/rsync"')
+        it "uses the custom path" do
+          expect(command).to start_with("sudo /usr/local/bin/rsync ")
+        end
       end
     end
   end
