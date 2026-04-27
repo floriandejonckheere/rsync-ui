@@ -49,23 +49,23 @@
           <% end %>
         </div>
 
-        <%= render "shared/menu_item", path: root_path, controllers: ["dashboard"], icon: "circle-gauge", title: I18n.t("dashboard.title") %>
-        <%= render "shared/menu_item", path: job_runs_path, controllers: "job_runs", icon: "clock", title: I18n.t("job_runs.title") %>
-        <%= render "shared/menu_item", path: servers_path, controllers: "servers", icon: "server", title: I18n.t("servers.title") %>
-        <%= render "shared/menu_item", path: repositories_path, controllers: "repositories", icon: "folders", title: I18n.t("repositories.title") %>
-        <%= render "shared/menu_item", path: jobs_path, controllers: "jobs", icon: "arrow-right-left", title: I18n.t("jobs.title") %>
+        <%= render "shared/menu/item", path: root_path, controllers: ["dashboard"], icon: "circle-gauge", title: I18n.t("dashboard.title") %>
+        <%= render "shared/menu/item", path: job_runs_path, controllers: "job_runs", icon: "clock", title: I18n.t("job_runs.title") %>
+        <%= render "shared/menu/item", path: servers_path, controllers: "servers", icon: "server", title: I18n.t("servers.title") %>
+        <%= render "shared/menu/item", path: repositories_path, controllers: "repositories", icon: "folders", title: I18n.t("repositories.title") %>
+        <%= render "shared/menu/item", path: jobs_path, controllers: "jobs", icon: "arrow-right-left", title: I18n.t("jobs.title") %>
 
         <div class="grow"></div>
 
         <% if current_user.admin? %>
-          <%= render "shared/menu_item", path: mission_control_jobs_path, controllers: nil, icon: "construction", title: I18n.t("monitoring.title"), target: "_blank" %>
+          <%= render "shared/menu/item", path: mission_control_jobs_path, controllers: nil, icon: "construction", title: I18n.t("monitoring.title"), target: "_blank" %>
         <% end %>
 
         <% if current_user.admin? %>
-          <%= render "shared/menu_item", path: configurations_path, controllers: "configurations", icon: "cog", title: I18n.t("configurations.title") %>
+          <%= render "shared/menu/item", path: configurations_path, controllers: "configurations", icon: "cog", title: I18n.t("configurations.title") %>
         <% end %>
 
-        <%= render "shared/menu_item", path: edit_user_registration_path, controllers: "registrations", icon: "settings", title: I18n.t("settings.title") %>
+        <%= render "shared/menu/item", path: edit_user_registration_path, controllers: "registrations", icon: "settings", title: I18n.t("settings.title") %>
       </aside>
 
       <div class="flex flex-col w-full p-24 ml-96">

@@ -15,7 +15,7 @@
     <section>
       <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "form" }) do |f| %>
         <% if current_user.errors.any? %>
-          <%= render "shared/form_messages", model: current_user %>
+          <%= render "shared/forms/messages", model: current_user %>
         <% end %>
 
         <div class="flex flex-col gap-6">

@@ -7,7 +7,7 @@
 <% end %>
 
 <% content_for :actions do %>
-  <%= render "shared/search",
+  <%= render "shared/search/search",
              url: servers_path,
              query: @query,
              frame: "servers_list",
@@ -21,7 +21,7 @@
 
 <%= turbo_frame_tag "servers_list" do %>
   <% if @servers.empty? && @query.present? %>
-    <%= render "shared/search_no_results", title: I18n.t("servers.index.search.no_results.title") %>
+    <%= render "shared/search/no_results", title: I18n.t("servers.index.search.no_results.title") %>
   <% elsif @servers.empty? %>
     <div
       class="

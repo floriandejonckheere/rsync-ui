@@ -2,14 +2,14 @@
   <%= form_with url: job_runs_path, method: :get,
                data: { turbo_frame: "job_runs_list", controller: "filter" } do %>
     <div class="flex flex-row flex-wrap gap-4 items-end px-6">
-      <%= render "shared/filter_select",
+      <%= render "shared/filters/select",
                  label: I18n.t("job_runs.table.trigger"),
                  name: "filter[trigger]",
                  options: JobRun.triggers.keys.map { |t| [I18n.t("job_runs.trigger.#{t}"), t] },
                  selected: @filters[:trigger],
                  blank_label: I18n.t("job_runs.index.filters.all_triggers") %>
 
-      <%= render "shared/filter_combobox",
+      <%= render "shared/filters/combobox",
                  label: I18n.t("job_runs.table.job"),
                  name: "filter[job_id]",
                  options: @jobs.map { |j| [j.name, j.id] },
@@ -17,19 +17,19 @@
                  blank_label: I18n.t("job_runs.index.filters.all_jobs"),
                  placeholder: I18n.t("job_runs.index.filters.search_jobs") %>
 
-      <%= render "shared/filter_select",
+      <%= render "shared/filters/select",
                  label: I18n.t("job_runs.table.status"),
                  name: "filter[status]",
                  options: JobRun.statuses.keys.map { |s| [I18n.t("job_runs.status.#{s}"), s] },
                  selected: @filters[:status],
                  blank_label: I18n.t("job_runs.index.filters.all_statuses") %>
 
-      <%= render "shared/filter_datetime",
+      <%= render "shared/filters/datetime",
                  label: I18n.t("job_runs.index.filters.started_at_from"),
                  name: "filter[started_at_from]",
                  value: @filters[:started_at_from] %>
 
-      <%= render "shared/filter_datetime",
+      <%= render "shared/filters/datetime",
                  label: I18n.t("job_runs.index.filters.started_at_to"),
                  name: "filter[started_at_to]",
                  value: @filters[:started_at_to] %>

@@ -7,7 +7,7 @@
 <% end %>
 
 <% content_for :actions do %>
-  <%= render "shared/search",
+  <%= render "shared/search/search",
              url: repositories_path,
              query: @query,
              frame: "repositories_list",
@@ -21,7 +21,7 @@
 
 <%= turbo_frame_tag "repositories_list" do %>
   <% if @repositories.empty? && @query.present? %>
-    <%= render "shared/search_no_results", title: I18n.t("repositories.index.search.no_results.title") %>
+    <%= render "shared/search/no_results", title: I18n.t("repositories.index.search.no_results.title") %>
   <% elsif @repositories.empty? %>
     <div
       class="

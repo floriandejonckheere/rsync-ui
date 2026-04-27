@@ -16,7 +16,7 @@
 
   <% if job.errors.any? %>
     <div class="mb-8">
-      <%= render "shared/form_messages", model: job %>
+      <%= render "shared/forms/messages", model: job %>
     </div>
   <% end %>
 
@@ -85,7 +85,7 @@
             <div class="field">
               <%= f.label :source_repository_id, I18n.t("jobs.form.source_repository") %>
 
-              <%= render "shared/combobox",
+              <%= render "shared/forms/combobox",
                          name: f.field_name(:source_repository_id),
                          value: job.source_repository_id,
                          options: @repositories.map { |repository| [repository.name, repository.id] },
@@ -97,7 +97,7 @@
             <div class="field">
               <%= f.label :destination_repository_id, I18n.t("jobs.form.destination_repository") %>
 
-              <%= render "shared/combobox",
+              <%= render "shared/forms/combobox",
                          name: f.field_name(:destination_repository_id),
                          value: job.destination_repository_id,
                          options: @repositories.map { |repository| [repository.name, repository.id] },
