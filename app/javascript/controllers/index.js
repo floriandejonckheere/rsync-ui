@@ -22,6 +22,9 @@ application.register("cron-preview", CronPreviewController)
 import DialogController from "./dialog_controller"
 application.register("dialog", DialogController)
 
+import DismissibleController from "./dismissible_controller"
+application.register("dismissible", DismissibleController)
+
 import FilterController from "./filter_controller"
 application.register("filter", FilterController)
 

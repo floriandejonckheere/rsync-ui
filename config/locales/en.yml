@@ -436,6 +436,7 @@ en:
     title: Settings
     update: Update
   shared:
+    dismiss: Dismiss
     filters:
       clear: Clear filters
     form_messages:

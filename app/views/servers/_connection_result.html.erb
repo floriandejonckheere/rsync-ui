@@ -6,8 +6,9 @@
 >
   <div
     role="alert"
-    class="<%= alert_class_for(result[:success] ? :success : :alert) %> mb-4 shadow-lg"
+    class="<%= alert_class_for(result[:success] ? :success : :alert) %> mb-4 shadow-lg relative"
     data-turbo-temporary
+    data-controller="dismissible"
   >
     <%= lucide_icon icon_name_for(result[:success] ? :success : :alert), class: "w-4 h-4" %>
 
@@ -20,5 +21,14 @@
         <pre class="text-xs whitespace-pre-wrap"><%= result[:message] %></pre>
       </section>
     <% end %>
+
+    <button
+      type="button"
+      class="absolute top-2 right-2 btn-icon-ghost p-1"
+      aria-label="<%= I18n.t("shared.dismiss") %>"
+      data-action="dismissible#dismiss"
+    >
+      <%= lucide_icon "x", class: "w-4 h-4" %>
+    </button>
   </div>
 </div>
