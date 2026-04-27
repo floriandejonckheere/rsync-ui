@@ -8,7 +8,7 @@ FactoryBot.define do
     schedule { nil }
     enabled { true }
 
-    source_repository { association(:repository, user:) }
-    destination_repository { association(:repository, user:) }
+    source_repository { association(:repository, :local, user:) }
+    destination_repository { association(:repository, :remote, user:) }
   end
 end

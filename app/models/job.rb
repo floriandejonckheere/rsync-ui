@@ -16,6 +16,7 @@ class Job < ApplicationRecord
             presence: true
 
   validate :validate_different_repositories
+  validate :validate_not_both_remote
   validate :validate_destination_repository_writable
   validate :validate_schedule
 
@@ -35,6 +36,13 @@ class Job < ApplicationRecord
     return if source_repository != destination_repository
 
     errors.add(:destination_repository, :same_as_source)
+  end
+
+  def validate_not_both_remote
+    return if source_repository.blank? || destination_repository.blank?
+    return unless source_repository.remote? && destination_repository.remote?
+
+    errors.add(:base, :not_both_remote)
   end
 
   def validate_destination_repository_writable

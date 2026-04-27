@@ -16,10 +16,21 @@ RSpec.describe Job do
 
     it "is invalid when the destination repository matches the source repository" do
       repository = build(:repository)
+
       job = build(:job, source_repository: repository, destination_repository: repository)
 
       expect(job).not_to be_valid
       expect(job.errors[:destination_repository]).to be_present
+    end
+
+    it "is invalid when both source and destination repositories are remote" do
+      source_repository = build(:repository, :remote)
+      destination_repository = build(:repository, :remote)
+
+      job = build(:job, source_repository:, destination_repository:)
+
+      expect(job).not_to be_valid
+      expect(job.errors[:base]).to be_present
     end
 
     it "is invalid when the destination repository is read-only" do

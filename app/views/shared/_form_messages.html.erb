@@ -1,11 +1,9 @@
-<div class="mt-10">
-  <% model.errors.each do |error| %>
-    <div class="alert-destructive">
-      <%= lucide_icon "circle-alert", class: "w-4 h-4 inline" %>
+<% model.errors.each do |error| %>
+  <div class="alert-destructive mt-5">
+    <%= lucide_icon "circle-alert", class: "w-4 h-4 inline" %>
 
-      <h2><%= I18n.t("shared.form_messages.error_title") %></h2>
+    <h2><%= I18n.t("shared.form_messages.error_title") %></h2>
 
-      <section><%= error.full_message %></section>
-    </div>
-  <% end %>
-</div>
+    <section><%= error.full_message %></section>
+  </div>
+<% end %>

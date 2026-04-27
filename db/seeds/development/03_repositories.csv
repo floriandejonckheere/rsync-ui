@@ -2,7 +2,7 @@ name,description,path,read_only,repository_type,server_name,user_email
 System,System configuration files,/etc,true,local,,admin@example.com
 System (backup),Backup of the system configuration files,/srv/backups/system,false,remote,Backup,admin@example.com
 System (mirror),Off-site backup of the system configuration files,/srv/mirrors/system,false,remote,Mirror,admin@example.com
-Documents,Personal documents,/data/documents,true,remote,NAS,admin@example.com
+Documents,Personal documents,/data/documents,true,local,,admin@example.com
 Documents (backup),Personal documents,/srv/documents,false,remote,Backup,admin@example.com
 Docker,Docker volumes and state,/var/lib/docker,true,local,,admin@example.com
 Docker (replica),Local replica of the docker volumes and state,/backup/docker,false,local,,admin@example.com

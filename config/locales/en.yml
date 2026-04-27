@@ -5,6 +5,8 @@ en:
       models:
         job:
           attributes:
+            base:
+              not_both_remote: Source and destination cannot both be remote
             destination_repository:
               read_only: cannot be read-only
               same_as_source: must be different from the source repository

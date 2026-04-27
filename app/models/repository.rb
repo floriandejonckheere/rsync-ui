@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Repository < ApplicationRecord
-  enum :repository_type, { local: "local", remote: "remote" }, validate: true
-
   belongs_to :user
   belongs_to :server,
              optional: true
@@ -18,6 +16,11 @@ class Repository < ApplicationRecord
            foreign_key: :destination_repository_id,
            inverse_of: :destination_repository,
            dependent: :restrict_with_exception
+
+  enum :repository_type, {
+    local: "local",
+    remote: "remote",
+  }, validate: true
 
   validates :name,
             presence: true
