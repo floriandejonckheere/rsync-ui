@@ -7,6 +7,9 @@ import { application } from "./application"
 import CollapsibleController from "./collapsible_controller"
 application.register("collapsible", CollapsibleController)
 
+import CommandPreviewController from "./command_preview_controller"
+application.register("command-preview", CommandPreviewController)
+
 import ConfigurationController from "./configuration_controller"
 application.register("configuration", ConfigurationController)
 

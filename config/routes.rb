@@ -26,7 +26,11 @@ Rails.application.routes.draw do
   resources :configurations, only: [:index, :update]
   resources :servers
   resources :repositories
-  resources :jobs, except: :show
+  resources :jobs, except: :show do
+    collection do
+      post :preview
+    end
+  end
 
   resources :job_runs, only: [:index, :show, :create, :destroy] do
     member do
@@ -72,6 +76,7 @@ end
 #                                          PATCH  /repositories/:id(.:format)                                                                       repositories#update
 #                                          PUT    /repositories/:id(.:format)                                                                       repositories#update
 #                                          DELETE /repositories/:id(.:format)                                                                       repositories#destroy
+#                             preview_jobs POST   /jobs/preview(.:format)                                                                           jobs#preview
 #                                     jobs GET    /jobs(.:format)                                                                                   jobs#index
 #                                          POST   /jobs(.:format)                                                                                   jobs#create
 #                                  new_job GET    /jobs/new(.:format)                                                                               jobs#new

@@ -1,4 +1,8 @@
-<%= form_with model: job, id: "job-form", class: "form" do |f| %>
+<%= form_with model: job, id: "job-form", class: "form",
+              data: {
+                controller: "command-preview",
+                "command-preview-url-value": preview_jobs_path,
+              } do |f| %>
   <% content_for :actions do %>
     <button
       type="submit"
@@ -116,7 +120,7 @@
         </summary>
 
         <div class="px-8 pb-8">
-          <pre class="whitespace-pre-wrap break-all text-sm"><code><%= @command %></code></pre>
+          <%= render "preview" %>
         </div>
       </details>
 

@@ -6,7 +6,7 @@ class JobsController < ApplicationController
 
   before_action :authenticate_user!
   before_action :set_job, only: [:edit, :update, :destroy]
-  before_action :set_repositories, only: [:new, :edit, :create, :update]
+  before_action :set_repositories, only: [:new, :edit, :create, :update, :preview]
 
   def index
     jobs = authorized_scope(Job.includes(:source_repository, :destination_repository).all, type: :relation)
@@ -23,13 +23,13 @@ class JobsController < ApplicationController
 
     authorize! @job
 
-    @command = Rsync::CommandService.call(job: @job)
+    @command = Rsync::CommandService.new(job: @job)
   end
 
   def edit
     authorize! @job
 
-    @command = Rsync::CommandService.call(job: @job)
+    @command = Rsync::CommandService.new(job: @job)
   end
 
   def create
@@ -40,7 +40,8 @@ class JobsController < ApplicationController
     if @job.save
       redirect_to jobs_path, notice: t(".success")
     else
-      @command = Rsync::CommandService.call(job: @job)
+      @command = Rsync::CommandService.new(job: @job)
+
       render :new, status: :unprocessable_content
     end
   end
@@ -51,7 +52,8 @@ class JobsController < ApplicationController
     if @job.update(job_params)
       redirect_to jobs_path, notice: t(".success")
     else
-      @command = Rsync::CommandService.call(job: @job)
+      @command = Rsync::CommandService.new(job: @job)
+
       render :edit, status: :unprocessable_content
     end
   end
@@ -62,6 +64,16 @@ class JobsController < ApplicationController
     @job.destroy!
 
     redirect_to jobs_path, notice: t(".success"), status: :see_other
+  end
+
+  def preview
+    @job = current_user.jobs.build(job_params)
+
+    authorize! @job, to: :preview?
+
+    @command = Rsync::CommandService.new(job: @job)
+
+    render partial: "preview"
   end
 
   private

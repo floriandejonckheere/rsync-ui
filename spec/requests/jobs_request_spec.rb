@@ -310,4 +310,54 @@ RSpec.describe "Jobs" do
       end
     end
   end
+
+  describe "POST /jobs/preview" do
+    let(:source_repository) { create(:repository, user:) }
+    let(:destination_repository) { create(:repository, user:) }
+    let(:valid_params) do
+      {
+        job: {
+          name: "Preview Job",
+          source_repository_id: source_repository.id,
+          destination_repository_id: destination_repository.id,
+          opt_archive: true,
+          opt_dry_run: true,
+        },
+      }
+    end
+
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      it "returns the command preview" do
+        post preview_jobs_path, params: valid_params
+
+        expect(response).to have_http_status(:ok)
+
+        expect(response.body).to include("rsync")
+        expect(response.body).to include("--archive")
+        expect(response.body).to include("--dry-run")
+      end
+
+      it "includes source and destination placeholders when repositories are absent" do
+        post preview_jobs_path, params: { job: { name: "No repos" } }
+
+        expect(response.body).to include("&lt;source&gt;")
+        expect(response.body).to include("&lt;destination&gt;")
+      end
+
+      it "does not persist a job" do
+        expect { post preview_jobs_path, params: valid_params }
+          .not_to change(Job, :count)
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        post preview_jobs_path, params: valid_params
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
 end

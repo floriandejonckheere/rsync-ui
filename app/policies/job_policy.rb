@@ -13,6 +13,10 @@ class JobPolicy < ApplicationPolicy
     user.present?
   end
 
+  def preview?
+    user.present?
+  end
+
   def create?
     user.present?
   end

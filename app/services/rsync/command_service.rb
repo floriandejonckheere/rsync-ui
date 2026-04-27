@@ -49,6 +49,10 @@ module Rsync
     end
 
     def call
+      parts.join(" ")
+    end
+
+    def parts
       [
         # Command
         "rsync",
@@ -69,7 +73,7 @@ module Rsync
         # Source and destination paths
         source_path,
         destination_path,
-      ].compact.uniq.join(" ")
+      ].compact.join(" ")
     end
 
     private

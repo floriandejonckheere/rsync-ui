@@ -1,0 +1,4 @@
+<%= turbo_frame_tag "command-preview" do %>
+  <pre class="whitespace-pre-wrap break-all text-sm"><code><%= @command.parts.first %>
+<%= @command.parts.drop(1).map { |part| "  #{part}" }.join("\n") %></code></pre>
+<% end %>

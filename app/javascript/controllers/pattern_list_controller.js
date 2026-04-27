@@ -10,9 +10,11 @@ export default class extends Controller {
     input.name = this.fieldNameValue
     input.placeholder = this.placeholderValue
     this.listTarget.appendChild(clone)
+    this.element.dispatchEvent(new Event("change", { bubbles: true }))
   }
 
   remove(event) {
     event.currentTarget.closest("[data-pattern-row]").remove()
+    this.element.dispatchEvent(new Event("change", { bubbles: true }))
   }
 }
