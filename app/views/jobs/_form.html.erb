@@ -1,6 +1,6 @@
 <%= form_with model: job, id: "job-form", class: "form",
               data: {
-                controller: "command-preview",
+                controller: "unsaved-changes command-preview",
                 "command-preview-url-value": preview_jobs_path,
               } do |f| %>
   <% content_for :actions do %>

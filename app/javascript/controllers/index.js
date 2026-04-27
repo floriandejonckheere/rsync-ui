@@ -45,3 +45,6 @@ application.register("server-path", ServerPathController)
 
 import ThemeController from "./theme_controller"
 application.register("theme", ThemeController)
+
+import UnsavedChangesController from "./unsaved_changes_controller"
+application.register("unsaved-changes", UnsavedChangesController)

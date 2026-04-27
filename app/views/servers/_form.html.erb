@@ -1,4 +1,4 @@
-<%= form_with model: server, id: "server-form", class: "form" do |f| %>
+<%= form_with model: server, id: "server-form", class: "form", data: { controller: "unsaved-changes" } do |f| %>
   <% content_for :actions do %>
     <button
       type="submit"
