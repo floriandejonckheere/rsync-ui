@@ -63,9 +63,6 @@ Rails.application.configure do
   # Use SolidQueue for background jobs
   config.active_job.queue_adapter = :solid_queue
 
-  # Configure Solid Queue to use a dedicated database connection pool.
-  config.solid_queue.connects_to = { database: { writing: :queue } }
-
   # Log Solid Queue messages to stderr (consistent with main logger)
   config.solid_queue.logger = ActiveSupport::Logger.new($stdout)
 

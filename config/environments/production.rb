@@ -57,9 +57,6 @@ Rails.application.configure do
   # Replace the default in-process and non-durable queuing backend for Active Job.
   config.active_job.queue_adapter = :solid_queue
 
-  # Configure Solid Queue to use a dedicated database connection pool.
-  config.solid_queue.connects_to = { database: { writing: :queue } }
-
   # Log Solid Queue messages to the main Rails logger.
   config.solid_queue.logger = ActiveSupport::Logger.new($stdout)
 
