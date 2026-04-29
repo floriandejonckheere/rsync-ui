@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+return if ENV.fetch("SKIP_CONFIGURATION_CHECK", "0") == "1"
+
 Rails.application.config.after_initialize do
   next unless Configuration.table_exists?
 

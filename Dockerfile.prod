@@ -63,8 +63,9 @@ ARG SECRET_KEY_BASE=secret_key_base
 ARG RAILS_ENV=production
 ARG NODE_ENV=production
 
-# Skip credentials check
+# Skip credentials and configuration check
 ENV SKIP_CREDENTIALS_CHECK=1
+ENV SKIP_CONFIGURATION_CHECK=1
 
 # Compile assets
 RUN bin/rails assets:precompile
