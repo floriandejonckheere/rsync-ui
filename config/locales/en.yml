@@ -416,7 +416,13 @@ en:
       subtitle: Add a new SSH server
       title: New server
     table:
+      cpu: CPU
+      cpu_cores:
+        one: "%{count} core"
+        other: "%{count} cores"
+      disk: Disk
       host: Host
+      memory: Memory
       name: Name
       password: Password
       ssh_key: SSH Key

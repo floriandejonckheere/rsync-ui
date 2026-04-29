@@ -1,0 +1,31 @@
+<% percent, health = case metric
+  when :disk   then [resource_usage&.disk_percent,   resource_usage&.disk_health]
+  when :memory then [resource_usage&.memory_percent, resource_usage&.memory_health]
+  when :cpu    then [resource_usage&.cpu_usage,       resource_usage&.cpu_health]
+  end
+
+  tooltip = resource_bar_tooltip(resource_usage, metric) %>
+
+<% if percent.nil? || health == :unknown %>
+  <span class="text-gray-400 dark:text-gray-500">—</span>
+<% else %>
+  <% colors = resource_bar_color(health) %>
+  <div class="w-24" data-tooltip="<%= tooltip.present? ? tooltip : "" %>">
+    <div class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+      <%= number_to_percentage(percent, precision: 1) %>
+    </div>
+
+    <div
+      role="progressbar"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="<%= percent %>"
+      class="relative h-1.5 w-full overflow-hidden rounded-full <%= colors[:track] %>"
+    >
+      <div
+        class="h-full w-full flex-1 transition-all <%= colors[:bar] %>"
+        style="transform: translateX(-<%= 100 - percent.clamp(0, 100) %>%)"
+      ></div>
+    </div>
+  </div>
+<% end %>

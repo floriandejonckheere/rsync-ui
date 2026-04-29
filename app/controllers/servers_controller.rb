@@ -8,7 +8,7 @@ class ServersController < ApplicationController
   before_action :set_server, only: [:edit, :update, :destroy]
 
   def index
-    servers = authorized_scope(Server.all, type: :relation)
+    servers = authorized_scope(Server.includes(:resource_usage), type: :relation)
     servers = search_for(servers, "name", "description", "host")
     servers = sort_for(servers, allowed: ["name", "host"], default: { name: :asc })
 
