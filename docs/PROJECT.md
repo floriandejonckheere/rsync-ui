@@ -17,31 +17,23 @@ Rsync UI is a web application that lets you create, schedule, and execute file s
 ### Dashboard
 
 The dashboard provides a comprehensive overview of your synchronization jobs, including health, activity, schedules, and storage.
+Organized in rows, 4 cards per row.
 
-Visible elements include:
+First row:
+- One card (double width, 2 cards wide) with the overall status: health, degraded, or unknown (over the past 24 hours)
+  - Healthy if all (non-running) jobs have ran successfully
+  - Degraded if any job has failed
+  - Unknown if no jobs have run yet
+  - A gauge representing the number of failed and completed jobs
+- One card with the last job run, started at, duration, ended at, and status
+- One card with the next scheduled job
 
-- Overall status (healthy, degraded): healthy if all jobs are running successfully, degraded if any job is failing
-- Number of repositories: local and remote
-- Number of jobs: completed in the past 24 hours, and scheduled in the next 24 hours
-- Last run and its status (success/fail)
-- Cumulated total and used storage
+Second row:
+- One card with a gauge representing the number of repositories (local and remote)
+- One card with a gauge representing the cumulated used and total storage
 
-**Status**
-
-- [ ] Implement status: healthy, degraded
-- [ ] Implement repository overview
-- [ ] Implement job overview
-- [ ] Implement last run overview
-- [ ] Implement storage overview
-
-**Activity log**
-
-The activity log shows an overview of the jobs executed in reverse chronological order.
-The table name is `job_runs`.
-
-**Resource usage**
-
-The resource usage shows the total and used storage, aggregated by repository.
+Third row:
+- Per server, one card with the name and the resource usage (already exists)
 
 ### Servers
 
@@ -50,10 +42,6 @@ Servers are the remote destinations where the files are synchronized to.
 - [ ] Deploy SSH key to the server
   - [ ] Generate new SSH key pair
   - [ ] Upload SSH key to the server (using password)
-
-### Jobs
-
-Jobs are the actual synchronization tasks that are executed by the application.
 
 ### Execution and scheduling
 
