@@ -111,10 +111,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Use SolidQueue's [dynamic scheduling](https://github.com/rails/solid_queue#scheduling-and-unscheduling-recurring-tasks-dynamically) instead of the recurring scheduling jobs
 - [ ] Add a `with_configuration` helper
 - [ ] Make menubar responsive
-- [ ] Tooltips are not always on top, they clip on table edges
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
-- [ ] Drop AppSignal
-- [ ] Use a single database for SolidQueue/SolidCache
 
 ## Open questions
 
