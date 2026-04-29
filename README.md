@@ -8,11 +8,87 @@
 
 Rsync UI is a web application that lets you create, schedule, and execute file synchronization jobs with just a few clicks, powered by [rsync](https://github.com/RsyncProject/rsync).
 
-## Setup
+## Highlights
+
+- Dashboard for job health, activity, schedules, and storage
+- Synchronization jobs for local and remote destinations
+- Fully customizable command-line arguments
+- Automation through scheduled jobs
+- Remote server management with SSH key deployment (not implemented yet) and storage visibility
+- Real-time synchronization progress (not implemented yet)
+- Push notifications (not implemented yet)
+
+> [!NOTE]
+> Artificial Intelligence tooling is used during the development of this project. All generated code is thoroughly reviewed, tested, and verified manually to ensure the highest quality and security standards.
+
+## Getting started
+
+Rsync UI runs as a set of Docker containers. Docker compose is the recommended way to run the application.
+
+```yml
+x-app: &app
+  image: ghcr.io/floriandejonckheere/rsync-ui:latest
+  volumes:
+    - logs:/app/storage/ # Directory for rsync logs
+    - /path/to/storage:/data/storage:ro # Your local storage directories
+    - /path/to/backup:/data/storage:rw # Your local storage directories
+  environment:
+    SECRET_KEY_BASE: my-secret # Secret encryption key
+
+    PG_HOST: postgres
+    PG_USER: rsync_ui
+    PG_PASSWORD: rsync_ui
+    PG_DATABASE: rsync_ui
+
+    APP_HOST: rsync-ui.example.com # URL of the application
+    APP_EMAIL: rsync-ui@example.com # Email address of the application
+
+    ADMIN_EMAIL: rsync-ui@example.com # Default admin account
+    ADMIN_PASSWORD: rsync-ui # Default admin password
+  depends_on:
+    - postgres
+
+services:
+  postgres:
+    image: postgres:18
+    volumes:
+      - postgres:/var/lib/postgresql/18/docker/
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  # Web application
+  app:
+    <<: *app
+    ports:
+      - "3000:3000"
+
+  # Background jobs
+  worker:
+    <<: *app
+    command: bin/jobs
+
+volumes:
+  postgres:
+  logs:
+```
+
+### Docker compose
+
+The easiest way to get started is to use Docker compose:
+
+1. Install Docker and Docker compose
+2. Clone the repository
+3. Run `docker-compose up -d`
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Development
 
 First, ensure you have a working Docker environment.
 
-### Start the Application
+### Start the application
 
 Pull the images and start the containers:
 
@@ -34,15 +110,15 @@ docker-compose exec app bundle exec rails database:seed
 
 The application is now available at [http://localhost:3000](http://localhost:3000).
 
-## Development
+### Dependencies
 
 Use the `bin/update` script to update your development environment dependencies.
 
-## Debugging
+### Debugging
 
 Call `binding.break` anywhere in the source code to start a debugger.
 
-## Testing
+### Testing
 
 Run the test suite:
 
@@ -50,9 +126,9 @@ Run the test suite:
 rspec
 ```
 
-## Secrets
+### Secrets
 
-### Repository secrets
+#### Repository secrets
 
 Secrets for release and deployment:
 
@@ -67,7 +143,7 @@ Secrets for deployment:
 - `SSH_USER` (deployment user)
 - `SSH_KEY` (private key)
 
-### Environment secrets
+#### Environment secrets
 
 Secrets for deployment:
 
@@ -93,7 +169,7 @@ When adding more application environment variables, do not forget to add them in
 - `.github/workflows/cd.yml`
 - `ops/compose.yml`
 
-## Releasing
+### Releasing
 
 Update the changelog and bump the version in `lib/rsync_ui/version.rb`.
 Create a tag for the version and push it to Github.
@@ -107,11 +183,6 @@ git tag v1.0.0
 git push origin master
 git push origin v1.0.0
 ```
-
-## Disclaimer on Artificial Intelligence
-
-Artificial Intelligence (AI) is used to aid in the development of this project.
-However, every change proposed by AI is thoroughly reviewed, tested, and verified manually to ensure the highest quality and security standards.
 
 ## License
 
