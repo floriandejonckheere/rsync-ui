@@ -12,7 +12,6 @@ return if ENV.fetch("SKIP_CREDENTIALS_CHECK", "0") == "1"
   "APP_EMAIL",
   "ADMIN_EMAIL",
   "ADMIN_PASSWORD",
-  "APPSIGNAL_API_KEY",
 ].each do |key|
   next if ENV.key?(key) && ENV[key].present?
 

@@ -66,8 +66,6 @@ jobs:
 
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-
-          APPSIGNAL_API_KEY: ${{ secrets.APPSIGNAL_API_KEY }}
         run: |
           set -e
 

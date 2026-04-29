@@ -161,8 +161,6 @@ Secrets for deployment:
 
 - `POSTGRES_PASSWORD` (postgres user password, only for postgres container)
 
-- `APPSIGNAL_API_KEY`
-
 When adding more application environment variables, do not forget to add them in the following files, and on GitHub as environment secrets:
 
 - `.development.env`

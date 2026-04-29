@@ -93,9 +93,6 @@ gem "pagy"
 # Wizard controller framework [https://github.com/zombocom/wicked]
 gem "wicked"
 
-# AppSignal APM and error monitoring [https://github.com/appsignal/appsignal-ruby]
-gem "appsignal"
-
 # Time tools for Ruby [https://github.com/floraison/fugit]
 gem "fugit"
 

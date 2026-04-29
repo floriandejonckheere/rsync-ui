@@ -20,8 +20,6 @@ x-app: &app
 
     ADMIN_EMAIL: ${ADMIN_EMAIL}
     ADMIN_PASSWORD: ${ADMIN_PASSWORD}
-
-    APPSIGNAL_API_KEY: ${APPSIGNAL_API_KEY}
   logging:
     driver: "json-file"
     options:
