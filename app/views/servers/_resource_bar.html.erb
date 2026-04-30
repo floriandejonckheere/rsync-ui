@@ -6,7 +6,12 @@
 
   tooltip = resource_bar_tooltip(resource_usage, metric) %>
 
-<% if percent.nil? || health == :unknown %>
+<% if resource_usage&.failed? %>
+  <% error_title = [resource_usage.probe_error_class, resource_usage.probe_error_message].compact.join(": ") %>
+  <span data-tooltip="<%= error_title.presence %>">
+    <%= lucide_icon "circle-alert", class: "h-4 w-4 text-red-500 dark:text-red-400" %>
+  </span>
+<% elsif percent.nil? || health == :unknown %>
   <span class="text-gray-400 dark:text-gray-500">—</span>
 <% else %>
   <% colors = resource_bar_color(health) %>
