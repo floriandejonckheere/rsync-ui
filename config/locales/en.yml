@@ -367,6 +367,7 @@ en:
       edit: Edit server
     connection:
       failure: Connection failed
+      missing_details: Host, port, username, and a password or SSH key are required to test the connection.
       success: Connection successful
     create:
       success: Server was successfully created.

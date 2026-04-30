@@ -6,6 +6,7 @@
                     turbo_stream: true,
                     controller: "server-connection",
                     "server-connection-source-form-value": "server-form",
+                    "server-connection-has-credentials-value": server.persisted? && (server.password.present? || server.ssh_key.present?),
                   } do |cf| %>
       <%= cf.hidden_field :server_id,
                           value: server.persisted? ? server.id : nil,
@@ -23,6 +24,7 @@
         data-server-connection-target="button"
         data-action="click->server-connection#sync"
         data-tooltip="<%= I18n.t("servers.form.test_connection") %>"
+        disabled
       >
         <%= lucide_icon "plug",
                         class: "h-6 w-6",

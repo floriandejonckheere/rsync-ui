@@ -418,6 +418,51 @@ RSpec.describe "Servers" do
         expect(response.body).to include(I18n.t("servers.connection.failure"))
         expect(response.body).to include("Net::SSH::AuthenticationFailed")
       end
+
+      it "renders a failure notification when host is missing" do
+        post connection_servers_path,
+             params: { port: 22, username: "admin", password: "secret" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH)
+          .not_to have_received(:start)
+
+        expect(response.body).to include(I18n.t("servers.connection.failure"))
+        expect(response.body).to include(I18n.t("servers.connection.missing_details"))
+      end
+
+      it "does not render a failure notification when port is missing" do
+        post connection_servers_path,
+             params: { host: "example.com", username: "admin", password: "secret" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH)
+          .to have_received(:start)
+      end
+
+      it "renders a failure notification when username is missing" do
+        post connection_servers_path,
+             params: { host: "example.com", port: 22, password: "secret" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH)
+          .not_to have_received(:start)
+
+        expect(response.body).to include(I18n.t("servers.connection.failure"))
+        expect(response.body).to include(I18n.t("servers.connection.missing_details"))
+      end
+
+      it "renders a failure notification when both password and ssh_key are missing" do
+        post connection_servers_path,
+             params: { host: "example.com", port: 22, username: "admin" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH)
+          .not_to have_received(:start)
+
+        expect(response.body).to include(I18n.t("servers.connection.failure"))
+        expect(response.body).to include(I18n.t("servers.connection.missing_details"))
+      end
     end
 
     context "when authenticated (edit form, server_id provided)" do

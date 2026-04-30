@@ -63,11 +63,19 @@ class ServersController < ApplicationController
 
     authorize! @server, to: :connection?
 
-    @server.host = params[:host].presence || @server.host
-    @server.port = params[:port].presence || @server.port
-    @server.username = params[:username].presence || @server.username
-    @server.password = params[:password].presence || @server.password
-    @server.ssh_key = params[:ssh_key].presence || @server.ssh_key
+    @server.host = params[:host] if params[:host].present?
+    @server.port = params[:port] if params[:port].present?
+    @server.username = params[:username] if params[:username].present?
+    @server.password = params[:password] if params[:password].present?
+    @server.ssh_key = params[:ssh_key] if params[:ssh_key].present?
+
+    if @server.host.blank? || @server.port.blank? || @server.username.blank? || (@server.password.blank? && @server.ssh_key.blank?)
+      return render turbo_stream: turbo_stream.prepend(
+        "notifications",
+        partial: "servers/connection_result",
+        locals: { result: { success: false, message: t(".missing_details") } },
+      )
+    end
 
     result = Servers::ConnectionService.call(@server)
 
