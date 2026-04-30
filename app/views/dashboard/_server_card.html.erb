@@ -20,7 +20,7 @@
       </div>
     <% elsif ru.failed? %>
       <div class="text-sm text-red-500 dark:text-red-400 text-center py-4">
-        <%= I18n.t("dashboard.server_health.failed") %>
+        <%= I18n.t("dashboard.server_health.failed", error: "#{ru.probe_error_class}: #{ru.probe_error_message}") %>
       </div>
     <% else %>
       <div class="flex gap-3 w-full">

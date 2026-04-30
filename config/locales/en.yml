@@ -54,7 +54,7 @@ en:
       cpu: CPU
       disabled: Resource usage disabled
       disk: Disk
-      failed: Failed to retrieve resource usage
+      failed: 'Failed to retrieve resource usage: %{error}'
       last_probed: "%{time} ago"
       load: Load
       memory: Memory
