@@ -32,13 +32,13 @@ RSpec.describe UserPolicy do
     context "when the record is the current user" do
       let(:record) { user }
 
-      it { is_expected.to be_destroy }
+      it { is_expected.not_to be_destroy }
     end
 
     context "when the user is admin" do
       let(:user) { create(:user, :admin) }
 
-      it { is_expected.to be_destroy }
+      it { is_expected.not_to be_destroy }
     end
   end
 end

@@ -56,27 +56,39 @@
 
   <div class="card">
     <header>
-      <h2><%= I18n.t("settings.delete_account.title") %></h2>
+      <h2><%= I18n.t("settings.password.title") %></h2>
     </header>
 
-    <section class="flex flex-col flex-1">
-      <p><%= I18n.t("settings.delete_account.confirm") %></p>
+    <section>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "form" }) do |f| %>
+        <% if current_user.errors.any? %>
+          <%= render "shared/forms/messages", model: current_user %>
+        <% end %>
 
-      <p class="mt-2 font-bold">
-        <%= I18n.t("settings.delete_account.warning") %>
-      </p>
-    </section>
+        <div class="flex flex-col gap-6">
+          <div class="field">
+            <%= f.label :password, I18n.t("settings.password.password") %>
 
-    <footer>
-      <%= link_to registration_path(resource), class: "btn-destructive", data: {
-        "turbo-method": :delete,
-        "turbo-confirm": I18n.t("settings.delete_account.confirm"),
-        "turbo-confirm-title": I18n.t("settings.delete_account.title"),
-        "turbo-confirm-button": I18n.t("settings.delete_account.button"),
-        "turbo-confirm-destructive": true
-      } do %>
-        <%= I18n.t("settings.delete_account.button") %>
+            <%= f.password_field :password,
+                                 placeholder: I18n.t("settings.password.password_placeholder"),
+                                 required: true,
+                                 autocomplete: "new-password" %>
+          </div>
+
+          <div class="field">
+            <%= f.label :password_confirmation, I18n.t("settings.password.confirmation") %>
+
+            <%= f.password_field :password_confirmation,
+                                 placeholder: I18n.t("settings.password.confirmation_placeholder"),
+                                 required: true,
+                                 autocomplete: "new-password" %>
+          </div>
+
+          <div>
+            <%= f.submit value: I18n.t("settings.password.update"), class: "btn-primary" %>
+          </div>
+        </div>
       <% end %>
-    </footer>
+    </section>
   </div>
 </div>

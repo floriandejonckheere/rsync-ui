@@ -11,10 +11,22 @@ class RegistrationsController < Devise::RegistrationsController
     redirect_to root_path
   end
 
+  def destroy
+    head :forbidden
+  end
+
   private
 
   def update_resource(resource, params)
-    resource.update_without_password(params)
+    if params[:password].present?
+      resource.update(params.slice(:password, :password_confirmation))
+    else
+      resource.update_without_password(params)
+    end
+  end
+
+  def after_update_path_for(_resource)
+    edit_user_registration_path
   end
 
   def layout_by_action

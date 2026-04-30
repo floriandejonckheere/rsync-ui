@@ -438,11 +438,13 @@ en:
       first_name_placeholder: John
       last_name: Last name
       last_name_placeholder: Doe
-    delete_account:
-      button: Delete my account
-      confirm: Are you sure you want to delete your account? This will permanently delete all your data. This action cannot be undone.
-      title: Delete Account
-      warning: Deleting your account will permanently remove all your data!
+    password:
+      confirmation: Confirm new password
+      confirmation_placeholder: "••••••••"
+      password: New password
+      password_placeholder: "••••••••"
+      title: Change Password
+      update: Update password
     subtitle: Your personal preferences and account settings
     title: Settings
     update: Update
@@ -453,7 +455,7 @@ en:
     form_messages:
       error_title: Something went wrong
     search:
-      open: Search
       close: Close search
       no_results:
         description: Try adjusting your search terms
+      open: Search
