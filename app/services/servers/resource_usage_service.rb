@@ -2,7 +2,19 @@
 
 module Servers
   class ResourceUsageService < SSHService
+    attr_reader :force
+
+    def initialize(server, force: false)
+      super(server)
+
+      @force = force
+    end
+
     def call
+      probed_at = server.resource_usage&.probed_at
+
+      return if probed_at && probed_at > 5.minutes.ago && !force
+
       output = super
 
       metrics = Parser.new(output).call

@@ -32,4 +32,8 @@ class ServerPolicy < ApplicationPolicy
   def connection?
     user.admin? || record.user == user
   end
+
+  def measure?
+    user.admin? || record.user == user
+  end
 end

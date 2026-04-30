@@ -6,8 +6,8 @@ module Servers
                        key: ->(server, **) { server.id },
                        duration: 5.minutes
 
-    def perform(server)
-      ResourceUsageService.call(server)
+    def perform(server, force: false)
+      ResourceUsageService.call(server, force:)
     end
   end
 end

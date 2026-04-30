@@ -341,6 +341,60 @@ RSpec.describe "Servers" do
     end
   end
 
+  describe "POST /servers/:id/measure" do
+    let(:server) { create(:server, user:) }
+
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      it "enqueues a resource usage job with force: true and redirects to the index" do
+        expect { post measure_server_path(server) }
+          .to have_enqueued_job(Servers::ResourceUsageJob)
+          .with(server, force: true)
+
+        post measure_server_path(server)
+
+        expect(response).to redirect_to(servers_path)
+      end
+
+      it "displays success message" do
+        allow(Servers::ResourceUsageJob)
+          .to receive(:perform_later)
+
+        post measure_server_path(server)
+
+        follow_redirect!
+
+        expect(response.body).to include(I18n.t("servers.measure.success"))
+      end
+    end
+
+    context "when server belongs to another user" do
+      let(:server) { create(:server, user: other_user) }
+
+      before { sign_in user, scope: :user }
+
+      it "returns forbidden" do
+        post measure_server_path(server)
+
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "does not enqueue a job" do
+        expect { post measure_server_path(server) }
+          .not_to have_enqueued_job(Servers::ResourceUsageJob)
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        post measure_server_path(server)
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
   describe "POST /servers/connection" do
     let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
 

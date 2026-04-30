@@ -363,6 +363,7 @@ en:
       delete_confirm: Are you sure you want to delete this server? This action cannot be undone.
       delete_confirm_title: Delete server
       edit: Edit server
+      measure: Measure resource usage
     connection:
       failure: Connection failed
       missing_details: Host, port, username, and a password or SSH key are required to test the connection.
@@ -410,6 +411,8 @@ en:
         placeholder: Search by name, description, or host...
       subtitle: Manage remote SSH servers
       title: Servers
+    measure:
+      success: Resource usage measurement scheduled.
     new:
       subtitle: Add a new SSH server
       title: New server

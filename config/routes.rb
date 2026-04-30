@@ -28,6 +28,10 @@ Rails.application.routes.draw do
     collection do
       post :connection
     end
+
+    member do
+      post :measure
+    end
   end
   resources :repositories
   resources :jobs, except: :show do
@@ -63,6 +67,7 @@ end
 #                            configuration PATCH  /configurations/:id(.:format)                                                                     configurations#update
 #                                          PUT    /configurations/:id(.:format)                                                                     configurations#update
 #                       connection_servers POST   /servers/connection(.:format)                                                                     servers#connection
+#                           measure_server POST   /servers/:id/measure(.:format)                                                                    servers#measure
 #                                  servers GET    /servers(.:format)                                                                                servers#index
 #                                          POST   /servers(.:format)                                                                                servers#create
 #                               new_server GET    /servers/new(.:format)                                                                            servers#new

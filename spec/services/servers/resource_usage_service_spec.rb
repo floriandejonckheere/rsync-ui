@@ -75,6 +75,48 @@ RSpec.describe Servers::ResourceUsageService do
       end
     end
 
+    context "when resource usage was probed recently (within 5 minutes)" do
+      before { create(:resource_usage, server:, probed_at: 2.minutes.ago) }
+
+      it "skips the SSH call" do
+        described_class.call(server)
+
+        expect(Net::SSH).not_to have_received(:start)
+      end
+
+      context "when force: true" do
+        it "performs the SSH call regardless" do
+          described_class.call(server, force: true)
+
+          expect(Net::SSH).to have_received(:start)
+        end
+
+        it "updates resource_usage" do
+          described_class.call(server, force: true)
+
+          expect(server.reload.resource_usage.probed_at).to be_within(5.seconds).of(Time.zone.now)
+        end
+      end
+    end
+
+    context "when resource usage is stale (older than 5 minutes)" do
+      before { create(:resource_usage, server:, probed_at: 10.minutes.ago) }
+
+      it "performs the SSH call" do
+        described_class.call(server)
+
+        expect(Net::SSH).to have_received(:start)
+      end
+    end
+
+    context "when resource usage has never been probed" do
+      it "performs the SSH call" do
+        described_class.call(server)
+
+        expect(Net::SSH).to have_received(:start)
+      end
+    end
+
     context "when server has an SSH key" do
       let(:server) { create(:server, :with_ssh_key, path: "/") }
 

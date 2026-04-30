@@ -5,7 +5,7 @@ class ServersController < ApplicationController
   include Sortable
 
   before_action :authenticate_user!
-  before_action :set_server, only: [:edit, :update, :destroy]
+  before_action :set_server, only: [:edit, :update, :destroy, :measure]
 
   def index
     servers = authorized_scope(Server.includes(:resource_usage), type: :relation)
@@ -55,6 +55,14 @@ class ServersController < ApplicationController
     @server.destroy!
 
     redirect_to servers_path, notice: t(".success"), status: :see_other
+  end
+
+  def measure
+    authorize! @server
+
+    Servers::ResourceUsageJob.perform_later(@server, force: true)
+
+    redirect_to servers_path, notice: t(".success")
   end
 
   def connection
