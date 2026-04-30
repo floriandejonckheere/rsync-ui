@@ -96,6 +96,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Update branding
 - [ ] Implement support for OAuth2 authentication
 - [ ] Allow duplicating jobs
+- [ ] Add a local resource usage card
 - [x] Add search functionality
   - [ ] Job runs page
 - [ ] Add filter functionality
@@ -103,7 +104,6 @@ For remote repositories, the server should be mounted as a local directory, and 
   - [ ] Repositories
   - [ ] Jobs
 - [ ] Allow streaming logs
-- [ ] Dashboard: add a "7-day status": number of jobs succeeded/failed, average duration
 
 ### Technical TODOs
 
@@ -112,6 +112,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Add a `with_configuration` helper
 - [ ] Make menubar responsive
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
+- [ ] Optimize Docker image
 
 ## Open questions
 

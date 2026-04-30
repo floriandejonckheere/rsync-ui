@@ -23,7 +23,7 @@ Rsync UI is a web application that lets you create, schedule, and execute file s
 
 ## Getting started
 
-Rsync UI runs as a set of Docker containers. Docker compose is the recommended way to run the application.
+Rsync UI runs as a Docker container. Docker compose is the recommended way to run the application.
 
 ```yml
 services:
