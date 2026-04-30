@@ -43,7 +43,6 @@ module Jobs
 
             Rails.logger.debug { chunk }
 
-            file.write(chunk)
             buffer << chunk
 
             lines = buffer.split(/(?<=[\r\n])/)
@@ -52,12 +51,16 @@ module Jobs
             lines.each do |line|
               bytes_copied, progress = parse_status(line)
 
-              next unless bytes_copied && progress
-
-              job_run.update!(
-                bytes_copied:,
-                progress:,
-              )
+              if bytes_copied && progress
+                # Update job run with progress
+                job_run.update!(
+                  bytes_copied:,
+                  progress:,
+                )
+              else
+                # Write line to file
+                file.write(line)
+              end
             end
           rescue EOFError
             break
