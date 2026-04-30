@@ -58,7 +58,7 @@ class ServersController < ApplicationController
   end
 
   def connection
-    @server = params[:server_id] ? Server.find(params[:server_id]) : Server.new
+    @server = params[:server_id].present? ? Server.find(params[:server_id]) : Server.new
     @server.user ||= current_user
 
     authorize! @server, to: :connection?
