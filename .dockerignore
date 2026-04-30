@@ -9,6 +9,7 @@
 
 # Ignore all environment files.
 /.env*
+/*.env
 
 # Ignore all default key files.
 /config/master.key
@@ -44,15 +45,35 @@
 /.rubocop.yml
 /.ruby-version
 /.ruby-gemset
+/.rspec
+/.irbrc
+/.irb_history
+/.annotaterb.yml
+/.herb.yml
+/.node-version
+/.tool-versions
+/.yarnrc
+/.gitattributes
 /flamegraph.pl
+/Procfile
+/CHANGELOG.md
+/README.md
+/vendor/
 
 # Ignore Docker-related files
 /.dockerignore
 /compose.yml
 /Dockerfile*
 
-# Ignore IDE files
+# Ignore IDE and tool cache files
 /.idea
+/.cache/
+/.local/
+/.npm/
+/.yarn/
+/.superpowers/
+/.worktrees/
+/.claude/
 
 ## Ignore temporary files
 .byebug_history
