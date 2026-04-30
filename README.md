@@ -26,29 +26,31 @@ Rsync UI is a web application that lets you create, schedule, and execute file s
 Rsync UI runs as a set of Docker containers. Docker compose is the recommended way to run the application.
 
 ```yml
-x-app: &app
-  image: ghcr.io/floriandejonckheere/rsync-ui:latest
-  volumes:
-    - logs:/app/storage/ # Directory for rsync logs
-    - /path/to/storage:/data/storage:ro # Your local storage directories
-    - /path/to/backup:/data/storage:rw # Your local storage directories
-  environment:
-    SECRET_KEY_BASE: my-secret # Secret encryption key
-
-    PG_HOST: postgres
-    PG_USER: rsync_ui
-    PG_PASSWORD: rsync_ui
-    PG_DATABASE: rsync_ui
-
-    APP_HOST: rsync-ui.example.com # URL of the application
-    APP_EMAIL: rsync-ui@example.com # Email address of the application
-
-    ADMIN_EMAIL: rsync-ui@example.com # Default admin account
-    ADMIN_PASSWORD: rsync-ui # Default admin password
-  depends_on:
-    - postgres
-
 services:
+  rsync_ui:
+    image: ghcr.io/floriandejonckheere/rsync-ui:latest
+    volumes:
+      - rsync_ui:/app/storage/ # Directory for rsync logs
+      - /path/to/storage:/data/storage:ro # Your local storage directories
+      - /path/to/backup:/data/storage:rw # Your local storage directories
+    environment:
+      SECRET_KEY_BASE: my-secret # Secret encryption key
+  
+      PG_HOST: postgres
+      PG_USER: rsync_ui
+      PG_PASSWORD: rsync_ui
+      PG_DATABASE: rsync_ui
+  
+      APP_HOST: rsync-ui.example.com # URL of the application
+      APP_EMAIL: rsync-ui@example.com # Email address of the application
+  
+      ADMIN_EMAIL: rsync-ui@example.com # Default admin account
+      ADMIN_PASSWORD: rsync-ui # Default admin password
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+
   postgres:
     image: postgres:18
     volumes:
@@ -59,20 +61,9 @@ services:
     ports:
       - "5432:5432"
 
-  # Web application
-  app:
-    <<: *app
-    ports:
-      - "3000:3000"
-
-  # Background jobs
-  worker:
-    <<: *app
-    command: bin/jobs
-
 volumes:
   postgres:
-  logs:
+  rsync_ui:
 ```
 
 ### Docker compose
