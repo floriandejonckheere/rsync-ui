@@ -13,6 +13,10 @@ class RegistrationsController < Devise::RegistrationsController
 
   private
 
+  def update_resource(resource, params)
+    resource.update_without_password(params)
+  end
+
   def layout_by_action
     case action_name
     when "edit", "update"
