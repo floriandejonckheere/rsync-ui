@@ -112,7 +112,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Add a `with_configuration` helper
 - [ ] Make menubar responsive
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
-- [ ] Optimize Docker image
+- [x] Optimize Docker image
 
 ## Open questions
 
