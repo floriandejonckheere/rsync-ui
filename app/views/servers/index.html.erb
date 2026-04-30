@@ -11,8 +11,7 @@
              url: servers_path,
              query: @query,
              frame: "servers_list",
-             placeholder: I18n.t("servers.index.search.placeholder"),
-             title: I18n.t("servers.index.search.title") %>
+             placeholder: I18n.t("servers.index.search.placeholder") %>
 
   <%= link_to new_server_path, data: { tooltip: I18n.t("servers.index.new") }, class: "btn-icon-outline btn-icon-lg" do %>
     <%= lucide_icon "plus", class: "h-6 w-6" %>

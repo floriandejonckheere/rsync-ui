@@ -11,8 +11,7 @@
              url: repositories_path,
              query: @query,
              frame: "repositories_list",
-             placeholder: I18n.t("repositories.index.search.placeholder"),
-             title: I18n.t("repositories.index.search.title") %>
+             placeholder: I18n.t("repositories.index.search.placeholder") %>
 
   <%= link_to new_repository_path, data: { tooltip: I18n.t("repositories.index.new") }, class: "btn-icon-outline btn-icon-lg" do %>
     <%= lucide_icon "plus", class: "h-6 w-6" %>

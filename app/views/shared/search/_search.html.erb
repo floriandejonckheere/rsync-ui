@@ -1,4 +1,4 @@
-<%# locals: (url:, query:, frame:, placeholder:, title:) %>
+<%# locals: (url:, query:, frame:, placeholder:) %>
 <div
   class="flex gap-2"
   data-controller="search"
@@ -6,10 +6,10 @@
 >
   <button
     type="button"
-    title="<%= title %>"
     class="btn-icon-outline btn-icon-lg"
     data-search-target="button"
     data-action="search#toggle"
+    data-tooltip="<%= I18n.t('shared.search.open') %>"
   >
     <%= lucide_icon "search", class: "h-6 w-6" %>
   </button>
@@ -26,9 +26,9 @@
 
     <button
       type="button"
-      title="<%= I18n.t('shared.search.close') %>"
       class="btn-icon-outline btn-icon-lg"
       data-action="search#close"
+      data-tooltip="<%= I18n.t('shared.search.close') %>"
     >
       <%= lucide_icon "x", class: "h-6 w-6" %>
     </button>

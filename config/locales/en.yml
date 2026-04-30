@@ -282,7 +282,6 @@ en:
         no_results:
           title: No jobs found
         placeholder: Search by name or description...
-        title: Search jobs
       subtitle: Manage synchronization tasks between repositories
       title: Jobs
     new:
@@ -341,7 +340,6 @@ en:
         no_results:
           title: No repositories found
         placeholder: Search by name or description...
-        title: Search repositories
       subtitle: Manage local and remote repositories
       title: Repositories
     new:
@@ -410,7 +408,6 @@ en:
         no_results:
           title: No servers found
         placeholder: Search by name, description, or host...
-        title: Search servers
       subtitle: Manage remote SSH servers
       title: Servers
     new:
@@ -453,6 +450,7 @@ en:
     form_messages:
       error_title: Something went wrong
     search:
+      open: Search
       close: Close search
       no_results:
         description: Try adjusting your search terms
