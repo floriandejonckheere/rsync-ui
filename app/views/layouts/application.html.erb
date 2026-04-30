@@ -57,7 +57,7 @@
 
         <div class="grow"></div>
 
-        <% if current_user.admin? %>
+        <% if current_user.admin? && ENV.fetch("MISSION_CONTROL", "0") == "1" %>
           <%= render "shared/menu/item", path: mission_control_jobs_path, controllers: nil, icon: "construction", title: I18n.t("monitoring.title"), target: "_blank" %>
         <% end %>
 

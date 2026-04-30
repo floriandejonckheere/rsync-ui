@@ -3,7 +3,7 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  authenticate :user do
+  if ENV.fetch("MISSION_CONTROL", "0") == "1"
     # Monitor and manage background jobs and scheduled tasks
     mount MissionControl::Jobs::Engine, at: "/background_jobs"
   end
@@ -46,9 +46,7 @@ end
 
 # == Route Map
 #
-# Routes for application:
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
-#                     mission_control_jobs        /background_jobs                                                                                  MissionControl::Jobs::Engine
 #                       rails_health_check GET    /up(.:format)                                                                                     rails/health#show
 #                                     root GET    /                                                                                                 dashboard#index
 #                         new_user_session GET    /users/sign_in(.:format)                                                                          devise/sessions#new
@@ -121,28 +119,3 @@ end
 #                       rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                                       active_storage/disk#show
 #                update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                               active_storage/disk#update
 #                     rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                                    active_storage/direct_uploads#create
-#
-# Routes for MissionControl::Jobs::Engine:
-#                      Prefix Verb   URI Pattern                                                    Controller#Action
-#     application_queue_pause DELETE /applications/:application_id/queues/:queue_id/pause(.:format) mission_control/jobs/queues/pauses#destroy
-#                             POST   /applications/:application_id/queues/:queue_id/pause(.:format) mission_control/jobs/queues/pauses#create
-#          application_queues GET    /applications/:application_id/queues(.:format)                 mission_control/jobs/queues#index
-#           application_queue GET    /applications/:application_id/queues/:id(.:format)             mission_control/jobs/queues#show
-#       application_job_retry POST   /applications/:application_id/jobs/:job_id/retry(.:format)     mission_control/jobs/retries#create
-#     application_job_discard POST   /applications/:application_id/jobs/:job_id/discard(.:format)   mission_control/jobs/discards#create
-#    application_job_dispatch POST   /applications/:application_id/jobs/:job_id/dispatch(.:format)  mission_control/jobs/dispatches#create
-#    application_bulk_retries POST   /applications/:application_id/jobs/bulk_retries(.:format)      mission_control/jobs/bulk_retries#create
-#   application_bulk_discards POST   /applications/:application_id/jobs/bulk_discards(.:format)     mission_control/jobs/bulk_discards#create
-#             application_job GET    /applications/:application_id/jobs/:id(.:format)               mission_control/jobs/jobs#show
-#            application_jobs GET    /applications/:application_id/:status/jobs(.:format)           mission_control/jobs/jobs#index
-#         application_workers GET    /applications/:application_id/workers(.:format)                mission_control/jobs/workers#index
-#          application_worker GET    /applications/:application_id/workers/:id(.:format)            mission_control/jobs/workers#show
-# application_recurring_tasks GET    /applications/:application_id/recurring_tasks(.:format)        mission_control/jobs/recurring_tasks#index
-#  application_recurring_task GET    /applications/:application_id/recurring_tasks/:id(.:format)    mission_control/jobs/recurring_tasks#show
-#                             PATCH  /applications/:application_id/recurring_tasks/:id(.:format)    mission_control/jobs/recurring_tasks#update
-#                             PUT    /applications/:application_id/recurring_tasks/:id(.:format)    mission_control/jobs/recurring_tasks#update
-#                      queues GET    /queues(.:format)                                              mission_control/jobs/queues#index
-#                       queue GET    /queues/:id(.:format)                                          mission_control/jobs/queues#show
-#                         job GET    /jobs/:id(.:format)                                            mission_control/jobs/jobs#show
-#                        jobs GET    /:status/jobs(.:format)                                        mission_control/jobs/jobs#index
-#                        root GET    /                                                              mission_control/jobs/queues#index
