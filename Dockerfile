@@ -3,7 +3,7 @@ FROM ruby:4.0.3-alpine3.23
 LABEL maintainer="Florian Dejonckheere <florian@floriandejonckheere.be>"
 LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/rsync-ui
 
-ENV RUNTIME_DEPS postgresql gmp vips openssh rsync
+ENV RUNTIME_DEPS postgresql gmp vips openssh rsync python3 py3-pip
 ENV BUILD_DEPS build-base curl-dev git postgresql-dev yaml-dev cmake nodejs-current npm gmp-dev libffi-dev esbuild perl
 
 ENV LC_ALL=en_US.UTF-8
@@ -22,6 +22,13 @@ RUN adduser -D -u $UID -G $USER -h $APP_HOME $USER
 
 # Install system dependencies
 RUN apk add --no-cache $BUILD_DEPS $RUNTIME_DEPS
+
+# Install Apprise (notification dispatcher)
+ADD requirements.txt $APP_HOME
+RUN python3 -m venv /opt/apprise-venv \
+ && /opt/apprise-venv/bin/pip install --no-cache-dir -r requirements.txt \
+ && /opt/apprise-venv/bin/apprise --version
+ENV PATH="/opt/apprise-venv/bin:$PATH"
 
 # Install Bundler
 RUN gem update --system && gem install bundler

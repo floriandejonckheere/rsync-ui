@@ -6,7 +6,14 @@ LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/rsy
 WORKDIR /app
 
 # Install runtime dependencies only
-RUN apk add --no-cache libpq gmp libffi tzdata openssh rsync
+RUN apk add --no-cache libpq gmp libffi tzdata openssh rsync python3 py3-pip
+
+# Install Apprise (notification dispatcher)
+ADD requirements.txt /app/
+RUN python3 -m venv /opt/apprise-venv \
+ && /opt/apprise-venv/bin/pip install --no-cache-dir -r /app/requirements.txt \
+ && /opt/apprise-venv/bin/apprise --version
+ENV PATH="/opt/apprise-venv/bin:$PATH"
 
 FROM base AS ruby
 
