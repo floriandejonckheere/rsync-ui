@@ -26,6 +26,8 @@ module Jobs
           started_at: Time.zone.now,
         )
 
+      enqueue_notifications(job_run, "start")
+
       # Generate full command-line
       command = Rsync::CommandService.new(job:).call
 
@@ -84,6 +86,8 @@ module Jobs
           status: exit_status.success? ? "completed" : "failed",
           completed_at: Time.zone.now,
         )
+
+        enqueue_notifications(job_run, exit_status.success? ? "success" : "failure")
       end
     rescue StandardError => e
       job_run.update!(
@@ -92,6 +96,8 @@ module Jobs
         error_class: e.class.name,
         error_messages: e.message,
       )
+
+      enqueue_notifications(job_run, "failure")
     end
 
     private
@@ -104,6 +110,16 @@ module Jobs
         match[1].delete(",").to_i, # Bytes copied
         match[2].to_i, # Progress
       ]
+    end
+
+    def enqueue_notifications(job_run, event)
+      return unless Configuration.get("notifications")
+
+      job_run.job.job_notifications.find_each do |job_notification|
+        Notifications::SendJob
+          .set(wait: 5.seconds) # Delay sending notifications to avoid race conditions (uncommitted database transaction)
+          .perform_later(job_notification.id, job_run.id, event)
+      end
     end
   end
 end
