@@ -9,6 +9,8 @@ RSpec.describe Job do
     it { is_expected.to belong_to(:destination_repository).class_name("Repository") }
 
     it { is_expected.to have_many(:job_runs).dependent(:destroy) }
+    it { is_expected.to have_many(:job_notifications).dependent(:destroy) }
+    it { is_expected.to have_many(:notifications).through(:job_notifications) }
   end
 
   describe "validations" do

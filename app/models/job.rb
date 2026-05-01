@@ -12,6 +12,15 @@ class Job < ApplicationRecord
   has_many :job_runs,
            dependent: :destroy
 
+  has_many :job_notifications,
+           dependent: :destroy
+
+  has_many :notifications,
+           through: :job_notifications
+
+  accepts_nested_attributes_for :job_notifications,
+                                allow_destroy: true
+
   validates :name,
             presence: true
 

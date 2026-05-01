@@ -20,6 +20,9 @@ class User < ApplicationRecord
   has_many :jobs,
            dependent: :destroy
 
+  has_many :notifications,
+           dependent: :destroy
+
   validates :first_name,
             presence: true
 
