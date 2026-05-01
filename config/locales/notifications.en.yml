@@ -7,7 +7,7 @@ en:
       disable: Disable notification
       edit: Edit notification
       enable: Enable notification
-      test: Send test notification
+      test: Test notification
     enabled:
       'false': Disabled
     create:
@@ -47,10 +47,10 @@ en:
       name: Name
     test:
       success: Test notification was sent successfully.
-      failure: Test notification failed.
+      failure: Test notification failed
       missing_url: Please provide a notification URL.
       title_default: Test notification from Rsync UI
-      body_default: "This is a test notification from Rsync UI for **%{name}**."
+      body_default: This is a test notification from Rsync UI.
     title: Notifications
     update:
       success: Notification was successfully updated.

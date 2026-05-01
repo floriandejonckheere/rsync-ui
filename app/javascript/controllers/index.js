@@ -31,6 +31,9 @@ application.register("filter", FilterController)
 import GaugeController from "./gauge_controller"
 application.register("gauge", GaugeController)
 
+import NotificationTestController from "./notification_test_controller"
+application.register("notification-test", NotificationTestController)
+
 import PatternListController from "./pattern_list_controller"
 application.register("pattern-list", PatternListController)
 

@@ -6,7 +6,8 @@ class NotificationsController < ApplicationController
 
   before_action :authenticate_user!
   before_action :ensure_notifications_enabled
-  before_action :set_notification, only: [:edit, :update, :destroy, :test]
+  before_action :set_notification, only: [:edit, :update, :destroy]
+  before_action :set_notification_or_new, only: [:test]
 
   def index
     notifications = authorized_scope(Notification.all, type: :relation)
@@ -60,16 +61,47 @@ class NotificationsController < ApplicationController
   end
 
   def test
-    authorize! @notification
+    authorize! @notification, to: :test?
 
-    # Wired up in a later task; placeholder for now.
-    head :not_implemented
+    @notification.url = params[:url] if params[:url].present?
+
+    if @notification.url.blank?
+      return render turbo_stream: turbo_stream.prepend(
+        "notifications",
+        partial: "shared/action_result",
+        locals: {
+          result: {
+            success: false,
+            message: t(".missing_url"),
+          },
+          success_message: t(".success"),
+          failure_message: t(".failure"),
+        },
+      )
+    end
+
+    result = Notifications::TestService.call(@notification)
+
+    render turbo_stream: turbo_stream.prepend(
+      "notifications",
+      partial: "shared/action_result",
+      locals: {
+        result:,
+        success_message: t(".success"),
+        failure_message: t(".failure"),
+      },
+    )
   end
 
   private
 
   def set_notification
     @notification = Notification.find(params[:id])
+  end
+
+  def set_notification_or_new
+    @notification = params[:id].present? ? Notification.find(params[:id]) : Notification.new
+    @notification.user ||= current_user
   end
 
   def ensure_notifications_enabled

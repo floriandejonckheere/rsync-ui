@@ -6,6 +6,7 @@ class ServersController < ApplicationController
 
   before_action :authenticate_user!
   before_action :set_server, only: [:edit, :update, :destroy, :measure]
+  before_action :set_server_or_new, only: [:test]
 
   def index
     servers = authorized_scope(Server.includes(:resource_usage), type: :relation)
@@ -65,11 +66,8 @@ class ServersController < ApplicationController
     redirect_to servers_path, notice: t(".success")
   end
 
-  def connection
-    @server = params[:server_id].present? ? Server.find(params[:server_id]) : Server.new
-    @server.user ||= current_user
-
-    authorize! @server, to: :connection?
+  def test
+    authorize! @server, to: :test?
 
     @server.host = params[:host] if params[:host].present?
     @server.port = params[:port] if params[:port].present?
@@ -80,8 +78,15 @@ class ServersController < ApplicationController
     if @server.host.blank? || @server.port.blank? || @server.username.blank? || (@server.password.blank? && @server.ssh_key.blank?)
       return render turbo_stream: turbo_stream.prepend(
         "notifications",
-        partial: "servers/connection_result",
-        locals: { result: { success: false, message: t(".missing_details") } },
+        partial: "shared/action_result",
+        locals: {
+          result: {
+            success: false,
+            message: t(".missing_details"),
+          },
+          success_message: t(".success"),
+          failure_message: t(".failure"),
+        },
       )
     end
 
@@ -89,8 +94,12 @@ class ServersController < ApplicationController
 
     render turbo_stream: turbo_stream.prepend(
       "notifications",
-      partial: "servers/connection_result",
-      locals: { result: },
+      partial: "shared/action_result",
+      locals: {
+        result:,
+        success_message: t(".success"),
+        failure_message: t(".failure"),
+      },
     )
   end
 
@@ -98,6 +107,17 @@ class ServersController < ApplicationController
 
   def set_server
     @server = Server.find(params[:id])
+  end
+
+  def set_server_or_new
+    @server = if params[:id].present?
+                Server.find(params[:id])
+              elsif params[:server_id].present?
+                Server.find(params[:server_id])
+              else
+                Server.new
+              end
+    @server.user ||= current_user
   end
 
   def server_params

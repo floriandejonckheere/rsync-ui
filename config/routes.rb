@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     end
 
     member do
+      post :test
       post :measure
     end
   end
@@ -80,6 +81,7 @@ end
 #                            configuration PATCH  /configurations/:id(.:format)                                                                     configurations#update
 #                                          PUT    /configurations/:id(.:format)                                                                     configurations#update
 #                             test_servers POST   /servers/test(.:format)                                                                           servers#test
+#                              test_server POST   /servers/:id/test(.:format)                                                                       servers#test
 #                           measure_server POST   /servers/:id/measure(.:format)                                                                    servers#measure
 #                                  servers GET    /servers(.:format)                                                                                servers#index
 #                                          POST   /servers(.:format)                                                                                servers#create
