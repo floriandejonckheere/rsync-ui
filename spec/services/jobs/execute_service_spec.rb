@@ -3,11 +3,19 @@
 RSpec.describe Jobs::ExecuteService do
   subject(:service) { described_class.new(job, trigger: "manual") }
 
-  let(:job) { create(:job) }
+  let(:user) { create(:user) }
+  let(:job) { create(:job, user:) }
+
+  let!(:notification) { create(:notification, user:) }
+  let!(:job_notification) { create(:job_notification, job:, notification:) }
+
   let(:command_service) { instance_double(Rsync::CommandService, call: "echo rsync_output") }
 
   before do
-    allow(Rsync::CommandService).to receive(:new).with(job:).and_return(command_service)
+    allow(Rsync::CommandService)
+      .to receive(:new)
+      .with(job:)
+      .and_return(command_service)
   end
 
   describe "#call" do
@@ -55,6 +63,37 @@ RSpec.describe Jobs::ExecuteService do
         expect(job_run.error_class).to eq "RuntimeError"
         expect(job_run.error_messages).to eq "something went wrong"
         expect(job_run).to be_completed_at
+      end
+    end
+
+    describe "notifications" do
+      with_configuration "notifications" => true
+
+      it "enqueues a start notification when execution begins" do
+        service.call
+        job_run = job.job_runs.sole
+
+        expect(Notifications::SendJob)
+          .to have_been_enqueued
+          .with(job_notification.id, job_run.id, "start")
+      end
+
+      it "enqueues a success notification when execution completes successfully" do
+        service.call
+        job_run = job.job_runs.sole
+
+        expect(Notifications::SendJob)
+          .to have_been_enqueued
+          .with(job_notification.id, job_run.id, "success")
+      end
+
+      context "when notifications are disabled" do
+        with_configuration "notifications" => false
+
+        it "does not enqueue when notifications" do
+          expect { service.call }
+            .not_to have_enqueued_job(Notifications::SendJob)
+        end
       end
     end
   end
