@@ -35,3 +35,8 @@ updates:
         update-types:
           - "minor"
           - "patch"
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
