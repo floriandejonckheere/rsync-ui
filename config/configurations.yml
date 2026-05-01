@@ -49,3 +49,7 @@
   type: boolean
   category: system
   default: true
+- key: notifications
+  type: boolean
+  category: notifications
+  default: true

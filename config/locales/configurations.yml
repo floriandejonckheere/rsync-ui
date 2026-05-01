@@ -7,6 +7,9 @@ en:
       system:
         description: Core system settings and technical parameters
         title: System configuration
+      notifications:
+        description: Settings for notifications sent on job lifecycle events
+        title: Notifications
     keys:
       resource_usage:
         description: Enable or disable server resource usage probe
@@ -26,3 +29,5 @@ en:
           description: Memory usage percentage at which status is shown as a warning (orange)
       scheduler:
         description: Enable or disable scheduled jobs
+      notifications:
+        description: Enable or disable user notifications on job start, success, and failure
