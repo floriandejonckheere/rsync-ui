@@ -30,7 +30,7 @@ class ServerPolicy < ApplicationPolicy
   end
 
   def test?
-    user.admin? || record.user == user
+    update?
   end
 
   def measure?

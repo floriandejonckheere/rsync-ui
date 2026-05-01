@@ -134,4 +134,70 @@ RSpec.describe "Notifications" do
       expect(response).to have_http_status(:forbidden)
     end
   end
+
+  describe "POST /notifications/test" do
+    before { sign_in user, scope: :user }
+
+    it "returns a Turbo Stream response when URL is missing" do
+      post test_notifications_path, params: { url: "" }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include(I18n.t("notifications.test.missing_url"))
+    end
+
+    it "returns a Turbo Stream response with success on success" do
+      allow(Notifications::TestService).to receive(:call).and_return(success: true, message: "ok")
+
+      post test_notifications_path, params: { url: "slack://x/y/z/#chan" }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include(I18n.t("notifications.test.success"))
+    end
+
+    it "returns a Turbo Stream response with failure on error" do
+      allow(Notifications::TestService).to receive(:call).and_return(success: false, message: "Connection denied")
+
+      post test_notifications_path, params: { url: "slack://x/y/z/#chan" }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include("Connection denied")
+    end
+  end
+
+  describe "POST /notifications/:id/test" do
+    let(:notification) { create(:notification, user:) }
+
+    before { sign_in user, scope: :user }
+
+    it "returns a Turbo Stream response with success on success" do
+      allow(Notifications::TestService).to receive(:call).and_return(success: true, message: "ok")
+
+      post test_notification_path(notification), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include(I18n.t("notifications.test.success"))
+    end
+
+    it "returns a Turbo Stream response with failure on error" do
+      allow(Notifications::TestService).to receive(:call).and_return(success: false, message: "denied")
+
+      post test_notification_path(notification), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include("denied")
+    end
+
+    it "forbids testing other users' notifications" do
+      other = create(:notification, user: other_user)
+
+      post test_notification_path(other), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
 end

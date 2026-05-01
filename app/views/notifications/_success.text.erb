@@ -1,0 +1,9 @@
+**<%= t("notifications.body.job_name") %>:** <%= job_run.job.name %>
+**<%= t("notifications.body.job_id") %>:** <%= job_run.sequence %>
+**<%= t("notifications.body.source") %>:** <%= job_run.job.source_repository.name %>
+**<%= t("notifications.body.destination") %>:** <%= job_run.job.destination_repository.name %>
+**<%= t("notifications.body.started_at") %>:** <%= l(job_run.started_at, format: :long) %>
+**<%= t("notifications.body.completed_at") %>:** <%= l(job_run.completed_at, format: :long) %>
+**<%= t("notifications.body.duration") %>:** <%= distance_of_time_in_words(job_run.duration) %>
+**<%= t("notifications.body.trigger") %>:** <%= job_run.trigger %>
+**<%= t("notifications.body.triggered_by") %>:** <%= job_run.user.email %>
