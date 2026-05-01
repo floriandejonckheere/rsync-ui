@@ -39,34 +39,6 @@ Servers are the remote destinations where the files are synchronized to.
   - [ ] Pre-/post-hook: command or script to run before or after the sync starts
   - [ ] Success/error hook: command or script to run when the sync succeeds or fails
 
-### Notifications
-
-Notifications can be sent to users when a job starts, completes, or fails.
-The user can configure notification services (e.g. email, Slack, ...) to receive these notifications.
-Each job can be configured to send notifications on specific events to specific notification targets.
-
-Notifications have the following attributes:
-
-- [ ] Name
-- [ ] Description (optional)
-- [ ] URL (Apprise URL)
-- [ ] Enabled (boolean)
-- [ ] User
-
-Notifications have a many-to-many relationship with jobs.
-This relationship has the following attributes:
-
-- [ ] Job (foreign key)
-- [ ] Notification target (foreign key)
-- [ ] Events (on start, on success, on failure)
-- [ ] Enabled (boolean)
-
-- [ ] Implement notification services page
-  - [ ] Create notification service
-  - [ ] Test notification service
-  - [ ] Update notification service
-  - [ ] Destroy notification service
-
 ### Browse repositories
 
 Allow the user to browse the repositories and their contents.
@@ -113,6 +85,9 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Make menubar responsive
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
 - [x] Optimize Docker image
+- [ ] Capture number of bytes and number of files transferred on the job run
+  - [ ] Add to job run details
+  - [ ] Add to notification email
 
 ## Open questions
 
