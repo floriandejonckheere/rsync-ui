@@ -67,6 +67,10 @@ ADD app                                     /app/app
 ADD public                                  /app/public
 
 ARG SECRET_KEY_BASE=secret_key_base
+ARG ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY=active_record_encryption_primary_key
+ARG ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY=active_record_encryption_deterministic_key
+ARG ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT=active_record_encryption_key_derivation_salt
+
 ARG RAILS_ENV=production
 ARG NODE_ENV=production
 
