@@ -395,6 +395,99 @@ RSpec.describe "Servers" do
     end
   end
 
+  describe "POST /servers/:id/test" do
+    let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
+    let(:server) { create(:server, :with_password, user:) }
+
+    before do
+      allow(Net::SSH)
+        .to receive(:start)
+        .and_yield(ssh_session)
+
+      allow(ssh_session)
+        .to receive(:exec!)
+        .and_return("ok\n")
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        post test_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      it "returns a Turbo Stream response" do
+        post test_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      end
+
+      it "renders a success notification when SSH connects" do
+        post test_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response.body).to include(I18n.t("servers.test.success"))
+      end
+
+      it "uses server credentials when params are blank" do
+        post test_server_path(server),
+             params: { host: "", port: "", username: "", password: "", ssh_key: "" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH)
+          .to have_received(:start)
+          .with(anything, anything, hash_including(password: server.password))
+
+        expect(response.body).to include(I18n.t("servers.test.success"))
+      end
+
+      it "overrides server credentials with params when present" do
+        post test_server_path(server),
+             params: { host: server.host, port: server.port, username: server.username, password: "newpass", ssh_key: "" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH)
+          .to have_received(:start)
+          .with(anything, anything, hash_including(password: "newpass"))
+
+        expect(response.body).to include(I18n.t("servers.test.success"))
+      end
+
+      it "renders a failure notification when SSH fails" do
+        allow(Net::SSH)
+          .to receive(:start)
+          .and_raise(Net::SSH::AuthenticationFailed, "Authentication failed")
+
+        post test_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response.body).to include(I18n.t("servers.test.failure"))
+        expect(response.body).to include("Net::SSH::AuthenticationFailed")
+      end
+    end
+
+    context "when server belongs to another user" do
+      let(:server) { create(:server, :with_password, user: other_user) }
+
+      before { sign_in user, scope: :user }
+
+      it "returns forbidden" do
+        post test_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "does not attempt SSH connection" do
+        post test_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH).not_to have_received(:start)
+      end
+    end
+  end
+
   describe "POST /servers/connection" do
     let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
 
@@ -410,7 +503,7 @@ RSpec.describe "Servers" do
 
     context "when not authenticated" do
       it "redirects to sign in" do
-        post connection_servers_path, params: { host: "example.com", port: 22, username: "admin", password: "secret" }
+        post test_servers_path, params: { host: "example.com", port: 22, username: "admin", password: "secret" }
 
         expect(response).to redirect_to(new_user_session_path)
       end
@@ -420,7 +513,7 @@ RSpec.describe "Servers" do
       before { sign_in user, scope: :user }
 
       it "returns a Turbo Stream response" do
-        post connection_servers_path,
+        post test_servers_path,
              params: { host: "example.com", port: 22, username: "admin", password: "secret" },
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
@@ -429,15 +522,15 @@ RSpec.describe "Servers" do
       end
 
       it "renders a success notification when SSH connects" do
-        post connection_servers_path,
+        post test_servers_path,
              params: { host: "example.com", port: 22, username: "admin", password: "secret" },
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-        expect(response.body).to include(I18n.t("servers.connection.success"))
+        expect(response.body).to include(I18n.t("servers.test.success"))
       end
 
       it "uses password when provided" do
-        post connection_servers_path,
+        post test_servers_path,
              params: { host: "example.com", port: 22, username: "admin", password: "password" },
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
@@ -445,11 +538,11 @@ RSpec.describe "Servers" do
           .to have_received(:start)
           .with(anything, anything, hash_including(password: "password"))
 
-        expect(response.body).to include(I18n.t("servers.connection.success"))
+        expect(response.body).to include(I18n.t("servers.test.success"))
       end
 
       it "uses ssh_key when provided" do
-        post connection_servers_path,
+        post test_servers_path,
              params: { host: "example.com", port: 22, username: "admin", ssh_key: "ssh_key" },
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
@@ -457,7 +550,7 @@ RSpec.describe "Servers" do
           .to have_received(:start)
           .with(anything, anything, hash_including(key_data: ["ssh_key"]))
 
-        expect(response.body).to include(I18n.t("servers.connection.success"))
+        expect(response.body).to include(I18n.t("servers.test.success"))
       end
 
       it "renders a failure notification when SSH fails" do
@@ -465,28 +558,28 @@ RSpec.describe "Servers" do
           .to receive(:start)
           .and_raise(Net::SSH::AuthenticationFailed, "Authentication failed")
 
-        post connection_servers_path,
+        post test_servers_path,
              params: { host: "example.com", port: 22, username: "admin", password: "wrong" },
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-        expect(response.body).to include(I18n.t("servers.connection.failure"))
+        expect(response.body).to include(I18n.t("servers.test.failure"))
         expect(response.body).to include("Net::SSH::AuthenticationFailed")
       end
 
       it "renders a failure notification when host is missing" do
-        post connection_servers_path,
+        post test_servers_path,
              params: { port: 22, username: "admin", password: "secret" },
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
         expect(Net::SSH)
           .not_to have_received(:start)
 
-        expect(response.body).to include(I18n.t("servers.connection.failure"))
-        expect(response.body).to include(I18n.t("servers.connection.missing_details"))
+        expect(response.body).to include(I18n.t("servers.test.failure"))
+        expect(response.body).to include(I18n.t("servers.test.missing_details"))
       end
 
       it "does not render a failure notification when port is missing" do
-        post connection_servers_path,
+        post test_servers_path,
              params: { host: "example.com", username: "admin", password: "secret" },
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
@@ -495,27 +588,27 @@ RSpec.describe "Servers" do
       end
 
       it "renders a failure notification when username is missing" do
-        post connection_servers_path,
+        post test_servers_path,
              params: { host: "example.com", port: 22, password: "secret" },
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
         expect(Net::SSH)
           .not_to have_received(:start)
 
-        expect(response.body).to include(I18n.t("servers.connection.failure"))
-        expect(response.body).to include(I18n.t("servers.connection.missing_details"))
+        expect(response.body).to include(I18n.t("servers.test.failure"))
+        expect(response.body).to include(I18n.t("servers.test.missing_details"))
       end
 
       it "renders a failure notification when both password and ssh_key are missing" do
-        post connection_servers_path,
+        post test_servers_path,
              params: { host: "example.com", port: 22, username: "admin" },
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
         expect(Net::SSH)
           .not_to have_received(:start)
 
-        expect(response.body).to include(I18n.t("servers.connection.failure"))
-        expect(response.body).to include(I18n.t("servers.connection.missing_details"))
+        expect(response.body).to include(I18n.t("servers.test.failure"))
+        expect(response.body).to include(I18n.t("servers.test.missing_details"))
       end
     end
 
@@ -525,15 +618,15 @@ RSpec.describe "Servers" do
       before { sign_in user, scope: :user }
 
       it "succeeds using submitted credentials when present" do
-        post connection_servers_path,
+        post test_servers_path,
              params: { server_id: server.id, host: server.host, port: server.port, username: server.username, password: "newpass" },
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-        expect(response.body).to include(I18n.t("servers.connection.success"))
+        expect(response.body).to include(I18n.t("servers.test.success"))
       end
 
       it "falls back to stored credentials when password and ssh_key params are blank" do
-        post connection_servers_path,
+        post test_servers_path,
              params: { server_id: server.id, host: server.host, port: server.port, username: server.username, password: "", ssh_key: "" },
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
@@ -541,14 +634,14 @@ RSpec.describe "Servers" do
           .to have_received(:start)
           .with(anything, anything, hash_including(password: server.password))
 
-        expect(response.body).to include(I18n.t("servers.connection.success"))
+        expect(response.body).to include(I18n.t("servers.test.success"))
       end
 
       context "when server belongs to another user" do
         let(:server) { create(:server, :with_password, user: other_user) }
 
         it "returns forbidden" do
-          post connection_servers_path,
+          post test_servers_path,
                params: { server_id: server.id, host: server.host, port: server.port, username: server.username, password: "" },
                headers: { "Accept" => "text/vnd.turbo-stream.html" }
 

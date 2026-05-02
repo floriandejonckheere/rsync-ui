@@ -65,19 +65,19 @@ RSpec.describe ServerPolicy do
     end
   end
 
-  describe "#connection?" do
-    it { is_expected.to be_connection }
+  describe "#test?" do
+    it { is_expected.to be_test }
 
     context "when user is another user" do
       let(:user) { other_user }
 
-      it { is_expected.not_to be_connection }
+      it { is_expected.not_to be_test }
     end
 
     context "when user is admin" do
       let(:user) { admin }
 
-      it { is_expected.to be_connection }
+      it { is_expected.to be_test }
     end
   end
 

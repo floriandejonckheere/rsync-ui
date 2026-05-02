@@ -29,7 +29,7 @@ class ServerPolicy < ApplicationPolicy
     user.admin? || record.user == user
   end
 
-  def connection?
+  def test?
     user.admin? || record.user == user
   end
 

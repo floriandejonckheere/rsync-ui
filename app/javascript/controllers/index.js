@@ -43,8 +43,8 @@ application.register("search", SearchController)
 import ServerAuthController from "./server_auth_controller"
 application.register("server-auth", ServerAuthController)
 
-import ServerConnectionController from "./server_connection_controller"
-application.register("server-connection", ServerConnectionController)
+import ServerTestController from "./server_test_controller"
+application.register("server-test", ServerTestController)
 
 import ServerPathController from "./server_path_controller"
 application.register("server-path", ServerPathController)

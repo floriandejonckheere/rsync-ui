@@ -393,10 +393,6 @@ en:
       delete_confirm_title: Delete server
       edit: Edit server
       measure: Measure resource usage
-    connection:
-      failure: Connection failed
-      missing_details: Host, port, username, and a password or SSH key are required to test the connection.
-      success: Connection successful
     create:
       success: Server was successfully created.
     destroy:
@@ -456,6 +452,10 @@ en:
       name: Name
       password: Password
       ssh_key: SSH Key
+    test:
+      failure: Connection failed
+      missing_details: Host, port, username, and a password or SSH key are required to test the connection.
+      success: Connection successful
     title: Servers
     update:
       success: Server was successfully updated.

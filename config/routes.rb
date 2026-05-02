@@ -27,7 +27,7 @@ Rails.application.routes.draw do
 
   resources :servers do
     collection do
-      post :connection
+      post :test
     end
 
     member do
@@ -79,7 +79,7 @@ end
 #                           configurations GET    /configurations(.:format)                                                                         configurations#index
 #                            configuration PATCH  /configurations/:id(.:format)                                                                     configurations#update
 #                                          PUT    /configurations/:id(.:format)                                                                     configurations#update
-#                       connection_servers POST   /servers/connection(.:format)                                                                     servers#connection
+#                             test_servers POST   /servers/test(.:format)                                                                           servers#test
 #                           measure_server POST   /servers/:id/measure(.:format)                                                                    servers#measure
 #                                  servers GET    /servers(.:format)                                                                                servers#index
 #                                          POST   /servers(.:format)                                                                                servers#create
