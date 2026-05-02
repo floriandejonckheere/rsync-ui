@@ -32,8 +32,11 @@ services:
       - /path/to/storage:/data/storage:ro # Your local storage directories
       - /path/to/backup:/data/storage:rw # Your local storage directories
     environment:
-      SECRET_KEY_BASE: my-secret # Secret encryption key
-  
+      SECRET_KEY_BASE: my-secret # Application secret key
+      ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: my-secret # Encryption secret key
+      ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY: my-secret # Encryption secret key
+      ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT: my-secret # Encryption secret key
+
       PG_HOST: postgres
       PG_USER: rsync_ui
       PG_PASSWORD: rsync_ui
@@ -63,6 +66,8 @@ volumes:
   postgres:
   rsync_ui:
 ```
+
+Generate secrets using `openssl rand -hex 32`.
 
 ### Docker compose
 
@@ -137,6 +142,9 @@ Secrets for deployment:
 Secrets for deployment:
 
 - `SECRET_KEY_BASE` (application secret)
+- `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` (encryption secret)
+- `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` (encryption secret)
+- `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` (encryption secret)
 
 - `PG_HOST` (PostgreSQL host)
 - `PG_USER` (database username)

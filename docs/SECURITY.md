@@ -21,6 +21,9 @@ Key environment variables (see `.development.env` for full list):
 - `APP_NAME` - Application name (used in database names, module name)
 - `PG_HOST`, `PG_PORT`, `PG_USER`, `PG_PASSWORD` - Database connection
 - `SECRET_KEY_BASE` - Rails secret (production)
+- `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` - Encryption secret (production)
+- `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` - Encryption secret (production)
+- `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` - Encryption secret (production)
 
 When adding environment variables, update:
 - `.development.env`
