@@ -27,8 +27,8 @@ module Notifications
 
     def body
       ApplicationController.render(
-        partial: "notifications/#{event}",
-        formats: [:text],
+        partial: "notifications/templates/#{event}",
+        formats: [:html],
         locals: { job_run: },
       )
     end
