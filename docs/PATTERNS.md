@@ -389,3 +389,193 @@ To have the section open by default, add the `open` attribute to the `<details>`
 
 **URL Hash Navigation:**
 Native `<details>` elements support deep-linking via URL hash automatically when the browser navigates to an element inside the collapsed content.
+
+
+## Turbo Frame escape for row links
+
+Links rendered inside a turbo_frame_tag must include data: { turbo_frame: "_top" } to trigger
+full-page navigation. Without it, Turbo looks for a matching frame on the destination page and
+renders nothing if it isn't found.
+
+```erb
+<%= link_to edit_foo_path(foo), data: { turbo_frame: "_top", tooltip: "..." }, class: "..." do %>
+```
+
+## Disable/enable toggle button
+
+Inline toggle using button_to with a PATCH and a negated enabled param. The controller's update
+ action handles it without a dedicated route.
+
+```erb
+<%= button_to foo_path(foo),
+              params: { foo: { enabled: !foo.enabled? } },
+              method: :patch,
+              class: "btn-icon-outline btn-icon-md",
+              form_class: "contents",
+              data: { tooltip: I18n.t(foo.enabled? ? "foos.actions.disable" : "foos.actions.enable") } do %>
+  <%= lucide_icon(foo.enabled? ? "icon-off" : "icon", class: "h-4 w-4") %>
+<% end %>
+```
+
+## Greying out disabled rows
+
+Apply opacity-50 conditionally on the <tr> to visually indicate a disabled record:
+
+```erb
+<tr class="... <%= "opacity-50" unless foo.enabled? %>">
+```
+
+## Disabled indicator column
+
+A leading empty column that shows a status icon when disabled, keeping the layout consistent. Set `w-10` on the `<th>` so the column stays fixed-width whether or not the icon is present.
+
+```erb
+<th class="py-4 w-10"></th>
+```
+
+```erb
+<td class="pl-6 py-4">
+  <% unless foo.enabled? %>
+    <div data-tooltip="<%= I18n.t("foos.enabled.false") %>">
+      <%= lucide_icon "icon-off", class: "h-4 w-4 text-gray-400" %>
+    </div>
+  <% end %>
+</td>
+```
+
+## Inline action button with turbo stream result
+
+For actions like "test connection" or "send test notification" that don't save the record, place an action button in the form's `content_for :actions` bar alongside the save button. A separate mini-form syncs values from the main form via a Stimulus controller, submits to a collection route, and renders the result as a turbo stream toast.
+
+**Routes** — use a collection route so it works for both new and persisted records:
+```ruby
+resources :foos do
+  collection do
+    post :test
+  end
+end
+```
+
+**Controller** — find-or-build, override fields from params, render `shared/action_result`:
+```ruby
+def test
+  @foo = params[:foo_id].present? ? Foo.find(params[:foo_id]) : Foo.new
+  @foo.user ||= current_user
+
+  authorize! @foo, to: :test?
+
+  @foo.url = params[:url] if params[:url].present?
+
+  if @foo.url.blank?
+    return render turbo_stream: turbo_stream.prepend(
+      "notifications",
+      partial: "shared/action_result",
+      locals: { result: { success: false, message: t(".missing_url") }, success_message: t(".success"), failure_message: t(".failure") },
+    )
+  end
+
+  result = Foos::TestService.call(@foo)
+
+  render turbo_stream: turbo_stream.prepend(
+    "notifications",
+    partial: "shared/action_result",
+    locals: { result:, success_message: t(".success"), failure_message: t(".failure") },
+  )
+end
+```
+
+**Form** — a hidden mini-form inside `content_for :actions` that is wired to a Stimulus controller:
+```erb
+<%= form_with url: test_foos_path,
+              method: :post,
+              data: {
+                turbo_stream: true,
+                controller: "foo-test",
+                "foo-test-source-form-value": "foo-form",
+              } do |tf| %>
+  <%= tf.hidden_field :foo_id, value: foo.persisted? ? foo.id : nil,
+                      data: { "foo-test-target": "fooId" } %>
+  <%= tf.hidden_field :url, data: { "foo-test-target": "url" } %>
+
+  <button type="submit"
+          class="btn-icon-outline btn-icon-lg"
+          data-foo-test-target="button"
+          data-action="click->foo-test#sync"
+          data-tooltip="<%= I18n.t("foos.actions.test") %>"
+          disabled>
+    <%= lucide_icon "send", class: "h-6 w-6", data: { "foo-test-target": "icon" } %>
+    <%= lucide_icon "loader-circle", class: "h-6 w-6 hidden animate-spin",
+                    data: { "foo-test-target": "spinner" } %>
+  </button>
+<% end %>
+```
+
+**Stimulus controller** — watches the source form for input, enables the button when required fields are filled, syncs values on click:
+```js
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  static targets = ["button", "icon", "spinner", "url", "fooId"]
+  static values = { sourceForm: String }
+
+  connect() {
+    this.element.addEventListener("turbo:submit-start", () => this.#setLoading(true))
+    this.element.addEventListener("turbo:submit-end", () => this.#setLoading(false))
+
+    const form = document.getElementById(this.sourceFormValue)
+    if (form) {
+      this.#sourceFormListener = () => this.#updateButton(form)
+      form.addEventListener("input", this.#sourceFormListener)
+      this.#updateButton(form)
+    }
+  }
+
+  disconnect() {
+    const form = document.getElementById(this.sourceFormValue)
+    if (form && this.#sourceFormListener) {
+      form.removeEventListener("input", this.#sourceFormListener)
+    }
+  }
+
+  sync() {
+    const form = document.getElementById(this.sourceFormValue)
+    this.urlTarget.value = form.querySelector("[name='foo[url]']").value
+  }
+
+  #sourceFormListener = null
+
+  #updateButton(form) {
+    const url = form.querySelector("[name='foo[url]']")?.value.trim()
+    this.buttonTarget.disabled = !url
+  }
+
+  #setLoading(loading) {
+    this.buttonTarget.disabled = loading
+    this.iconTarget.classList.toggle("hidden", loading)
+    this.spinnerTarget.classList.toggle("hidden", !loading)
+  }
+}
+```
+
+**Shared result partial** (`app/views/shared/_action_result.html.erb`) — renders a dismissible toast prepended to the `notifications` turbo frame:
+```erb
+<div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4 sm:max-w-lg">
+  <div role="alert"
+       class="<%= alert_class_for(result[:success] ? :success : :alert) %> mb-4 shadow-lg relative"
+       data-turbo-temporary
+       data-controller="dismissible">
+    <%= lucide_icon icon_name_for(result[:success] ? :success : :alert), class: "w-4 h-4" %>
+    <h2><%= result[:success] ? success_message : failure_message %></h2>
+    <% unless result[:success] %>
+      <section>
+        <pre class="text-xs whitespace-pre-wrap"><%= result[:message] %></pre>
+      </section>
+    <% end %>
+    <button type="button" class="absolute top-2 right-2 btn-icon-ghost p-1"
+            aria-label="<%= I18n.t("shared.dismiss") %>"
+            data-action="dismissible#dismiss">
+      <%= lucide_icon "x", class: "w-4 h-4" %>
+    </button>
+  </div>
+</div>
+```

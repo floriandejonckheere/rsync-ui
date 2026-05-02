@@ -82,7 +82,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 
 - [ ] Do not bind to port 5432, otherwise you can't use git worktrees
 - [ ] Use SolidQueue's [dynamic scheduling](https://github.com/rails/solid_queue#scheduling-and-unscheduling-recurring-tasks-dynamically) instead of the recurring scheduling jobs
-- [ ] Add a `with_configuration` helper
+- [x] Add a `with_configuration` helper
 - [ ] Make menubar responsive
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
 - [x] Optimize Docker image
