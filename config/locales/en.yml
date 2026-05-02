@@ -159,6 +159,12 @@ en:
       include_patterns: Include patterns
       name: Name
       name_placeholder: Daily backup
+      notifications: Notifications
+      notifications_empty_html: No notifications configured. %{link} to add one.
+      notifications_empty_link: Create one
+      notifications_on_failure: On failure
+      notifications_on_start: On start
+      notifications_on_success: On success
       opt_acls:
         description: Preserve ACLs
         flag: "--acls"
@@ -299,6 +305,29 @@ en:
     title: Background jobs
   nav:
     toggle_sidebar: Toggle sidebar
+  notifications:
+    body:
+      completed_at: Completed at
+      destination: Destination
+      duration: Duration
+      job_id: Job
+      job_name: Job Name
+      source: Source
+      started_at: Started at
+      trigger: Trigger
+      triggered_by: Triggered By
+    events:
+      failure:
+        title: 'Job failed: %{job}'
+      start:
+        title: 'Job started: %{job}'
+      success:
+        title: 'Job completed: %{job}'
+    index:
+      title: Notifications
+    test:
+      error: Failed to send notification
+      success: Notification sent successfully
   page:
     info: Page %{current} of %{total}
     next: Next

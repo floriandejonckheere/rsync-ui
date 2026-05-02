@@ -6,47 +6,47 @@ Each job can be configured to send notifications on specific events to specific 
 
 ## Configurations
 
-- [ ] Add `notifications` configuration
+- [x] Add `notifications` configuration
 
 ## Database model
 
 Notifications have the following attributes:
 
-- [ ] Name
-- [ ] Description (optional)
-- [ ] URL (Apprise URL), encrypted in the database
-- [ ] Enabled (boolean)
-- [ ] User
+- [x] Name
+- [x] Description (optional)
+- [x] URL (Apprise URL), encrypted in the database
+- [x] Enabled (boolean)
+- [x] User
 
 Notifications have a many-to-many relationship with jobs.
 This relationship has the following attributes:
 
-- [ ] Job (foreign key)
-- [ ] Notification service (foreign key)
-- [ ] Events (on start, on success, on failure)
-- [ ] Enabled (boolean)
+- [x] Job (foreign key)
+- [x] Notification service (foreign key)
+- [x] Events (on start, on success, on failure)
+- [x] Enabled (boolean)
 
 ## User interface
 
-- [ ] Implement notification services page (visible if `notifications` is enabled)
-  - [ ] Create notification service
+- [x] Implement notification services page (visible if `notifications` is enabled)
+  - [x] Create notification service
     - [ ] Add a link to the Apprise Wiki: https://appriseit.com/services/
-  - [ ] Test notification service
-  - [ ] Update notification service
-  - [ ] Destroy notification service
+  - [x] Test notification service
+  - [x] Update notification service
+  - [x] Destroy notification service
 
-- [ ] Update the jobs form (visible if `notifications` is enabled)
-  - [ ] In the left column, add a Notifications card
-  - [ ] Allow adding notification services to the job, and configuring the events to send notifications for
-    - [ ] Enabled
-    - [ ] Events: on start, on success, on failure
+- [x] Update the jobs form (visible if `notifications` is enabled)
+  - [x] In the left column, add a Notifications card
+  - [x] Allow adding notification services to the job, and configuring the events to send notifications for
+    - [x] Enabled
+    - [x] Events: on start, on success, on failure
 
 ## Services
 
-- [ ] Implement notification service (only if `notifications` is enabled)
-  - [ ] Takes as arguments a notification service, a job run, and a user
-  - [ ] Add hooks on ExecuteJob: on start, on success, on failure: send notifications to configured notification services if enabled
-- [ ] Add email templates
-  - [ ] Job started: job name, job ID, source, destination, started at, trigger, triggered by
-  - [ ] Job completed: job name, job ID, source, destination, started at, completed at, duration, trigger, triggered by
-  - [ ] Job failed: job name, job ID, source, destination, started at, completed at, duration, trigger, triggered by, error class and message, URL to the job log
+- [x] Implement notification service (only if `notifications` is enabled)
+  - [x] Takes as arguments a notification service, a job run, and a user
+  - [x] Add hooks on ExecuteJob: on start, on success, on failure: send notifications to configured notification services if enabled
+- [x] Add email templates
+  - [x] Job started: job name, job ID, source, destination, started at, trigger, triggered by
+  - [x] Job completed: job name, job ID, source, destination, started at, completed at, duration, trigger, triggered by
+  - [x] Job failed: job name, job ID, source, destination, started at, completed at, duration, trigger, triggered by, error class and message, URL to the job log

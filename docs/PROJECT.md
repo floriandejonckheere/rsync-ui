@@ -65,6 +65,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 
 ### Future enhancements
 
+- [x] Add notifications
 - [ ] Update branding
 - [ ] Implement support for OAuth2 authentication
 - [ ] Allow duplicating jobs

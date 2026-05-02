@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   }
 
   resources :configurations, only: [:index, :update]
+
   resources :servers do
     collection do
       post :connection
@@ -33,7 +34,19 @@ Rails.application.routes.draw do
       post :measure
     end
   end
+
   resources :repositories
+
+  resources :notifications do
+    collection do
+      post :test
+    end
+
+    member do
+      post :test
+    end
+  end
+
   resources :jobs, except: :show do
     collection do
       post :preview
@@ -84,6 +97,16 @@ end
 #                                          PATCH  /repositories/:id(.:format)                                                                       repositories#update
 #                                          PUT    /repositories/:id(.:format)                                                                       repositories#update
 #                                          DELETE /repositories/:id(.:format)                                                                       repositories#destroy
+#                       test_notifications POST   /notifications/test(.:format)                                                                     notifications#test
+#                        test_notification POST   /notifications/:id/test(.:format)                                                                 notifications#test
+#                            notifications GET    /notifications(.:format)                                                                          notifications#index
+#                                          POST   /notifications(.:format)                                                                          notifications#create
+#                         new_notification GET    /notifications/new(.:format)                                                                      notifications#new
+#                        edit_notification GET    /notifications/:id/edit(.:format)                                                                 notifications#edit
+#                             notification GET    /notifications/:id(.:format)                                                                      notifications#show
+#                                          PATCH  /notifications/:id(.:format)                                                                      notifications#update
+#                                          PUT    /notifications/:id(.:format)                                                                      notifications#update
+#                                          DELETE /notifications/:id(.:format)                                                                      notifications#destroy
 #                             preview_jobs POST   /jobs/preview(.:format)                                                                           jobs#preview
 #                                     jobs GET    /jobs(.:format)                                                                                   jobs#index
 #                                          POST   /jobs(.:format)                                                                                   jobs#create

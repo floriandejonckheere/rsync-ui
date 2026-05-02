@@ -63,14 +63,14 @@
         <%= lucide_icon "pencil", class: "h-4 w-4" %>
       <% end %>
 
-      <%= button_to job_path(job),
-                    params: { job: { enabled: !job.enabled? } },
-                    method: :patch,
-                    class: "btn-icon-outline btn-icon-md",
-                    form_class: "contents",
-                    data: { tooltip: I18n.t(job.enabled? ? "jobs.actions.disable" : "jobs.actions.enable") } do %>
-        <%= lucide_icon(job.enabled? ? "refresh-cw-off" : "refresh-cw", class: "h-4 w-4") %>
-      <% end %>
+      <%= render "shared/toggle_button",
+                 path: job_path(job),
+                 params: { job: { enabled: !job.enabled? } },
+                 enabled: job.enabled?,
+                 enable_label: I18n.t("jobs.actions.enable"),
+                 disable_label: I18n.t("jobs.actions.disable"),
+                 enable_icon: "refresh-cw",
+                 disable_icon: "refresh-cw-off" %>
 
       <%= button_to job_runs_path,
                     params: { job_id: job.id },

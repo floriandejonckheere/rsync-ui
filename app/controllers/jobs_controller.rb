@@ -133,6 +133,15 @@ class JobsController < ApplicationController
         :opt_rsync_path,
         opt_include: [],
         opt_exclude: [],
+        job_notifications_attributes: [
+          :id,
+          :notification_id,
+          :enabled,
+          :on_start,
+          :on_success,
+          :on_failure,
+          :_destroy,
+        ],
       )
 
     permitted[:source_repository_id] = permitted_repository_id(permitted[:source_repository_id]) if permitted.key?(:source_repository_id)

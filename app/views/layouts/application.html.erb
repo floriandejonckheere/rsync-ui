@@ -55,6 +55,10 @@
         <%= render "shared/menu/item", path: repositories_path, controllers: "repositories", icon: "folders", title: I18n.t("repositories.title") %>
         <%= render "shared/menu/item", path: jobs_path, controllers: "jobs", icon: "arrow-right-left", title: I18n.t("jobs.title") %>
 
+        <% if Configuration.get("notifications") %>
+          <%= render "shared/menu/item", path: notifications_path, controllers: "notifications", icon: "bell", title: I18n.t("notifications.title") %>
+        <% end %>
+
         <div class="grow"></div>
 
         <% if current_user.admin? && ENV.fetch("MISSION_CONTROL", "0") == "1" %>

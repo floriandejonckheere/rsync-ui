@@ -360,4 +360,35 @@ RSpec.describe "Jobs" do
       end
     end
   end
+
+  describe "POST /jobs with notifications" do
+    let(:user) { create(:user) }
+    let(:source) { create(:repository, :local, user:) }
+    let(:destination) { create(:repository, :local, user:, read_only: false) }
+    let(:notification) { create(:notification, user:) }
+
+    before { sign_in user, scope: :user }
+
+    it "creates job_notifications via nested attributes" do
+      params = {
+        job: {
+          name: "With notifs",
+          source_repository_id: source.id,
+          destination_repository_id: destination.id,
+          job_notifications_attributes: {
+            "0" => {
+              notification_id: notification.id,
+              enabled: "1",
+              on_start: "1",
+              on_success: "1",
+              on_failure: "0",
+            },
+          },
+        },
+      }
+
+      expect { post jobs_path, params: }
+        .to change(JobNotification, :count).by(1)
+    end
+  end
 end

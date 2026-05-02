@@ -108,6 +108,74 @@
           </div>
         </section>
       </div>
+
+      <% if Configuration.get("notifications") %>
+        <div class="card">
+          <header>
+            <h2><%= I18n.t("jobs.form.notifications") %></h2>
+          </header>
+
+          <section>
+            <% available = current_user.notifications.where(enabled: true).order(:name) %>
+
+            <% if available.empty? %>
+              <p class="text-sm text-muted-foreground">
+                <%= I18n.t("jobs.form.notifications_empty_html",
+                           link: link_to(I18n.t("jobs.form.notifications_empty_link"), notifications_path)).html_safe %>
+              </p>
+            <% else %>
+              <div class="flex flex-col gap-6">
+                <% available.each do |notif| %>
+                  <% existing = job.job_notifications.find { |jn| jn.notification_id == notif.id } %>
+                  <% jn = existing || job.job_notifications.build(notification: notif, enabled: false) %>
+
+                  <%= f.fields_for :job_notifications, jn do |jnf| %>
+                    <%= jnf.hidden_field :notification_id %>
+
+                    <% if jn.persisted? %>
+                      <%= jnf.hidden_field :id %>
+                    <% end %>
+
+                    <div class="border rounded p-4 relative">
+                      <div class="absolute top-4 right-4">
+                        <div class="field flex-row items-center gap-4">
+                          <%= jnf.check_box :enabled, role: "switch" %>
+                        </div>
+                      </div>
+
+                      <div class="mb-4 pr-16">
+                        <h3 class="font-semibold text-base">
+                          <%= notif.name %>
+                        </h3>
+                        <p class="text-sm text-muted-foreground mt-1">
+                          <%= notif.description %>
+                        </p>
+                      </div>
+
+                      <div class="flex flex-row gap-6">
+                        <div class="field flex-row items-center gap-4">
+                          <%= jnf.check_box :on_start %>
+                          <%= jnf.label :on_start, I18n.t("jobs.form.notifications_on_start") %>
+                        </div>
+
+                        <div class="field flex-row items-center gap-4">
+                          <%= jnf.check_box :on_success %>
+                          <%= jnf.label :on_success, I18n.t("jobs.form.notifications_on_success") %>
+                        </div>
+
+                        <div class="field flex-row items-center gap-4">
+                          <%= jnf.check_box :on_failure %>
+                          <%= jnf.label :on_failure, I18n.t("jobs.form.notifications_on_failure") %>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                <% end %>
+              </div>
+            <% end %>
+          </section>
+        </div>
+      <% end %>
     </div>
 
     <div class="flex flex-col gap-8">

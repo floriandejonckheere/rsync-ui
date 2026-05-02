@@ -1,0 +1,118 @@
+<%= form_with model: notification, id: "notification-form", class: "form", data: { controller: "unsaved-changes" } do |f| %>
+  <% content_for :actions do %>
+    <%= form_with url: test_notifications_path,
+                  method: :post,
+                  data: {
+                    turbo_stream: true,
+                    controller: "notification-test",
+                    "notification-test-source-form-value": "notification-form",
+                  } do |tf| %>
+      <%= tf.hidden_field :notification_id,
+                          value: notification.persisted? ? notification.id : nil,
+                          data: { "notification-test-target": "notificationId" } %>
+
+      <%= tf.hidden_field :url, data: { "notification-test-target": "url" } %>
+
+      <button
+        type="submit"
+        class="btn-icon-outline btn-icon-lg"
+        data-notification-test-target="button"
+        data-action="click->notification-test#sync"
+        data-tooltip="<%= I18n.t("notifications.actions.test") %>"
+        disabled
+      >
+        <%= lucide_icon "send", class: "h-6 w-6", data: { "notification-test-target": "icon" } %>
+
+        <%= lucide_icon "loader-circle",
+                        class: "h-6 w-6 hidden animate-spin",
+                        data: { "notification-test-target": "spinner" } %>
+      </button>
+    <% end %>
+
+    <button
+      type="submit"
+      form="notification-form"
+      class="btn-icon-outline btn-icon-lg"
+      data-tooltip="<%= notification.persisted? ? I18n.t("notifications.form.submit_update") : I18n.t("notifications.form.submit_create") %>"
+    >
+      <%= lucide_icon "check", class: "h-6 w-6" %>
+    </button>
+  <% end %>
+
+  <% if notification.errors.any? %>
+    <div class="mb-8">
+      <%= render "shared/forms/messages", model: notification %>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-2 gap-8 items-start">
+    <div class="flex flex-col gap-8">
+      <div class="card">
+        <header>
+          <h2><%= I18n.t("notifications.form.details") %></h2>
+        </header>
+
+        <section>
+          <div class="flex flex-col gap-6">
+            <div class="field">
+              <%= f.label :name, I18n.t("notifications.form.name") %>
+
+              <%= f.text_field :name,
+                               placeholder: I18n.t("notifications.form.name_placeholder"),
+                               required: true,
+                               autocomplete: "off" %>
+            </div>
+
+            <div class="field">
+              <%= f.label :description, I18n.t("notifications.form.description") %>
+
+              <%= f.text_area :description,
+                              placeholder: I18n.t("notifications.form.description_placeholder"),
+                              rows: 3,
+                              autocomplete: "off" %>
+            </div>
+
+            <div class="field flex-row items-center gap-4">
+              <%= f.check_box :enabled, role: "switch" %>
+              <%= f.label :enabled, I18n.t("notifications.form.enabled") %>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-8">
+      <div class="card">
+        <header>
+          <h2><%= I18n.t("notifications.form.url") %></h2>
+        </header>
+
+        <section>
+          <div class="flex flex-col gap-6">
+            <div class="field">
+              <%= f.label :url, I18n.t("notifications.form.url") %>
+
+              <%= f.text_field :url,
+                                  placeholder: I18n.t("notifications.form.url_placeholder"),
+                                  autocomplete: "off" %>
+
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                <%= I18n.t("notifications.form.url_hint") %>
+              </p>
+            </div>
+
+            <p
+              class="
+                text-xs text-gray-500 dark:text-gray-400 flex items-center
+                gap-1
+              "
+            >
+              <%= lucide_icon "lock", class: "h-3 w-3" %>
+              <%= I18n.t("notifications.form.credentials_encrypted_hint") %>
+            </p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+<% end %>

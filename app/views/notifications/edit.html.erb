@@ -1,0 +1,5 @@
+<% content_for :title do %>
+  <%= I18n.t("notifications.edit.title") %>
+<% end %>
+
+<%= render "form", notification: @notification %>

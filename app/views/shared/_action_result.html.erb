@@ -1,0 +1,34 @@
+<div
+  class="
+    fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4
+    sm:max-w-lg
+  "
+>
+  <div
+    role="alert"
+    class="<%= alert_class_for(result[:success] ? :success : :alert) %> mb-4 shadow-lg relative"
+    data-turbo-temporary
+    data-controller="dismissible"
+  >
+    <%= lucide_icon icon_name_for(result[:success] ? :success : :alert), class: "w-4 h-4" %>
+
+    <h2>
+      <%= result[:success] ? success_message : failure_message %>
+    </h2>
+
+    <% unless result[:success] %>
+      <section>
+        <pre class="text-xs whitespace-pre-wrap"><%= result[:message] %></pre>
+      </section>
+    <% end %>
+
+    <button
+      type="button"
+      class="absolute top-2 right-2 btn-icon-ghost p-1"
+      aria-label="<%= I18n.t("shared.dismiss") %>"
+      data-action="dismissible#dismiss"
+    >
+      <%= lucide_icon "x", class: "w-4 h-4" %>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<tr
+  class="
+    border-b border-gray-100 dark:border-gray-700 last:border-b-0
+    hover:bg-gray-50 dark:hover:bg-gray-700/50
+    <%= "opacity-50" unless notification.enabled? %>
+  "
+>
+  <td class="pl-6 py-4">
+    <% unless notification.enabled? %>
+      <div data-tooltip="<%= I18n.t("notifications.enabled.false") %>">
+        <%= lucide_icon "bell-off", class: "h-4 w-4 text-gray-400" %>
+      </div>
+    <% end %>
+  </td>
+
+  <td class="pl-3 pr-6 py-4 font-medium text-gray-900 dark:text-gray-100">
+    <%= notification.name %>
+  </td>
+
+  <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
+    <%= notification.description.present? ? notification.description : "—" %>
+  </td>
+
+  <td class="px-6 py-4">
+    <div class="flex items-center justify-end gap-2">
+      <%= link_to edit_notification_path(notification),
+                  class: "btn-icon-outline btn-icon-md",
+                  data: { turbo_frame: "_top", tooltip: I18n.t("notifications.actions.edit") } do %>
+        <%= lucide_icon "pencil", class: "h-4 w-4" %>
+      <% end %>
+
+      <%= render "shared/toggle_button",
+                 path: notification_path(notification),
+                 params: { notification: { enabled: !notification.enabled? } },
+                 enabled: notification.enabled?,
+                 enable_label: I18n.t("notifications.actions.enable"),
+                 disable_label: I18n.t("notifications.actions.disable"),
+                 enable_icon: "bell",
+                 disable_icon: "bell-off" %>
+
+      <%= button_to notification_path(notification),
+                    method: :delete,
+                    data: {
+                      turbo_confirm: I18n.t("notifications.actions.delete_confirm"),
+                      turbo_confirm_title: I18n.t("notifications.actions.delete_confirm_title"),
+                      turbo_confirm_destructive: true,
+                      tooltip: I18n.t("notifications.actions.delete"),
+                    },
+                    class: "btn-icon-outline btn-icon-md text-red-600 hover:text-red-700 dark:text-red-400",
+                    form_class: "contents" do %>
+        <%= lucide_icon "trash-2", class: "h-4 w-4" %>
+      <% end %>
+    </div>
+  </td>
+</tr>

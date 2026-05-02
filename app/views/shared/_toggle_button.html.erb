@@ -1,0 +1,9 @@
+<%# locals: (path:, params:, enabled:, enable_label:, disable_label:, enable_icon:, disable_icon:) %>
+<%= button_to path,
+              params:,
+              method: :patch,
+              class: "btn-icon-outline btn-icon-md",
+              form_class: "contents",
+              data: { tooltip: enabled ? disable_label : enable_label } do %>
+  <%= lucide_icon(enabled ? disable_icon : enable_icon, class: "h-4 w-4") %>
+<% end %>
