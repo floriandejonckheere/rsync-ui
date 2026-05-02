@@ -9,7 +9,4 @@ class ApplicationJob < ActiveJob::Base
 
   # Enqueue on default queue
   queue_as :default
-
-  class_attribute :depends_on,
-                  default: []
 end
