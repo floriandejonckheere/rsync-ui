@@ -22,7 +22,7 @@
 
   <td class="px-6 py-4">
     <div class="font-medium text-gray-900 dark:text-gray-100">
-      <%= link_to job_run.job.name, edit_job_path(job_run.job), class: "hover:underline" %>
+      <%= link_to job_run.job.name, edit_job_path(job_run.job), class: "hover:underline", data: { turbo_frame: "_top" } %>
     </div>
   </td>
 
@@ -75,7 +75,7 @@
         <% end %>
         <%= link_to logs_job_run_path(job_run),
                     class: "btn-icon-outline btn-icon-md",
-                    data: { tooltip: I18n.t("job_runs.actions.download_logs") } do %>
+                    data: { tooltip: I18n.t("job_runs.actions.download_logs"), turbo: false } do %>
           <%= lucide_icon "download", class: "h-4 w-4" %>
         <% end %>
       <% end %>
