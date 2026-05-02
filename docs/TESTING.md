@@ -43,6 +43,28 @@ This document describes the testing setup, conventions, and CI/CD pipeline.
 - Prefer `build` in model specs for validation tests (faster, no database writes)
 - Use `create` in request/integration specs when you need persisted data
 - Leverage factory traits for different states: `create(:user, :admin)`
+- When testing different configurations, use the `with_configuration` helper:
+  ```ruby
+  context "when notifications are enabled" do
+    with_configuration "notifications" => true
+  
+    it "shows the notifications menu item" do
+      get root_path
+  
+      expect(response.body).to include I18n.t("notifications.title")
+    end
+  end
+  
+  context "when notifications are disabled" do
+    with_configuration "notifications" => false
+  
+    it "hides the notifications menu item" do
+      get root_path
+  
+      expect(response.body).not_to include I18n.t("notifications.title")
+    end
+  end
+  ```
 
 ## Testing Best Practices
 
