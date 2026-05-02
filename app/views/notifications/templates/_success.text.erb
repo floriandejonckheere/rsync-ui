@@ -7,3 +7,4 @@
 **<%= t("notifications.body.duration") %>:** <%= distance_of_time_in_words(job_run.duration) %>
 **<%= t("notifications.body.trigger") %>:** <%= job_run.trigger %>
 **<%= t("notifications.body.triggered_by") %>:** <%= job_run.user.email %>
+**<%= t("notifications.body.log_url") %>:** <%= job_run_url(job_run) %>

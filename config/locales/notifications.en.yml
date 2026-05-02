@@ -54,6 +54,38 @@ en:
     title: Notifications
     update:
       success: Notification was successfully updated.
+    events:
+      start:
+        title: Job started - %{job}
+      success:
+        title: Job completed successfully - %{job}
+      failure:
+        title: Job failed - %{job}
+    body:
+      job_name: Job name
+      job_id: Run number
+      source: Source
+      destination: Destination
+      started_at: Started at
+      completed_at: Completed at
+      duration: Duration
+      trigger: Trigger
+      triggered_by: Triggered by
+      error_class: Error type
+      error_message: Error message
+      log_url: View logs
+    templates:
+      header_start: Job started
+      header_success: Job completed successfully
+      header_failure: Job failed
+      source: Source
+      destination: Destination
+      duration: Duration
+      data_copied: Data copied
+      error_type: Error type
+      error_details: Error details
+      view_logs: View logs
+      footer: rsync-ui notification
   activerecord:
     errors:
       models:
