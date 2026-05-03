@@ -18,8 +18,39 @@ class Job < ApplicationRecord
   has_many :notifications,
            through: :job_notifications
 
+  has_many :hooks,
+           dependent: :destroy
+
+  has_one :pre_hook,
+          -> { where(hook_type: "pre") },
+          class_name: "Hook",
+          dependent: :destroy,
+          inverse_of: :job
+
+  has_one :post_hook,
+          -> { where(hook_type: "post") },
+          class_name: "Hook",
+          dependent: :destroy,
+          inverse_of: :job
+
+  has_one :success_hook,
+          -> { where(hook_type: "success") },
+          class_name: "Hook",
+          dependent: :destroy,
+          inverse_of: :job
+
+  has_one :failure_hook,
+          -> { where(hook_type: "failure") },
+          class_name: "Hook",
+          dependent: :destroy,
+          inverse_of: :job
+
   accepts_nested_attributes_for :job_notifications,
                                 allow_destroy: true
+
+  accepts_nested_attributes_for :hooks,
+                                allow_destroy: true,
+                                reject_if: proc { |attrs| attrs["command"].blank? }
 
   validates :name,
             presence: true

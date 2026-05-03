@@ -5,6 +5,10 @@ class JobRun < ApplicationRecord
   belongs_to :user
 
   has_one_attached :output
+  has_one_attached :pre_hook_output
+  has_one_attached :post_hook_output
+  has_one_attached :success_hook_output
+  has_one_attached :failure_hook_output
 
   enum :trigger, {
     manual: "manual",

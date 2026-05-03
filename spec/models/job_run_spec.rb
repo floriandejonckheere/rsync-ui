@@ -8,6 +8,10 @@ RSpec.describe JobRun do
     it { is_expected.to belong_to(:user) }
 
     it { is_expected.to have_one_attached(:output) }
+    it { is_expected.to have_one_attached(:pre_hook_output) }
+    it { is_expected.to have_one_attached(:post_hook_output) }
+    it { is_expected.to have_one_attached(:success_hook_output) }
+    it { is_expected.to have_one_attached(:failure_hook_output) }
   end
 
   describe "validations" do

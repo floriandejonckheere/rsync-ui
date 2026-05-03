@@ -11,6 +11,11 @@ RSpec.describe Job do
     it { is_expected.to have_many(:job_runs).dependent(:destroy) }
     it { is_expected.to have_many(:job_notifications).dependent(:destroy) }
     it { is_expected.to have_many(:notifications).through(:job_notifications) }
+    it { is_expected.to have_many(:hooks).dependent(:destroy) }
+    it { is_expected.to have_one(:pre_hook).conditions(hook_type: "pre").class_name("Hook").dependent(:destroy) }
+    it { is_expected.to have_one(:post_hook).conditions(hook_type: "post").class_name("Hook").dependent(:destroy) }
+    it { is_expected.to have_one(:success_hook).conditions(hook_type: "success").class_name("Hook").dependent(:destroy) }
+    it { is_expected.to have_one(:failure_hook).conditions(hook_type: "failure").class_name("Hook").dependent(:destroy) }
   end
 
   describe "validations" do
