@@ -137,8 +137,18 @@ class ServersController < ApplicationController
 
   def update_params
     permitted = server_params
+
+    # Delete empty values (as not to change the password or ssh key)
     permitted.delete(:password) if permitted[:password].blank?
     permitted.delete(:ssh_key) if permitted[:ssh_key].blank?
+
+    # Delete the other value if one is present
+    if permitted[:ssh_key].present?
+      permitted[:password] = nil
+    elsif permitted[:password].present?
+      permitted[:ssh_key] = nil
+    end
+
     permitted
   end
 end

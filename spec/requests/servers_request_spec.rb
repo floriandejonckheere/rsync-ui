@@ -249,8 +249,49 @@ RSpec.describe "Servers" do
       end
 
       it "does not clear password when left blank in params" do
+        server = create(:server, :with_password, user:)
+
         expect { patch server_path(server), params: { server: { name: "Updated", password: "" } } }
           .not_to(change { server.reload.password })
+      end
+
+      it "does not clear ssh_key when left blank in params" do
+        server = create(:server, :with_ssh_key, user:)
+
+        expect { patch server_path(server), params: { server: { name: "Updated", ssh_key: "" } } }
+          .not_to(change { server.reload.ssh_key })
+      end
+
+      it "clears password when ssh_key is present in params" do
+        server = create(:server, :with_password, user:)
+        ssh_key = Rails.root.join("spec/support/fixtures/ssh_key").read
+
+        patch server_path(server), params: { server: { name: "Updated", ssh_key: } }
+
+        server.reload
+        expect(server.password).to be_blank
+        expect(server.ssh_key).to eq ssh_key
+      end
+
+      it "clears ssh_key when password is present in params" do
+        server = create(:server, :with_ssh_key, user:)
+
+        patch server_path(server), params: { server: { name: "Updated", password: "password" } }
+
+        server.reload
+        expect(server.password).to eq "password"
+        expect(server.ssh_key).to be_blank
+      end
+
+      it "prefers ssh_key over password when both are present in params" do
+        server = create(:server, :with_password, :with_ssh_key, user:)
+        ssh_key = Rails.root.join("spec/support/fixtures/ssh_key").read
+
+        patch server_path(server), params: { server: { name: "Updated", ssh_key: } }
+
+        server.reload
+        expect(server.password).to be_blank
+        expect(server.ssh_key).to eq ssh_key
       end
 
       context "with invalid params" do
