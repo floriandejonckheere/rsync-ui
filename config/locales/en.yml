@@ -101,8 +101,12 @@ en:
       subtitle: Overview of synchronization job executions
       title: Activity log
     show:
+      failure_hook_output: Failure hook output
       output_file: Output
+      post_hook_output: Post-hook output
+      pre_hook_output: Pre-hook output
       subtitle: 'Logs for job: %{job}'
+      success_hook_output: Success hook output
       title: 'Job run #%{sequence}'
     status:
       canceled: Canceled
@@ -155,6 +159,33 @@ en:
       details: Details
       enabled: Enabled
       exclude_patterns: Exclude patterns
+      hooks: Hooks
+      hooks_arguments: Arguments
+      hooks_arguments_help: |
+        The following variables will be substituted in the hook arguments:
+        - {job_id}
+        - {job_name}
+        - {trigger}
+        - {job_sequence}
+        - {source_id}
+        - {source_name}
+        - {destination_id}
+        - {destination_name}
+        - {started_at}
+        - {user_id}
+        - {user_name}
+
+        Post/success/failure hooks also have:
+        - {completed_at}
+        - {duration}
+        - {status}
+        - {error}
+      hooks_command: Command
+      hooks_enabled: Enabled
+      hooks_failure: Failure hook
+      hooks_post: Post-hook
+      hooks_pre: Pre-hook
+      hooks_success: Success hook
       include_exclude_patterns: Include/exclude patterns
       include_patterns: Include patterns
       name: Name

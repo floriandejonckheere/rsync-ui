@@ -1,0 +1,30 @@
+<% hook_types = Hook.hook_types.keys %>
+
+<% if Configuration.get("hooks") %>
+  <% hook_types.each do |hook_type| %>
+    <% attachment = job_run.public_send(:"#{hook_type}_hook_output") %>
+
+    <% if attachment.attached? %>
+      <div class="card p-0 mt-4">
+        <div
+          class="
+            flex items-center justify-between px-6 py-4 border-b border-gray-100
+            dark:border-gray-700
+          "
+        >
+          <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <%= lucide_icon "terminal", class: "h-4 w-4" %>
+            <span><%= I18n.t("job_runs.show.#{hook_type}_hook_output") %></span>
+          </div>
+        </div>
+
+        <pre
+          class="
+            p-6 text-xs font-mono text-gray-800 dark:text-gray-200
+            whitespace-pre-wrap
+          "
+        ><%= attachment.download %></pre>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

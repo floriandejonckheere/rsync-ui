@@ -23,11 +23,15 @@ class JobsController < ApplicationController
 
     authorize! @job
 
+    build_hooks(@job)
+
     @command = Rsync::CommandService.new(job: @job)
   end
 
   def edit
     authorize! @job
+
+    build_hooks(@job)
 
     @command = Rsync::CommandService.new(job: @job)
   end
@@ -142,6 +146,14 @@ class JobsController < ApplicationController
           :on_failure,
           :_destroy,
         ],
+        hooks_attributes: [
+          :id,
+          :hook_type,
+          :command,
+          :arguments,
+          :enabled,
+          :_destroy,
+        ],
       )
 
     permitted[:source_repository_id] = permitted_repository_id(permitted[:source_repository_id]) if permitted.key?(:source_repository_id)
@@ -150,6 +162,14 @@ class JobsController < ApplicationController
     permitted[:opt_exclude] = permitted.fetch(:opt_exclude, []).compact_blank
 
     permitted
+  end
+
+  def build_hooks(job)
+    return unless Configuration.get("hooks")
+
+    ["pre", "post", "success", "failure"].each do |hook_type|
+      job.hooks.find { |h| h.hook_type == hook_type } || job.hooks.build(hook_type:)
+    end
   end
 
   def permitted_repository_id(repository_id)

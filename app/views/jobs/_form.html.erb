@@ -430,6 +430,73 @@
           </div>
         </div>
       </details>
+
+      <% if Configuration.get("hooks") %>
+        <details class="card group py-0">
+          <summary
+            class="
+              flex items-center justify-between w-full px-8 py-8
+              cursor-pointer list-none
+            "
+          >
+            <h2 class="text-lg font-semibold">
+              <%= I18n.t("jobs.form.hooks") %>
+            </h2>
+
+            <%= lucide_icon "chevron-down", class: "h-5 w-5 transition-transform duration-200 group-open:rotate-180" %>
+          </summary>
+
+          <div class="px-8 pb-8">
+            <div class="flex flex-col gap-6">
+              <p class="text-xs text-muted-foreground">
+                <%= I18n.t("jobs.form.hooks_arguments_help").gsub("\n", "<br/>").html_safe %>
+              </p>
+
+              <% [
+                   ["pre", I18n.t("jobs.form.hooks_pre")],
+                   ["post", I18n.t("jobs.form.hooks_post")],
+                   ["success", I18n.t("jobs.form.hooks_success")],
+                   ["failure", I18n.t("jobs.form.hooks_failure")],
+                 ].each do |hook_type, label| %>
+                <% hook = @job.hooks.find { |h| h.hook_type == hook_type } || @job.hooks.build(hook_type:) %>
+
+                <%= f.fields_for :hooks, hook do |hf| %>
+                  <%= hf.hidden_field :hook_type %>
+
+                  <% if hook.persisted? %>
+                    <%= hf.hidden_field :id %>
+                  <% end %>
+
+                  <div class="border rounded p-4 relative">
+                    <div class="absolute top-4 right-4">
+                      <div class="field flex-row items-center gap-4">
+                        <%= hf.check_box :enabled, role: "switch" %>
+                        <%= hf.label :enabled, I18n.t("jobs.form.hooks_enabled") %>
+                      </div>
+                    </div>
+
+                    <div class="mb-4 pr-32">
+                      <h3 class="font-semibold text-base"><%= label %></h3>
+                    </div>
+
+                    <div class="flex flex-col gap-4">
+                      <div class="field">
+                        <%= hf.label :command, I18n.t("jobs.form.hooks_command") %>
+                        <%= hf.text_field :command, class: "input font-mono text-sm" %>
+                      </div>
+
+                      <div class="field">
+                        <%= hf.label :arguments, I18n.t("jobs.form.hooks_arguments") %>
+                        <%= hf.text_field :arguments, class: "input font-mono text-sm" %>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </details>
+      <% end %>
     </div>
   </div>
 <% end %>
