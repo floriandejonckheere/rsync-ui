@@ -36,7 +36,7 @@ Servers are the remote destinations where the files are synchronized to.
 ### Execution and scheduling
 
 - [ ] Implement sync hooks
-  - [ ] Pre-/post-hook: command or script to run before or after the sync starts
+  - [ ] Pre-/post-hook: command or script to run before or after the sync starts (source and destination)
   - [ ] Success/error hook: command or script to run when the sync succeeds or fails
 
 ### Browse repositories
@@ -54,7 +54,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 
 - [ ] Show a real-time visualization of repositories (vertices) and schedules (edges) on the dashboard
 - [ ] Mark healthy, unhealthy, and ongoing jobs in different colors
-- [ ] Add real-time progress to the visualization
+- [ ] Add real-time progress to the visualization (ActionCable)
 
 ### Job creation wizard
 
@@ -63,33 +63,23 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Step two (destination): repository name, description, type (local/remote), server (if remote), path
 - [ ] Step three: schedule, rsync options, enabled
 
-### Future enhancements
+### Smaller TODOs
 
-- [x] Add notifications
+- [ ] Make application responsive
 - [ ] Update branding
-- [ ] Implement support for OAuth2 authentication
-- [ ] Allow duplicating jobs
+- [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
+- [ ] Move I18n keys from `config/locales/en.yml` to `config/locales/en/module.yml`
+- [ ] Capture number of bytes and number of files transferred on the job run
+  - [ ] Add to job run details
+  - [ ] Add to notification email
 - [ ] Add a local resource usage card
-- [x] Add search functionality
-  - [ ] Job runs page
+- [ ] Allow streaming logs
+- [ ] Add duplicate job button
+- [ ] Implement support for OAuth2 authentication
 - [ ] Add filter functionality
   - [ ] Servers
   - [ ] Repositories
   - [ ] Jobs
-- [ ] Allow streaming logs
-
-### Technical TODOs
-
-- [ ] Do not bind to port 5432, otherwise you can't use git worktrees
-- [ ] Use SolidQueue's [dynamic scheduling](https://github.com/rails/solid_queue#scheduling-and-unscheduling-recurring-tasks-dynamically) instead of the recurring scheduling jobs
-- [x] Add a `with_configuration` helper
-- [ ] Make menubar responsive
-- [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
-- [x] Optimize Docker image
-- [ ] Capture number of bytes and number of files transferred on the job run
-  - [ ] Add to job run details
-  - [ ] Add to notification email
-
-## Open questions
-
-- [ ] Should some job options be stored on the repository/server instead of the job? For example: include/exclude patterns, run as different user, path to rsync binary
+- [ ] Do not bind postgres to port 5432, otherwise you can't use git worktrees
+- [ ] Add max/min to configurations
+- [ ] Audit codebase
