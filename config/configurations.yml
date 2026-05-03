@@ -56,4 +56,4 @@
 - key: hooks
   type: boolean
   category: features
-  default: false
+  default: true
