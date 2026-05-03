@@ -52,11 +52,15 @@ module Jobs
 
       Tempfile.create(["job_run_#{job_run.sequence}", ".log"]) do |file|
         exit_status = nil
+        canceled = false
 
         Rails.logger.info { "[#{job.id}] Executing command: #{command}" }
 
-        Open3.popen2e(command) do |_stdin, output, wait_thr|
+        Open3.popen2e(command, pgroup: true) do |_stdin, output, wait_thr|
+          job_run.update!(pid: wait_thr.pid)
+
           buffer = +""
+          cancel_sent = false
 
           loop do
             chunk = output.readpartial(4096)
@@ -80,9 +84,20 @@ module Jobs
                 file.write(line)
               end
             end
+
+            if !cancel_sent && JobRun.where(id: job_run.id).pick(:cancel_requested_at).present?
+              begin
+                Process.kill("TERM", -wait_thr.pid)
+              rescue Errno::ESRCH
+                nil
+              end
+              cancel_sent = true
+            end
           rescue EOFError
             break
           end
+
+          file.write(buffer) if buffer.present?
 
           file.rewind
 
@@ -93,10 +108,16 @@ module Jobs
           )
 
           exit_status = wait_thr.value
+
+          canceled = job_run.reload.cancel_requested_at?
         end
 
-        Rails.logger.info { "[#{job.id}] Command exited with status: #{exit_status.exitstatus}" }
+        Rails.logger.info { "[#{job.id}] Command exited with status: #{exit_status.exitstatus || "signal #{exit_status.termsig}"}" }
 
+        # Mark job as canceled if cancellation was requested
+        next job_run.cancel! if canceled
+
+        # Mark job as completed or failed based on the exit status
         job_run.update!(
           status: exit_status.success? ? "completed" : "failed",
           completed_at: Time.zone.now,
@@ -105,12 +126,10 @@ module Jobs
         # Post-hook: always runs after rsync (success or failure)
         execute_optional_hook(job_run, "post")
 
-        if exit_status.success?
-          execute_optional_hook(job_run, "success")
-        else
-          execute_optional_hook(job_run, "failure")
-        end
+        # Success/failure hooks: only run if rsync succeeded or failed
+        execute_optional_hook(job_run, exit_status.success? ? "success" : "failure")
 
+        # Send notifications
         enqueue_notifications(job_run, exit_status.success? ? "success" : "failure")
       end
     rescue StandardError => e

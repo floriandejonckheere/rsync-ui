@@ -10,6 +10,8 @@ en:
       delete_confirm_title: Delete job run
       download_logs: Download logs
       view_logs: View logs
+    cancel:
+      success: Cancellation requested.
     create:
       success: Job queued successfully.
     destroy:

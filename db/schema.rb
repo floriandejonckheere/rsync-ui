@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_03_183302) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_03_191011) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -80,11 +80,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_03_183302) do
 
   create_table "job_runs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "bytes_copied", default: 0, null: false
+    t.datetime "cancel_requested_at"
+    t.datetime "canceled_at"
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.string "error_class"
     t.text "error_messages"
     t.uuid "job_id", null: false
+    t.integer "pid"
     t.integer "progress", default: 0, null: false
     t.serial "sequence", null: false
     t.datetime "started_at"
@@ -92,6 +95,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_03_183302) do
     t.string "trigger", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
+    t.index ["canceled_at"], name: "index_job_runs_on_canceled_at"
     t.index ["completed_at"], name: "index_job_runs_on_completed_at"
     t.index ["job_id"], name: "index_job_runs_on_job_id"
     t.index ["sequence"], name: "index_job_runs_on_sequence"

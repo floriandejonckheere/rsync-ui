@@ -37,6 +37,19 @@ class JobRun < ApplicationRecord
   scope :started_from, ->(from) { where(started_at: from..) if from.present? }
   scope :started_to, ->(to) { where(started_at: ..to) if to.present? }
 
+  def cancelable?
+    pending? || running?
+  end
+
+  def cancel!(at: Time.current)
+    update!(
+      status: "canceled",
+      cancel_requested_at: cancel_requested_at || at,
+      canceled_at: canceled_at || at,
+      completed_at: completed_at || at,
+    )
+  end
+
   def duration
     return unless started_at
 
@@ -52,23 +65,27 @@ end
 #
 # Table name: job_runs
 #
-#  id             :uuid             not null, primary key
-#  bytes_copied   :bigint           default(0), not null
-#  completed_at   :datetime         indexed
-#  error_class    :string
-#  error_messages :text
-#  progress       :integer          default(0), not null
-#  sequence       :integer          not null, indexed
-#  started_at     :datetime         indexed
-#  status         :string           default("pending"), not null, indexed
-#  trigger        :string           not null
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  job_id         :uuid             not null, indexed
-#  user_id        :uuid             not null, indexed
+#  id                  :uuid             not null, primary key
+#  bytes_copied        :bigint           default(0), not null
+#  cancel_requested_at :datetime
+#  canceled_at         :datetime         indexed
+#  completed_at        :datetime         indexed
+#  error_class         :string
+#  error_messages      :text
+#  pid                 :integer
+#  progress            :integer          default(0), not null
+#  sequence            :integer          not null, indexed
+#  started_at          :datetime         indexed
+#  status              :string           default("pending"), not null, indexed
+#  trigger             :string           not null
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  job_id              :uuid             not null, indexed
+#  user_id             :uuid             not null, indexed
 #
 # Indexes
 #
+#  index_job_runs_on_canceled_at   (canceled_at)
 #  index_job_runs_on_completed_at  (completed_at)
 #  index_job_runs_on_job_id        (job_id)
 #  index_job_runs_on_sequence      (sequence)

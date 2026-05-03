@@ -277,13 +277,35 @@ RSpec.describe "JobRuns" do
 
   describe "PATCH /job_runs/:id/cancel" do
     let(:job_run) { create(:job_run, :pending, user:) }
+    let(:cancel_service) { instance_double(Jobs::CancelService, call: { success: true }) }
+
+    before { allow(Jobs::CancelService).to receive(:new).and_return(cancel_service) }
 
     context "when authenticated" do
       before { sign_in user, scope: :user }
 
-      it "raises NotImplementedError" do
-        expect { patch cancel_job_run_path(job_run) }
-          .to raise_error(NotImplementedError)
+      it "cancels the job run and redirects to the index" do
+        patch cancel_job_run_path(job_run)
+
+        expect(response).to redirect_to(job_runs_path)
+      end
+
+      it "displays success message" do
+        patch cancel_job_run_path(job_run)
+
+        follow_redirect!
+
+        expect(response.body).to include(I18n.t("job_runs.cancel.success"))
+      end
+
+      context "when the job run is not cancelable" do
+        let(:cancel_service) { instance_double(Jobs::CancelService, call: { success: false }) }
+
+        it "returns unprocessable content" do
+          patch cancel_job_run_path(job_run)
+
+          expect(response).to have_http_status(:unprocessable_content)
+        end
       end
     end
 

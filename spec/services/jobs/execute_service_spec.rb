@@ -66,6 +66,55 @@ RSpec.describe Jobs::ExecuteService do
       end
     end
 
+    context "when cancellation is requested while the command is running" do
+      let(:output) { instance_double(IO) }
+      let(:status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
+      let(:wait_thr) { instance_double(Process::Waiter, pid: 43_210, value: status) }
+
+      before do
+        allow(Open3).to receive(:popen2e) do |_command, pgroup:, &block|
+          raise "expected process group" unless pgroup
+
+          block.call(nil, output, wait_thr)
+        end
+
+        calls = 0
+        allow(output).to receive(:readpartial) do
+          calls += 1
+          raise EOFError if calls > 1
+
+          JobRun.last.update!(cancel_requested_at: Time.zone.now)
+          "partial log line\n"
+        end
+
+        allow(Process).to receive(:kill)
+      end
+
+      it "signals the process group and marks the job run as canceled" do
+        service.call
+
+        job_run = JobRun.sole
+
+        expect(Process).to have_received(:kill).with("TERM", -43_210)
+        expect(job_run).to be_canceled
+        expect(job_run.cancel_requested_at).to be_present
+        expect(job_run.canceled_at).to be_present
+        expect(job_run.completed_at).to be_present
+        expect(job_run.pid).to eq 43_210
+        expect(job_run.output).to be_attached
+      end
+
+      context "when the process has already exited" do
+        before { allow(Process).to receive(:kill).and_raise(Errno::ESRCH) }
+
+        it "marks the job run as canceled without raising" do
+          expect { service.call }.not_to raise_error
+
+          expect(JobRun.sole).to be_canceled
+        end
+      end
+    end
+
     describe "notifications" do
       with_configuration "notifications" => true
 
