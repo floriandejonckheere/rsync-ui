@@ -19,6 +19,12 @@ class ImportService < ApplicationService
     end
   end
 
+  protected
+
+  def boolean_type
+    @boolean_type ||= ActiveModel::Type::Boolean.new
+  end
+
   private
 
   def csv_filename

@@ -1,0 +1,6 @@
+job_name,notification_name,user_email,enabled,on_start,on_success,on_failure
+System backup,Slack,admin@example.com,true,false,true,true
+System backup,PagerDuty,admin@example.com,true,false,false,true
+System mirror,Slack,admin@example.com,true,false,false,true
+Documents backup,Slack,admin@example.com,true,false,true,true
+Documents backup,Email,admin@example.com,true,false,true,false

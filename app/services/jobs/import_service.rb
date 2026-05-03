@@ -31,9 +31,5 @@ module Jobs
     def repository_for(name, user)
       user.repositories.find_by!(name:)
     end
-
-    def boolean_type
-      @boolean_type ||= ActiveModel::Type::Boolean.new
-    end
   end
 end

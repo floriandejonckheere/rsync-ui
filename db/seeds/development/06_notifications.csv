@@ -1,0 +1,4 @@
+name,description,url,enabled,user_email
+Slack,Slack webhook for job status updates,json://hooks.slack.com/services/XXXXXXXXX/YYYYYYYYY/ZZZZZZZZZZZZZZZZZZZZZZZZ,true,admin@example.com
+Email,Email notifications via webhook,https://hooks.example.com/email,true,admin@example.com
+PagerDuty,PagerDuty integration for critical failures,https://events.pagerduty.com/v2/enqueue,false,admin@example.com

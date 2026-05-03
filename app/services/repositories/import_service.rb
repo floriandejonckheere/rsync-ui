@@ -29,9 +29,5 @@ module Repositories
 
       user.servers.find_by!(name: row["server_name"])
     end
-
-    def boolean_type
-      @boolean_type ||= ActiveModel::Type::Boolean.new
-    end
   end
 end
