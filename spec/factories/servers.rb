@@ -25,5 +25,19 @@ FactoryBot.define do
         create(:resource_usage, server:)
       end
     end
+
+    trait :online do
+      probed_at { Time.current }
+      last_seen_at { Time.current }
+      error_class { nil }
+      error_message { nil }
+    end
+
+    trait :offline do
+      probed_at { 5.minutes.ago }
+      last_seen_at { nil }
+      error_class { "Net::SSH::AuthenticationFailed" }
+      error_message { "Authentication failed for user@example.com" }
+    end
   end
 end

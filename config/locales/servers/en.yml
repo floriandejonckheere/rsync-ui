@@ -66,6 +66,9 @@ en:
       subtitle: Add a new SSH server
       title: New server
     table:
+      connectivity:
+        offline: Server is offline
+        online: 'Last seen %{last_seen_at} ago'
       cpu: CPU
       cpu_cores:
         one: "%{count} core"

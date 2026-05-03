@@ -39,6 +39,10 @@
       <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-gray-100 dark:border-gray-700">
+            <% if Configuration.get("connectivity") %>
+              <th class="py-4 w-10"></th>
+            <% end %>
+
             <th class="py-4 w-10"></th>
 
             <%= render "shared/sort_header", column: "name", label: I18n.t("servers.table.name") %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_03_151705) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_03_183302) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -210,11 +210,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_03_151705) do
   create_table "servers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
+    t.string "error_class"
+    t.text "error_message"
     t.string "host", null: false
+    t.datetime "last_seen_at"
     t.string "name", null: false
     t.text "password"
     t.string "path", default: "/", null: false
     t.integer "port", default: 22, null: false
+    t.datetime "probed_at"
     t.text "ssh_key"
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false

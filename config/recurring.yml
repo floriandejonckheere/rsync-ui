@@ -10,6 +10,9 @@
 #     schedule: at 5am every day
 
 default: &default
+  server_connectivity:
+    class: "Servers::ConnectionScheduleJob"
+    schedule: every 5 minutes
   server_resource_usage:
     class: "Servers::ResourceUsageScheduleJob"
     schedule: every 5 minutes

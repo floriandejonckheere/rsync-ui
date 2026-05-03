@@ -30,6 +30,14 @@ class Server < ApplicationRecord
   before_validation :normalize_ssh_key,
                     if: -> { ssh_key.present? }
 
+  def online?
+    last_seen_at.present?
+  end
+
+  def offline?
+    last_seen_at.nil?
+  end
+
   private
 
   def normalize_ssh_key
@@ -65,18 +73,22 @@ end
 #
 # Table name: servers
 #
-#  id          :uuid             not null, primary key
-#  description :text             indexed
-#  host        :string           not null, indexed, indexed
-#  name        :string           not null, indexed, indexed
-#  password    :text
-#  path        :string           default("/"), not null
-#  port        :integer          default(22), not null
-#  ssh_key     :text
-#  username    :string           not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  user_id     :uuid             not null, indexed
+#  id            :uuid             not null, primary key
+#  description   :text             indexed
+#  error_class   :string
+#  error_message :text
+#  host          :string           not null, indexed, indexed
+#  last_seen_at  :datetime
+#  name          :string           not null, indexed, indexed
+#  password      :text
+#  path          :string           default("/"), not null
+#  port          :integer          default(22), not null
+#  probed_at     :datetime
+#  ssh_key       :text
+#  username      :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  user_id       :uuid             not null, indexed
 #
 # Indexes
 #

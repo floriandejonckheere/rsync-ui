@@ -2,6 +2,9 @@
 en:
   configurations:
     categories:
+      connectivity:
+        description: Settings for server connectivity probing
+        title: Connectivity
       features:
         description: Settings for optional application features
         title: Features
@@ -25,6 +28,10 @@ en:
       update: Update
       value_placeholder: Enter configuration value
     keys:
+      connectivity:
+        description: Enable or disable server connectivity probing
+        interval:
+          description: Interval in minutes between server connectivity probes
       hooks:
         description: Enable or disable pre/post/success/failure hooks on job execution
       notifications:

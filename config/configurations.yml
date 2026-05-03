@@ -57,3 +57,13 @@
   type: boolean
   category: features
   default: true
+- key: connectivity
+  type: boolean
+  category: connectivity
+  default: true
+- key: connectivity.interval
+  type: integer
+  category: connectivity
+  default: 5
+  dependencies:
+    - connectivity

@@ -94,6 +94,34 @@ RSpec.describe Server do
     end
   end
 
+  describe "#online?" do
+    context "when last_seen_at is present" do
+      subject(:server) { build(:server, last_seen_at: Time.current) }
+
+      it { is_expected.to be_online }
+    end
+
+    context "when last_seen_at is nil" do
+      subject(:server) { build(:server, last_seen_at: nil) }
+
+      it { is_expected.not_to be_online }
+    end
+  end
+
+  describe "#offline?" do
+    context "when last_seen_at is nil" do
+      subject(:server) { build(:server, last_seen_at: nil) }
+
+      it { is_expected.to be_offline }
+    end
+
+    context "when last_seen_at is present" do
+      subject(:server) { build(:server, last_seen_at: Time.current) }
+
+      it { is_expected.not_to be_offline }
+    end
+  end
+
   describe "callbacks" do
     describe "SSH key normalization" do
       it "normalizes line endings and whitespace before validation" do

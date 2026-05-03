@@ -38,6 +38,21 @@ RSpec.describe Servers::ConnectionService do
         .with(server.host, server.username, hash_including(port: server.port, password: server.password, auth_methods: ["password"]))
     end
 
+    context "when server is persisted" do
+      let(:server) { create(:server, :with_password) }
+
+      it "updates probed_at and last_seen_at on success" do
+        service.call
+
+        server.reload
+
+        expect(server.probed_at).to be_within(5.seconds).of(Time.zone.now)
+        expect(server.last_seen_at).to be_within(5.seconds).of(Time.zone.now)
+        expect(server.error_class).to be_nil
+        expect(server.error_message).to be_nil
+      end
+    end
+
     context "when ssh_key is provided instead of password" do
       let(:server) { build(:server, :with_ssh_key) }
 
@@ -59,6 +74,21 @@ RSpec.describe Servers::ConnectionService do
 
       it "returns the failure message" do
         expect(service.call).to eq success: false, message: "Net::SSH::AuthenticationFailed: Authentication failed for admin@example.com"
+      end
+
+      context "when server is persisted" do
+        let(:server) { create(:server, :with_password) }
+
+        it "updates probed_at and error fields, leaves last_seen_at unchanged" do
+          service.call
+
+          server.reload
+
+          expect(server.probed_at).to be_within(5.seconds).of(Time.zone.now)
+          expect(server.last_seen_at).to be_nil
+          expect(server.error_class).to eq("Net::SSH::AuthenticationFailed")
+          expect(server.error_message).to include("Authentication failed")
+        end
       end
     end
 

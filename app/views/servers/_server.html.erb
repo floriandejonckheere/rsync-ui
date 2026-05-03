@@ -4,6 +4,24 @@
     hover:bg-gray-50 dark:hover:bg-gray-700/50
   "
 >
+  <% if Configuration.get("connectivity") %>
+    <td class="pl-6 py-4">
+      <% if server.online? %>
+        <div
+          data-tooltip="<%= I18n.t('servers.table.connectivity.online', last_seen_at: distance_of_time_in_words(Time.zone.now, server.last_seen_at)) %>"
+        >
+          <span class="inline-block h-3 w-3 rounded-full bg-green-500"></span>
+        </div>
+      <% else %>
+        <div
+          data-tooltip="<%= server.error_message.presence || I18n.t('servers.table.connectivity.offline') %>"
+        >
+          <span class="inline-block h-3 w-3 rounded-full bg-red-500"></span>
+        </div>
+      <% end %>
+    </td>
+  <% end %>
+
   <td class="pl-6 py-4">
     <% if server.password.present? %>
       <div data-tooltip="<%= I18n.t("servers.table.password") %>">

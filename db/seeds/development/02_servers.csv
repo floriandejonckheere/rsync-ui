@@ -1,10 +1,10 @@
-name,description,host,port,username,password,ssh_key,user_email
-NAS,Local NAS server,192.168.1.101,22,backup,nas-password,,admin@example.com
-Backup,Backup server,backup.example.com,22,backup,backup-password,,admin@example.com
+name,description,host,port,username,password,ssh_key,probed_at,last_seen_at,error_class,error_message,user_email
+NAS,Local NAS server,192.168.1.101,22,backup,nas-password,,,,,,admin@example.com
+Backup,Backup server,backup.example.com,22,backup,backup-password,,,,,,admin@example.com
 Mirror,Encrypted off-site mirrored backup server,mirror.example.com,22,backup,,"-----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
 QyNTUxOQAAACD9D+md+7SfoskO5Ec/M/+a7QgAKR+usc0GQRaoYlJX0wAAAIg+hlQpPoZU
 KQAAAAtzc2gtZWQyNTUxOQAAACD9D+md+7SfoskO5Ec/M/+a7QgAKR+usc0GQRaoYlJX0w
 AAAECk9Yb5b6otvn9sGBwgCt5gmiWpfl+tEFvSaqIUpSVQCf0P6Z37tJ+iyQ7kRz8z/5rt
 CAApH66xzQZBFqhiUlfTAAAABHRlc3QB
------END OPENSSH PRIVATE KEY-----",admin@example.com
+-----END OPENSSH PRIVATE KEY-----",,,,admin@example.com
