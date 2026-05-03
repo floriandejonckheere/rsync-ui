@@ -22,8 +22,8 @@ RSpec.describe Servers::ResourceUsageService do
       usage = server.reload.resource_usage
 
       expect(usage.status).to eq "ok"
-      expect(usage.probe_error_class).to be_nil
-      expect(usage.probe_error_message).to be_nil
+      expect(usage.error_class).to be_nil
+      expect(usage.error_message).to be_nil
       expect(usage.probed_at).to be_within(5.seconds).of Time.zone.now
       expect(usage.cpu_count).to eq 4
       expect(usage.cpu_usage).to be_within(0.01).of 30.0
@@ -59,8 +59,8 @@ RSpec.describe Servers::ResourceUsageService do
         usage = server.reload.resource_usage
 
         expect(usage.status).to eq "failed"
-        expect(usage.probe_error_class).to eq "Net::SSH::ConnectionTimeout"
-        expect(usage.probe_error_message).to include "timed out"
+        expect(usage.error_class).to eq "Net::SSH::ConnectionTimeout"
+        expect(usage.error_message).to include "timed out"
         expect(usage.cpu_usage).to be_nil
       end
     end

@@ -22,16 +22,16 @@ module Servers
       (server.resource_usage || server.build_resource_usage).update!(
         metrics.merge(
           status: "ok",
-          probe_error_class: nil,
-          probe_error_message: nil,
+          error_class: nil,
+          error_message: nil,
           probed_at: Time.current,
         ),
       )
     rescue StandardError => e
       (server.resource_usage || server.build_resource_usage).update!(
         status: "failed",
-        probe_error_class: e.class,
-        probe_error_message: e.message,
+        error_class: e.class,
+        error_message: e.message,
         probed_at: Time.current,
       )
     end

@@ -24,15 +24,15 @@ FactoryBot.define do
     trait :ok do
       probed_at { 1.minute.ago }
       status { "ok" }
-      probe_error_class { nil }
-      probe_error_message { nil }
+      error_class { nil }
+      error_message { nil }
     end
 
     trait :failed do
       probed_at { 1.minute.ago }
       status { "failed" }
-      probe_error_class { "Timeout::TimeoutError" }
-      probe_error_message { "Connection timed out" }
+      error_class { "Timeout::TimeoutError" }
+      error_message { "Connection timed out" }
     end
   end
 end

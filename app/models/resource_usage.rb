@@ -66,24 +66,24 @@ end
 #
 # Table name: resource_usages
 #
-#  id                  :uuid             not null, primary key
-#  cpu_count           :integer
-#  cpu_usage           :float
-#  disk_total          :bigint
-#  disk_used           :bigint
-#  load_avg_1          :float
-#  load_avg_15         :float
-#  load_avg_5          :float
-#  memory_total        :bigint
-#  memory_used         :bigint
-#  probe_error_class   :string
-#  probe_error_message :text
-#  probed_at           :datetime
-#  status              :string
-#  uptime_seconds      :bigint
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  server_id           :uuid             not null, uniquely indexed
+#  id             :uuid             not null, primary key
+#  cpu_count      :integer
+#  cpu_usage      :float
+#  disk_total     :bigint
+#  disk_used      :bigint
+#  error_class    :string
+#  error_message  :text
+#  load_avg_1     :float
+#  load_avg_15    :float
+#  load_avg_5     :float
+#  memory_total   :bigint
+#  memory_used    :bigint
+#  probed_at      :datetime
+#  status         :string
+#  uptime_seconds :bigint
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  server_id      :uuid             not null, uniquely indexed
 #
 # Indexes
 #
