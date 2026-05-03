@@ -13,7 +13,7 @@ RSpec.describe Notifications::RenderService do
       subject(:result) { described_class.new(job_run, "start").call }
 
       it "returns title, body, and notification_type" do
-        expect(result[:title]).to eq("Job started - #{job_run.job.name}")
+        expect(result[:title]).to eq("Job started: #{job_run.job.name}")
         expect(result[:body]).to include(job_run.job.name)
         expect(result[:body]).to include(job_run.sequence.to_s)
         expect(result[:notification_type]).to eq("info")
