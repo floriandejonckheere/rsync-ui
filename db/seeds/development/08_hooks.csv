@@ -1,0 +1,3 @@
+hook_type,command,arguments,enabled,job_name,user_email
+pre,/usr/local/bin/pre_sync.sh,--job {job_name},true,System backup,admin@example.com
+post,/usr/local/bin/post_sync.sh,,false,System backup,admin@example.com

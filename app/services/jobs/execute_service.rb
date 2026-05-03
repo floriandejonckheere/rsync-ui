@@ -28,11 +28,29 @@ module Jobs
 
       enqueue_notifications(job_run, "start")
 
-      # Generate full command-line
+      # Pre-hook: halt execution if it fails
+      if Configuration.get("hooks")
+        hook = job.pre_hook
+
+        if hook&.enabled?
+          result = Hooks::ExecuteService.new(hook, job_run:).call
+
+          unless result[:success]
+            job_run.update!(
+              status: "errored",
+              completed_at: Time.zone.now,
+              error_messages: "Pre-hook failed (exit #{result[:exit_status]}): #{result[:error]}",
+            )
+            enqueue_notifications(job_run, "failure")
+
+            return
+          end
+        end
+      end
+
       command = Rsync::CommandService.new(job:).call
 
       Tempfile.create(["job_run_#{job_run.sequence}", ".log"]) do |file|
-        # Execute command
         exit_status = nil
 
         Rails.logger.info { "[#{job.id}] Executing command: #{command}" }
@@ -54,13 +72,11 @@ module Jobs
               bytes_copied, progress = parse_status(line)
 
               if bytes_copied && progress
-                # Update job run with progress
                 job_run.update!(
                   bytes_copied:,
                   progress:,
                 )
               else
-                # Write line to file
                 file.write(line)
               end
             end
@@ -68,7 +84,6 @@ module Jobs
             break
           end
 
-          # Attach command output to job run
           file.rewind
 
           job_run.output.attach(
@@ -86,6 +101,15 @@ module Jobs
           status: exit_status.success? ? "completed" : "failed",
           completed_at: Time.zone.now,
         )
+
+        # Post-hook: always runs after rsync (success or failure)
+        execute_optional_hook(job_run, "post")
+
+        if exit_status.success?
+          execute_optional_hook(job_run, "success")
+        else
+          execute_optional_hook(job_run, "failure")
+        end
 
         enqueue_notifications(job_run, exit_status.success? ? "success" : "failure")
       end
@@ -107,8 +131,8 @@ module Jobs
       return unless match
 
       [
-        match[1].delete(",").to_i, # Bytes copied
-        match[2].to_i, # Progress
+        match[1].delete(",").to_i,
+        match[2].to_i,
       ]
     end
 
@@ -120,6 +144,25 @@ module Jobs
           .set(wait: 5.seconds) # Delay sending notifications to avoid race conditions (uncommitted database transaction)
           .perform_later(job_notification.id, job_run.id, event)
       end
+    end
+
+    def execute_optional_hook(job_run, type)
+      return unless Configuration.get("hooks")
+
+      hook = job.send(:"#{type}_hook")
+
+      return unless hook&.enabled?
+
+      result = Hooks::ExecuteService
+        .new(hook, job_run:)
+        .call
+
+      return if result[:success]
+
+      job_run.update!(
+        status: "errored",
+        error_messages: "#{type.capitalize}-hook failed (exit #{result[:exit_status]}): #{result[:error]}",
+      )
     end
   end
 end

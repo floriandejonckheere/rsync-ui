@@ -96,5 +96,98 @@ RSpec.describe Jobs::ExecuteService do
         end
       end
     end
+
+    describe "hooks" do
+      with_configuration "hooks" => true
+
+      context "when a pre-hook is configured" do
+        before { create(:hook, :pre, job:, command: "echo", arguments: "pre", enabled: true) }
+
+        it "executes the pre-hook before running the job" do
+          service.call
+
+          expect(job_run_for(job).pre_hook_output).to be_attached
+        end
+      end
+
+      context "when the pre-hook fails" do
+        before { create(:hook, :pre, job:, command: "false", enabled: true) }
+
+        it "sets the job run status to errored and does not run rsync" do
+          service.call
+
+          job_run = job_run_for(job)
+
+          expect(job_run).to be_errored
+          expect(command_service).not_to have_received(:call)
+        end
+      end
+
+      context "when a post-hook is configured" do
+        before { create(:hook, :post, job:, command: "echo", arguments: "post", enabled: true) }
+
+        it "executes the post-hook after running the job" do
+          service.call
+
+          expect(job_run_for(job).post_hook_output).to be_attached
+        end
+      end
+
+      context "when a success-hook is configured" do
+        before { create(:hook, :success, job:, command: "echo", arguments: "success", enabled: true) }
+
+        it "executes the success-hook when the job completes successfully" do
+          service.call
+
+          expect(job_run_for(job).success_hook_output).to be_attached
+        end
+
+        context "when the job fails" do
+          let(:command_service) { instance_double(Rsync::CommandService, call: "false") }
+
+          it "does not execute the success-hook" do
+            service.call
+
+            expect(job_run_for(job).success_hook_output).not_to be_attached
+          end
+        end
+      end
+
+      context "when a failure-hook is configured" do
+        before { create(:hook, :failure, job:, command: "echo", arguments: "failure", enabled: true) }
+
+        it "does not execute the failure-hook when the job succeeds" do
+          service.call
+
+          expect(job_run_for(job).failure_hook_output).not_to be_attached
+        end
+
+        context "when the job fails" do
+          let(:command_service) { instance_double(Rsync::CommandService, call: "false") }
+
+          it "executes the failure-hook" do
+            service.call
+
+            expect(job_run_for(job).failure_hook_output).to be_attached
+          end
+        end
+      end
+
+      context "when hooks feature is disabled" do
+        with_configuration "hooks" => false
+
+        before { create(:hook, :pre, job:, command: "echo", arguments: "pre", enabled: true) }
+
+        it "does not execute the pre-hook" do
+          service.call
+
+          expect(job_run_for(job).pre_hook_output).not_to be_attached
+        end
+      end
+    end
+  end
+
+  def job_run_for(job)
+    job.job_runs.sole
   end
 end
