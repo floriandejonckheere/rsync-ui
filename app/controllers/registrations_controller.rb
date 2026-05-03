@@ -19,14 +19,14 @@ class RegistrationsController < Devise::RegistrationsController
 
   def update_resource(resource, params)
     if params[:password].present?
-      resource.update(params.slice(:password, :password_confirmation))
+      resource.update(params.except("current_password"))
     else
-      resource.update_without_password(params)
+      resource.update_without_password(params.except("password", "password_confirmation"))
     end
   end
 
   def after_update_path_for(_resource)
-    edit_user_registration_path
+    root_path
   end
 
   def layout_by_action

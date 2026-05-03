@@ -6,18 +6,31 @@
   <%= I18n.t("settings.subtitle") %>
 <% end %>
 
-<div class="grid grid-cols-2 gap-8">
-  <div class="card">
-    <header>
-      <h2>Profile</h2>
-    </header>
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { id: "account-form", class: "form" }) do |f| %>
+  <% content_for :actions do %>
+    <button
+      type="submit"
+      form="account-form"
+      class="btn-icon-outline btn-icon-lg"
+      data-tooltip="<%= I18n.t("settings.update") %>"
+    >
+      <%= lucide_icon "check", class: "h-6 w-6" %>
+    </button>
+  <% end %>
 
-    <section>
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "form" }) do |f| %>
-        <% if current_user.errors.any? %>
-          <%= render "shared/forms/messages", model: current_user %>
-        <% end %>
+  <% if current_user.errors.any? %>
+    <div class="mb-8">
+      <%= render "shared/forms/messages", model: current_user %>
+    </div>
+  <% end %>
 
+  <div class="grid grid-cols-2 gap-8">
+    <div class="card">
+      <header>
+        <h2><%= I18n.t("settings.account.title") %></h2>
+      </header>
+
+      <section>
         <div class="flex flex-col gap-6">
           <div class="field">
             <%= f.label :first_name, I18n.t("settings.account.first_name") %>
@@ -45,33 +58,22 @@
                              required: true,
                              autocomplete: "off" %>
           </div>
-
-          <div>
-            <%= f.submit value: I18n.t("settings.update"), class: "btn-primary" %>
-          </div>
         </div>
-      <% end %>
-    </section>
-  </div>
+      </section>
+    </div>
 
-  <div class="card">
-    <header>
-      <h2><%= I18n.t("settings.password.title") %></h2>
-    </header>
+    <div class="card">
+      <header>
+        <h2><%= I18n.t("settings.password.title") %></h2>
+      </header>
 
-    <section>
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "form" }) do |f| %>
-        <% if current_user.errors.any? %>
-          <%= render "shared/forms/messages", model: current_user %>
-        <% end %>
-
+      <section>
         <div class="flex flex-col gap-6">
           <div class="field">
             <%= f.label :password, I18n.t("settings.password.password") %>
 
             <%= f.password_field :password,
                                  placeholder: I18n.t("settings.password.password_placeholder"),
-                                 required: true,
                                  autocomplete: "new-password" %>
           </div>
 
@@ -80,15 +82,10 @@
 
             <%= f.password_field :password_confirmation,
                                  placeholder: I18n.t("settings.password.confirmation_placeholder"),
-                                 required: true,
                                  autocomplete: "new-password" %>
           </div>
-
-          <div>
-            <%= f.submit value: I18n.t("settings.password.update"), class: "btn-primary" %>
-          </div>
         </div>
-      <% end %>
-    </section>
+      </section>
+    </div>
   </div>
-</div>
+<% end %>

@@ -8,6 +8,7 @@ en:
       first_name_placeholder: John
       last_name: Last name
       last_name_placeholder: Doe
+      title: Profile
     password:
       confirmation: Confirm new password
       confirmation_placeholder: "••••••••"
