@@ -41,7 +41,7 @@
       >
         <div
           class="h-full w-full flex-1 bg-blue-600 dark:bg-blue-400 transition-all"
-          style="transform: translateX(-<%= 100 - job_run.progress %>%)"
+          style="transform: translateX(-<%= 100 - job_run.progress.to_i %>%)"
         ></div>
       </div>
     <% else %>
@@ -67,16 +67,18 @@
 
   <td class="px-6 py-4">
     <div class="flex items-center justify-end gap-2">
-      <% if job_run.deletable? && job_run.output.attached? %>
+      <% if job_run.deletable? && (job_run.output.attached? || job_run.errored?) %>
         <%= link_to job_run_path(job_run),
                     class: "btn-icon-outline btn-icon-md",
                     data: { tooltip: I18n.t("job_runs.actions.view_logs"), turbo_frame: "_top" } do %>
           <%= lucide_icon "eye", class: "h-4 w-4" %>
         <% end %>
-        <%= link_to logs_job_run_path(job_run),
-                    class: "btn-icon-outline btn-icon-md",
-                    data: { tooltip: I18n.t("job_runs.actions.download_logs"), turbo: false } do %>
-          <%= lucide_icon "download", class: "h-4 w-4" %>
+        <% if job_run.output.attached? %>
+          <%= link_to logs_job_run_path(job_run),
+                      class: "btn-icon-outline btn-icon-md",
+                      data: { tooltip: I18n.t("job_runs.actions.download_logs"), turbo: false } do %>
+            <%= lucide_icon "download", class: "h-4 w-4" %>
+          <% end %>
         <% end %>
       <% end %>
 

@@ -29,7 +29,7 @@ class JobRunsController < ApplicationController
   def show
     authorize! @job_run
 
-    redirect_to job_runs_path unless @job_run.output.attached?
+    redirect_to job_runs_path unless @job_run.output.attached? || @job_run.error_class.present? || @job_run.error_messages.present?
   end
 
   def logs

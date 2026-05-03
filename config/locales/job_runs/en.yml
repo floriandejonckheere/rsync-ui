@@ -28,6 +28,9 @@ en:
       subtitle: Overview of synchronization job executions
       title: Activity log
     show:
+      error_class: Error class
+      error_details: Error details
+      error_message: Error message
       failure_hook_output: Failure hook output
       output_file: Output
       post_hook_output: Post-hook output
