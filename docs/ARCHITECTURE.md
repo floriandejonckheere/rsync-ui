@@ -167,33 +167,37 @@ spec
    - `resources :{plural}` for standard CRUD
    - Annotate routes: `docker compose exec app bundle exec annotaterb routes`
 
-8. **Factory**: Create factory in `spec/factories/{plural}.rb`
+8. **Locale**: Create `config/locales/{plural}/en.yml`
+   - Add all user-facing strings for the module (titles, labels, flash messages, etc.)
+   - Run: `docker compose exec app bundle exec i18n-tasks normalize`
+
+9. **Factory**: Create factory in `spec/factories/{plural}.rb`
    - Add traits for different states/types
    - Use FFaker for realistic fake data
    - Ensure all required fields have values
 
-9. **Model Spec**: Create in `spec/models/{model}_spec.rb`
-   - Test associations, validations, scopes, methods
-   - Use `subject(:{model}) { build(:{model}) }`
+10. **Model Spec**: Create in `spec/models/{model}_spec.rb`
+    - Test associations, validations, scopes, methods
+    - Use `subject(:{model}) { build(:{model}) }`
 
-10. **Request Spec**: Create in `spec/requests/{plural}_request_spec.rb`
+11. **Request Spec**: Create in `spec/requests/{plural}_request_spec.rb`
     - Test all CRUD actions
     - Test authorization (signed in vs guest)
     - Use `sign_in(user)` helper
 
-11. **Policy Spec**: Create in `spec/policies/{model}_policy_spec.rb`
+12. **Policy Spec**: Create in `spec/policies/{model}_policy_spec.rb`
     - Test all policy actions
     - Test relation scoping
 
-12. **Seeds**: Create database seed in `db/seeds/` (production) or `db/seeds/development/`
+13. **Seeds**: Create database seed in `db/seeds/` (production) or `db/seeds/development/`
     - Use a CSV for storing the data, and an import service (inheriting from `app/services/import_service.rb`) to load the data
     - Ensure idempotency (safe to run multiple times)
 
-13. **Verify**: Run full test suite and linters
+14. **Verify**: Run full test suite and linters
     - `docker compose exec app bundle exec rspec`
     - `docker compose exec app bundle exec rubocop -A`
     - `docker compose exec yarn run herb:format`
-    - `docker compose exec i18n-tasks normalize`
+    - `docker compose exec app bundle exec i18n-tasks normalize`
 
 ### When adding a new Stimulus controller:
 1. Create controller: `app/javascript/controllers/{name}_controller.js`

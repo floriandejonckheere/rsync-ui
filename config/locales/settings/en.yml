@@ -1,0 +1,20 @@
+---
+en:
+  settings:
+    account:
+      email: Email
+      email_placeholder: email@example.com
+      first_name: First name
+      first_name_placeholder: John
+      last_name: Last name
+      last_name_placeholder: Doe
+    password:
+      confirmation: Confirm new password
+      confirmation_placeholder: "••••••••"
+      password: New password
+      password_placeholder: "••••••••"
+      title: Change Password
+      update: Update password
+    subtitle: Your personal preferences and account settings
+    title: Account
+    update: Update

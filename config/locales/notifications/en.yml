@@ -1,4 +1,12 @@
+---
 en:
+  activerecord:
+    errors:
+      models:
+        notification:
+          attributes:
+            url:
+              invalid: must be a valid URL with a scheme (e.g. slack://, mailto://)
   notifications:
     actions:
       delete: Delete notification
@@ -8,15 +16,36 @@ en:
       edit: Edit notification
       enable: Enable notification
       test: Test notification
-    enabled:
-      'false': Disabled
+    body:
+      completed_at: Completed at
+      destination: Destination
+      duration: Duration
+      error_class: Error type
+      error_message: Error message
+      job_id: Run number
+      job_name: Job name
+      log_url: View logs
+      source: Source
+      started_at: Started at
+      trigger: Trigger
+      triggered_by: Triggered by
     create:
       success: Notification was successfully created.
     destroy:
       success: Notification was successfully deleted.
     edit:
       title: Edit notification
+    enabled:
+      'false': Disabled
+    events:
+      failure:
+        title: 'Job failed: %{job}'
+      start:
+        title: 'Job started: %{job}'
+      success:
+        title: 'Job completed: %{job}'
     form:
+      credentials_encrypted_hint: The notification URL is securely encrypted and stored in the database.
       description: Description
       description_placeholder: Optional description for this notification
       details: Details
@@ -29,7 +58,6 @@ en:
       url: Apprise URL
       url_hint: Apprise notification URL (e.g. slack://, discord://, mailto://, json://)
       url_placeholder: slack://TokenA/TokenB/TokenC/#channel
-      credentials_encrypted_hint: The notification URL is securely encrypted and stored in the database.
     index:
       empty: No notifications have been configured yet.
       new: New notification
@@ -45,51 +73,24 @@ en:
     table:
       description: Description
       name: Name
+    templates:
+      data_copied: Data copied
+      destination: Destination
+      duration: Duration
+      error_details: Error details
+      error_type: Error type
+      footer: rsync-ui notification
+      header_failure: Job failed
+      header_start: Job started
+      header_success: Job completed successfully
+      source: Source
+      view_logs: View logs
     test:
-      success: Test notification was sent successfully.
+      body_default: This is a test notification from Rsync UI.
       failure: Test notification failed
       missing_url: Please provide a notification URL.
+      success: Test notification was sent successfully.
       title_default: Test notification from Rsync UI
-      body_default: This is a test notification from Rsync UI.
     title: Notifications
     update:
       success: Notification was successfully updated.
-    events:
-      start:
-        title: Job started - %{job}
-      success:
-        title: Job completed successfully - %{job}
-      failure:
-        title: Job failed - %{job}
-    body:
-      job_name: Job name
-      job_id: Run number
-      source: Source
-      destination: Destination
-      started_at: Started at
-      completed_at: Completed at
-      duration: Duration
-      trigger: Trigger
-      triggered_by: Triggered by
-      error_class: Error type
-      error_message: Error message
-      log_url: View logs
-    templates:
-      header_start: Job started
-      header_success: Job completed successfully
-      header_failure: Job failed
-      source: Source
-      destination: Destination
-      duration: Duration
-      data_copied: Data copied
-      error_type: Error type
-      error_details: Error details
-      view_logs: View logs
-      footer: rsync-ui notification
-  activerecord:
-    errors:
-      models:
-        notification:
-          attributes:
-            url:
-              invalid: must be a valid URL with a scheme (e.g. slack://, mailto://)

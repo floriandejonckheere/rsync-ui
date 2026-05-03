@@ -1,0 +1,20 @@
+---
+en:
+  dashboard:
+    server_health:
+      cores: "%{count} cores"
+      cpu: CPU
+      disabled: Resource usage disabled
+      disk: Disk
+      failed: 'Failed to retrieve resource usage: %{error}'
+      last_probed: "%{time} ago"
+      load: Load
+      memory: Memory
+      never_probed: Never probed
+      no_servers: No servers configured
+      of: of
+      path: 'Path: %{path}'
+      title: Server health
+      uptime: Up %{time}
+    subtitle: Monitor recent activity
+    title: Dashboard

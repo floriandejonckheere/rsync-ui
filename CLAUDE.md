@@ -49,7 +49,7 @@ Run these checks selectively before each commit, based on the set of modified fi
 3. Ensure ERB formatting is correct: `docker compose exec app yarn herb:format` (if any `.html.erb` files were modified)
 4. Update model annotations: `docker compose exec app bundle exec annotaterb models` (if any files in `db/migrate` were modified)
 5. Update route annotations: `docker compose exec app bundle exec annotaterb routes` (if `config/routes.rb` was modified)
-6. Clean up i18n files: `i18n-tasks normalize` (if any files in `config/locales` were modified)
+6. Clean up i18n files: `docker compose exec app bundle exec i18n-tasks normalize` (if any files in `config/locales` were modified)
 
 **Note**: CI also enforces these checks.
 

@@ -1,25 +1,40 @@
+---
 en:
   configurations:
     categories:
+      features:
+        description: Settings for optional application features
+        title: Features
+      notifications:
+        description: Settings for notifications sent on job lifecycle events
+        title: Notifications
       resource_usage:
         description: Settings for server resource usage probe (CPU, memory, disk)
         title: Resource usage
       system:
         description: Core system settings and technical parameters
         title: System configuration
-      notifications:
-        description: Settings for notifications sent on job lifecycle events
-        title: Notifications
-      features:
-        description: Settings for optional application features
-        title: Features
+    index:
+      cancel: Cancel
+      default: Default
+      depends_on: Depends on
+      edit: Edit
+      revert: Revert to default
+      subtitle: Manage system-wide configuration settings
+      title: Configuration
+      update: Update
+      value_placeholder: Enter configuration value
     keys:
+      hooks:
+        description: Enable or disable pre/post/success/failure hooks on job execution
+      notifications:
+        description: Enable or disable user notifications on job start, success, and failure
       resource_usage:
-        description: Enable or disable server resource usage probe
         cpu_critical:
           description: CPU usage percentage at which status is shown as critical (red)
         cpu_warning:
           description: CPU usage percentage at which status is shown as a warning (orange)
+        description: Enable or disable server resource usage probe
         disk_critical:
           description: Disk usage percentage at which status is shown as critical (red)
         disk_warning:
@@ -32,7 +47,7 @@ en:
           description: Memory usage percentage at which status is shown as a warning (orange)
       scheduler:
         description: Enable or disable scheduled jobs
-      notifications:
-        description: Enable or disable user notifications on job start, success, and failure
-      hooks:
-        description: Enable or disable pre/post/success/failure hooks on job execution
+    title: Configuration
+    update:
+      error: Failed to update configuration
+      success: Configuration updated successfully

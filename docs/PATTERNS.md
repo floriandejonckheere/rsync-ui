@@ -17,7 +17,7 @@ def create
 end
 ```
 
-**In Locale Files** (`config/locales/en.yml`):
+**In Locale Files** (`config/locales/{module}/en.yml`):
 ```yaml
 en:
   models:
@@ -267,7 +267,7 @@ When adding new system/application configuration, create an entry in the `app/co
     - namespace.my_old_configuration
 ```
 
-And then add a translation entry in the `config/locales/configurations.yml` file.
+And then add a translation entry in the `config/locales/configurations/en.yml` file.
 
 ```yaml
 en:
@@ -324,7 +324,7 @@ end
 <% end %>
 ```
 
-**Locale (`config/locales/en.yml`):**
+**Locale (`config/locales/{module}/en.yml`):**
 ```yaml
 models:
   index:
