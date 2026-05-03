@@ -10,6 +10,9 @@ en:
       notifications:
         description: Settings for notifications sent on job lifecycle events
         title: Notifications
+      features:
+        description: Settings for optional application features
+        title: Features
     keys:
       resource_usage:
         description: Enable or disable server resource usage probe
@@ -31,3 +34,5 @@ en:
         description: Enable or disable scheduled jobs
       notifications:
         description: Enable or disable user notifications on job start, success, and failure
+      hooks:
+        description: Enable or disable pre/post/success/failure hooks on job execution

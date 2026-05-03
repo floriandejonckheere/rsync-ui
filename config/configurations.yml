@@ -53,3 +53,7 @@
   type: boolean
   category: notifications
   default: true
+- key: hooks
+  type: boolean
+  category: features
+  default: false
