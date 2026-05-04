@@ -22,36 +22,43 @@ Rsync UI is a web application that lets you create, schedule, and execute file s
 
 ## Getting started
 
-Rsync UI runs as a Docker container. Docker compose is the recommended way to run the application.
+Rsync UI runs as a set of Docker containers. Docker compose is the recommended way to run the application.
 
 ```yml
-services:
-  rsync_ui:
-    image: ghcr.io/floriandejonckheere/rsync-ui:latest
-    volumes:
-      - rsync_ui:/app/storage/ # Directory for rsync logs
-      - /path/to/storage:/data/storage:ro # Your local storage directories
-      - /path/to/backup:/data/storage:rw # Your local storage directories
-    environment:
-      SECRET_KEY_BASE: my-secret # Application secret key
-      ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: my-secret # Encryption secret key
-      ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY: my-secret # Encryption secret key
-      ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT: my-secret # Encryption secret key
+x-app: &app
+  image: ghcr.io/floriandejonckheere/rsync-ui:latest
+  volumes:
+    - rsync_ui:/app/storage/ # Directory for rsync logs
+    - /path/to/storage:/data/storage:ro # Your local storage directories
+    - /path/to/backup:/data/storage:rw # Your local storage directories
+  environment:
+    SECRET_KEY_BASE: my-secret # Application secret key
+    ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: my-secret # Encryption secret key
+    ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY: my-secret # Encryption secret key
+    ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT: my-secret # Encryption secret key
 
-      PG_HOST: postgres
-      PG_USER: rsync_ui
-      PG_PASSWORD: rsync_ui
-      PG_DATABASE: rsync_ui
-  
-      APP_HOST: rsync-ui.example.com # URL of the application
-      APP_EMAIL: rsync-ui@example.com # Email address of the application
-  
-      ADMIN_EMAIL: rsync-ui@example.com # Default admin account
-      ADMIN_PASSWORD: rsync-ui # Default admin password
-    depends_on:
-      - postgres
+    PG_HOST: postgres
+    PG_USER: rsync_ui
+    PG_PASSWORD: rsync_ui
+    PG_DATABASE: rsync_ui
+
+    APP_HOST: rsync-ui.example.com # URL of the application
+    APP_EMAIL: rsync-ui@example.com # Email address of the application
+
+    ADMIN_EMAIL: rsync-ui@example.com # Default admin account
+    ADMIN_PASSWORD: rsync-ui # Default admin password
+  depends_on:
+    - postgres
+
+services:
+  web:
+    <<: *app
     ports:
       - "3000:3000"
+
+  worker:
+    <<: *app
+    command: bin/jobs
 
   postgres:
     image: postgres:18
