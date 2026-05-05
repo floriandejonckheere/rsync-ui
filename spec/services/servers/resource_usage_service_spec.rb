@@ -15,7 +15,7 @@ RSpec.describe Servers::ResourceUsageService do
       .and_return(fixture)
   end
 
-  describe "#call" do
+  shared_examples "parsed resource usage" do
     it "updates the server resource_usage with parsed metrics" do
       described_class.call(server)
 
@@ -35,6 +35,20 @@ RSpec.describe Servers::ResourceUsageService do
       expect(usage.load_avg_1).to eq 0.42
       expect(usage.load_avg_5).to eq 0.55
       expect(usage.load_avg_15).to eq 0.60
+    end
+  end
+
+  describe "#call" do
+    context "with Linux probe output" do
+      let(:fixture) { Rails.root.join("spec/support/fixtures/probe_output.txt").read }
+
+      it_behaves_like "parsed resource usage"
+    end
+
+    context "with macOS probe output" do
+      let(:fixture) { Rails.root.join("spec/support/fixtures/probe_output_macos.txt").read }
+
+      it_behaves_like "parsed resource usage"
     end
 
     it "quotes the server path into the remote command" do

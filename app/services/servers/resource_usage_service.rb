@@ -48,6 +48,7 @@ module Servers
 
     class Parser
       SECTION = /^---(\w+)---$/
+      MACOS_CPU_PATTERN = /CPU usage:\s*([\d.]+)%\s*user.*?([\d.]+)%\s*idle/
 
       def initialize(output)
         @output = output
@@ -84,6 +85,12 @@ module Servers
       def parse_cpu(text)
         lines = text.lines.map(&:strip).reject(&:empty?)
         cpu_count = Integer(lines.shift)
+
+        if (m = lines.first&.match(MACOS_CPU_PATTERN))
+          usage = (100.0 - m[2].to_f).round(2)
+          return { cpu_count:, cpu_usage: usage }
+        end
+
         samples = lines.first(2).map { |l| l.split[1..].map(&:to_i) }
 
         raise "cpu sample missing" if samples.size < 2
