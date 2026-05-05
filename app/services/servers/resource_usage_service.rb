@@ -38,24 +38,12 @@ module Servers
 
     protected
 
+    SCRIPT_PATH = Rails.root.join("lib/scripts/resource_usage.sh")
+
     def command
       path = Shellwords.escape(server.path.presence || "/")
 
-      <<~SH
-        set -e
-        echo "---CPU---"
-        nproc
-        grep '^cpu ' /proc/stat
-        sleep 1
-        grep '^cpu ' /proc/stat
-        echo "---MEM---"
-        cat /proc/meminfo
-        echo "---UPTIME---"
-        cat /proc/uptime
-        cat /proc/loadavg
-        echo "---DISK---"
-        df -PB1 #{path}
-      SH
+      "TARGET_PATH=#{path}\n#{SCRIPT_PATH.read}"
     end
 
     class Parser
