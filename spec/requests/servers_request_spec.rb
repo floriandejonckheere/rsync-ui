@@ -534,6 +534,99 @@ RSpec.describe "Servers" do
     end
   end
 
+  describe "POST /servers/:id/deploy" do
+    let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
+    let(:server) { create(:server, :with_password, user:) }
+
+    before do
+      allow(Net::SSH)
+        .to receive(:start)
+        .and_yield(ssh_session)
+
+      allow(ssh_session)
+        .to receive(:exec!)
+        .and_return("ok\n")
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        post deploy_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      it "returns a Turbo Stream response" do
+        post deploy_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      end
+
+      it "renders a success notification when deploy succeeds" do
+        post deploy_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response.body).to include(I18n.t("servers.deploy.success"))
+      end
+
+      it "uses server credentials when params are blank" do
+        post deploy_server_path(server),
+             params: { host: "", port: "", username: "", password: "" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH)
+          .to have_received(:start)
+          .with(anything, anything, hash_including(password: server.password))
+
+        expect(response.body).to include(I18n.t("servers.deploy.success"))
+      end
+
+      it "overrides server credentials with params when present" do
+        post deploy_server_path(server),
+             params: { host: server.host, port: server.port, username: server.username, password: "newpass" },
+             headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH)
+          .to have_received(:start)
+          .with(anything, anything, hash_including(password: "newpass"))
+
+        expect(response.body).to include(I18n.t("servers.deploy.success"))
+      end
+
+      it "renders a failure notification when deploy fails" do
+        allow(Net::SSH)
+          .to receive(:start)
+          .and_raise(Net::SSH::AuthenticationFailed, "Authentication failed")
+
+        post deploy_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response.body).to include(I18n.t("servers.deploy.failure"))
+        expect(response.body).to include("Net::SSH::AuthenticationFailed")
+      end
+    end
+
+    context "when server belongs to another user" do
+      let(:server) { create(:server, :with_password, user: other_user) }
+
+      before { sign_in user, scope: :user }
+
+      it "returns forbidden" do
+        post deploy_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "does not attempt deploy" do
+        post deploy_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(Net::SSH).not_to have_received(:start)
+      end
+    end
+  end
+
   describe "POST /servers/connection" do
     let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
 

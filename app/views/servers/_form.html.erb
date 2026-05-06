@@ -36,6 +36,37 @@
       </button>
     <% end %>
 
+    <% if server.persisted? && server.password.present? %>
+      <%= form_with url: deploy_server_path(server),
+                    method: :post,
+                    data: {
+                      turbo_stream: true,
+                      controller: "server-deploy",
+                      "server-deploy-source-form-value": "server-form"
+                    } do |cf| %>
+        <%= cf.hidden_field :host, data: { "server-deploy-target": "host" } %>
+        <%= cf.hidden_field :port, data: { "server-deploy-target": "port" } %>
+        <%= cf.hidden_field :username, data: { "server-deploy-target": "username" } %>
+        <%= cf.hidden_field :password, data: { "server-deploy-target": "password" } %>
+
+        <button
+          type="submit"
+          class="btn-icon-outline btn-icon-lg"
+          data-server-deploy-target="button"
+          data-action="click->server-deploy#sync"
+          data-tooltip="<%= I18n.t("servers.form.deploy_ssh_key") %>"
+        >
+          <%= lucide_icon "rotate-ccw-key",
+                          class: "h-6 w-6",
+                          data: { "server-deploy-target": "icon" } %>
+
+          <%= lucide_icon "loader-circle",
+                          class: "h-6 w-6 hidden animate-spin",
+                          data: { "server-deploy-target": "spinner" } %>
+        </button>
+      <% end %>
+    <% end %>
+
     <button
       type="submit"
       form="server-form"

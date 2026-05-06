@@ -33,6 +33,10 @@ class ServerPolicy < ApplicationPolicy
     update?
   end
 
+  def deploy?
+    update?
+  end
+
   def measure?
     user.admin? || record.user == user
   end

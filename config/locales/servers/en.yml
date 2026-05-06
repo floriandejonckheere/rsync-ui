@@ -19,6 +19,10 @@ en:
       measure: Measure resource usage
     create:
       success: Server was successfully created.
+    deploy:
+      failure: Deploy failed
+      missing_details: Host, port, username, and password are required to generate and deploy an SSH key.
+      success: Deploy successful
     destroy:
       success: Server was successfully deleted.
     edit:
@@ -28,6 +32,7 @@ en:
       connection: Connection
       credentials_encrypted_hint: Credentials are securely encrypted and stored in the database
       credentials_hint: Provide either a password or an SSH key (not both).
+      deploy_ssh_key: Generate and deploy SSH key
       description: Description
       description_placeholder: Optional description for this server
       details: Details

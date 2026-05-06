@@ -46,6 +46,9 @@ application.register("search", SearchController)
 import ServerAuthController from "./server_auth_controller"
 application.register("server-auth", ServerAuthController)
 
+import ServerDeployController from "./server_deploy_controller"
+application.register("server-deploy", ServerDeployController)
+
 import ServerTestController from "./server_test_controller"
 application.register("server-test", ServerTestController)
 

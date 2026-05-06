@@ -33,6 +33,7 @@ Rails.application.routes.draw do
     member do
       post :test
       post :measure
+      post :deploy
     end
   end
 
@@ -89,6 +90,7 @@ end
 #                             test_servers POST   /servers/test(.:format)                                                                           servers#test
 #                              test_server POST   /servers/:id/test(.:format)                                                                       servers#test
 #                           measure_server POST   /servers/:id/measure(.:format)                                                                    servers#measure
+#                            deploy_server POST   /servers/:id/deploy(.:format)                                                                     servers#deploy
 #                                  servers GET    /servers(.:format)                                                                                servers#index
 #                                          POST   /servers(.:format)                                                                                servers#create
 #                               new_server GET    /servers/new(.:format)                                                                            servers#new

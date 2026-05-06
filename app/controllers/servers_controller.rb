@@ -5,7 +5,7 @@ class ServersController < ApplicationController
   include Sortable
 
   before_action :authenticate_user!
-  before_action :set_server, only: [:edit, :update, :destroy, :measure]
+  before_action :set_server, only: [:edit, :update, :destroy, :measure, :deploy]
   before_action :set_server_or_new, only: [:test]
 
   def index
@@ -91,6 +91,41 @@ class ServersController < ApplicationController
     end
 
     result = Servers::ConnectionService.call(@server)
+
+    render turbo_stream: turbo_stream.prepend(
+      "notifications",
+      partial: "shared/action_result",
+      locals: {
+        result:,
+        success_message: t(".success"),
+        failure_message: t(".failure"),
+      },
+    )
+  end
+
+  def deploy
+    authorize! @server, to: :deploy?
+
+    @server.host = params[:host] if params[:host].present?
+    @server.port = params[:port] if params[:port].present?
+    @server.password = params[:password] if params[:password].present?
+
+    if @server.host.blank? || @server.port.blank? || @server.username.blank? || @server.password.blank?
+      return render turbo_stream: turbo_stream.prepend(
+        "notifications",
+        partial: "shared/action_result",
+        locals: {
+          result: {
+            success: false,
+            message: t(".missing_details"),
+          },
+          success_message: t(".success"),
+          failure_message: t(".failure"),
+        },
+      )
+    end
+
+    result = Servers::DeployService.call(@server)
 
     render turbo_stream: turbo_stream.prepend(
       "notifications",
