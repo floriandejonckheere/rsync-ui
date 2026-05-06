@@ -6,7 +6,7 @@ module Servers
       super
 
       if server.persisted?
-        server.update!(
+        server.reload.update!(
           probed_at: Time.current,
           last_seen_at: Time.current,
           error_class: nil,
@@ -17,7 +17,7 @@ module Servers
       { success: true }
     rescue StandardError => e
       if server.persisted?
-        server.update!(
+        server.reload.update!(
           probed_at: Time.current,
           error_class: e.class.to_s,
           error_message: e.message,
