@@ -39,6 +39,7 @@ module Servers
     SCRIPTS = {
       "linux" => Rails.root.join("lib/scripts/resource_usage_linux.sh"),
       "macos" => Rails.root.join("lib/scripts/resource_usage_macos.sh"),
+      "hetzner" => Rails.root.join("lib/scripts/resource_usage_hetzner.sh"),
     }.freeze
 
     protected
@@ -61,12 +62,13 @@ module Servers
       def call
         sections = split_sections
 
-        raise "missing probe sections" unless ["CPU", "MEM", "UPTIME", "DISK"].all? { |s| sections.key?(s) }
+        raise "missing probe sections" unless sections.key?("DISK")
 
-        parse_cpu(sections.fetch("CPU"))
-          .merge(parse_mem(sections.fetch("MEM")))
-          .merge(parse_uptime(sections.fetch("UPTIME")))
-          .merge(parse_disk(sections.fetch("DISK")))
+        result = parse_disk(sections.fetch("DISK"))
+        result.merge!(parse_cpu(sections.fetch("CPU"))) if sections.key?("CPU")
+        result.merge!(parse_mem(sections.fetch("MEM"))) if sections.key?("MEM")
+        result.merge!(parse_uptime(sections.fetch("UPTIME"))) if sections.key?("UPTIME")
+        result
       end
 
       private
@@ -143,7 +145,11 @@ module Servers
       end
 
       def parse_disk(text)
-        data_line = text.lines.find do |l|
+        lines = text.lines
+        header = lines.find { |l| l.start_with?("Filesystem") }
+        multiplier = header&.include?("1K-blocks") ? 1024 : 1
+
+        data_line = lines.find do |l|
           next false if l.start_with?("Filesystem")
 
           parts = l.split
@@ -155,8 +161,8 @@ module Servers
         parts = data_line.split
 
         {
-          disk_total: parts[1].to_i,
-          disk_used: parts[2].to_i,
+          disk_total: parts[1].to_i * multiplier,
+          disk_used: parts[2].to_i * multiplier,
         }
       end
     end

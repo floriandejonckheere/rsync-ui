@@ -12,6 +12,7 @@ class Server < ApplicationRecord
   enum :operating_system, {
     linux: "linux",
     macos: "macos",
+    hetzner: "hetzner",
   }, validate: true
 
   validates :name,

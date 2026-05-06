@@ -101,7 +101,8 @@
 
                 <%= f.select :operating_system,
                              [[I18n.t("servers.form.operating_system_linux"), "linux"],
-                              [I18n.t("servers.form.operating_system_macos"), "macos"]],
+                              [I18n.t("servers.form.operating_system_macos"), "macos"],
+                              [I18n.t("servers.form.operating_system_hetzner"), "hetzner"]],
                              { include_blank: I18n.t("servers.form.operating_system_placeholder") },
                              { class: "w-full" } %>
               </div>

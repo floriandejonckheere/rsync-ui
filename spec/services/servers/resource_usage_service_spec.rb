@@ -51,6 +51,26 @@ RSpec.describe Servers::ResourceUsageService do
       it_behaves_like "parsed resource usage"
     end
 
+    context "with Hetzner Storage Box probe output" do
+      let(:fixture) { Rails.root.join("spec/support/fixtures/probe_output_hetzner.txt").read }
+
+      it "updates the server resource_usage with disk metrics only" do
+        described_class.call(server)
+
+        usage = server.reload.resource_usage
+
+        expect(usage.status).to eq "ok"
+        expect(usage.disk_total).to eq 107_374_182_400
+        expect(usage.disk_used).to eq 53_687_091_200
+        expect(usage.cpu_count).to be_nil
+        expect(usage.cpu_usage).to be_nil
+        expect(usage.memory_total).to be_nil
+        expect(usage.memory_used).to be_nil
+        expect(usage.uptime_seconds).to be_nil
+        expect(usage.load_avg_1).to be_nil
+      end
+    end
+
     it "quotes the server path into the remote command" do
       server.update!(path: "/var/data space")
 
