@@ -200,6 +200,42 @@ RSpec.describe "Jobs" do
     end
   end
 
+  describe "GET /jobs/:id/duplicate" do
+    let(:job) { create(:job, user:) }
+
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      it "renders the duplicate page" do
+        get duplicate_job_path(job)
+
+        expect(response).to have_http_status(:ok)
+
+        expect(response.body).to include "#{job.name} (copy)"
+      end
+    end
+
+    context "when job belongs to another user" do
+      let(:job) { create(:job, user: other_user) }
+
+      before { sign_in user, scope: :user }
+
+      it "returns forbidden" do
+        get duplicate_job_path(job)
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        get duplicate_job_path(job)
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
   describe "PATCH /jobs/:id" do
     let(:job) { create(:job, user:) }
     let(:update_params) { { job: { name: "Updated Job", enabled: false } } }

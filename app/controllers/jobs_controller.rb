@@ -5,8 +5,8 @@ class JobsController < ApplicationController
   include Sortable
 
   before_action :authenticate_user!
-  before_action :set_job, only: [:edit, :update, :destroy]
-  before_action :set_repositories, only: [:new, :edit, :create, :update, :preview]
+  before_action :set_job, only: [:edit, :duplicate, :update, :destroy]
+  before_action :set_repositories, only: [:new, :edit, :duplicate, :create, :update, :preview]
 
   def index
     jobs = authorized_scope(Job.includes(:source_repository, :destination_repository).all, type: :relation)
@@ -32,6 +32,15 @@ class JobsController < ApplicationController
     authorize! @job
 
     build_hooks(@job)
+
+    @command = Rsync::CommandService.new(job: @job)
+  end
+
+  def duplicate
+    authorize! @job
+
+    @job = @job.dup
+    @job.name = "#{@job.name} (copy)"
 
     @command = Rsync::CommandService.new(job: @job)
   end
