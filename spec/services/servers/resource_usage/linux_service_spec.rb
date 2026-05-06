@@ -1,0 +1,97 @@
+# frozen_string_literal: true
+
+RSpec.describe Servers::ResourceUsage::LinuxService do
+  let(:server) { create(:server, :with_password, path: "/") }
+  let(:fixture) { Rails.root.join("spec/support/fixtures/probe_output_linux.txt").read }
+  let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
+
+  before do
+    allow(Net::SSH)
+      .to receive(:start)
+      .and_yield(ssh_session)
+
+    allow(ssh_session)
+      .to receive(:exec!)
+      .and_return(fixture)
+  end
+
+  describe "#call" do
+    it "parses all metrics from output" do
+      described_class.call(server)
+
+      usage = server.reload.resource_usage
+
+      expect(usage.status).to eq "ok"
+      expect(usage.error_class).to be_nil
+      expect(usage.error_message).to be_nil
+      expect(usage.probed_at).to be_within(5.seconds).of Time.zone.now
+      expect(usage.cpu_count).to eq 6
+      expect(usage.cpu_usage).to be_within(0.01).of 21.6
+      expect(usage.memory_total).to eq(24_447_124 * 1024)
+      expect(usage.memory_used).to eq(7_236_820 * 1024)
+      expect(usage.disk_total).to eq 266_819_600_384
+      expect(usage.disk_used).to eq 12_591_534_080
+      expect(usage.uptime_seconds).to eq 850_678
+      expect(usage.load_avg_1).to eq 0.73
+      expect(usage.load_avg_5).to eq 0.48
+      expect(usage.load_avg_15).to eq 0.46
+    end
+
+    it "embeds the server path directly in the command" do
+      server.update!(path: "/var/data space")
+
+      described_class.call(server)
+
+      expect(ssh_session)
+        .to have_received(:exec!)
+        .with a_string_including("/var/data\\ space")
+    end
+
+    context "when SSH connection fails" do
+      before do
+        allow(Net::SSH)
+          .to receive(:start)
+          .and_raise Net::SSH::ConnectionTimeout, "timed out"
+      end
+
+      it "records status=failed with error details" do
+        described_class.call(server)
+
+        usage = server.reload.resource_usage
+
+        expect(usage.status).to eq "failed"
+        expect(usage.error_class).to eq "Net::SSH::ConnectionTimeout"
+        expect(usage.error_message).to include "timed out"
+        expect(usage.cpu_usage).to be_nil
+      end
+    end
+
+    context "when stdout is malformed" do
+      before do
+        allow(ssh_session)
+          .to receive(:exec!)
+          .and_return "garbage"
+      end
+
+      it "records status=failed" do
+        described_class.call(server)
+
+        expect(server.reload.resource_usage.status).to eq "failed"
+      end
+    end
+
+    context "when server authenticates with an SSH key" do
+      let(:server) { create(:server, :with_ssh_key, path: "/") }
+
+      it "passes key_data to Net::SSH.start" do
+        described_class.call(server)
+
+        expect(Net::SSH).to have_received(:start).with(
+          server.host,
+          server.username,
+          hash_including(port: server.port, key_data: [server.ssh_key], non_interactive: true),
+        )
+      end
+    end
+  end
+end

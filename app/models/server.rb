@@ -44,6 +44,25 @@ class Server < ApplicationRecord
     last_seen_at.nil?
   end
 
+  def measure_resource_usage
+    case operating_system
+    when "linux"
+      Servers::ResourceUsage::LinuxService
+        .new(self)
+        .call
+    when "macos"
+      Servers::ResourceUsage::MacOSService
+        .new(self)
+        .call
+    when "hetzner"
+      Servers::ResourceUsage::HetznerService
+        .new(self)
+        .call
+    else
+      raise "Unsupported operating system: #{operating_system}"
+    end
+  end
+
   private
 
   def normalize_ssh_key

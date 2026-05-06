@@ -1,11 +1,11 @@
 ---CPU---
-4
-CPU usage: 30.0% user, 0.0% sys, 70.0% idle
+10
+CPU usage: 6.79% user, 6.53% sys, 86.67% idle
 ---MEM---
-MemTotal:        8000000 kB
-MemAvailable:    2000000 kB
+MemTotal: 33554432 kB
+MemAvailable: 10675728 kB
 ---UPTIME---
-123456 0
-0.42 0.55 0.60 0/0 0
+2928276 0
+3.81 3.97 4.59 0/0 0
 ---DISK---
-/dev/disk1 107374182400 53687091200 53687091200 50% /
+/dev/disk3s7 1995218165760 336623890432 1072069300224 24% /Volumes/Data
