@@ -33,12 +33,6 @@ Servers are the remote destinations where the files are synchronized to.
   - [ ] Generate new SSH key pair
   - [ ] Upload SSH key to the server (using password)
 
-### Execution and scheduling
-
-- [ ] Implement sync hooks
-  - [ ] Pre-/post-hook: command or script to run before or after the sync starts (source and destination)
-  - [ ] Success/error hook: command or script to run when the sync succeeds or fails
-
 ### Browse repositories
 
 Allow the user to browse the repositories and their contents.
@@ -68,18 +62,15 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Make application responsive
 - [ ] Update branding
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
-- [ ] Move I18n keys from `config/locales/en.yml` to `config/locales/en/module.yml`
+- [x] Move I18n keys from `config/locales/en.yml` to `config/locales/en/module.yml`
 - [ ] Capture number of bytes and number of files transferred on the job run
   - [ ] Add to job run details
   - [ ] Add to notification email
 - [ ] Add a local resource usage card
 - [ ] Allow streaming logs
 - [ ] Add duplicate job button
+- [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
 - [ ] Implement support for OAuth2 authentication
-- [ ] Add filter functionality
-  - [ ] Servers
-  - [ ] Repositories
-  - [ ] Jobs
 - [ ] Do not bind postgres to port 5432, otherwise you can't use git worktrees
 - [ ] Add max/min to configurations
 - [ ] Audit codebase
