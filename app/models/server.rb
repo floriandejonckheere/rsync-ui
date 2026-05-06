@@ -9,6 +9,11 @@ class Server < ApplicationRecord
   has_one :resource_usage,
           dependent: :destroy
 
+  enum :operating_system, {
+    linux: "linux",
+    macos: "macos",
+  }, validate: true
+
   validates :name,
             presence: true
 
@@ -73,22 +78,23 @@ end
 #
 # Table name: servers
 #
-#  id            :uuid             not null, primary key
-#  description   :text             indexed
-#  error_class   :string
-#  error_message :text
-#  host          :string           not null, indexed, indexed
-#  last_seen_at  :datetime
-#  name          :string           not null, indexed, indexed
-#  password      :text
-#  path          :string           default("/"), not null
-#  port          :integer          default(22), not null
-#  probed_at     :datetime
-#  ssh_key       :text
-#  username      :string           not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  user_id       :uuid             not null, indexed
+#  id               :uuid             not null, primary key
+#  description      :text             indexed
+#  error_class      :string
+#  error_message    :text
+#  host             :string           not null, indexed, indexed
+#  last_seen_at     :datetime
+#  name             :string           not null, indexed, indexed
+#  operating_system :string           default("linux")
+#  password         :text
+#  path             :string           default("/"), not null
+#  port             :integer          default(22), not null
+#  probed_at        :datetime
+#  ssh_key          :text
+#  username         :string           not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  user_id          :uuid             not null, indexed
 #
 # Indexes
 #

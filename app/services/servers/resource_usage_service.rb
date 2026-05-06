@@ -36,14 +36,18 @@ module Servers
       )
     end
 
-    protected
+    SCRIPTS = {
+      "linux" => Rails.root.join("lib/scripts/resource_usage_linux.sh"),
+      "macos" => Rails.root.join("lib/scripts/resource_usage_macos.sh"),
+    }.freeze
 
-    SCRIPT_PATH = Rails.root.join("lib/scripts/resource_usage.sh")
+    protected
 
     def command
       path = Shellwords.escape(server.path.presence || "/")
+      script = SCRIPTS.fetch(server.operating_system).read
 
-      "TARGET_PATH=#{path}\n#{SCRIPT_PATH.read}"
+      "TARGET_PATH=#{path}\n#{script}"
     end
 
     class Parser

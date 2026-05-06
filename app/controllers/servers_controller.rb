@@ -127,6 +127,7 @@ class ServersController < ApplicationController
         :name,
         :description,
         :path,
+        :operating_system,
         :host,
         :port,
         :username,

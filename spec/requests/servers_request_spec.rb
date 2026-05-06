@@ -147,7 +147,7 @@ RSpec.describe "Servers" do
   end
 
   describe "POST /servers" do
-    let(:valid_params) { { server: { name: "My Server", host: "example.com", port: 22, username: "admin", password: "secret" } } }
+    let(:valid_params) { { server: { name: "My Server", host: "example.com", port: 22, username: "admin", password: "secret", operating_system: "linux" } } }
 
     context "when authenticated" do
       before { sign_in user, scope: :user }
@@ -156,6 +156,9 @@ RSpec.describe "Servers" do
         expect { post servers_path, params: valid_params }
           .to change(user.servers, :count).by(1)
 
+        server = Server.last
+        expect(server.name).to eq("My Server")
+        expect(server.operating_system).to eq("linux")
         expect(response).to redirect_to(servers_path)
       end
 
@@ -228,7 +231,7 @@ RSpec.describe "Servers" do
 
   describe "PATCH /servers/:id" do
     let(:server) { create(:server, user:) }
-    let(:update_params) { { server: { name: "Updated Server" } } }
+    let(:update_params) { { server: { name: "Updated Server", operating_system: "macos" } } }
 
     context "when authenticated" do
       before { sign_in user, scope: :user }
@@ -236,7 +239,9 @@ RSpec.describe "Servers" do
       it "updates the server and redirects to the index" do
         patch server_path(server), params: update_params
 
-        expect(server.reload.name).to eq("Updated Server")
+        server.reload
+        expect(server.name).to eq("Updated Server")
+        expect(server.operating_system).to eq("macos")
         expect(response).to redirect_to(servers_path)
       end
 

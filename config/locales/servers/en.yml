@@ -35,6 +35,10 @@ en:
       host_placeholder: example.com
       name: Name
       name_placeholder: My server
+      operating_system: Operating system
+      operating_system_linux: Linux
+      operating_system_macos: macOS
+      operating_system_placeholder: Select operating system
       password: Password
       password_placeholder: Enter password
       password_placeholder_edit: Leave blank to keep unchanged
@@ -68,7 +72,7 @@ en:
     table:
       connectivity:
         offline: Server is offline
-        online: 'Last seen %{last_seen_at} ago'
+        online: Last seen %{last_seen_at} ago
       cpu: CPU
       cpu_cores:
         one: "%{count} core"
