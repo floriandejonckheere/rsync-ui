@@ -32,6 +32,11 @@ en:
         description: Enable or disable server connectivity probing
         interval:
           description: Interval in minutes between server connectivity probes
+        ssh_key:
+          algorithm:
+            description: Algorithm used for generating SSH keys
+          length:
+            description: Length of generated SSH keys
       hooks:
         description: Enable or disable pre/post/success/failure hooks on job execution
       notifications:

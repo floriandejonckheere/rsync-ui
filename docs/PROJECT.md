@@ -29,9 +29,9 @@ Third row:
 
 Servers are the remote destinations where the files are synchronized to.
 
-- [ ] Deploy SSH key to the server
-  - [ ] Generate new SSH key pair
-  - [ ] Upload SSH key to the server (using password)
+- [x] Deploy SSH key to the server
+  - [x] Generate new SSH key pair
+  - [x] Upload SSH key to the server (using password)
 
 ### Browse repositories
 

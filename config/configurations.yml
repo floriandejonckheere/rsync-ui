@@ -67,3 +67,11 @@
   default: 5
   dependencies:
     - connectivity
+- key: connectivity.ssh_key.algorithm
+  type: string
+  category: connectivity
+  default: rsa
+- key: connectivity.ssh_key.length
+  type: integer
+  category: connectivity
+  default: 2048
