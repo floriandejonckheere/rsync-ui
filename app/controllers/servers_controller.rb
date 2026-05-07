@@ -108,7 +108,6 @@ class ServersController < ApplicationController
 
     @server.host = params[:host] if params[:host].present?
     @server.port = params[:port] if params[:port].present?
-    @server.password = params[:password] if params[:password].present?
 
     if @server.host.blank? || @server.port.blank? || @server.username.blank? || @server.password.blank?
       return render turbo_stream: turbo_stream.prepend(

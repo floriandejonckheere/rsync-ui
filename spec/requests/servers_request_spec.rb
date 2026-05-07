@@ -574,24 +574,12 @@ RSpec.describe "Servers" do
 
       it "uses server credentials when params are blank" do
         post deploy_server_path(server),
-             params: { host: "", port: "", username: "", password: "" },
+             params: { host: "", port: "", username: "" },
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
         expect(Net::SSH)
           .to have_received(:start)
           .with(anything, anything, hash_including(password: server.password))
-
-        expect(response.body).to include(I18n.t("servers.deploy.success"))
-      end
-
-      it "overrides server credentials with params when present" do
-        post deploy_server_path(server),
-             params: { host: server.host, port: server.port, username: server.username, password: "newpass" },
-             headers: { "Accept" => "text/vnd.turbo-stream.html" }
-
-        expect(Net::SSH)
-          .to have_received(:start)
-          .with(anything, anything, hash_including(password: "newpass"))
 
         expect(response.body).to include(I18n.t("servers.deploy.success"))
       end
