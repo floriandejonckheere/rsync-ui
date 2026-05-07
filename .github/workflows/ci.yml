@@ -80,6 +80,7 @@ jobs:
         env:
           RAILS_ENV: test
           PG_HOST: localhost
+          MISSION_CONTROL: 1
         run: |
           bundle exec annotaterb routes
           bundle exec annotaterb models
