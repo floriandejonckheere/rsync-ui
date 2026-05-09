@@ -18,7 +18,7 @@ export default class extends Controller {
 
   #handleMessage(data) {
     if (data.type === "log") {
-      this.logTarget.textContent += data.content
+      this.logTarget.textContent += data.content.replace(/\r/g, "")
     } else if (data.type === "status" && this.hasStatusTarget) {
       this.statusTarget.textContent = data.content
     } else if (data.type === "progress" && this.hasJobStatusTarget) {
