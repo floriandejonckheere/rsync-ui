@@ -109,6 +109,19 @@
                               autocomplete: "off" %>
             </div>
 
+            <% if Configuration.get("resource_usage") %>
+              <div class="field">
+                <%= f.label :operating_system, I18n.t("servers.form.operating_system") %>
+
+                <%= f.select :operating_system,
+                             [[I18n.t("servers.form.operating_system_linux"), "linux"],
+                              [I18n.t("servers.form.operating_system_macos"), "macos"],
+                              [I18n.t("servers.form.operating_system_hetzner"), "hetzner"]],
+                             { include_blank: I18n.t("servers.form.operating_system_placeholder") },
+                             { class: "w-full" } %>
+              </div>
+            <% end %>
+
             <div class="field">
               <%= f.label :path, I18n.t("servers.form.path") %>
 
@@ -124,19 +137,6 @@
                 </p>
               <% end %>
             </div>
-
-            <% if Configuration.get("resource_usage") %>
-              <div class="field">
-                <%= f.label :operating_system, I18n.t("servers.form.operating_system") %>
-
-                <%= f.select :operating_system,
-                             [[I18n.t("servers.form.operating_system_linux"), "linux"],
-                              [I18n.t("servers.form.operating_system_macos"), "macos"],
-                              [I18n.t("servers.form.operating_system_hetzner"), "hetzner"]],
-                             { include_blank: I18n.t("servers.form.operating_system_placeholder") },
-                             { class: "w-full" } %>
-              </div>
-            <% end %>
           </div>
         </section>
       </div>
