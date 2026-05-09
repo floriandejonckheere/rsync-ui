@@ -370,7 +370,7 @@ RSpec.describe "Jobs" do
 
         expect(response).to have_http_status(:ok)
 
-        expect(response.body).to include("rsync")
+        expect(response.body).to include("rsync \\")
         expect(response.body).to include("--archive")
         expect(response.body).to include("--dry-run")
       end
