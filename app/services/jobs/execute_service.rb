@@ -3,6 +3,7 @@
 module Jobs
   class ExecuteService < ApplicationService
     STATUS_PATTERN = /^\s*([\d,]+)\s+(\d+)%\s+\S+\s+[\d:]+/
+    CANCEL_MONITOR_INTERVAL = 5
 
     attr_reader :job_run,
                 :job,
@@ -66,7 +67,36 @@ module Jobs
           job_run.update!(pid: wait_thr.pid)
 
           buffer = +""
+
+          # User has requested job cancellation
           cancel_sent = false
+
+          mutex = Mutex.new
+          condition_variable = ConditionVariable.new
+
+          # Signal the companion thread to stop
+          stop_monitor = false
+
+          # Companion thread monitors cancellation requests and kills process when rsync produces no output
+          monitor = Thread.new do
+            loop do
+              mutex.synchronize { condition_variable.wait(mutex, CANCEL_MONITOR_INTERVAL) }
+
+              break if stop_monitor
+
+              next if cancel_sent
+
+              next if JobRun.where(id: job_run.id).pick(:cancel_requested_at).blank?
+
+              begin
+                Process.kill("TERM", -wait_thr.pid)
+              rescue Errno::ESRCH
+                nil
+              end
+
+              cancel_sent = true
+            end
+          end
 
           loop do
             chunk = output.readpartial(4096)
@@ -102,7 +132,14 @@ module Jobs
             end
           rescue EOFError
             break
+          ensure
+            mutex.synchronize do
+              stop_monitor = true
+              condition_variable.signal
+            end
           end
+
+          monitor.join
 
           file.write(buffer) if buffer.present?
 

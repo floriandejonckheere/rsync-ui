@@ -149,6 +149,36 @@ RSpec.describe Jobs::ExecuteService do
       end
     end
 
+    context "when cancellation is requested while the command produces no output" do
+      let(:wait_thr) { instance_double(Process::Waiter, pid: 43_210, value: instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1)) }
+
+      before do
+        job_run.update!(cancel_requested_at: Time.zone.now)
+
+        killed = false
+
+        allow(Process)
+          .to receive(:kill) { killed = true }
+
+        # Simulate a blocking read that unblocks only after the monitor sends SIGTERM
+        allow(output).to receive(:readpartial) do
+          sleep 0.01 until killed
+
+          raise EOFError
+        end
+      end
+
+      it "signals the process group via the monitor thread and marks the job run as canceled" do
+        service.call
+
+        expect(Process)
+          .to have_received(:kill)
+          .with("TERM", -43_210)
+
+        expect(job_run.reload).to be_canceled
+      end
+    end
+
     describe "progress tracking" do
       let(:status_line) { "  1,234,567  75%  10.00MB/s  0:00:10\r" }
       let(:output_content) { status_line }
