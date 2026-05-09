@@ -57,6 +57,10 @@
   type: boolean
   category: features
   default: true
+- key: streaming
+  type: boolean
+  category: features
+  default: true
 - key: connectivity
   type: boolean
   category: connectivity

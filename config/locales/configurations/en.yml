@@ -59,6 +59,8 @@ en:
           description: Memory usage percentage at which status is shown as a warning (orange)
       scheduler:
         description: Enable or disable scheduled jobs
+      streaming:
+        description: Enable or disable real-time log streaming
     title: Configuration
     update:
       error: Failed to update configuration
