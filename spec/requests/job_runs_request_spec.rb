@@ -217,10 +217,13 @@ RSpec.describe "JobRuns" do
     context "when authenticated" do
       before { sign_in user, scope: :user }
 
-      it "enqueues Jobs::ExecuteJob and redirects" do
-        post job_runs_path, params: { job_id: job.id }
+      it "creates a pending job run and enqueues Jobs::ExecuteJob" do
+        expect { post job_runs_path, params: { job_id: job.id } }
+          .to change(JobRun, :count).by(1)
 
-        expect(Jobs::ExecuteJob).to have_received(:perform_later).with(job, trigger: "manual")
+        job_run = JobRun.last
+        expect(job_run).to be_pending
+        expect(Jobs::ExecuteJob).to have_received(:perform_later).with(job_run)
         expect(response).to redirect_to(job_runs_path)
       end
 
@@ -240,6 +243,11 @@ RSpec.describe "JobRuns" do
           expect(response).to have_http_status(:unprocessable_content)
         end
 
+        it "does not create a job run" do
+          expect { post job_runs_path, params: { job_id: job.id } }
+            .not_to change(JobRun, :count)
+        end
+
         it "does not enqueue Jobs::ExecuteJob" do
           post job_runs_path, params: { job_id: job.id }
 
@@ -257,6 +265,11 @@ RSpec.describe "JobRuns" do
         post job_runs_path, params: { job_id: job.id }
 
         expect(response).to have_http_status(:forbidden)
+      end
+
+      it "does not create a job run" do
+        expect { post job_runs_path, params: { job_id: job.id } }
+          .not_to change(JobRun, :count)
       end
 
       it "does not enqueue Jobs::ExecuteJob" do

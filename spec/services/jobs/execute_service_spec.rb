@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe Jobs::ExecuteService do
-  subject(:service) { described_class.new(job, trigger: "manual") }
-
   let(:user) { create(:user) }
   let(:job) { create(:job, user:) }
+  let!(:job_run) { create(:job_run, :pending, job:, user:) }
+
+  subject(:service) { described_class.new(job_run) }
 
   let!(:notification) { create(:notification, user:) }
   let!(:job_notification) { create(:job_notification, job:, notification:) }
@@ -19,18 +20,28 @@ RSpec.describe Jobs::ExecuteService do
   end
 
   describe "#call" do
-    it "creates a job run for the job" do
-      expect { service.call }
-        .to change(JobRun, :count).by(1)
+    it "executes the job run" do
+      service.call
 
-      job_run = JobRun.sole
+      job_run.reload
 
       expect(job_run.trigger).to eq "manual"
       expect(job_run.user).to eq job.user
       expect(job_run).to be_completed
-      expect(job_run).to be_started_at
-      expect(job_run).to be_completed_at
+      expect(job_run.started_at).to be_present
+      expect(job_run.completed_at).to be_present
       expect(job_run.output).to be_attached
+    end
+
+    context "when the job run is not pending" do
+      before { job_run.update!(status: "running", started_at: Time.zone.now) }
+
+      it "does not execute" do
+        service.call
+
+        expect(job_run.reload).to be_running
+        expect(command_service).not_to have_received(:call)
+      end
     end
 
     context "when the command exits with a non-zero status" do
@@ -39,10 +50,10 @@ RSpec.describe Jobs::ExecuteService do
       it "sets status to failed and completed_at" do
         service.call
 
-        job_run = JobRun.sole
+        job_run.reload
 
         expect(job_run).to be_failed
-        expect(job_run).to be_completed_at
+        expect(job_run.completed_at).to be_present
         expect(job_run.output).to be_attached
       end
     end
@@ -57,12 +68,12 @@ RSpec.describe Jobs::ExecuteService do
       it "sets status to errored, error class, and message" do
         service.call
 
-        job_run = JobRun.sole
+        job_run.reload
 
         expect(job_run).to be_errored
         expect(job_run.error_class).to eq "RuntimeError"
         expect(job_run.error_messages).to eq "something went wrong"
-        expect(job_run).to be_completed_at
+        expect(job_run.completed_at).to be_present
       end
     end
 
@@ -93,7 +104,7 @@ RSpec.describe Jobs::ExecuteService do
       it "signals the process group and marks the job run as canceled" do
         service.call
 
-        job_run = JobRun.sole
+        job_run.reload
 
         expect(Process).to have_received(:kill).with("TERM", -43_210)
         expect(job_run).to be_canceled
@@ -110,7 +121,7 @@ RSpec.describe Jobs::ExecuteService do
         it "marks the job run as canceled without raising" do
           expect { service.call }.not_to raise_error
 
-          expect(JobRun.sole).to be_canceled
+          expect(job_run.reload).to be_canceled
         end
       end
     end

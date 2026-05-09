@@ -7,9 +7,12 @@ RSpec.describe SchedulerJob do
     it "enqueues Jobs::ExecuteJob for due enabled jobs" do
       job = create(:job, schedule: "0 2 * * *", enabled: true)
 
-      expect { described_class.perform_now }
-        .to have_enqueued_job(Jobs::ExecuteJob)
-        .with(job, trigger: "scheduled")
+      described_class.perform_now
+
+      job_run = JobRun.sole
+      expect(job_run).to be_pending
+      expect(job_run.trigger).to eq "scheduled"
+      expect(Jobs::ExecuteJob).to have_been_enqueued.with(job_run)
     end
 
     it "skips disabled jobs" do
@@ -38,9 +41,12 @@ RSpec.describe SchedulerJob do
       job = create(:job, schedule: "0 2 * * *", enabled: true)
       create(:job_run, job:, user: job.user, trigger: :scheduled, created_at: Time.zone.local(2026, 4, 18, 2, 0, 5))
 
-      expect { described_class.perform_now }
-        .to have_enqueued_job(Jobs::ExecuteJob)
-        .with(job, trigger: "scheduled")
+      described_class.perform_now
+
+      new_run = JobRun.order(:created_at).last
+      expect(new_run).to be_pending
+      expect(new_run.trigger).to eq "scheduled"
+      expect(Jobs::ExecuteJob).to have_been_enqueued.with(new_run)
     end
 
     it "ignores jobs with an unparseable cron expression without raising" do

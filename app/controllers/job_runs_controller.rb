@@ -49,11 +49,19 @@ class JobRunsController < ApplicationController
 
   def create
     job = Job.find(params[:job_id])
-    authorize! JobRun.new(job:)
+
+    job_run = job
+      .job_runs
+      .build(user: current_user, trigger: "manual", status: "pending")
+
+    authorize! job_run
 
     return head :unprocessable_content unless job.enabled?
 
-    Jobs::ExecuteJob.perform_later(job, trigger: "manual")
+    job_run.save!
+
+    Jobs::ExecuteJob.perform_later(job_run)
+
     redirect_to job_runs_path, notice: t(".success")
   end
 

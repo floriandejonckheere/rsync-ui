@@ -4,27 +4,27 @@ module Jobs
   class ExecuteService < ApplicationService
     STATUS_PATTERN = /^\s*([\d,]+)\s+(\d+)%\s+\S+\s+[\d:]+/
 
-    attr_reader :job,
+    attr_reader :job_run,
+                :job,
                 :trigger
 
-    def initialize(job, trigger: "manual")
+    def initialize(job_run)
       super()
 
-      @job = job
-      @trigger = trigger
+      @job_run = job_run
+      @job = job_run.job
+      @trigger = job_run.trigger
     end
 
     def call
+      return unless job_run.pending?
+
       Rails.logger.info "[#{job.id}] Executing job #{job.name}"
 
-      job_run = job
-        .job_runs
-        .create!(
-          user: job.user,
-          trigger:,
-          status: "running",
-          started_at: Time.zone.now,
-        )
+      job_run.update!(
+        status: "running",
+        started_at: Time.zone.now,
+      )
 
       enqueue_notifications(job_run, "start")
 

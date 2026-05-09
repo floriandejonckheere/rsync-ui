@@ -23,7 +23,11 @@ class SchedulerJob < ApplicationJob
 
       next if last_scheduled_run && last_scheduled_run.created_at >= prev_tick
 
-      Jobs::ExecuteJob.perform_later(job, trigger: "scheduled")
+      job_run = job
+        .job_runs
+        .create!(user: job.user, trigger: "scheduled", status: "pending")
+
+      Jobs::ExecuteJob.perform_later(job_run)
     end
   end
 
