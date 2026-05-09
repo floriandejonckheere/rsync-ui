@@ -11,8 +11,8 @@ module ResourceUsageHelper
       track: "bg-amber-100 dark:bg-amber-950",
     },
     ok: {
-      bar: "bg-blue-600 dark:bg-blue-400",
-      track: "bg-blue-100 dark:bg-blue-950",
+      bar: "bg-green-600 dark:bg-green-400",
+      track: "bg-green-100 dark:bg-green-950",
     },
   }.freeze
 

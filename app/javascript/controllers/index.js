@@ -31,6 +31,9 @@ application.register("filter", FilterController)
 import GaugeController from "./gauge_controller"
 application.register("gauge", GaugeController)
 
+import PieChartController from "./pie_chart_controller"
+application.register("pie-chart", PieChartController)
+
 import NotificationTestController from "./notification_test_controller"
 application.register("notification-test", NotificationTestController)
 

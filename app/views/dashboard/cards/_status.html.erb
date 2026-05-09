@@ -1,0 +1,35 @@
+<% badge_class = case health_status
+                 when :healthy  then "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                 when :degraded then "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"
+                 else                "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                 end %>
+
+<% chart_labels = job_run_stats.keys.map { |s| I18n.t("job_runs.status.#{s}") }.to_json %>
+<% total_runs = job_run_stats.values.sum %>
+
+<div class="card flex flex-col gap-4">
+  <div class="flex items-center justify-between">
+    <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+      <%= I18n.t("dashboard.status.title") %>
+    </h2>
+
+    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium <%= badge_class %>">
+      <%= I18n.t("dashboard.status.#{health_status}") %>
+    </span>
+  </div>
+
+  <div class="flex justify-center">
+    <div
+      class="w-32 h-32 flex-shrink-0"
+      data-controller="pie-chart"
+      data-pie-chart-slices-value="<%= job_run_stats.to_json %>"
+      data-pie-chart-labels-value="<%= chart_labels %>"
+    >
+      <canvas data-pie-chart-target="canvas"></canvas>
+    </div>
+  </div>
+
+  <p class="text-xs text-center text-gray-400 dark:text-gray-500">
+    <%= I18n.t("dashboard.status.total_runs", count: total_runs) %>
+  </p>
+</div>

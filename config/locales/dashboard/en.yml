@@ -1,6 +1,26 @@
 ---
 en:
   dashboard:
+    last_job_run:
+      ago: ago
+      bytes_copied: Bytes copied
+      duration: Duration
+      ended_at: Ended
+      no_runs: No runs yet
+      started_at: Started
+      title: Last jobs
+    next_job:
+      no_jobs: No jobs scheduled
+      runs_in: in %{time}
+      title: Next scheduled jobs
+    repositories:
+      local: Local
+      remote: Remote
+      title: Repositories
+      total:
+        one: 1 repository
+        other: "%{count} repositories"
+        zero: No repositories
     server_health:
       cores: "%{count} cores"
       cpu: CPU
@@ -16,5 +36,17 @@ en:
       path: 'Path: %{path}'
       title: Server health
       uptime: Up %{time}
+    status:
+      degraded: Degraded
+      healthy: Healthy
+      period: Past 24 hours
+      title: Overall status
+      total_runs:
+        one: 1 run in the past 24 hours
+        other: "%{count} runs in the past 24 hours"
+        zero: No runs in the past 24 hours
+      unknown: Unknown
+    storage:
+      title: Storage
     subtitle: Monitor recent activity
     title: Dashboard

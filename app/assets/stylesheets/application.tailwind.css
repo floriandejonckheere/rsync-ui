@@ -85,7 +85,7 @@
   }
 
   .card {
-    @apply rounded-md py-8 shadow-sm border-0 dark:border-0 dark:bg-gray-800;
+    @apply rounded-md px-8 py-8 shadow-sm border-0 dark:border-0 dark:bg-gray-800;
 
     > header {
       @apply px-8;

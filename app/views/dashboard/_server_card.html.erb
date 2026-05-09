@@ -1,75 +1,58 @@
 <% ru = server.resource_usage %>
 
-<div class="card p-0 flex flex-col w-60">
-  <%# Header %>
-  <div class="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700">
-    <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">
-      <%= server.name %>
-    </div>
+<div class="card flex flex-col gap-3 w-60">
+  <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+    <%= server.name %>
+  </h2>
 
-    <div class="text-xs font-mono text-gray-500 dark:text-gray-400 mt-0.5">
-      <%= server.username %>@<%= server.host %>:<%= server.port %>
+  <% if ru.nil? %>
+    <div class="text-sm text-gray-400 dark:text-gray-500 text-center py-4">
+      <%= I18n.t("dashboard.server_health.never_probed") %>
     </div>
-  </div>
+  <% elsif ru.failed? %>
+    <div class="text-sm text-red-500 dark:text-red-400 text-center py-4">
+      <%= I18n.t("dashboard.server_health.failed", error: "#{ru.error_class}: #{ru.error_message}") %>
+    </div>
+  <% else %>
+    <div class="flex gap-3 w-full">
+      <%= render "dashboard/gauge",
+                 label: I18n.t("dashboard.server_health.disk"),
+                 percent: ru.disk_percent,
+                 health: ru.disk_health,
+                 detail: ru.disk_percent.present? ? "#{number_to_human_size(ru.disk_used)} #{I18n.t("dashboard.server_health.of")} #{number_to_human_size(ru.disk_total)}" : nil %>
 
-  <%# Body %>
-  <div class="px-4 py-3 flex flex-col gap-3 flex-1">
-    <% if ru.nil? %>
-      <div class="text-sm text-gray-400 dark:text-gray-500 text-center py-4">
-        <%= I18n.t("dashboard.server_health.never_probed") %>
+      <%= render "dashboard/gauge",
+                 label: I18n.t("dashboard.server_health.memory"),
+                 percent: ru.memory_percent,
+                 health: ru.memory_health,
+                 detail: ru.memory_percent.present? ? "#{number_to_human_size(ru.memory_used)} #{I18n.t("dashboard.server_health.of")} #{number_to_human_size(ru.memory_total)}" : nil %>
+
+      <%= render "dashboard/gauge",
+                 label: I18n.t("dashboard.server_health.cpu"),
+                 percent: ru.cpu_usage,
+                 health: ru.cpu_health,
+                 detail: ru.cpu_count.present? ? I18n.t("dashboard.server_health.cores", count: ru.cpu_count) : nil %>
+    </div>
+    <div class="flex flex-col gap-1 text-xs text-gray-500 dark:text-gray-400 mt-4">
+      <div class="flex items-center gap-1">
+        <%= lucide_icon "clock", class: "h-3 w-3" %>
+
+        <% if ru.uptime_seconds.present? %>
+          <%= I18n.t("dashboard.server_health.uptime", time: distance_of_time_in_words(0, ru.uptime_seconds)) %>
+        <% else %>
+          -
+        <% end %>
       </div>
-    <% elsif ru.failed? %>
-      <div class="text-sm text-red-500 dark:text-red-400 text-center py-4">
-        <%= I18n.t("dashboard.server_health.failed", error: "#{ru.error_class}: #{ru.error_message}") %>
+
+      <div class="flex items-center gap-1">
+        <%= lucide_icon "refresh-cw", class: "h-3 w-3" %>
+
+        <% if ru.probed_at.present? %>
+          <%= I18n.t("dashboard.server_health.last_probed", time: time_ago_in_words(ru.probed_at)) %>
+        <% else %>
+          <%= I18n.t("dashboard.server_health.never_probed") %>
+        <% end %>
       </div>
-    <% else %>
-      <div class="flex gap-3 w-full">
-        <%= render "dashboard/gauge",
-                   label: I18n.t("dashboard.server_health.disk"),
-                   percent: ru.disk_percent,
-                   health: ru.disk_health,
-                   detail: ru.disk_percent.present? ? number_to_human_size(ru.disk_used) + " " + I18n.t("dashboard.server_health.of") + " " + number_to_human_size(ru.disk_total) : nil %>
-
-        <%= render "dashboard/gauge",
-                   label: I18n.t("dashboard.server_health.memory"),
-                   percent: ru.memory_percent,
-                   health: ru.memory_health,
-                   detail: ru.memory_percent.present? ? number_to_human_size(ru.memory_used) + " " + I18n.t("dashboard.server_health.of") + " " + number_to_human_size(ru.memory_total) : nil %>
-
-        <%= render "dashboard/gauge",
-                   label: I18n.t("dashboard.server_health.cpu"),
-                   percent: ru.cpu_usage,
-                   health: ru.cpu_health,
-                   detail: ru.cpu_count.present? ? I18n.t("dashboard.server_health.cores", count: ru.cpu_count) : nil %>
-      </div>
-    <% end %>
-  </div>
-
-  <%# Footer %>
-  <div
-    class="
-      px-4 py-2 border-t border-gray-100 dark:border-gray-700 flex
-      items-center justify-between text-xs text-gray-500 dark:text-gray-400
-    "
-  >
-    <div class="flex items-center gap-1">
-      <%= lucide_icon "clock", class: "h-3 w-3" %>
-
-      <% if ru&.uptime_seconds.present? %>
-        <%= I18n.t("dashboard.server_health.uptime", time: distance_of_time_in_words(0, ru.uptime_seconds)) %>
-      <% else %>
-        -
-      <% end %>
     </div>
-
-    <div class="flex items-center gap-1">
-      <%= lucide_icon "refresh-cw", class: "h-3 w-3" %>
-
-      <% if ru&.probed_at.present? %>
-        <%= I18n.t("dashboard.server_health.last_probed", time: time_ago_in_words(ru.probed_at)) %>
-      <% else %>
-        <%= I18n.t("dashboard.server_health.never_probed") %>
-      <% end %>
-    </div>
-  </div>
+  <% end %>
 </div>

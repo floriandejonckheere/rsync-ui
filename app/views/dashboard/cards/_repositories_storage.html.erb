@@ -1,0 +1,25 @@
+<% local_count  = repository_counts["local"].to_i %>
+<% remote_count = repository_counts["remote"].to_i %>
+<% chart_slices = { local: local_count, remote: remote_count }.to_json %>
+<% chart_labels = [I18n.t("dashboard.repositories.local"), I18n.t("dashboard.repositories.remote")].to_json %>
+
+<div class="card flex flex-col gap-4">
+  <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+    <%= I18n.t("dashboard.repositories.title") %>
+  </h2>
+
+  <div class="flex justify-center">
+    <div
+      class="w-32 h-32 flex-shrink-0"
+      data-controller="pie-chart"
+      data-pie-chart-slices-value="<%= chart_slices %>"
+      data-pie-chart-labels-value="<%= chart_labels %>"
+    >
+      <canvas data-pie-chart-target="canvas"></canvas>
+    </div>
+  </div>
+
+  <p class="text-xs text-center text-gray-400 dark:text-gray-500">
+    <%= I18n.t("dashboard.repositories.total", count: local_count + remote_count) %>
+  </p>
+</div>

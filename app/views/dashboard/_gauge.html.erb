@@ -11,6 +11,7 @@
     data-controller="gauge"
     data-gauge-percent-value="<%= percent.present? ? percent.clamp(0, 100) : 0 %>"
     data-gauge-health-value="<%= health %>"
+    data-tooltip="<%= detail %>"
   >
     <canvas data-gauge-target="canvas"></canvas>
 
@@ -27,12 +28,5 @@
 
   <div class="text-center">
     <span class="text-xs text-gray-500 dark:text-gray-400"><%= label %></span>
-
-    <% if detail.present? %>
-      <br>
-      <span class="text-xs text-gray-400 dark:text-gray-500">
-        <%= detail %>
-      </span>
-    <% end %>
   </div>
 </div>

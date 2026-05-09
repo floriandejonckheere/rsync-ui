@@ -6,26 +6,50 @@
   <%= I18n.t("dashboard.subtitle") %>
 <% end %>
 
-<% if Configuration.get("resource_usage") %>
-  <div class="flex flex-col gap-4">
-    <h2 class="text-lg font-semibold">
-      <%= I18n.t("dashboard.server_health.title") %>
-    </h2>
+<div class="flex flex-col gap-8">
+  <%# Row 1: Status, repositories, last job run, next scheduled job %>
+  <div class="grid grid-cols-4 gap-4 items-stretch">
+    <%= render "dashboard/cards/status",
+               health_status: @health_status,
+               job_run_stats: @job_run_stats %>
 
-    <% if @servers.empty? %>
-      <div class="flex flex-col items-center justify-center py-12 gap-4 text-gray-400">
-        <%= lucide_icon "server", class: "h-12 w-12" %>
+    <%= render "dashboard/cards/repositories_storage",
+               repository_counts: @repository_counts %>
 
-        <p class="text-lg">
-          <%= I18n.t("dashboard.server_health.no_servers") %>
-        </p>
-      </div>
-    <% else %>
-      <div class="flex flex-wrap gap-4">
-        <% @servers.each do |server| %>
-          <%= render "dashboard/server_card", server: %>
-        <% end %>
-      </div>
-    <% end %>
+    <%= render "dashboard/cards/last_job_run",
+               last_job_run: @last_job_run %>
+
+    <%= render "dashboard/cards/next_job",
+               next_jobs: @next_jobs %>
   </div>
-<% end %>
+
+  <%# Row 2: Server health (existing) %>
+  <% if Configuration.get("resource_usage") %>
+    <div class="flex flex-col gap-4">
+      <h2 class="text-lg font-semibold">
+        <%= I18n.t("dashboard.server_health.title") %>
+      </h2>
+
+      <% if @servers.empty? %>
+        <div
+          class="
+            flex flex-col items-center justify-center py-12 gap-4
+            text-gray-400
+          "
+        >
+          <%= lucide_icon "server", class: "h-12 w-12" %>
+
+          <p class="text-lg">
+            <%= I18n.t("dashboard.server_health.no_servers") %>
+          </p>
+        </div>
+      <% else %>
+        <div class="flex flex-wrap gap-4">
+          <% @servers.each do |server| %>
+            <%= render "dashboard/server_card", server: %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
