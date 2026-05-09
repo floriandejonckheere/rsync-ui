@@ -11,8 +11,8 @@ const COLORS = {
     canceled:  "#9ca3af",
     pending:   "#3b82f6",
     running:   "#93c5fd",
-    local:     "#f97316",
-    remote:    "#3b82f6",
+    remote:    "#f97316",
+    local:     "#3b82f6",
   },
   dark: {
     completed: "#4ade80",
@@ -21,8 +21,8 @@ const COLORS = {
     canceled:  "#6b7280",
     pending:   "#60a5fa",
     running:   "#bfdbfe",
-    local:     "#fb923c",
-    remote:    "#60a5fa",
+    local:     "#60a5fa",
+    remote:    "#fb923c",
   },
 }
 
