@@ -59,7 +59,7 @@
         </div>
       <% end %>
     </dl>
-    <div class="text-xs font-medium <%= job_run_status_classes(last_job_run.status) %>">
+    <div class="text-xs font-medium" data-job-run-status="<%= last_job_run.status %>">
       <%= I18n.t("job_runs.status.#{last_job_run.status}") %>
     </div>
   <% end %>

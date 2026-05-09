@@ -14,6 +14,24 @@
 }
 
 @layer components {
+  [data-job-run-status="pending"],
+  [data-job-run-status="canceled"] {
+    @apply text-gray-700 dark:text-gray-300;
+  }
+
+  [data-job-run-status="running"] {
+    @apply text-blue-700 dark:text-blue-300;
+  }
+
+  [data-job-run-status="completed"] {
+    @apply text-green-700 dark:text-green-300;
+  }
+
+  [data-job-run-status="failed"],
+  [data-job-run-status="errored"] {
+    @apply text-red-700 dark:text-red-300;
+  }
+
   /* Confirm dialog styles */
   dialog#turbo-confirm-dialog {
     opacity: 0;

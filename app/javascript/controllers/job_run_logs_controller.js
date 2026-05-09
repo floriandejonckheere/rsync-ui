@@ -1,15 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { cable } from "@hotwired/turbo-rails"
 
-const STATUS_CLASSES = {
-  pending: "text-gray-700 dark:text-gray-300",
-  running: "text-blue-700 dark:text-blue-300",
-  completed: "text-green-700 dark:text-green-300",
-  failed: "text-red-700 dark:text-red-300",
-  canceled: "text-gray-700 dark:text-gray-300",
-  errored: "text-red-700 dark:text-red-300",
-}
-
 export default class extends Controller {
   static targets = ["log", "status", "jobStatus", "completedAt", "logCard", "completedMessage"]
   static values = { jobRunId: String }
@@ -34,7 +25,7 @@ export default class extends Controller {
       this.jobStatusTarget.textContent = data.status_text
     } else if (data.type === "complete") {
       if (this.hasJobStatusTarget) {
-        this.jobStatusTarget.className = STATUS_CLASSES[data.status] ?? "text-gray-700 dark:text-gray-300"
+        this.jobStatusTarget.dataset.jobRunStatus = data.status
         this.jobStatusTarget.textContent = data.status_text
       }
       if (this.hasCompletedAtTarget) {

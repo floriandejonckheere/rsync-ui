@@ -22,7 +22,7 @@
       "
     >
       <div
-        class="<%= job_run_status_classes(@job_run.status) %>"
+        data-job-run-status="<%= @job_run.status %>"
         data-job-run-logs-target="jobStatus"
       >
         <% if @job_run.running? && @job_run.progress %>

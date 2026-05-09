@@ -26,7 +26,7 @@
     </div>
   </td>
 
-  <td class="px-6 py-4 text-sm <%= job_run_status_classes(job_run.status) %>">
+  <td class="px-6 py-4 text-sm" data-job-run-status="<%= job_run.status %>">
     <% if job_run.running? && !job_run.progress.nil? %>
       <%= I18n.t("job_runs.status.running_progress", progress: job_run.progress) %>
       <div
