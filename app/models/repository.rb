@@ -9,13 +9,13 @@ class Repository < ApplicationRecord
            class_name: "Job",
            foreign_key: :source_repository_id,
            inverse_of: :source_repository,
-           dependent: :restrict_with_exception
+           dependent: :destroy
 
   has_many :destination_jobs,
            class_name: "Job",
            foreign_key: :destination_repository_id,
            inverse_of: :destination_repository,
-           dependent: :restrict_with_exception
+           dependent: :destroy
 
   enum :repository_type, {
     local: "local",
@@ -64,6 +64,6 @@ end
 #
 # Foreign Keys
 #
-#  fk_rails_...  (server_id => servers.id)
+#  fk_rails_...  (server_id => servers.id) ON DELETE => cascade
 #  fk_rails_...  (user_id => users.id)
 #

@@ -6,6 +6,9 @@ RSpec.describe Repository do
   describe "associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:server).optional }
+
+    it { is_expected.to have_many(:source_jobs).dependent(:destroy) }
+    it { is_expected.to have_many(:destination_jobs).dependent(:destroy) }
   end
 
   describe "validations" do

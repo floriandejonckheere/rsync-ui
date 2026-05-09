@@ -9,6 +9,9 @@ class Server < ApplicationRecord
   has_one :resource_usage,
           dependent: :destroy
 
+  has_many :repositories,
+           dependent: :destroy
+
   enum :operating_system, {
     linux: "linux",
     macos: "macos",

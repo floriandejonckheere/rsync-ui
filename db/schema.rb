@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_05_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_09_134433) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -404,11 +404,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_05_000001) do
   add_foreign_key "job_notifications", "notifications"
   add_foreign_key "job_runs", "jobs"
   add_foreign_key "job_runs", "users"
-  add_foreign_key "jobs", "repositories", column: "destination_repository_id"
-  add_foreign_key "jobs", "repositories", column: "source_repository_id"
+  add_foreign_key "jobs", "repositories", column: "destination_repository_id", on_delete: :cascade
+  add_foreign_key "jobs", "repositories", column: "source_repository_id", on_delete: :cascade
   add_foreign_key "jobs", "users"
   add_foreign_key "notifications", "users"
-  add_foreign_key "repositories", "servers"
+  add_foreign_key "repositories", "servers", on_delete: :cascade
   add_foreign_key "repositories", "users"
   add_foreign_key "resource_usages", "servers"
   add_foreign_key "servers", "users"
