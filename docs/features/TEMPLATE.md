@@ -38,20 +38,9 @@ Create the following files:
 
 - [ ] `spec/factories/models.rb` — factory definition
 
-## Authorization
-
-Policy actions:
-- [ ] `index?` — any authenticated user
-- [ ] `show?` — record owner or admin
-- [ ] `create?` — any authenticated user
-- [ ] `update?` — record owner or admin
-- [ ] `destroy?` — record owner or admin
-
-Create the following files:
-- [ ] `app/policies/model_policy.rb` — all policy actions, relation scope
-- [ ] `spec/policies/model_policy_spec.rb` — policy spec
-
 ## Controller actions
+
+### `ModelsController` file
 
 Actions:
 - [ ] `index`
@@ -68,6 +57,21 @@ Create the following files:
 
 Notes:
 - [ ] Return HTTP 404 if feature is disabled
+
+## Authorization
+
+### `ModelPolicy`
+
+Policy actions:
+- [ ] `index?` — any authenticated user
+- [ ] `show?` — record owner or admin
+- [ ] `create?` — any authenticated user
+- [ ] `update?` — record owner or admin
+- [ ] `destroy?` — record owner or admin
+
+Create the following files:
+- [ ] `app/policies/model_policy.rb` — all policy actions, relation scope
+- [ ] `spec/policies/model_policy_spec.rb` — policy spec
 
 ## User interface
 
