@@ -3,7 +3,6 @@
 module Jobs
   class ExecuteService < ApplicationService
     STATUS_PATTERN = /^\s*([\d,]+)\s+(\d+)%\s+\S+\s+[\d:]+/
-    CANCEL_MONITOR_INTERVAL = 5
 
     attr_reader :job_run,
                 :job,
@@ -54,112 +53,39 @@ module Jobs
         .call
 
       Tempfile.create(["job_run_#{job.name.parameterize(separator: '_')}_#{job_run.sequence}", ".log"]) do |file|
-        exit_status = nil
-        canceled = false
-
         Rails.logger.info { "[#{job.id}] Executing command: #{command}" }
 
         # Write full command to the log file
         file.write("#{command}\n")
 
-        # Start command and read output line-by-line
-        Open3.popen2e(command, pgroup: true) do |_stdin, output, wait_thr|
-          job_run.update!(pid: wait_thr.pid)
+        result = Rsync::ExecuteService.new(command, job_run).call do |line|
+          bytes_copied, progress = parse_status(line) if job.opt_progress || job.opt_progress2
 
-          buffer = +""
-
-          # User has requested job cancellation
-          cancel_sent = false
-
-          mutex = Mutex.new
-          condition_variable = ConditionVariable.new
-
-          # Signal the companion thread to stop
-          stop_monitor = false
-
-          # Companion thread monitors cancellation requests and kills process when rsync produces no output
-          monitor = Thread.new do
-            loop do
-              mutex.synchronize { condition_variable.wait(mutex, CANCEL_MONITOR_INTERVAL) }
-
-              break if stop_monitor
-
-              next if cancel_sent
-
-              next if JobRun.where(id: job_run.id).pick(:cancel_requested_at).blank?
-
-              begin
-                Process.kill("TERM", -wait_thr.pid)
-              rescue Errno::ESRCH
-                nil
-              end
-
-              cancel_sent = true
-            end
+          # Save progress only if --info=progress2 is enabled, not when only --progress is specified
+          if job.opt_progress2 && bytes_copied && progress
+            job_run.update!(
+              bytes_copied:,
+              progress:,
+            )
+          else
+            file.write(line)
           end
-
-          loop do
-            chunk = output.readpartial(4096)
-
-            Rails.logger.debug { chunk }
-
-            buffer << chunk
-
-            lines = buffer.split(/(?<=[\r\n])/)
-            buffer = lines.last&.match?(/[\r\n]\z/) ? +"" : (lines.pop || +"")
-
-            lines.each do |line|
-              bytes_copied, progress = parse_status(line) if job.opt_progress || opt_progress2
-
-              # Save progress only if --info=progress2 is enabled, not when only --progress is specified
-              if job.opt_progress2 && bytes_copied && progress
-                job_run.update!(
-                  bytes_copied:,
-                  progress:,
-                )
-              else
-                file.write(line)
-              end
-            end
-
-            if !cancel_sent && JobRun.where(id: job_run.id).pick(:cancel_requested_at).present?
-              begin
-                Process.kill("TERM", -wait_thr.pid)
-              rescue Errno::ESRCH
-                nil
-              end
-              cancel_sent = true
-            end
-          rescue EOFError
-            break
-          ensure
-            mutex.synchronize do
-              stop_monitor = true
-              condition_variable.signal
-            end
-          end
-
-          monitor.join
-
-          file.write(buffer) if buffer.present?
-
-          file.rewind
-
-          job_run.output.attach(
-            io: file,
-            filename: "job_run_#{job_run.sequence}.log",
-            content_type: "text/plain",
-          )
-
-          exit_status = wait_thr.value
-
-          canceled = job_run.reload.cancel_requested_at?
         end
+
+        file.rewind
+
+        job_run.output.attach(
+          io: file,
+          filename: "job_run_#{job_run.sequence}.log",
+          content_type: "text/plain",
+        )
+
+        exit_status = result.exit_status
 
         Rails.logger.info { "[#{job.id}] Command exited with status: #{exit_status.exitstatus || "signal #{exit_status.termsig}"}" }
 
         # Mark job as canceled if cancellation was requested
-        next job_run.cancel! if canceled
+        next job_run.cancel! if result.canceled
 
         # Mark job as completed or failed based on the exit status
         job_run.update!(

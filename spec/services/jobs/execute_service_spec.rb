@@ -12,10 +12,9 @@ RSpec.describe Jobs::ExecuteService do
 
   let(:options) { {} }
 
-  let(:output) { instance_double(IO) }
-  let(:output_content) { "" }
   let(:exit_status) { instance_double(Process::Status, success?: true, signaled?: false, exitstatus: 0) }
-  let(:wait_thr) { instance_double(Process::Waiter, pid: 12_345, value: exit_status) }
+  let(:rsync_result) { Rsync::ExecuteService::Result.new(exit_status:, canceled: false) }
+  let(:rsync_execute_service) { instance_double(Rsync::ExecuteService) }
 
   before do
     allow(Rsync::CommandService)
@@ -23,22 +22,13 @@ RSpec.describe Jobs::ExecuteService do
       .with(job:)
       .and_return(command_service)
 
-    allow(Open3)
-      .to receive(:popen2e)
-      .and_call_original
+    allow(Rsync::ExecuteService)
+      .to receive(:new)
+      .and_return(rsync_execute_service)
 
-    allow(Open3)
-      .to receive(:popen2e)
-        .with(anything, pgroup: true) { |_command, pgroup:, &block| block.call(nil, output, wait_thr) } # rubocop:disable Lint/UnusedBlockArgument
-
-    calls = 0
-
-    allow(output).to receive(:readpartial) do
-      calls += 1
-      raise EOFError if calls > 1
-
-      output_content
-    end
+    allow(rsync_execute_service)
+      .to receive(:call)
+      .and_return(rsync_result)
   end
 
   describe "#call" do
@@ -67,7 +57,6 @@ RSpec.describe Jobs::ExecuteService do
     end
 
     context "when the command exits with a non-zero status" do
-      let(:command_service) { instance_double(Rsync::CommandService, call: "false") }
       let(:exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
 
       it "sets status to failed and completed_at" do
@@ -100,93 +89,38 @@ RSpec.describe Jobs::ExecuteService do
       end
     end
 
-    context "when cancellation is requested while the command is running" do
-      let(:output) { instance_double(IO) }
-      let(:status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
-      let(:wait_thr) { instance_double(Process::Waiter, pid: 43_210, value: status) }
+    context "when cancellation is requested" do
+      let(:rsync_result) { Rsync::ExecuteService::Result.new(exit_status:, canceled: true) }
 
-      before do
-        allow(Open3).to receive(:popen2e) do |_command, pgroup:, &block|
-          raise "expected process group" unless pgroup
+      before { job_run.update!(cancel_requested_at: Time.zone.now) }
 
-          block.call(nil, output, wait_thr)
-        end
-
-        calls = 0
-        allow(output).to receive(:readpartial) do
-          calls += 1
-          raise EOFError if calls > 1
-
-          JobRun.last.update!(cancel_requested_at: Time.zone.now)
-          "partial log line\n"
-        end
-
-        allow(Process).to receive(:kill)
-      end
-
-      it "signals the process group and marks the job run as canceled" do
+      it "marks the job run as canceled" do
         service.call
 
         job_run.reload
 
-        expect(Process).to have_received(:kill).with("TERM", -43_210)
         expect(job_run).to be_canceled
         expect(job_run.cancel_requested_at).to be_present
         expect(job_run.canceled_at).to be_present
         expect(job_run.completed_at).to be_present
-        expect(job_run.pid).to eq 43_210
         expect(job_run.output).to be_attached
-      end
-
-      context "when the process has already exited" do
-        before { allow(Process).to receive(:kill).and_raise(Errno::ESRCH) }
-
-        it "marks the job run as canceled without raising" do
-          expect { service.call }.not_to raise_error
-
-          expect(job_run.reload).to be_canceled
-        end
-      end
-    end
-
-    context "when cancellation is requested while the command produces no output" do
-      let(:wait_thr) { instance_double(Process::Waiter, pid: 43_210, value: instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1)) }
-
-      before do
-        job_run.update!(cancel_requested_at: Time.zone.now)
-
-        killed = false
-
-        allow(Process)
-          .to receive(:kill) { killed = true }
-
-        # Simulate a blocking read that unblocks only after the monitor sends SIGTERM
-        allow(output).to receive(:readpartial) do
-          sleep 0.01 until killed
-
-          raise EOFError
-        end
-      end
-
-      it "signals the process group via the monitor thread and marks the job run as canceled" do
-        service.call
-
-        expect(Process)
-          .to have_received(:kill)
-          .with("TERM", -43_210)
-
-        expect(job_run.reload).to be_canceled
       end
     end
 
     describe "progress tracking" do
       let(:status_line) { "  1,234,567  75%  10.00MB/s  0:00:10\r" }
-      let(:output_content) { status_line }
+
+      before do
+        allow(rsync_execute_service)
+          .to receive(:call)
+          .and_yield(status_line)
+          .and_return(rsync_result)
+      end
 
       context "when only opt_progress is enabled" do
         let(:options) { { opt_progress: true, opt_progress2: false } }
 
-        it "parses the status line, but does not update bytes_copied and progress" do
+        it "does not update bytes_copied and progress" do
           service.call
 
           job_run.reload
@@ -199,7 +133,7 @@ RSpec.describe Jobs::ExecuteService do
       context "when opt_progress2 is enabled" do
         let(:options) { { opt_progress: true, opt_progress2: true } }
 
-        it "parses the status line and updates bytes_copied and progress" do
+        it "updates bytes_copied and progress" do
           service.call
 
           job_run.reload
@@ -212,7 +146,7 @@ RSpec.describe Jobs::ExecuteService do
       context "when opt_progress2 is disabled" do
         let(:options) { { opt_progress: true, opt_progress2: false } }
 
-        it "does not parse the status line, but writes it to the log" do
+        it "writes the status line to the log" do
           service.call
 
           job_run.reload
@@ -301,7 +235,6 @@ RSpec.describe Jobs::ExecuteService do
         end
 
         context "when the job fails" do
-          let(:command_service) { instance_double(Rsync::CommandService, call: "false") }
           let(:exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
 
           it "does not execute the success-hook" do
@@ -322,7 +255,6 @@ RSpec.describe Jobs::ExecuteService do
         end
 
         context "when the job fails" do
-          let(:command_service) { instance_double(Rsync::CommandService, call: "false") }
           let(:exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
 
           it "executes the failure-hook" do
