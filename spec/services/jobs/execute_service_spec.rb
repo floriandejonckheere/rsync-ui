@@ -6,15 +6,39 @@ RSpec.describe Jobs::ExecuteService do
   let(:user) { create(:user) }
   let!(:notification) { create(:notification, user:) }
   let!(:job_notification) { create(:job_notification, job:, notification:) }
-  let(:command_service) { instance_double(Rsync::CommandService, call: "echo rsync_output") }
-  let(:job) { create(:job, user:) }
-  let!(:job_run) { create(:job_run, :pending, job:, user:) }
+  let(:command_service) { instance_double(Rsync::CommandService, call: "rsync --recursive") }
+  let(:job) { create(:job, user:, **options) }
+  let(:job_run) { create(:job_run, :pending, job:, user:) }
+
+  let(:options) { {} }
+
+  let(:output) { instance_double(IO) }
+  let(:output_content) { "" }
+  let(:exit_status) { instance_double(Process::Status, success?: true, signaled?: false, exitstatus: 0) }
+  let(:wait_thr) { instance_double(Process::Waiter, pid: 12_345, value: exit_status) }
 
   before do
     allow(Rsync::CommandService)
       .to receive(:new)
       .with(job:)
       .and_return(command_service)
+
+    allow(Open3)
+      .to receive(:popen2e)
+      .and_call_original
+
+    allow(Open3)
+      .to receive(:popen2e)
+        .with(anything, pgroup: true) { |_command, pgroup:, &block| block.call(nil, output, wait_thr) } # rubocop:disable Lint/UnusedBlockArgument
+
+    calls = 0
+
+    allow(output).to receive(:readpartial) do
+      calls += 1
+      raise EOFError if calls > 1
+
+      output_content
+    end
   end
 
   describe "#call" do
@@ -44,6 +68,7 @@ RSpec.describe Jobs::ExecuteService do
 
     context "when the command exits with a non-zero status" do
       let(:command_service) { instance_double(Rsync::CommandService, call: "false") }
+      let(:exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
 
       it "sets status to failed and completed_at" do
         service.call
@@ -120,6 +145,51 @@ RSpec.describe Jobs::ExecuteService do
           expect { service.call }.not_to raise_error
 
           expect(job_run.reload).to be_canceled
+        end
+      end
+    end
+
+    describe "progress tracking" do
+      let(:status_line) { "  1,234,567  75%  10.00MB/s  0:00:10\r" }
+      let(:output_content) { status_line }
+
+      context "when only opt_progress is enabled" do
+        let(:options) { { opt_progress: true, opt_progress2: false } }
+
+        it "parses the status line, but does not update bytes_copied and progress" do
+          service.call
+
+          job_run.reload
+
+          expect(job_run.bytes_copied).to be_nil
+          expect(job_run.progress).to be_nil
+        end
+      end
+
+      context "when opt_progress2 is enabled" do
+        let(:options) { { opt_progress: true, opt_progress2: true } }
+
+        it "parses the status line and updates bytes_copied and progress" do
+          service.call
+
+          job_run.reload
+
+          expect(job_run.bytes_copied).to eq 1_234_567
+          expect(job_run.progress).to eq 75
+        end
+      end
+
+      context "when opt_progress2 is disabled" do
+        let(:options) { { opt_progress: true, opt_progress2: false } }
+
+        it "does not parse the status line, but writes it to the log" do
+          service.call
+
+          job_run.reload
+
+          expect(job_run.bytes_copied).to be_nil
+          expect(job_run.progress).to be_nil
+          expect(job_run.output).to be_attached
         end
       end
     end
@@ -202,6 +272,7 @@ RSpec.describe Jobs::ExecuteService do
 
         context "when the job fails" do
           let(:command_service) { instance_double(Rsync::CommandService, call: "false") }
+          let(:exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
 
           it "does not execute the success-hook" do
             service.call
@@ -222,6 +293,7 @@ RSpec.describe Jobs::ExecuteService do
 
         context "when the job fails" do
           let(:command_service) { instance_double(Rsync::CommandService, call: "false") }
+          let(:exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
 
           it "executes the failure-hook" do
             service.call

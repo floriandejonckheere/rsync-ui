@@ -27,7 +27,7 @@
   </td>
 
   <td class="px-6 py-4 text-sm <%= job_run_status_classes(job_run.status) %>">
-    <% if job_run.running? && job_run.progress.present? %>
+    <% if job_run.running? && !job_run.progress.nil? %>
       <%= I18n.t("job_runs.status.running_progress", progress: job_run.progress) %>
       <div
         role="progressbar"

@@ -66,14 +66,14 @@ end
 # Table name: job_runs
 #
 #  id                  :uuid             not null, primary key
-#  bytes_copied        :bigint           default(0), not null
+#  bytes_copied        :bigint
 #  cancel_requested_at :datetime
 #  canceled_at         :datetime         indexed
 #  completed_at        :datetime         indexed
 #  error_class         :string
 #  error_messages      :text
 #  pid                 :integer
-#  progress            :integer          default(0), not null
+#  progress            :integer
 #  sequence            :integer          not null, indexed
 #  started_at          :datetime         indexed
 #  status              :string           default("pending"), not null, indexed

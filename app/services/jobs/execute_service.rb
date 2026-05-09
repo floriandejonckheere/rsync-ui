@@ -48,7 +48,9 @@ module Jobs
         end
       end
 
-      command = Rsync::CommandService.new(job:).call
+      command = Rsync::CommandService
+        .new(job:)
+        .call
 
       Tempfile.create(["job_run_#{job.name.parameterize(separator: '_')}_#{job_run.sequence}", ".log"]) do |file|
         exit_status = nil
@@ -56,8 +58,10 @@ module Jobs
 
         Rails.logger.info { "[#{job.id}] Executing command: #{command}" }
 
+        # Write full command to the log file
         file.write("#{command}\n")
 
+        # Start command and read output line-by-line
         Open3.popen2e(command, pgroup: true) do |_stdin, output, wait_thr|
           job_run.update!(pid: wait_thr.pid)
 
@@ -75,9 +79,10 @@ module Jobs
             buffer = lines.last&.match?(/[\r\n]\z/) ? +"" : (lines.pop || +"")
 
             lines.each do |line|
-              bytes_copied, progress = parse_status(line)
+              bytes_copied, progress = parse_status(line) if job.opt_progress || opt_progress2
 
-              if bytes_copied && progress
+              # Save progress only if --info=progress2 is enabled, not when only --progress is specified
+              if job.opt_progress2 && bytes_copied && progress
                 job_run.update!(
                   bytes_copied:,
                   progress:,

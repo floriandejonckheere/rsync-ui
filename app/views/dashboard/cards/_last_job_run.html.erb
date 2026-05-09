@@ -47,15 +47,17 @@
         </dd>
       </div>
 
-      <div class="flex justify-between text-xs">
-        <dt class="text-gray-500 dark:text-gray-400">
-          <%= I18n.t("dashboard.last_job_run.bytes_copied") %>
-        </dt>
+      <% if last_job_run.bytes_copied? %>
+        <div class="flex justify-between text-xs">
+          <dt class="text-gray-500 dark:text-gray-400">
+            <%= I18n.t("dashboard.last_job_run.bytes_copied") %>
+          </dt>
 
-        <dd class="text-gray-900 dark:text-gray-100">
-          <%= last_job_run.bytes_copied.positive? ? number_to_human_size(last_job_run.bytes_copied) : "-" %>
-        </dd>
-      </div>
+          <dd class="text-gray-900 dark:text-gray-100">
+            <%= last_job_run.bytes_copied.positive? ? number_to_human_size(last_job_run.bytes_copied) : "-" %>
+          </dd>
+        </div>
+      <% end %>
     </dl>
     <div class="text-xs font-medium <%= job_run_status_classes(last_job_run.status) %>">
       <%= I18n.t("job_runs.status.#{last_job_run.status}") %>
