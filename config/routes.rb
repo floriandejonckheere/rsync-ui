@@ -62,7 +62,7 @@ Rails.application.routes.draw do
   resources :job_runs, only: [:index, :show, :create, :destroy] do
     member do
       patch :cancel
-      get :logs
+      get :output
     end
   end
 end
@@ -127,7 +127,7 @@ end
 #                                          PUT    /jobs/:id(.:format)                                                                               jobs#update
 #                                          DELETE /jobs/:id(.:format)                                                                               jobs#destroy
 #                           cancel_job_run PATCH  /job_runs/:id/cancel(.:format)                                                                    job_runs#cancel
-#                             logs_job_run GET    /job_runs/:id/logs(.:format)                                                                      job_runs#logs
+#                           output_job_run GET    /job_runs/:id/output(.:format)                                                                    job_runs#output
 #                                 job_runs GET    /job_runs(.:format)                                                                               job_runs#index
 #                                          POST   /job_runs(.:format)                                                                               job_runs#create
 #                                  job_run GET    /job_runs/:id(.:format)                                                                           job_runs#show

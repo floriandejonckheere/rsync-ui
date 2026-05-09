@@ -17,7 +17,7 @@ class JobRunPolicy < ApplicationPolicy
     user.admin? || record.user == user
   end
 
-  def logs?
+  def output?
     user.admin? || record.user == user
   end
 

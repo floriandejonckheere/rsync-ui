@@ -5,7 +5,7 @@ class JobRunsController < ApplicationController
   include Sortable
 
   before_action :authenticate_user!
-  before_action :set_job_run, only: [:show, :logs, :destroy, :cancel]
+  before_action :set_job_run, only: [:show, :output, :destroy, :cancel]
 
   def index
     @jobs = authorized_scope(Job.order(:name), type: :relation)
@@ -32,7 +32,7 @@ class JobRunsController < ApplicationController
     redirect_to job_runs_path unless @job_run.output.attached? || @job_run.error_class.present? || @job_run.error_messages.present?
   end
 
-  def logs
+  def output
     authorize! @job_run
 
     return head :not_found unless @job_run.output.attached?

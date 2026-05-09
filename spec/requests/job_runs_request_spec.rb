@@ -100,7 +100,7 @@ RSpec.describe "JobRuns" do
     end
   end
 
-  describe "GET /job_runs/:id/logs" do
+  describe "GET /job_runs/:id/output" do
     let(:job_run) { create(:job_run, :completed, user:) }
 
     context "when authenticated" do
@@ -110,7 +110,7 @@ RSpec.describe "JobRuns" do
         before { job_run.output.attach(io: StringIO.new("log content"), filename: "output.log", content_type: "text/plain") }
 
         it "redirects to the blob download URL" do
-          get logs_job_run_path(job_run)
+          get output_job_run_path(job_run)
 
           expect(response).to have_http_status(:redirect)
         end
@@ -118,7 +118,7 @@ RSpec.describe "JobRuns" do
 
       context "when output is not attached" do
         it "returns not found" do
-          get logs_job_run_path(job_run)
+          get output_job_run_path(job_run)
 
           expect(response).to have_http_status(:not_found)
         end
@@ -131,7 +131,7 @@ RSpec.describe "JobRuns" do
       before { sign_in user, scope: :user }
 
       it "returns forbidden" do
-        get logs_job_run_path(job_run)
+        get output_job_run_path(job_run)
 
         expect(response).to have_http_status(:forbidden)
       end
@@ -139,7 +139,7 @@ RSpec.describe "JobRuns" do
 
     context "when not authenticated" do
       it "redirects to sign in" do
-        get logs_job_run_path(job_run)
+        get output_job_run_path(job_run)
 
         expect(response).to redirect_to(new_user_session_path)
       end

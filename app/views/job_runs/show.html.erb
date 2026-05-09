@@ -83,7 +83,7 @@
         <span><%= I18n.t("job_runs.show.output_file") %></span>
       </div>
 
-      <%= link_to logs_job_run_path(@job_run),
+      <%= link_to output_job_run_path(@job_run),
                   class: "btn-icon-outline btn-icon-md",
                   data: { tooltip: I18n.t("job_runs.actions.download_logs") } do %>
         <%= lucide_icon "download", class: "h-4 w-4" %>
