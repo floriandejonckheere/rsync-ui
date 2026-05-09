@@ -1,0 +1,97 @@
+<% content_for :back do %>
+  <%= render "shared/menu/back", path: job_runs_path %>
+<% end %>
+
+<% content_for :title do %>
+  <%= I18n.t("job_runs.logs.title", sequence: @job_run.sequence) %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= I18n.t("job_runs.logs.subtitle", job: @job_run.job.name) %>
+<% end %>
+
+<div
+  data-controller="job-run-logs"
+  data-job-run-logs-job-run-id-value="<%= @job_run.id %>"
+>
+  <div class="card p-0 mb-6">
+    <div
+      class="
+        flex flex-wrap items-center justify-end gap-6 px-6 py-4
+        text-sm text-gray-500 dark:text-gray-400
+      "
+    >
+      <div
+        class="<%= job_run_status_classes(@job_run.status) %>"
+        data-job-run-logs-target="jobStatus"
+      >
+        <% if @job_run.running? && @job_run.progress %>
+          <%= I18n.t("job_runs.status.running_progress", progress: @job_run.progress) %>
+        <% else %>
+          <%= I18n.t("job_runs.status.#{@job_run.status}") %>
+        <% end %>
+      </div>
+
+      <div>
+        <%= I18n.t("job_runs.logs.started_at") %>:
+        <span data-job-run-logs-target="startedAt">
+          <%= @job_run.started_at ? relative_time_tag(@job_run.started_at) : "—" %>
+        </span>
+      </div>
+
+      <div>
+        <%= I18n.t("job_runs.logs.completed_at") %>:
+        <span data-job-run-logs-target="completedAt">
+          <%= @job_run.completed_at ? relative_time_tag(@job_run.completed_at) : "—" %>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="card p-0 <%= "hidden" unless @job_run.running? || @job_run.pending? %>"
+    data-job-run-logs-target="logCard"
+  >
+    <div
+      class="
+        flex items-center gap-2 px-6 py-4 border-b border-gray-100
+        dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400
+      "
+    >
+      <%= lucide_icon "file-text", class: "h-4 w-4" %>
+      <span><%= I18n.t("job_runs.logs.output") %></span>
+    </div>
+
+    <pre
+      class="
+        p-6 text-xs font-mono text-gray-800 dark:text-gray-200
+        whitespace-pre-wrap
+      "
+      data-job-run-logs-target="log"
+    ></pre>
+
+    <% if @job_run.job.opt_progress || @job_run.job.opt_progress2 %>
+      <div
+        class="px-6 pb-4 text-xs font-mono text-blue-600 dark:text-blue-400"
+        data-job-run-logs-target="status"
+      ></div>
+    <% end %>
+  </div>
+
+  <div
+    class="
+      card flex flex-col items-center justify-center gap-3 p-12
+      text-center text-gray-500 dark:text-gray-400
+      <%= "hidden" if @job_run.running? || @job_run.pending? %>
+    "
+    data-job-run-logs-target="completedMessage"
+  >
+    <%= lucide_icon "check-circle", class: "h-8 w-8 text-green-500 dark:text-green-400" %>
+    <p class="text-sm font-medium">
+      <%= I18n.t("job_runs.logs.job_finished") %>
+    </p>
+    <%= link_to I18n.t("job_runs.logs.view_output"), job_run_path(@job_run),
+                class: "text-sm text-blue-600 hover:underline dark:text-blue-400",
+                data: { turbo_frame: "_top" } %>
+  </div>
+</div>

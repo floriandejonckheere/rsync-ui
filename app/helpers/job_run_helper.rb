@@ -7,6 +7,7 @@ module JobRunHelper
     "completed" => "text-green-700 dark:text-green-300",
     "failed" => "text-red-700 dark:text-red-300",
     "canceled" => "text-gray-700 dark:text-gray-300",
+    "errored" => "text-red-700 dark:text-red-300",
   }.freeze
 
   def job_run_status_classes(status)

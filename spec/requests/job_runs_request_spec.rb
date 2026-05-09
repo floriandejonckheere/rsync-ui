@@ -146,6 +146,50 @@ RSpec.describe "JobRuns" do
     end
   end
 
+  describe "GET /job_runs/:id/logs" do
+    let(:job_run) { create(:job_run, :running, user:) }
+
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      it "renders the logs page" do
+        get logs_job_run_path(job_run)
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      context "when streaming feature is disabled" do
+        with_configuration "streaming" => false
+
+        it "returns not found" do
+          get logs_job_run_path(job_run)
+
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+    end
+
+    context "when job run belongs to another user" do
+      let(:job_run) { create(:job_run, :running, user: other_user) }
+
+      before { sign_in user, scope: :user }
+
+      it "returns forbidden" do
+        get logs_job_run_path(job_run)
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        get logs_job_run_path(job_run)
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
   describe "DELETE /job_runs/:id" do
     let!(:job_run) { create(:job_run, :completed, user:) }
 

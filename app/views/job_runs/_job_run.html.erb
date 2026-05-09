@@ -95,6 +95,13 @@
           <%= lucide_icon "trash-2", class: "h-4 w-4" %>
         <% end %>
       <% elsif job_run.pending? || job_run.running? %>
+        <% if job_run.running? && Configuration.get("streaming") %>
+          <%= link_to logs_job_run_path(job_run),
+                      class: "btn-icon-outline btn-icon-md",
+                      data: { tooltip: I18n.t("job_runs.actions.stream_logs"), turbo_frame: "_top" } do %>
+            <%= lucide_icon "zap", class: "h-4 w-4" %>
+          <% end %>
+        <% end %>
         <%= link_to cancel_job_run_path(job_run),
                     class: "btn-icon-outline btn-icon-md",
                     data: {

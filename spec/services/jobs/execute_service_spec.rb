@@ -199,7 +199,7 @@ RSpec.describe Jobs::ExecuteService do
         it "executes the pre-hook before running the job" do
           service.call
 
-          expect(job_run_for(job).pre_hook_output).to be_attached
+          expect(job.job_runs.sole.pre_hook_output).to be_attached
         end
       end
 
@@ -209,7 +209,7 @@ RSpec.describe Jobs::ExecuteService do
         it "sets the job run status to errored and does not run rsync" do
           service.call
 
-          job_run = job_run_for(job)
+          job_run = job.job_runs.sole
 
           expect(job_run).to be_errored
           expect(command_service).not_to have_received(:call)
@@ -222,7 +222,7 @@ RSpec.describe Jobs::ExecuteService do
         it "executes the post-hook after running the job" do
           service.call
 
-          expect(job_run_for(job).post_hook_output).to be_attached
+          expect(job.job_runs.sole.post_hook_output).to be_attached
         end
       end
 
@@ -232,7 +232,7 @@ RSpec.describe Jobs::ExecuteService do
         it "executes the success-hook when the job completes successfully" do
           service.call
 
-          expect(job_run_for(job).success_hook_output).to be_attached
+          expect(job.job_runs.sole.success_hook_output).to be_attached
         end
 
         context "when the job fails" do
@@ -241,7 +241,7 @@ RSpec.describe Jobs::ExecuteService do
           it "does not execute the success-hook" do
             service.call
 
-            expect(job_run_for(job).success_hook_output).not_to be_attached
+            expect(job.job_runs.sole.success_hook_output).not_to be_attached
           end
         end
       end
@@ -252,7 +252,7 @@ RSpec.describe Jobs::ExecuteService do
         it "does not execute the failure-hook when the job succeeds" do
           service.call
 
-          expect(job_run_for(job).failure_hook_output).not_to be_attached
+          expect(job.job_runs.sole.failure_hook_output).not_to be_attached
         end
 
         context "when the job fails" do
@@ -261,7 +261,7 @@ RSpec.describe Jobs::ExecuteService do
           it "executes the failure-hook" do
             service.call
 
-            expect(job_run_for(job).failure_hook_output).to be_attached
+            expect(job.job_runs.sole.failure_hook_output).to be_attached
           end
         end
       end
@@ -274,13 +274,63 @@ RSpec.describe Jobs::ExecuteService do
         it "does not execute the pre-hook" do
           service.call
 
-          expect(job_run_for(job).pre_hook_output).not_to be_attached
+          expect(job.job_runs.sole.pre_hook_output).not_to be_attached
         end
       end
     end
-  end
 
-  def job_run_for(job)
-    job.job_runs.sole
+    describe "streaming" do
+      with_configuration "streaming" => true
+
+      let(:log_line) { "file.txt\n" }
+
+      before do
+        allow(ActionCable.server)
+          .to receive(:broadcast)
+
+        allow(rsync_execute_service)
+          .to receive(:call)
+          .and_yield(log_line)
+          .and_return(rsync_result)
+      end
+
+      it "broadcasts log lines to the job run channel" do
+        service.call
+
+        expect(ActionCable.server)
+          .to have_received(:broadcast)
+          .with("job_run_logs_#{job_run.id}", { type: "log", content: log_line })
+      end
+
+      context "when line matches status pattern and opt_progress2 is enabled" do
+        let(:status_line) { "  1,234,567  75%  10.00MB/s  0:00:10\r" }
+        let(:options) { { opt_progress: true, opt_progress2: true } }
+
+        before do
+          allow(rsync_execute_service)
+            .to receive(:call)
+            .and_yield(status_line)
+            .and_return(rsync_result)
+        end
+
+        it "broadcasts the line as a status message" do
+          service.call
+
+          expect(ActionCable.server)
+            .to have_received(:broadcast)
+            .with("job_run_logs_#{job_run.id}", { type: "status", content: status_line })
+        end
+      end
+
+      context "when streaming is disabled" do
+        with_configuration "streaming" => false
+
+        it "does not broadcast" do
+          service.call
+
+          expect(ActionCable.server).not_to have_received(:broadcast)
+        end
+      end
+    end
   end
 end

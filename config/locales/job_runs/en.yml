@@ -9,6 +9,7 @@ en:
       delete_confirm: Are you sure you want to delete this job run? This action cannot be undone.
       delete_confirm_title: Delete job run
       download_logs: Download logs
+      stream_logs: Stream logs
       view_logs: View logs
     cancel:
       success: Cancellation requested.
@@ -29,6 +30,14 @@ en:
         status: Status
       subtitle: Overview of synchronization job executions
       title: Activity log
+    logs:
+      completed_at: Completed at
+      job_finished: Job finished
+      output: Output
+      started_at: Started at
+      subtitle: 'Streaming logs for job: %{job}'
+      title: 'Job run #%{sequence}'
+      view_output: View output
     show:
       error_class: Error class
       error_details: Error details

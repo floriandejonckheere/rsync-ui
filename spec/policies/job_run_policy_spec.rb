@@ -29,6 +29,22 @@ RSpec.describe JobRunPolicy do
     end
   end
 
+  describe "#logs?" do
+    it { is_expected.to be_logs }
+
+    context "when user is another user" do
+      let(:user) { other_user }
+
+      it { is_expected.not_to be_logs }
+    end
+
+    context "when user is admin" do
+      let(:user) { admin }
+
+      it { is_expected.to be_logs }
+    end
+  end
+
   describe "#output?" do
     it { is_expected.to be_output }
 
