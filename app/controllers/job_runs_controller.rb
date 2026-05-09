@@ -5,7 +5,7 @@ class JobRunsController < ApplicationController
   include Sortable
 
   before_action :authenticate_user!
-  before_action :set_job_run, only: [:show, :output, :logs, :destroy, :cancel]
+  before_action :set_job_run, only: [:show, :output, :destroy, :cancel]
 
   def index
     @jobs = authorized_scope(Job.order(:name), type: :relation)
@@ -28,8 +28,6 @@ class JobRunsController < ApplicationController
 
   def show
     authorize! @job_run
-
-    redirect_to job_runs_path unless @job_run.output.attached? || @job_run.error_class.present? || @job_run.error_messages.present?
   end
 
   def output
@@ -45,12 +43,6 @@ class JobRunsController < ApplicationController
     ].compact.join("-").concat(".log")
 
     redirect_to rails_blob_path(@job_run.output, disposition: "attachment; filename=\"#{filename}\""), allow_other_host: true
-  end
-
-  def logs
-    authorize! @job_run
-
-    head :not_found unless Configuration.get("streaming")
   end
 
   def create

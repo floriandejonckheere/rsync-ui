@@ -9,7 +9,6 @@ en:
       delete_confirm: Are you sure you want to delete this job run? This action cannot be undone.
       delete_confirm_title: Delete job run
       download_logs: Download logs
-      stream_logs: Stream logs
       view_logs: View logs
     cancel:
       success: Cancellation requested.
@@ -30,15 +29,8 @@ en:
         status: Status
       subtitle: Overview of synchronization job executions
       title: Activity log
-    logs:
-      completed_at: Completed at
-      job_finished: Job finished
-      output: Output
-      started_at: Started at
-      subtitle: 'Streaming logs for job: %{job}'
-      title: 'Job run #%{sequence}'
-      view_output: View output
     show:
+      completed_at: Completed at
       error_class: Error class
       error_details: Error details
       error_message: Error message
@@ -46,6 +38,7 @@ en:
       output_file: Output
       post_hook_output: Post-hook output
       pre_hook_output: Pre-hook output
+      started_at: Started at
       subtitle: 'Logs for job: %{job}'
       success_hook_output: Success hook output
       title: 'Job run #%{sequence}'

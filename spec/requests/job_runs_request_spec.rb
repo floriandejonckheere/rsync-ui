@@ -55,26 +55,36 @@ RSpec.describe "JobRuns" do
   end
 
   describe "GET /job_runs/:id" do
-    let(:job_run) { create(:job_run, :completed, user:) }
-
     context "when authenticated" do
       before { sign_in user, scope: :user }
 
-      context "when output is attached" do
-        before { job_run.output.attach(io: StringIO.new("log content"), filename: "output.log", content_type: "text/plain") }
+      context "when job run is running" do
+        let(:job_run) { create(:job_run, :running, user:) }
 
-        it "renders the show page" do
+        it "renders the show page with streaming view" do
           get job_run_path(job_run)
 
           expect(response).to have_http_status(:ok)
         end
       end
 
-      context "when output is not attached" do
-        it "redirects to the index" do
+      context "when job run is pending" do
+        let(:job_run) { create(:job_run, :pending, user:) }
+
+        it "renders the show page with streaming view" do
           get job_run_path(job_run)
 
-          expect(response).to redirect_to(job_runs_path)
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      context "when job run is completed" do
+        let(:job_run) { create(:job_run, :completed, user:) }
+
+        it "renders the show page" do
+          get job_run_path(job_run)
+
+          expect(response).to have_http_status(:ok)
         end
       end
     end
@@ -92,6 +102,8 @@ RSpec.describe "JobRuns" do
     end
 
     context "when not authenticated" do
+      let(:job_run) { create(:job_run, :completed, user:) }
+
       it "redirects to sign in" do
         get job_run_path(job_run)
 
@@ -140,50 +152,6 @@ RSpec.describe "JobRuns" do
     context "when not authenticated" do
       it "redirects to sign in" do
         get output_job_run_path(job_run)
-
-        expect(response).to redirect_to(new_user_session_path)
-      end
-    end
-  end
-
-  describe "GET /job_runs/:id/logs" do
-    let(:job_run) { create(:job_run, :running, user:) }
-
-    context "when authenticated" do
-      before { sign_in user, scope: :user }
-
-      it "renders the logs page" do
-        get logs_job_run_path(job_run)
-
-        expect(response).to have_http_status(:ok)
-      end
-
-      context "when streaming feature is disabled" do
-        with_configuration "streaming" => false
-
-        it "returns not found" do
-          get logs_job_run_path(job_run)
-
-          expect(response).to have_http_status(:not_found)
-        end
-      end
-    end
-
-    context "when job run belongs to another user" do
-      let(:job_run) { create(:job_run, :running, user: other_user) }
-
-      before { sign_in user, scope: :user }
-
-      it "returns forbidden" do
-        get logs_job_run_path(job_run)
-
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context "when not authenticated" do
-      it "redirects to sign in" do
-        get logs_job_run_path(job_run)
 
         expect(response).to redirect_to(new_user_session_path)
       end

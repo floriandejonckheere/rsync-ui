@@ -63,7 +63,6 @@ Rails.application.routes.draw do
     member do
       patch :cancel
       get :output
-      get :logs
     end
   end
 end
@@ -129,7 +128,6 @@ end
 #                                          DELETE /jobs/:id(.:format)                                                                               jobs#destroy
 #                           cancel_job_run PATCH  /job_runs/:id/cancel(.:format)                                                                    job_runs#cancel
 #                           output_job_run GET    /job_runs/:id/output(.:format)                                                                    job_runs#output
-#                             logs_job_run GET    /job_runs/:id/logs(.:format)                                                                      job_runs#logs
 #                                 job_runs GET    /job_runs(.:format)                                                                               job_runs#index
 #                                          POST   /job_runs(.:format)                                                                               job_runs#create
 #                                  job_run GET    /job_runs/:id(.:format)                                                                           job_runs#show

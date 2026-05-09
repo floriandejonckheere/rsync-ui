@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { cable } from "@hotwired/turbo-rails"
 
 export default class extends Controller {
-  static targets = ["log", "status", "jobStatus", "completedAt", "logCard", "completedMessage"]
+  static targets = ["log", "status", "jobStatus", "completedAt", "logCard", "outputFrame"]
   static values = { jobRunId: String }
 
   async connect() {
@@ -34,8 +34,9 @@ export default class extends Controller {
       if (this.hasLogCardTarget) {
         this.logCardTarget.classList.add("hidden")
       }
-      if (this.hasCompletedMessageTarget) {
-        this.completedMessageTarget.classList.remove("hidden")
+      if (this.hasOutputFrameTarget) {
+        this.outputFrameTarget.setAttribute("src", window.location.href)
+        this.outputFrameTarget.classList.remove("hidden")
       }
     }
   }
