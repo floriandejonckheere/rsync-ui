@@ -58,6 +58,9 @@ module Jobs
         # Write full command to the log file
         file.write("#{command}\n")
 
+        # Capture last status line
+        last_status_line = nil
+
         result = Rsync::ExecuteService.new(command, job_run).call do |line|
           bytes_copied, progress = parse_status(line) if job.opt_progress || job.opt_progress2
 
@@ -67,10 +70,15 @@ module Jobs
               bytes_copied:,
               progress:,
             )
+
+            last_status_line = line
           else
             file.write(line)
           end
         end
+
+        # Write last status line to the log file
+        file.write(last_status_line) if last_status_line
 
         file.rewind
 

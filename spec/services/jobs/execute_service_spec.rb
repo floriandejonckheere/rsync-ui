@@ -133,13 +133,14 @@ RSpec.describe Jobs::ExecuteService do
       context "when opt_progress2 is enabled" do
         let(:options) { { opt_progress: true, opt_progress2: true } }
 
-        it "updates bytes_copied and progress" do
+        it "updates bytes_copied and progress and writes the last status line to the log" do
           service.call
 
           job_run.reload
 
           expect(job_run.bytes_copied).to eq 1_234_567
           expect(job_run.progress).to eq 75
+          expect(job_run.output.download).to include(status_line)
         end
       end
 
