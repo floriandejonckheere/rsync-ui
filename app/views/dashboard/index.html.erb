@@ -8,6 +8,10 @@
 
 <div class="flex flex-col gap-8">
   <%# Row 1: Status, repositories, last job run, next scheduled job %>
+  <h2 class="text-lg font-semibold">
+    <%= I18n.t("dashboard.repositories_and_jobs.title") %>
+  </h2>
+
   <div class="grid grid-cols-4 gap-4 items-stretch">
     <%= render "dashboard/cards/status",
                health_status: @health_status,

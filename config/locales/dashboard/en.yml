@@ -21,6 +21,8 @@ en:
         one: 1 repository
         other: "%{count} repositories"
         zero: No repositories
+    repositories_and_jobs:
+      title: Repositories and jobs
     server_health:
       cores: "%{count} cores"
       cpu: CPU
