@@ -52,6 +52,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 ### Smaller TODOs
 
 - [ ] Make application responsive
+- [ ] Make job run immutable: save command and options in the database
 - [ ] Update branding
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
 - [ ] Capture number of bytes and number of files transferred on the job run

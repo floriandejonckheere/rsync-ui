@@ -128,7 +128,7 @@ spec
 ## Adding New Features
 
 ### When adding a new model:
-1. **Migration**: Create migration file in `db/migrate/`
+1. **Migration**: Create migration file in `db/migrate/`, prefixed with the current date and time (e.g. `20260509123456_create_users.rb`)
    - Use UUIDs for primary keys: `create_table :{plural}, id: :uuid`
    - Add foreign keys with UUIDs: `t.references :user, type: :uuid, foreign_key: true`
    - Run: `docker compose exec app bundle exec rails db:migrate`
