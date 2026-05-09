@@ -129,12 +129,14 @@ end
 #  opt_inplace               :boolean          default(FALSE), not null
 #  opt_itemize_changes       :boolean          default(FALSE), not null
 #  opt_links                 :boolean          default(TRUE), not null
+#  opt_no_inc_recursive      :boolean          default(TRUE), not null
 #  opt_numeric_ids           :boolean          default(FALSE), not null
 #  opt_one_file_system       :boolean          default(FALSE), not null
 #  opt_owner                 :boolean          default(FALSE), not null
 #  opt_partial               :boolean          default(FALSE), not null
 #  opt_perms                 :boolean          default(FALSE), not null
 #  opt_progress              :boolean          default(TRUE), not null
+#  opt_progress2             :boolean          default(TRUE), not null
 #  opt_recursive             :boolean          default(TRUE), not null
 #  opt_relative              :boolean          default(FALSE), not null
 #  opt_rsync_path            :string

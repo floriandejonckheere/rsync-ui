@@ -78,12 +78,29 @@ RSpec.describe Rsync::CommandService do
     end
   end
 
-  describe "opt_arguments" do
-    it "includes the mandatory arguments" do
+  describe "opt_progress2 and opt_no_inc_recursive" do
+    it "includes --info=progress2 when opt_progress2 is true" do
+      job.opt_progress2 = true
       expect(command).to include("--info=progress2")
+    end
+
+    it "omits --info=progress2 when opt_progress2 is false" do
+      job.opt_progress2 = false
+      expect(command).not_to include("--info=progress2")
+    end
+
+    it "includes --no-inc-recursive when opt_no_inc_recursive is true" do
+      job.opt_no_inc_recursive = true
       expect(command).to include("--no-inc-recursive")
     end
 
+    it "omits --no-inc-recursive when opt_no_inc_recursive is false" do
+      job.opt_no_inc_recursive = false
+      expect(command).not_to include("--no-inc-recursive")
+    end
+  end
+
+  describe "opt_arguments" do
     context "when set" do
       before { job.opt_arguments = "--bwlimit=1000" }
 

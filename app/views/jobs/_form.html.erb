@@ -386,6 +386,20 @@
                 <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), data: { tooltip: I18n.t(:flag, scope: [:jobs, :form, field]) } %>
               </div>
             <% end %>
+
+            <% %i[opt_progress2 opt_no_inc_recursive].each do |field| %>
+              <div class="field">
+                <div class="flex-row items-center gap-4 flex">
+                  <%= f.check_box field, role: "switch" %>
+                  <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), data: { tooltip: I18n.t(:flag, scope: [:jobs, :form, field]) } %>
+                </div>
+
+                <p class="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+                  <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
+                  <%= I18n.t(:mandatory_hint, scope: [:jobs, :form, field]) %>
+                </p>
+              </div>
+            <% end %>
           </div>
         </div>
       </details>

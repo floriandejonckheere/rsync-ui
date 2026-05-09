@@ -141,6 +141,8 @@ class JobsController < ApplicationController
         :opt_itemize_changes,
         :opt_secluded_args,
         :opt_verbose,
+        :opt_progress2,
+        :opt_no_inc_recursive,
         :opt_superuser,
         :opt_arguments,
         :opt_rsync_path,

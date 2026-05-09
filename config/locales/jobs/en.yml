@@ -137,6 +137,10 @@ en:
       opt_links:
         description: Preserve symbolic links
         flag: "--links"
+      opt_no_inc_recursive:
+        description: Compute total files upfront
+        flag: "--no-inc-recursive"
+        mandatory_hint: Required to track total job progress accurately
       opt_numeric_ids:
         description: Don't map uid/gid values
         flag: "--numeric-ids"
@@ -155,6 +159,10 @@ en:
       opt_progress:
         description: Show progress
         flag: "--progress"
+      opt_progress2:
+        description: Show total progress
+        flag: "--info=progress2"
+        mandatory_hint: Required to show job progress
       opt_recursive:
         description: Recurse into directories
         flag: "--recursive"

@@ -5,7 +5,7 @@ RSpec.describe SchedulerJob do
 
   describe "job scheduling" do
     it "enqueues Jobs::ExecuteJob for due enabled jobs" do
-      job = create(:job, schedule: "0 2 * * *", enabled: true)
+      create(:job, schedule: "0 2 * * *", enabled: true)
 
       described_class.perform_now
 

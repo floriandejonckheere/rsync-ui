@@ -38,6 +38,8 @@ module Rsync
       opt_itemize_changes: "--itemize-changes",
       opt_secluded_args: "--secluded-args",
       opt_verbose: "--verbose",
+      opt_progress2: "--info=progress2",
+      opt_no_inc_recursive: "--no-inc-recursive",
     }.freeze
 
     attr_reader :job
@@ -64,10 +66,6 @@ module Rsync
         *custom_argument_flags,
         *include_flags,
         *exclude_flags,
-
-        # Mandatory flags
-        "--info=progress2", # Show total progress
-        "--no-inc-recursive", # Compute total files to transfer upfront
 
         # Source and destination paths
         source_path,

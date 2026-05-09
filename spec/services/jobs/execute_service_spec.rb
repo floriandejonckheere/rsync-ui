@@ -1,16 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Jobs::ExecuteService do
-  let(:user) { create(:user) }
-  let(:job) { create(:job, user:) }
-  let!(:job_run) { create(:job_run, :pending, job:, user:) }
-
   subject(:service) { described_class.new(job_run) }
 
+  let(:user) { create(:user) }
   let!(:notification) { create(:notification, user:) }
   let!(:job_notification) { create(:job_notification, job:, notification:) }
-
   let(:command_service) { instance_double(Rsync::CommandService, call: "echo rsync_output") }
+  let(:job) { create(:job, user:) }
+  let!(:job_run) { create(:job_run, :pending, job:, user:) }
 
   before do
     allow(Rsync::CommandService)
