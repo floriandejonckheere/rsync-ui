@@ -50,11 +50,13 @@ module Jobs
 
       command = Rsync::CommandService.new(job:).call
 
-      Tempfile.create(["job_run_#{job_run.sequence}", ".log"]) do |file|
+      Tempfile.create(["job_run_#{job.name.parameterize(separator: '_')}_#{job_run.sequence}", ".log"]) do |file|
         exit_status = nil
         canceled = false
 
         Rails.logger.info { "[#{job.id}] Executing command: #{command}" }
+
+        file.write("#{command}\n")
 
         Open3.popen2e(command, pgroup: true) do |_stdin, output, wait_thr|
           job_run.update!(pid: wait_thr.pid)
