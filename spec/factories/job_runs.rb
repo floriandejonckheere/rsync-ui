@@ -17,6 +17,7 @@ FactoryBot.define do
       status { :running }
       started_at { 5.minutes.ago }
       completed_at { nil }
+      last_heartbeat_at { 1.minute.ago }
     end
 
     trait :completed do
