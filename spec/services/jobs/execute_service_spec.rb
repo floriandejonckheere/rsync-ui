@@ -331,6 +331,36 @@ RSpec.describe Jobs::ExecuteService do
           expect(ActionCable.server).not_to have_received(:broadcast)
         end
       end
+
+      context "when the pre-hook fails" do
+        with_configuration "hooks" => true
+
+        before { create(:hook, :pre, job:, command: "false", enabled: true) }
+
+        it "broadcasts completion with errored status" do
+          service.call
+
+          expect(ActionCable.server)
+            .to have_received(:broadcast)
+            .with("job_run_logs_#{job_run.id}", hash_including(type: "complete", status: "errored"))
+        end
+      end
+
+      context "when a Ruby error is raised" do
+        before do
+          allow(command_service)
+            .to receive(:call)
+            .and_raise(RuntimeError, "boom")
+        end
+
+        it "broadcasts completion with errored status" do
+          service.call
+
+          expect(ActionCable.server)
+            .to have_received(:broadcast)
+            .with("job_run_logs_#{job_run.id}", hash_including(type: "complete", status: "errored"))
+        end
+      end
     end
   end
 end

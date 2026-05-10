@@ -43,6 +43,7 @@ module Jobs
               completed_at: Time.zone.now,
               error_messages: "Pre-hook failed (exit #{result[:exit_status]}): #{result[:error]}",
             )
+            broadcast_complete(job_run) if Configuration.get("streaming")
             enqueue_notifications(job_run, "failure")
 
             return
@@ -131,6 +132,7 @@ module Jobs
         error_messages: e.message,
       )
 
+      broadcast_complete(job_run) if Configuration.get("streaming")
       enqueue_notifications(job_run, "failure")
     end
 
