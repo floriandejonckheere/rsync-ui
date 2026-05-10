@@ -3,7 +3,7 @@
 
   <div
     id="config-<%= configuration.key.tr('.', '-') %>"
-    class="py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 <%= 'opacity-50' if disabled %>"
+    class="py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 <%= 'pl-6' if configuration.all_dependencies.any? %> <%= 'opacity-50' if disabled %>"
     data-controller="configuration"
     data-configuration-default-value="<%= configuration.default %>"
   >
