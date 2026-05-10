@@ -32,7 +32,7 @@ class DashboardController < ApplicationController
                      end
 
     @running_job_runs = JobRun
-      .where(user: current_user, status: %w[pending running])
+      .where(user: current_user, status: ["pending", "running"])
       .includes(:job)
       .order(created_at: :asc)
 
