@@ -96,6 +96,9 @@ gem "wicked"
 # Time tools for Ruby [https://github.com/floraison/fugit]
 gem "fugit"
 
+# State machine for ActiveRecord models [https://github.com/state-machines/state_machines-activerecord]
+gem "state_machines-activerecord"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: [:mri, :windows], require: "debug/prelude"
