@@ -20,9 +20,13 @@
     <%= render "dashboard/cards/repositories_storage",
                repository_counts: @repository_counts %>
 
-    <%= render "dashboard/cards/jobs",
-               last_job_run: @last_job_run,
-               next_jobs: @next_jobs %>
+    <div class="flex flex-col gap-4">
+      <%= render "dashboard/cards/last_job",
+                 last_job_run: @last_job_run %>
+
+      <%= render "dashboard/cards/next_job",
+                 next_jobs: @next_jobs %>
+    </div>
 
     <%= render "dashboard/cards/running_jobs",
                running_job_runs: @running_job_runs %>
