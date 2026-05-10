@@ -26,6 +26,8 @@ module Jobs
         started_at: Time.zone.now,
       )
 
+      ActionCable.server.broadcast("job_run_logs_#{job_run.id}", { type: "started", status: "running", status_text: I18n.t("job_runs.status.running"), started_at: job_run.started_at.iso8601 }) if Configuration.get("streaming")
+
       enqueue_notifications(job_run, "start")
 
       # Pre-hook: halt execution if it fails
@@ -74,7 +76,7 @@ module Jobs
             )
 
             # Broadcast progress
-            ActionCable.server.broadcast("job_run_logs_#{job_run.id}", { type: "progress", status_text: I18n.t("job_runs.status.running_progress", progress:) }) if Configuration.get("streaming")
+            ActionCable.server.broadcast("job_run_logs_#{job_run.id}", { type: "progress", status_text: I18n.t("job_runs.status.running_progress", progress:), progress: }) if Configuration.get("streaming")
 
             last_status_line = line
           else
@@ -155,16 +157,17 @@ module Jobs
     end
 
     def broadcast_complete(job_run)
-      status = job_run.status
-      status_text = I18n.t("job_runs.status.#{status}")
+      helpers = ActionController::Base.helpers
 
       ActionCable.server.broadcast(
         "job_run_logs_#{job_run.id}",
         {
           type: "complete",
-          status:,
-          status_text:,
-          completed_at_text: job_run.completed_at ? I18n.l(job_run.completed_at, format: :short) : "—",
+          status: job_run.status,
+          status_text: I18n.t("job_runs.status.#{job_run.status}"),
+          started_at: job_run.started_at&.iso8601,
+          completed_at: job_run.completed_at&.iso8601,
+          duration: job_run.started_at ? helpers.distance_of_time_in_words(job_run.started_at, job_run.completed_at || Time.current) : nil,
         },
       )
     end
