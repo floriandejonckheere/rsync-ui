@@ -13,31 +13,28 @@
       <p class="text-xs font-medium text-gray-900 dark:text-gray-100 truncate">
         <%= last_job_run.job.name %>
       </p>
-      <div class="flex flex-col gap-1">
-        <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+      <div class="flex flex-col gap-1 text-xs text-gray-500 dark:text-gray-400 mt-4">
+        <div
+          class="flex items-center gap-1"
+          data-job-run-status="<%= last_job_run.status %>"
+        >
           <%= lucide_icon "clock", class: "h-3 w-3 flex-shrink-0" %>
 
-          <% if last_job_run.started_at %>
-            <span title="<%= l(last_job_run.started_at) %>">
-              <%= time_ago_in_words(last_job_run.started_at) %> <%= I18n.t("dashboard.jobs.ago") %>
+          <% if last_job_run.completed_at %>
+            <span title="<%= l(last_job_run.completed_at) %>">
+              <%= time_ago_in_words(last_job_run.completed_at) %> <%= I18n.t("dashboard.jobs.ago") %>
             </span>
           <% else %>
             <span>-</span>
           <% end %>
+        </div>
 
-          <span class="text-gray-300 dark:text-gray-600">&middot;</span>
+        <div class="flex items-center gap-1">
           <%= lucide_icon "timer", class: "h-3 w-3 flex-shrink-0" %>
 
           <span>
             <%= last_job_run.duration ? distance_of_time_in_words(last_job_run.duration) : "-" %>
           </span>
-        </div>
-
-        <div
-          class="text-xs font-medium"
-          data-job-run-status="<%= last_job_run.status %>"
-        >
-          <%= I18n.t("job_runs.status.#{last_job_run.status}") %>
         </div>
       </div>
     <% end %>

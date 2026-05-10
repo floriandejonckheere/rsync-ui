@@ -1,5 +1,6 @@
 <div class="card flex flex-col gap-3">
   <%= turbo_stream_from "running_jobs_#{current_user.id}" %>
+
   <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
     <%= I18n.t("dashboard.running_jobs.title") %>
   </h2>
