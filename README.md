@@ -24,8 +24,8 @@ Rsync UI is a web application that lets you create, schedule, and execute file s
 <a href="screenshots/servers.png"><img src="screenshots/servers.png" width="49%"></a>
 <a href="screenshots/repositories.png"><img src="screenshots/repositories.png" width="49%"></a>
 <a href="screenshots/jobs.png"><img src="screenshots/jobs.png" width="49%"></a>
-<a href="screenshots/job.png"><img src="screenshots/job.png" width="49%"></a>
 <a href="screenshots/notifications.png"><img src="screenshots/notifications.png" width="49%"></a>
+<a href="screenshots/job.png"><img src="screenshots/job.png" width="49%"></a>
 
 <br />
 
