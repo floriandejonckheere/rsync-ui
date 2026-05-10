@@ -8,9 +8,6 @@ en:
       features:
         description: Settings for optional application features
         title: Features
-      notifications:
-        description: Settings for notifications sent on job lifecycle events
-        title: Notifications
       resource_usage:
         description: Settings for server resource usage probe (CPU, memory, disk)
         title: Resource usage
