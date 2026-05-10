@@ -17,6 +17,26 @@ Rsync UI is a web application that lets you create, schedule, and execute file s
 - Builtin customizable notifications
 - Real-time synchronization progress (not implemented yet)
 
+## Screenshots
+
+<a href="screenshots/dashboard.png"><img src="screenshots/dashboard.png" width="49%"></a>
+<a href="screenshots/activity-log.png"><img src="screenshots/activity-log.png" width="49%"></a>
+<a href="screenshots/servers.png"><img src="screenshots/servers.png" width="49%"></a>
+<a href="screenshots/repositories.png"><img src="screenshots/repositories.png" width="49%"></a>
+<a href="screenshots/jobs.png"><img src="screenshots/jobs.png" width="49%"></a>
+<a href="screenshots/job.png"><img src="screenshots/job.png" width="49%"></a>
+<a href="screenshots/notifications.png"><img src="screenshots/notifications.png" width="49%"></a>
+
+<br />
+
+<a href="screenshots/job-repositories.png"><img src="screenshots/job-repositories.png" width="24%"></a>
+<a href="screenshots/job-notifications.png"><img src="screenshots/job-notifications.png" width="24%"></a>
+<a href="screenshots/job-include-exclude.png"><img src="screenshots/job-include-exclude.png" width="24%"></a>
+<a href="screenshots/job-custom.png"><img src="screenshots/job-custom.png" width="24%"></a>
+<a href="screenshots/job-basic.png"><img src="screenshots/job-basic.png" width="24%"></a>
+<a href="screenshots/job-advanced.png"><img src="screenshots/job-advanced.png" width="24%"></a>
+<a href="screenshots/job-hooks.png"><img src="screenshots/job-hooks.png" width="24%"></a>
+
 > [!NOTE]
 > Artificial Intelligence tooling is used during the development of this project. All generated code is thoroughly reviewed, tested, and verified manually to ensure the highest quality and security standards.
 
