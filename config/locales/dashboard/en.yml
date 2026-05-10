@@ -18,6 +18,9 @@ en:
         zero: No repositories
     repositories_and_jobs:
       title: Repositories and jobs
+    running_jobs:
+      no_running: No jobs running
+      title: Running jobs
     server_health:
       cores: "%{count} cores"
       cpu: CPU

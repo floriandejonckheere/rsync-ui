@@ -66,7 +66,7 @@ RSpec.describe "Dashboard" do
       it "shows no runs yet message on last job run card" do
         get root_path
 
-        expect(response.body).to include I18n.t("dashboard.last_job_run.no_runs")
+        expect(response.body).to include I18n.t("dashboard.jobs.no_runs")
       end
     end
 
@@ -85,7 +85,7 @@ RSpec.describe "Dashboard" do
       it "shows no scheduled jobs message" do
         get root_path
 
-        expect(response.body).to include I18n.t("dashboard.next_job.no_jobs")
+        expect(response.body).to include I18n.t("dashboard.jobs.no_jobs")
       end
     end
 

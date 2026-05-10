@@ -12,7 +12,7 @@
     <%= I18n.t("dashboard.repositories_and_jobs.title") %>
   </h2>
 
-  <div class="grid grid-cols-3 gap-4 items-stretch">
+  <div class="grid grid-cols-4 gap-4 items-stretch">
     <%= render "dashboard/cards/status",
                health_status: @health_status,
                job_run_stats: @job_run_stats %>
@@ -23,6 +23,9 @@
     <%= render "dashboard/cards/jobs",
                last_job_run: @last_job_run,
                next_jobs: @next_jobs %>
+
+    <%= render "dashboard/cards/running_jobs",
+               running_job_runs: @running_job_runs %>
   </div>
 
   <%# Row 2: Server health (existing) %>

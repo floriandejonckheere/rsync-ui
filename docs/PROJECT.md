@@ -38,9 +38,9 @@ For remote repositories, the server should be mounted as a local directory, and 
 
 ### Visualization and monitoring
 
-- [ ] Show a real-time visualization of repositories (vertices) and schedules (edges) on the dashboard
-- [ ] Mark healthy, unhealthy, and ongoing jobs in different colors
-- [ ] Add real-time progress to the visualization (ActionCable)
+- [x] Show a real-time visualization of repositories (vertices) and schedules (edges) on the dashboard
+- [x] Mark healthy, unhealthy, and ongoing jobs in different colors
+- [x] Add real-time progress to the visualization (ActionCable)
 
 ### Job creation wizard
 

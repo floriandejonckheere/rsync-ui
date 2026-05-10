@@ -1,0 +1,16 @@
+<div class="card flex flex-col gap-3">
+  <%= turbo_stream_from "running_jobs_#{current_user.id}" %>
+  <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+    <%= I18n.t("dashboard.running_jobs.title") %>
+  </h2>
+
+  <ul id="running-job-runs" class="flex flex-col gap-2">
+    <% if running_job_runs.empty? %>
+      <%= render "dashboard/cards/running_jobs_empty" %>
+    <% else %>
+      <% running_job_runs.each do |job_run| %>
+        <%= render "dashboard/cards/running_job_run", job_run: %>
+      <% end %>
+    <% end %>
+  </ul>
+</div>

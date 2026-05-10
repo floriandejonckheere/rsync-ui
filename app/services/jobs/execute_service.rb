@@ -26,7 +26,17 @@ module Jobs
         started_at: Time.zone.now,
       )
 
-      ActionCable.server.broadcast("job_run_status_#{job_run.id}", { type: "started", status: "running", status_text: I18n.t("job_runs.status.running"), started_at: job_run.started_at.iso8601 }) if Configuration.get("streaming")
+      if Configuration.get("streaming")
+        ActionCable.server.broadcast("job_run_status_#{job_run.id}", { type: "started", status: "running", status_text: I18n.t("job_runs.status.running"), started_at: job_run.started_at.iso8601 })
+
+        Turbo::StreamsChannel.broadcast_remove_to("running_jobs_#{job_run.user_id}", target: "running-jobs-empty")
+        Turbo::StreamsChannel.broadcast_prepend_to(
+          "running_jobs_#{job_run.user_id}",
+          target: "running-job-runs",
+          partial: "dashboard/cards/running_job_run",
+          locals: { job_run: },
+        )
+      end
 
       enqueue_notifications(job_run, "start")
 
@@ -172,6 +182,19 @@ module Jobs
           duration: job_run.started_at ? helpers.distance_of_time_in_words(job_run.started_at, job_run.completed_at || Time.current) : nil,
         },
       )
+
+      Turbo::StreamsChannel.broadcast_remove_to(
+        "running_jobs_#{job_run.user_id}",
+        target: "running_job_run_#{job_run.id}",
+      )
+
+      if JobRun.where(user_id: job_run.user_id, status: %w[pending running]).none?
+        Turbo::StreamsChannel.broadcast_append_to(
+          "running_jobs_#{job_run.user_id}",
+          target: "running-job-runs",
+          partial: "dashboard/cards/running_jobs_empty",
+        )
+      end
     end
 
     def execute_optional_hook(job_run, type)

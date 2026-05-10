@@ -31,6 +31,11 @@ class DashboardController < ApplicationController
                        :healthy
                      end
 
+    @running_job_runs = JobRun
+      .where(user: current_user, status: %w[pending running])
+      .includes(:job)
+      .order(created_at: :asc)
+
     @last_job_run = JobRun
       .where(user: current_user)
       .where.not(status: ["pending", "running"])
