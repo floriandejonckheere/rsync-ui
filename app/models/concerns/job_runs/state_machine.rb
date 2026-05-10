@@ -5,6 +5,13 @@ module JobRuns
     extend ActiveSupport::Concern
 
     included do
+      scope :pending,   -> { with_status(:pending) }
+      scope :running,   -> { with_status(:running) }
+      scope :completed, -> { with_status(:completed) }
+      scope :failed,    -> { with_status(:failed) }
+      scope :canceled,  -> { with_status(:canceled) }
+      scope :errored,   -> { with_status(:errored) }
+
       state_machine :status, initial: :pending do
         ##
         # States
