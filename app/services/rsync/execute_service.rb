@@ -24,15 +24,32 @@ module Rsync
       Open3.popen2e(command, pgroup: true) do |_stdin, output, wait_thr|
         job_run.update!(pid: wait_thr.pid)
 
+        # String buffer
         buffer = +""
+
+        # Cancel was requested
         cancel_sent = false
+
+        # Protect concurrent access in monitor thread
         mutex = Mutex.new
         condition_variable = ConditionVariable.new
+
+        # Monitor status
         stop_monitor = false
+
+        # Heartbeat
+        last_heartbeat_at = nil
 
         monitor = Thread.new do
           loop do
             mutex.synchronize { condition_variable.wait(mutex, CANCEL_MONITOR_INTERVAL) }
+
+            now = Time.zone.now
+            if last_heartbeat_at.nil? || (now - last_heartbeat_at) >= heartbeat_interval
+              job_run.update!(last_heartbeat_at: now)
+
+              last_heartbeat_at = now
+            end
 
             break if stop_monitor
             next if cancel_sent
@@ -86,6 +103,12 @@ module Rsync
       end
 
       Result.new(exit_status:, canceled:)
+    end
+
+    private
+
+    def heartbeat_interval
+      @heartbeat_interval ||= Configuration.get("jobs.heartbeat_interval").to_i
     end
   end
 end

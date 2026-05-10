@@ -42,6 +42,12 @@ RSpec.describe Rsync::ExecuteService do
       expect(lines).to eq ["output line\n"]
     end
 
+    it "writes a heartbeat to job_run while running" do
+      service.call
+
+      expect(job_run.reload.last_heartbeat_at).to be_present
+    end
+
     context "when cancellation is requested while the command is running" do
       let(:wait_thr) { instance_double(Process::Waiter, pid: 43_210, value: instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1)) }
 
