@@ -5,8 +5,8 @@
     relative border-b border-gray-100 dark:border-gray-700 last:border-b-0
     hover:z-10 hover:bg-gray-50 dark:hover:bg-gray-700/50
   "
-  data-controller="<%= 'job-run-logs' if live %>"
-  data-job-run-logs-job-run-id-value="<%= job_run.id %>"
+  data-controller="<%= 'job-run-status' if live %>"
+  data-job-run-status-job-run-id-value="<%= job_run.id %>"
 >
   <td class="pl-6 py-4">
     <% if job_run.trigger == "manual" %>
@@ -33,7 +33,7 @@
   <td class="px-6 py-4 text-sm">
     <span
       data-job-run-status="<%= job_run.status %>"
-      data-job-run-logs-target="<%= 'jobStatus' if live %>"
+      data-job-run-status-target="<%= 'jobStatus' if live %>"
     >
       <% if job_run.running? && !job_run.progress.nil? %>
         <%= I18n.t("job_runs.status.running_progress", progress: job_run.progress) %>
@@ -49,25 +49,25 @@
         aria-valuemax="100"
         aria-valuenow="<%= job_run.progress || 0 %>"
         class="relative mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-blue-100 dark:bg-blue-950<%= ' hidden' unless job_run.running? && job_run.progress %>"
-        data-job-run-logs-target="progressBar"
+        data-job-run-status-target="progressBar"
       >
         <div
           class="h-full w-full flex-1 bg-blue-600 dark:bg-blue-400 transition-all"
           style="transform: translateX(-<%= job_run.progress ? 100 - job_run.progress.to_i : 100 %>%)"
-          data-job-run-logs-target="progressFill"
+          data-job-run-status-target="progressFill"
         ></div>
       </div>
     <% end %>
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-    <span data-job-run-logs-target="<%= 'startedAt' if live %>">
+    <span data-job-run-status-target="<%= 'startedAt' if live %>">
       <%= job_run.started_at ? relative_time_tag(job_run.started_at) : "—" %>
     </span>
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-    <span data-job-run-logs-target="<%= 'duration' if live %>">
+    <span data-job-run-status-target="<%= 'duration' if live %>">
       <% if job_run.started_at.present? %>
         <%= distance_of_time_in_words(job_run.started_at, job_run.completed_at || Time.current) %>
       <% else %>
@@ -77,7 +77,7 @@
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-    <span data-job-run-logs-target="<%= 'completedAt' if live %>">
+    <span data-job-run-status-target="<%= 'completedAt' if live %>">
       <%= job_run.completed_at ? relative_time_tag(job_run.completed_at) : "—" %>
     </span>
   </td>

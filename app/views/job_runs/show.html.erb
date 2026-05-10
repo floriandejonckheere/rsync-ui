@@ -12,8 +12,8 @@
 
 <% if @job_run.pending? || @job_run.running? %>
   <div
-    data-controller="job-run-logs"
-    data-job-run-logs-job-run-id-value="<%= @job_run.id %>"
+    data-controller="job-run-status"
+    data-job-run-status-job-run-id-value="<%= @job_run.id %>"
   >
     <div class="card p-0 mb-6">
       <div
@@ -24,7 +24,7 @@
       >
         <div
           data-job-run-status="<%= @job_run.status %>"
-          data-job-run-logs-target="jobStatus"
+          data-job-run-status-target="jobStatus"
         >
           <% if @job_run.running? && @job_run.progress %>
             <%= I18n.t("job_runs.status.running_progress", progress: @job_run.progress) %>
@@ -35,17 +35,22 @@
 
         <div>
           <%= I18n.t("job_runs.show.started_at") %>:
-          <span data-job-run-logs-target="startedAt"><%= @job_run.started_at ? relative_time_tag(@job_run.started_at) : "—" %></span>
+          <span data-job-run-status-target="startedAt"><%= @job_run.started_at ? relative_time_tag(@job_run.started_at) : "—" %></span>
         </div>
 
         <div>
           <%= I18n.t("job_runs.show.completed_at") %>:
-          <span data-job-run-logs-target="completedAt"><%= @job_run.completed_at ? relative_time_tag(@job_run.completed_at) : "—" %></span>
+          <span data-job-run-status-target="completedAt"><%= @job_run.completed_at ? relative_time_tag(@job_run.completed_at) : "—" %></span>
         </div>
       </div>
     </div>
 
-    <div class="card p-0" data-job-run-logs-target="logCard">
+    <div
+      class="card p-0"
+      data-job-run-status-target="logCard"
+      data-controller="job-run-logs"
+      data-job-run-logs-job-run-id-value="<%= @job_run.id %>"
+    >
       <div
         class="
           flex items-center gap-2 px-6 py-4 border-b border-gray-100
@@ -75,7 +80,7 @@
     <turbo-frame
       id="job-run-output"
       class="hidden"
-      data-job-run-logs-target="outputFrame"
+      data-job-run-status-target="outputFrame"
     ></turbo-frame>
   </div>
 <% else %>

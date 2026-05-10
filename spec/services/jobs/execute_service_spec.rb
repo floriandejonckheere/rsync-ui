@@ -294,7 +294,23 @@ RSpec.describe Jobs::ExecuteService do
           .and_return(rsync_result)
       end
 
-      it "broadcasts log lines to the job run channel" do
+      it "broadcasts the started event to the status channel" do
+        service.call
+
+        expect(ActionCable.server)
+          .to have_received(:broadcast)
+          .with("job_run_status_#{job_run.id}", hash_including(type: "started", status: "running"))
+      end
+
+      it "broadcasts the complete event to the status channel" do
+        service.call
+
+        expect(ActionCable.server)
+          .to have_received(:broadcast)
+          .with("job_run_status_#{job_run.id}", hash_including(type: "complete", status: "completed"))
+      end
+
+      it "broadcasts log lines to the logs channel" do
         service.call
 
         expect(ActionCable.server)
@@ -313,12 +329,20 @@ RSpec.describe Jobs::ExecuteService do
             .and_return(rsync_result)
         end
 
-        it "broadcasts the line as a status message" do
+        it "broadcasts the line as a status message to the logs channel" do
           service.call
 
           expect(ActionCable.server)
             .to have_received(:broadcast)
             .with("job_run_logs_#{job_run.id}", { type: "status", content: status_line })
+        end
+
+        it "broadcasts the progress event to the status channel" do
+          service.call
+
+          expect(ActionCable.server)
+            .to have_received(:broadcast)
+            .with("job_run_status_#{job_run.id}", hash_including(type: "progress", progress: 75))
         end
       end
 
@@ -337,12 +361,12 @@ RSpec.describe Jobs::ExecuteService do
 
         before { create(:hook, :pre, job:, command: "false", enabled: true) }
 
-        it "broadcasts completion with errored status" do
+        it "broadcasts completion with errored status to the status channel" do
           service.call
 
           expect(ActionCable.server)
             .to have_received(:broadcast)
-            .with("job_run_logs_#{job_run.id}", hash_including(type: "complete", status: "errored"))
+            .with("job_run_status_#{job_run.id}", hash_including(type: "complete", status: "errored"))
         end
       end
 
@@ -353,12 +377,12 @@ RSpec.describe Jobs::ExecuteService do
             .and_raise(RuntimeError, "boom")
         end
 
-        it "broadcasts completion with errored status" do
+        it "broadcasts completion with errored status to the status channel" do
           service.call
 
           expect(ActionCable.server)
             .to have_received(:broadcast)
-            .with("job_run_logs_#{job_run.id}", hash_including(type: "complete", status: "errored"))
+            .with("job_run_status_#{job_run.id}", hash_including(type: "complete", status: "errored"))
         end
       end
     end

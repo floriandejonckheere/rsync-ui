@@ -26,7 +26,7 @@ module Jobs
         started_at: Time.zone.now,
       )
 
-      ActionCable.server.broadcast("job_run_logs_#{job_run.id}", { type: "started", status: "running", status_text: I18n.t("job_runs.status.running"), started_at: job_run.started_at.iso8601 }) if Configuration.get("streaming")
+      ActionCable.server.broadcast("job_run_status_#{job_run.id}", { type: "started", status: "running", status_text: I18n.t("job_runs.status.running"), started_at: job_run.started_at.iso8601 }) if Configuration.get("streaming")
 
       enqueue_notifications(job_run, "start")
 
@@ -77,7 +77,7 @@ module Jobs
             )
 
             # Broadcast progress
-            ActionCable.server.broadcast("job_run_logs_#{job_run.id}", { type: "progress", status_text: I18n.t("job_runs.status.running_progress", progress:), progress: }) if Configuration.get("streaming")
+            ActionCable.server.broadcast("job_run_status_#{job_run.id}", { type: "progress", status_text: I18n.t("job_runs.status.running_progress", progress:), progress: }) if Configuration.get("streaming")
 
             last_status_line = line
           else
@@ -162,7 +162,7 @@ module Jobs
       helpers = ActionController::Base.helpers
 
       ActionCable.server.broadcast(
-        "job_run_logs_#{job_run.id}",
+        "job_run_status_#{job_run.id}",
         {
           type: "complete",
           status: job_run.status,
