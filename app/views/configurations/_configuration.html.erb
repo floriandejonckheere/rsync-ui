@@ -86,11 +86,19 @@
 
                 <% case configuration %>
                 <% when Configuration::String %>
-                  <%= form.text_field :value,
-                      value: configuration.value,
-                      class: "input font-mono w-64",
-                      placeholder: I18n.t("configurations.index.value_placeholder"),
-                      data: { configuration_target: "value" } %>
+                  <% if configuration.allowed_values.present? %>
+                    <%= form.select :value,
+                        configuration.allowed_values.map { |v| [I18n.t("configurations.keys.#{configuration.key}.allowed_values.#{v}", default: v), v] },
+                        { selected: configuration.value },
+                        class: "select font-mono w-64",
+                        data: { configuration_target: "value" } %>
+                  <% else %>
+                    <%= form.text_field :value,
+                        value: configuration.value,
+                        class: "input font-mono w-64",
+                        placeholder: I18n.t("configurations.index.value_placeholder"),
+                        data: { configuration_target: "value" } %>
+                  <% end %>
                 <% when Configuration::Integer, Configuration::Float %>
                   <%= form.number_field :value,
                                         value: configuration.value,

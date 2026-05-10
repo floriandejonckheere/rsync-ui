@@ -31,6 +31,10 @@ en:
           description: Interval (in minutes) between server connectivity probes
         ssh_key:
           algorithm:
+            allowed_values:
+              ecdsa: ECDSA
+              ed25519: Ed25519
+              rsa: RSA
             description: Algorithm used for generating SSH keys
           length:
             description: Length of generated SSH keys
