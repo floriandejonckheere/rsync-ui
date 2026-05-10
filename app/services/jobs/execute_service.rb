@@ -21,22 +21,7 @@ module Jobs
 
       Rails.logger.info "[#{job.id}] Executing job #{job.name}"
 
-      job_run.update!(
-        status: "running",
-        started_at: Time.zone.now,
-      )
-
-      if Configuration.get("streaming")
-        ActionCable.server.broadcast("job_run_status_#{job_run.id}", { type: "started", status: "running", status_text: I18n.t("job_runs.status.running"), started_at: job_run.started_at.iso8601 })
-
-        Turbo::StreamsChannel.broadcast_remove_to("running_jobs_#{job_run.user_id}", target: "running-jobs-empty")
-        Turbo::StreamsChannel.broadcast_prepend_to(
-          "running_jobs_#{job_run.user_id}",
-          target: "running-job-runs",
-          partial: "dashboard/cards/running_job_run",
-          locals: { job_run: },
-        )
-      end
+      job_run.start!
 
       enqueue_notifications(job_run, "start")
 
@@ -45,15 +30,13 @@ module Jobs
         hook = job.pre_hook
 
         if hook&.enabled?
-          result = Hooks::ExecuteService.new(hook, job_run:).call
+          result = Hooks::ExecuteService
+            .new(hook, job_run:)
+            .call
 
           unless result[:success]
-            job_run.update!(
-              status: "errored",
-              completed_at: Time.zone.now,
-              error_messages: "Pre-hook failed (exit #{result[:exit_status]}): #{result[:error]}",
-            )
-            broadcast_complete(job_run) if Configuration.get("streaming")
+            job_run.error!(error_messages: "Pre-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
+
             enqueue_notifications(job_run, "failure")
 
             return
@@ -77,17 +60,11 @@ module Jobs
         result = Rsync::ExecuteService.new(command, job_run).call do |line|
           bytes_copied, progress = parse_status(line) if job.opt_progress || job.opt_progress2
 
-          # Broadcast status line
+          # Broadcast log line
           ActionCable.server.broadcast("job_run_logs_#{job_run.id}", { type: bytes_copied && progress ? "status" : "log", content: line }) if Configuration.get("streaming")
 
           if job.opt_progress2 && bytes_copied && progress
-            job_run.update!(
-              bytes_copied:,
-              progress:,
-            )
-
-            # Broadcast progress
-            ActionCable.server.broadcast("job_run_status_#{job_run.id}", { type: "progress", status_text: I18n.t("job_runs.status.running_progress", progress:), progress: }) if Configuration.get("streaming")
+            job_run.tick!(bytes_copied:, progress:)
 
             last_status_line = line
           else
@@ -111,19 +88,10 @@ module Jobs
         Rails.logger.info { "[#{job.id}] Command exited with status: #{exit_status.exitstatus || "signal #{exit_status.termsig}"}" }
 
         # Mark job as canceled if cancellation was requested
-        if result.canceled
-          job_run.cancel!
-          broadcast_complete(job_run) if Configuration.get("streaming")
-          next
-        end
+        next job_run.cancel! if result.canceled
 
         # Mark job as completed or failed based on the exit status
-        job_run.update!(
-          status: exit_status.success? ? "completed" : "failed",
-          completed_at: Time.zone.now,
-        )
-
-        broadcast_complete(job_run) if Configuration.get("streaming")
+        exit_status.success? ? job_run.complete! : job_run.mark_failed!
 
         # Post-hook: always runs after rsync (success or failure)
         execute_optional_hook(job_run, "post")
@@ -135,14 +103,8 @@ module Jobs
         enqueue_notifications(job_run, exit_status.success? ? "success" : "failure")
       end
     rescue StandardError => e
-      job_run.update!(
-        status: "errored",
-        completed_at: Time.zone.now,
-        error_class: e.class.name,
-        error_messages: e.message,
-      )
+      job_run.error!(error_class: e.class.name, error_messages: e.message)
 
-      broadcast_complete(job_run) if Configuration.get("streaming")
       enqueue_notifications(job_run, "failure")
     end
 
@@ -168,35 +130,6 @@ module Jobs
       end
     end
 
-    def broadcast_complete(job_run)
-      helpers = ActionController::Base.helpers
-
-      ActionCable.server.broadcast(
-        "job_run_status_#{job_run.id}",
-        {
-          type: "complete",
-          status: job_run.status,
-          status_text: I18n.t("job_runs.status.#{job_run.status}"),
-          started_at: job_run.started_at&.iso8601,
-          completed_at: job_run.completed_at&.iso8601,
-          duration: job_run.started_at ? helpers.distance_of_time_in_words(job_run.started_at, job_run.completed_at || Time.current) : nil,
-        },
-      )
-
-      Turbo::StreamsChannel.broadcast_remove_to(
-        "running_jobs_#{job_run.user_id}",
-        target: "running_job_run_#{job_run.id}",
-      )
-
-      if JobRun.where(user_id: job_run.user_id, status: %w[pending running]).none?
-        Turbo::StreamsChannel.broadcast_append_to(
-          "running_jobs_#{job_run.user_id}",
-          target: "running-job-runs",
-          partial: "dashboard/cards/running_jobs_empty",
-        )
-      end
-    end
-
     def execute_optional_hook(job_run, type)
       return unless Configuration.get("hooks")
 
@@ -210,10 +143,7 @@ module Jobs
 
       return if result[:success]
 
-      job_run.update!(
-        status: "errored",
-        error_messages: "#{type.capitalize}-hook failed (exit #{result[:exit_status]}): #{result[:error]}",
-      )
+      job_run.error!(error_messages: "#{type.capitalize}-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
     end
   end
 end

@@ -288,6 +288,10 @@ RSpec.describe Jobs::ExecuteService do
         allow(ActionCable.server)
           .to receive(:broadcast)
 
+        allow(Turbo::StreamsChannel).to receive(:broadcast_remove_to)
+        allow(Turbo::StreamsChannel).to receive(:broadcast_prepend_to)
+        allow(Turbo::StreamsChannel).to receive(:broadcast_append_to)
+
         allow(rsync_execute_service)
           .to receive(:call)
           .and_yield(log_line)
