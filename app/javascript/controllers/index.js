@@ -34,6 +34,9 @@ application.register("gauge", GaugeController)
 import JobRunLogsController from "./job_run_logs_controller"
 application.register("job-run-logs", JobRunLogsController)
 
+import JobRunStatusController from "./job_run_status_controller"
+application.register("job-run-status", JobRunStatusController)
+
 import PieChartController from "./pie_chart_controller"
 application.register("pie-chart", PieChartController)
 
