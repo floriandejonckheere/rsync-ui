@@ -72,6 +72,7 @@ end
 #  completed_at        :datetime         indexed
 #  error_class         :string
 #  error_messages      :text
+#  last_heartbeat_at   :datetime         indexed
 #  pid                 :integer
 #  progress            :integer
 #  sequence            :integer          not null, indexed
@@ -85,13 +86,14 @@ end
 #
 # Indexes
 #
-#  index_job_runs_on_canceled_at   (canceled_at)
-#  index_job_runs_on_completed_at  (completed_at)
-#  index_job_runs_on_job_id        (job_id)
-#  index_job_runs_on_sequence      (sequence)
-#  index_job_runs_on_started_at    (started_at)
-#  index_job_runs_on_status        (status)
-#  index_job_runs_on_user_id       (user_id)
+#  index_job_runs_on_canceled_at        (canceled_at)
+#  index_job_runs_on_completed_at       (completed_at)
+#  index_job_runs_on_job_id             (job_id)
+#  index_job_runs_on_last_heartbeat_at  (last_heartbeat_at)
+#  index_job_runs_on_sequence           (sequence)
+#  index_job_runs_on_started_at         (started_at)
+#  index_job_runs_on_status             (status)
+#  index_job_runs_on_user_id            (user_id)
 #
 # Foreign Keys
 #

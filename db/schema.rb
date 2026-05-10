@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_09_145311) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_10_113913) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -87,6 +87,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_09_145311) do
     t.string "error_class"
     t.text "error_messages"
     t.uuid "job_id", null: false
+    t.datetime "last_heartbeat_at"
     t.integer "pid"
     t.integer "progress"
     t.serial "sequence", null: false
@@ -98,6 +99,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_09_145311) do
     t.index ["canceled_at"], name: "index_job_runs_on_canceled_at"
     t.index ["completed_at"], name: "index_job_runs_on_completed_at"
     t.index ["job_id"], name: "index_job_runs_on_job_id"
+    t.index ["last_heartbeat_at"], name: "index_job_runs_on_last_heartbeat_at"
     t.index ["sequence"], name: "index_job_runs_on_sequence"
     t.index ["started_at"], name: "index_job_runs_on_started_at"
     t.index ["status"], name: "index_job_runs_on_status"
