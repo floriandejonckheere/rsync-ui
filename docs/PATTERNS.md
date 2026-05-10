@@ -281,6 +281,9 @@ en:
 Configuration keys should use snake_case and be namespaced appropriately.
 Configurations can have the following categories: features, system, other 
 Configuration values can be of the following types: string, integer, float, boolean.
+Configurations can have dependencies, which are other configurations that must be true for the configuration to be true.
+Numeric configurations can have a minimum and maximum value.
+String configurations can have a list of allowed values.
 
 ## Search Pattern
 

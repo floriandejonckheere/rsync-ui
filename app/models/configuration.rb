@@ -22,6 +22,10 @@ class Configuration < ApplicationRecord
     Configuration.configurations.dig(key, :maximum)
   end
 
+  def allowed_values
+    Configuration.configurations.dig(key, :allowed_values)
+  end
+
   def category
     Configuration.configurations.dig(key, :category) || "other"
   end
@@ -128,6 +132,10 @@ class Configuration < ApplicationRecord
 
   class String < Configuration
     before_save { self.value = value.to_s }
+
+    validates :value,
+              inclusion: { in: ->(record) { record.allowed_values } },
+              if: -> { allowed_values.present? }
 
     def self.policy_class = ConfigurationPolicy
   end

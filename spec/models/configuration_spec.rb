@@ -207,6 +207,42 @@ RSpec.describe Configuration do
     end
   end
 
+  describe Configuration::String do
+    describe "validations" do
+      context "when allowed_values is defined" do
+        subject(:configuration) { build(:string_configuration, key: "test.string_allowed", value:) }
+
+        context "with a value in the allowed list" do
+          let(:value) { "foo" }
+
+          it { is_expected.to be_valid }
+        end
+
+        context "with another value in the allowed list" do
+          let(:value) { "bar" }
+
+          it { is_expected.to be_valid }
+        end
+
+        context "with a value not in the allowed list" do
+          let(:value) { "baz" }
+
+          it { is_expected.not_to be_valid }
+        end
+      end
+
+      context "when allowed_values is not defined" do
+        subject(:configuration) { build(:string_configuration, key: "test.key", value:) }
+
+        context "with any value" do
+          let(:value) { "anything" }
+
+          it { is_expected.to be_valid }
+        end
+      end
+    end
+  end
+
   describe Configuration::Integer do
     describe "validations" do
       context "when minimum and maximum are defined" do

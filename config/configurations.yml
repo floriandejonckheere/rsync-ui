@@ -89,6 +89,10 @@
   type: string
   category: connectivity
   default: rsa
+  allowed_values:
+    - rsa
+    - ed25519
+    - ecdsa
 - key: connectivity.ssh_key.length
   type: integer
   category: connectivity
