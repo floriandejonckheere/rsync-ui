@@ -1,18 +1,13 @@
 ---
 en:
   dashboard:
-    last_job_run:
+    jobs:
       ago: ago
-      bytes_copied: Bytes copied
-      duration: Duration
-      ended_at: Ended
-      no_runs: No runs yet
-      started_at: Started
-      title: Last jobs
-    next_job:
+      last_job: Last job
+      next_job: Next job
       no_jobs: No jobs scheduled
+      no_runs: No runs yet
       runs_in: in %{time}
-      title: Next scheduled jobs
     repositories:
       local: Local
       remote: Remote

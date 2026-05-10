@@ -35,7 +35,7 @@ class DashboardController < ApplicationController
       .where(user: current_user)
       .where.not(status: ["pending", "running"])
       .includes(:job)
-      .order(started_at: :desc)
+      .order(created_at: :desc)
       .first
 
     @next_jobs = current_user
