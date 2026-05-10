@@ -79,3 +79,11 @@
   type: integer
   category: connectivity
   default: 2048
+- key: jobs.heartbeat_interval
+  type: integer
+  category: system
+  default: 30
+- key: jobs.stuck_threshold
+  type: integer
+  category: system
+  default: 300
