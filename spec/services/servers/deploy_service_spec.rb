@@ -16,9 +16,9 @@ RSpec.describe Servers::DeployService do
       .to receive(:exec!)
       .and_return("")
 
-    allow(OpenSSL::PKey::RSA)
-      .to receive(:new)
-      .and_return(rsa_key)
+    allow(Servers::SSHKeyService)
+      .to receive(:call)
+      .and_return({ private_key: rsa_key, public_key: rsa_key.public_key })
   end
 
   describe "#call" do

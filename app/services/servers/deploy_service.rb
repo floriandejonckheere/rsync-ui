@@ -49,31 +49,20 @@ module Servers
 
     private
 
+    def keys
+      @keys ||= SSHKeyService.call
+    end
+
     def private_key
-      @private_key ||= algorithm
-        .new(Configuration.get("connectivity.ssh_key.length"))
+      keys[:private_key]
     end
 
     def public_key
-      @public_key ||= private_key
-        .public_key
+      keys[:public_key]
     end
 
     def openssh_public_key
       Base64.strict_encode64(Net::SSH::Buffer.from(:key, public_key).to_s)
-    end
-
-    def algorithm
-      case Configuration.get("connectivity.ssh_key.algorithm")
-      when "rsa"
-        OpenSSL::PKey::RSA
-      when "dsa"
-        OpenSSL::PKey::DSA
-      when "ec"
-        OpenSSL::PKey::EC
-      else
-        raise "Unsupported SSH key algorithm: #{algorithm}"
-      end
     end
   end
 end
