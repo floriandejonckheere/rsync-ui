@@ -26,12 +26,125 @@ RSpec.describe JobRun do
         .with_values(manual: "manual", scheduled: "scheduled")
         .backed_by_column_of_type(:string)
     end
+  end
 
-    it "defines an enum for status" do
-      expect(job_run)
-        .to define_enum_for(:status)
-        .with_values(pending: "pending", running: "running", completed: "completed", failed: "failed", canceled: "canceled", errored: "errored")
-        .backed_by_column_of_type(:string)
+  describe "state machine" do
+    describe "initial state" do
+      it "starts as pending" do
+        expect(described_class.new).to be_pending
+      end
+    end
+
+    describe "transitions" do
+      it "transitions from pending to running on start" do
+        job_run = create(:job_run, :pending)
+
+        expect { job_run.start! }
+          .to change { job_run.reload.status }
+          .from("pending").to("running")
+      end
+
+      it "sets started_at when starting" do
+        job_run = create(:job_run, :pending)
+        job_run.start!
+
+        expect(job_run.reload.started_at).to be_present
+      end
+
+      it "transitions from running to completed on complete" do
+        job_run = create(:job_run, :running)
+
+        expect { job_run.complete! }
+          .to change { job_run.reload.status }
+          .from("running").to("completed")
+      end
+
+      it "sets completed_at when completing" do
+        job_run = create(:job_run, :running)
+        job_run.complete!
+
+        expect(job_run.reload.completed_at).to be_present
+      end
+
+      it "transitions from running to failed on mark_failed" do
+        job_run = create(:job_run, :running)
+
+        expect { job_run.mark_failed! }
+          .to change { job_run.reload.status }
+          .from("running").to("failed")
+      end
+
+      it "transitions from pending to canceled on cancel" do
+        job_run = create(:job_run, :pending)
+
+        expect { job_run.cancel! }
+          .to change { job_run.reload.status }
+          .from("pending").to("canceled")
+      end
+
+      it "transitions from running to canceled on cancel" do
+        job_run = create(:job_run, :running)
+
+        expect { job_run.cancel! }
+          .to change { job_run.reload.status }
+          .from("running").to("canceled")
+      end
+
+      it "sets cancel_requested_at, canceled_at, and completed_at when canceling" do
+        job_run = create(:job_run, :pending)
+        job_run.cancel!
+        job_run.reload
+
+        expect(job_run.cancel_requested_at).to be_present
+        expect(job_run.canceled_at).to be_present
+        expect(job_run.completed_at).to be_present
+      end
+
+      it "does not overwrite existing cancel_requested_at when canceling" do
+        cancel_requested_at = 1.minute.ago
+        job_run = create(:job_run, :pending, cancel_requested_at:)
+        job_run.cancel!
+
+        expect(job_run.reload.cancel_requested_at)
+          .to be_within(1.second)
+          .of(cancel_requested_at)
+      end
+
+      it "transitions from any live state to errored on error" do
+        [:pending, :running].each do |state|
+          job_run = create(:job_run, state)
+
+          expect { job_run.error! }
+            .to change { job_run.reload.status }
+            .to("errored")
+        end
+      end
+
+      it "accepts error_class and error_messages arguments on error" do
+        job_run = create(:job_run, :running)
+        job_run.error!(error_class: "RuntimeError", error_messages: "boom")
+        job_run.reload
+
+        expect(job_run.error_class).to eq "RuntimeError"
+        expect(job_run.error_messages).to eq "boom"
+      end
+
+      it "performs a loopback on tick and persists bytes_copied and progress" do
+        job_run = create(:job_run, :running)
+        job_run.tick!(bytes_copied: 1_000, progress: 50)
+        job_run.reload
+
+        expect(job_run.status).to eq "running"
+        expect(job_run.bytes_copied).to eq 1_000
+        expect(job_run.progress).to eq 50
+      end
+
+      it "raises on an invalid transition" do
+        job_run = create(:job_run, :completed)
+
+        expect { job_run.complete! }
+          .to raise_error StateMachines::InvalidTransition
+      end
     end
   end
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class JobRun < ApplicationRecord
+  include JobRuns::StateMachine
+
   belongs_to :job
   belongs_to :user
 
@@ -13,15 +15,6 @@ class JobRun < ApplicationRecord
   enum :trigger, {
     manual: "manual",
     scheduled: "scheduled",
-  }, validate: true
-
-  enum :status, {
-    pending: "pending",
-    running: "running",
-    completed: "completed",
-    failed: "failed",
-    canceled: "canceled",
-    errored: "errored",
   }, validate: true
 
   validates :trigger,
@@ -41,23 +34,14 @@ class JobRun < ApplicationRecord
     pending? || running?
   end
 
-  def cancel!(at: Time.current)
-    update!(
-      status: "canceled",
-      cancel_requested_at: cancel_requested_at || at,
-      canceled_at: canceled_at || at,
-      completed_at: completed_at || at,
-    )
+  def deletable?
+    completed? || failed? || canceled? || errored?
   end
 
   def duration
     return unless started_at
 
     (completed_at || Time.current) - started_at
-  end
-
-  def deletable?
-    completed? || failed? || canceled? || errored?
   end
 end
 
