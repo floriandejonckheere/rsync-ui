@@ -20,7 +20,7 @@
       <%= render "shared/filters/select",
                  label: I18n.t("job_runs.table.status"),
                  name: "filter[status]",
-                 options: JobRun.statuses.keys.map { |s| [I18n.t("job_runs.status.#{s}"), s] },
+                 options: JobRun.state_machines[:status].states.map { |s| [I18n.t("job_runs.status.#{s.name}"), s.value] },
                  selected: @filters[:status],
                  blank_label: I18n.t("job_runs.index.filters.all_statuses") %>
 
