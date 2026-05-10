@@ -7,42 +7,55 @@
   type: integer
   category: resource_usage
   default: 15
+  minimum: 1
   dependencies:
     - resource_usage
 - key: resource_usage.cpu_warning
   type: integer
   category: resource_usage
   default: 75
+  minimum: 0
+  maximum: 100
   dependencies:
     - resource_usage
 - key: resource_usage.cpu_critical
   type: integer
   category: resource_usage
   default: 90
+  minimum: 0
+  maximum: 100
   dependencies:
     - resource_usage
 - key: resource_usage.memory_warning
   type: integer
   category: resource_usage
   default: 80
+  minimum: 0
+  maximum: 100
   dependencies:
     - resource_usage
 - key: resource_usage.memory_critical
   type: integer
   category: resource_usage
   default: 95
+  minimum: 0
+  maximum: 100
   dependencies:
     - resource_usage
 - key: resource_usage.disk_warning
   type: integer
   category: resource_usage
   default: 80
+  minimum: 0
+  maximum: 100
   dependencies:
     - resource_usage
 - key: resource_usage.disk_critical
   type: integer
   category: resource_usage
   default: 95
+  minimum: 0
+  maximum: 100
   dependencies:
     - resource_usage
 - key: scheduler
@@ -69,6 +82,7 @@
   type: integer
   category: connectivity
   default: 5
+  minimum: 1
   dependencies:
     - connectivity
 - key: connectivity.ssh_key.algorithm
@@ -79,11 +93,14 @@
   type: integer
   category: connectivity
   default: 2048
+  minimum: 1024
 - key: jobs.heartbeat_interval
   type: integer
   category: system
   default: 30
+  minimum: 1
 - key: jobs.stuck_threshold
   type: integer
   category: system
-  default: 300
+  default: 1
+  minimum: 1

@@ -14,6 +14,14 @@ class Configuration < ApplicationRecord
     Configuration.configurations.dig(key, :default)
   end
 
+  def minimum
+    Configuration.configurations.dig(key, :minimum)
+  end
+
+  def maximum
+    Configuration.configurations.dig(key, :maximum)
+  end
+
   def category
     Configuration.configurations.dig(key, :category) || "other"
   end
@@ -127,11 +135,27 @@ class Configuration < ApplicationRecord
   class Integer < Configuration
     before_save { self.value = value.to_i }
 
+    validates :value,
+              numericality: { greater_than_or_equal_to: ->(record) { record.minimum }, message: :greater_than_or_equal_to },
+              if: -> { minimum.present? }
+
+    validates :value,
+              numericality: { less_than_or_equal_to: ->(record) { record.maximum }, message: :less_than_or_equal_to },
+              if: -> { maximum.present? }
+
     def self.policy_class = ConfigurationPolicy
   end
 
   class Float < Configuration
     before_save { self.value = value.to_f }
+
+    validates :value,
+              numericality: { greater_than_or_equal_to: ->(record) { record.minimum }, message: :greater_than_or_equal_to },
+              if: -> { minimum.present? }
+
+    validates :value,
+              numericality: { less_than_or_equal_to: ->(record) { record.maximum }, message: :less_than_or_equal_to },
+              if: -> { maximum.present? }
 
     def self.policy_class = ConfigurationPolicy
   end

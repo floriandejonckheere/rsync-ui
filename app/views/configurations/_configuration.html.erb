@@ -96,6 +96,8 @@
                                         value: configuration.value,
                                         class: "input font-mono w-64",
                                         placeholder: I18n.t("configurations.index.value_placeholder"),
+                                        min: configuration.minimum,
+                                        max: configuration.maximum,
                                         data: { configuration_target: "value" } %>
                 <% else %>
                   <% raise ArgumentError, "Unsupported configuration type: #{configuration.class}" %>

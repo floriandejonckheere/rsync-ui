@@ -206,4 +206,100 @@ RSpec.describe Configuration do
       expect(result).to eq "my_value"
     end
   end
+
+  describe Configuration::Integer do
+    describe "validations" do
+      context "when minimum and maximum are defined" do
+        subject(:configuration) { build(:integer_configuration, key: "test.integer", value:) }
+
+        context "with a value below the minimum" do
+          let(:value) { 0 }
+
+          it { is_expected.not_to be_valid }
+        end
+
+        context "with a value at the minimum" do
+          let(:value) { 1 }
+
+          it { is_expected.to be_valid }
+        end
+
+        context "with a value within range" do
+          let(:value) { 5 }
+
+          it { is_expected.to be_valid }
+        end
+
+        context "with a value at the maximum" do
+          let(:value) { 10 }
+
+          it { is_expected.to be_valid }
+        end
+
+        context "with a value above the maximum" do
+          let(:value) { 11 }
+
+          it { is_expected.not_to be_valid }
+        end
+      end
+
+      context "when no minimum or maximum are defined" do
+        subject(:configuration) { build(:integer_configuration, key: "test.integer_unbounded", value:) }
+
+        context "with any value" do
+          let(:value) { -999 }
+
+          it { is_expected.to be_valid }
+        end
+      end
+    end
+  end
+
+  describe Configuration::Float do
+    describe "validations" do
+      context "when minimum and maximum are defined" do
+        subject(:configuration) { build(:float_configuration, key: "test.float", value:) }
+
+        context "with a value below the minimum" do
+          let(:value) { 0.5 }
+
+          it { is_expected.not_to be_valid }
+        end
+
+        context "with a value at the minimum" do
+          let(:value) { 1.0 }
+
+          it { is_expected.to be_valid }
+        end
+
+        context "with a value within range" do
+          let(:value) { 5.0 }
+
+          it { is_expected.to be_valid }
+        end
+
+        context "with a value at the maximum" do
+          let(:value) { 10.0 }
+
+          it { is_expected.to be_valid }
+        end
+
+        context "with a value above the maximum" do
+          let(:value) { 10.5 }
+
+          it { is_expected.not_to be_valid }
+        end
+      end
+
+      context "when no minimum or maximum are defined" do
+        subject(:configuration) { build(:float_configuration, key: "test.float_unbounded", value:) }
+
+        context "with any value" do
+          let(:value) { -999.9 }
+
+          it { is_expected.to be_valid }
+        end
+      end
+    end
+  end
 end

@@ -19,3 +19,30 @@
   default: "transitive_dependent_value"
   dependencies:
     - test.dependent
+- key: test.integer
+  type: integer
+  category: system
+  default: 5
+  minimum: 1
+  maximum: 10
+- key: test.integer_unbounded
+  type: integer
+  category: system
+  default: 5
+- key: test.float
+  type: float
+  category: system
+  default: 5.0
+  minimum: 1.0
+  maximum: 10.0
+- key: test.float_unbounded
+  type: float
+  category: system
+  default: 5.0
+- key: test.string_allowed
+  type: string
+  category: system
+  default: "foo"
+  allowed_values:
+    - foo
+    - bar
