@@ -36,12 +36,6 @@ For remote repositories, the server should be mounted as a local directory, and 
   - [ ] Local repositories
   - [ ] Remote repositories
 
-### Visualization and monitoring
-
-- [x] Show a real-time visualization of repositories (vertices) and schedules (edges) on the dashboard
-- [x] Mark healthy, unhealthy, and ongoing jobs in different colors
-- [x] Add real-time progress to the visualization (ActionCable)
-
 ### Job creation wizard
 
 - [ ] Implement a wizard that guides the user through the process of creating a sync job
@@ -60,7 +54,6 @@ For remote repositories, the server should be mounted as a local directory, and 
   - [ ] Add to notification email
 - [ ] Add copy to clipboard button on command preview card
 - [ ] Add a local resource usage card
-- [x] Allow streaming logs
 - [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
 - [ ] Implement support for OAuth2 authentication
 - [ ] Do not bind postgres to port 5432, otherwise you can't use git worktrees
