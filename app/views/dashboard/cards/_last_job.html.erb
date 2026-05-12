@@ -6,8 +6,7 @@
     <% if last_job_run.nil? %>
       <%= I18n.t("dashboard.jobs.last_job") %>
     <% else %>
-      <%= I18n.t("dashboard.jobs.last_job") %>
-      :
+      <%= I18n.t("dashboard.jobs.last_job") %>:
       <%= last_job_run.job.name %>
     <% end %>
   </h2>
@@ -25,9 +24,9 @@
         <%= lucide_icon "clock", class: "h-3 w-3 flex-shrink-0" %>
 
         <% if last_job_run.completed_at %>
-          <span title="<%= l(last_job_run.completed_at) %>">
+          <%= link_to job_run_path(last_job_run), class: "hover:underline", title: l(last_job_run.completed_at) do %>
             <%= time_ago_in_words(last_job_run.completed_at) %> <%= I18n.t("dashboard.jobs.ago") %>
-          </span>
+          <% end %>
         <% else %>
           <span>-</span>
         <% end %>
