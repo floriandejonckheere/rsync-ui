@@ -103,7 +103,8 @@
             data-repository-type-target="panel"
             data-value="local"
           >
-            <p class="text-sm text-muted-foreground mt-4">
+            <p class="text-sm text-muted-foreground flex items-center gap-2 mt-4">
+              <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
               <%= I18n.t("repositories.form.local_hint") %>
             </p>
           </div>
@@ -126,6 +127,11 @@
                            { class: "w-full",
                              data: { "server-path-target": "select", action: "change->server-path#prefill" } } %>
             </div>
+
+            <p class="text-sm text-muted-foreground flex items-center gap-2 mt-4">
+              <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
+              <%= I18n.t("repositories.form.remote_hint") %>
+            </p>
           </div>
 
           <div class="flex flex-col gap-6">
@@ -136,7 +142,16 @@
                                placeholder: I18n.t("repositories.form.path_placeholder"),
                                required: true,
                                autocomplete: "off",
-                               data: { "server-path-target": "path" } %>
+                               data: { "server-path-target": "path", action: "input->server-path#updatePathHint change->server-path#updatePathHint" } %>
+
+              <p
+                class="text-sm text-muted-foreground flex items-center gap-2 mt-1"
+                data-server-path-target="pathHint"
+                hidden
+              >
+                <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
+                <%= I18n.t("repositories.form.path_hint") %>
+              </p>
             </div>
           </div>
         </div>

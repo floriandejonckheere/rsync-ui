@@ -6,7 +6,8 @@
     <% if last_job_run.nil? %>
       <%= I18n.t("dashboard.jobs.last_job") %>
     <% else %>
-      <%= I18n.t("dashboard.jobs.last_job") %>:
+      <%= I18n.t("dashboard.jobs.last_job") %>
+      :
       <%= last_job_run.job.name %>
     <% end %>
   </h2>

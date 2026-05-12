@@ -30,9 +30,11 @@ en:
       name: Name
       name_placeholder: My repository
       path: Path
+      path_hint: If the path does not end with /, rsync copies the path as is, not just the contents of the directory.
       path_placeholder: "/data/backups"
       read_only: Read-only
       remote: Remote
+      remote_hint: This repository is stored on the selected remote server.
       server: Server
       server_placeholder: Select a server
       submit_create: Create repository
