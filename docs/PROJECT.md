@@ -52,7 +52,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Capture number of bytes and number of files transferred on the job run
   - [ ] Add to job run details
   - [ ] Add to notification email
-- [ ] Add copy to clipboard button on command preview card
+- [x] Add copy to clipboard button on command preview card
 - [ ] Add a local resource usage card
 - [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
 - [ ] Implement support for OAuth2 authentication

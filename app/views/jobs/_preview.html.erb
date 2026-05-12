@@ -1,4 +1,23 @@
 <%= turbo_frame_tag "command-preview" do %>
-  <pre class="whitespace-pre-wrap break-all text-sm"><code><%= @command.parts.first %> \
+  <div data-controller="clipboard" class="relative group/preview">
+    <pre
+      class="whitespace-pre-wrap break-all text-sm"
+      data-clipboard-target="source"
+    ><code><%= @command.parts.first %> \
 <%= @command.parts.drop(1).map { |part| "  #{part}" }.join(" \\ \n") %></code></pre>
+
+    <button
+      type="button"
+      class="
+        btn-icon-outline absolute top-0 right-0 opacity-0
+        group-hover/preview:opacity-100 transition-opacity
+      "
+      data-action="clipboard#copy"
+      data-clipboard-target="button"
+      data-tooltip="<%= I18n.t("jobs.form.copy_command") %>"
+    >
+      <%= lucide_icon "copy", class: "h-4 w-4", data: { clipboard_target: "copyIcon" } %>
+      <%= lucide_icon "check", class: "h-4 w-4 hidden", data: { clipboard_target: "checkIcon" } %>
+    </button>
+  </div>
 <% end %>

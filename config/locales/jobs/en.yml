@@ -37,6 +37,7 @@ en:
       add_pattern: Add pattern
       advanced_options: Advanced options
       basic_options: Basic options
+      copy_command: Copy command
       custom_options: Custom options
       description: Description
       description_placeholder: Optional description for this job
