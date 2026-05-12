@@ -45,13 +45,20 @@ For remote repositories, the server should be mounted as a local directory, and 
 
 ### Smaller TODOs
 
+- [ ] Add SSH audit log
+- [ ] Allow user to archive job runs, jobs, repositories, and servers
+  - [ ] Extra tab for archived job runs, jobs, repositories, and servers
+  - [ ] No connectivity polling for archived servers
+  - [ ] No scheduling for archived jobs
+- [ ] Capture more real-time data
+  - [ ] Current speed
+  - [ ] Remaining time
+  - [ ] Number of files transferred
+  - [ ] Average speed
 - [ ] Make application responsive
 - [ ] Make job run immutable: save command and options in the database
 - [ ] Update branding
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
-- [ ] Capture number of bytes and number of files transferred on the job run
-  - [ ] Add to job run details
-  - [ ] Add to notification email
 - [x] Add copy to clipboard button on command preview card
 - [ ] Add a local resource usage card
 - [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
