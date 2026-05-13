@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_10_113913) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_13_155455) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -90,7 +90,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_10_113913) do
     t.datetime "last_heartbeat_at"
     t.integer "pid"
     t.integer "progress"
+    t.integer "remaining_time"
     t.serial "sequence", null: false
+    t.integer "speed"
     t.datetime "started_at"
     t.string "status", default: "pending", null: false
     t.string "trigger", null: false

@@ -59,7 +59,9 @@ end
 #  last_heartbeat_at   :datetime         indexed
 #  pid                 :integer
 #  progress            :integer
+#  remaining_time      :integer
 #  sequence            :integer          not null, indexed
+#  speed               :integer
 #  started_at          :datetime         indexed
 #  status              :string           default("pending"), not null, indexed
 #  trigger             :string           not null
