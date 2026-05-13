@@ -75,6 +75,8 @@ module JobRuns
 
           job_run.bytes_copied = kwargs[:bytes_copied]
           job_run.progress = kwargs[:progress]
+          job_run.speed = kwargs[:speed]
+          job_run.remaining_time = kwargs[:remaining_time]
         end
 
         before_transition on: :error do |job_run, transition|

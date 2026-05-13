@@ -35,6 +35,8 @@ module JobRuns
           type: "progress",
           status_text: I18n.t("job_runs.status.running_progress", progress: job_run.progress),
           progress: job_run.progress,
+          speed: job_run.speed,
+          remaining_time: job_run.remaining_time,
         },
       )
     end

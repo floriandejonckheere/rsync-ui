@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { cable } from "@hotwired/turbo-rails"
 
 export default class extends Controller {
-  static targets = ["jobStatus", "startedAt", "completedAt", "duration", "progressBar", "progressFill", "logCard", "outputFrame"]
+  static targets = ["jobStatus", "startedAt", "completedAt", "duration", "progressBar", "progressFill", "speedInfo", "logCard", "outputFrame"]
   static values = { jobRunId: String }
 
   async connect() {
@@ -14,6 +14,21 @@ export default class extends Controller {
 
   disconnect() {
     this.subscription?.unsubscribe()
+  }
+
+  #formatSpeed(bytesPerSec) {
+    if (bytesPerSec >= 1e9) return `${(bytesPerSec / 1e9).toFixed(0)} GB/s`
+    if (bytesPerSec >= 1e6) return `${(bytesPerSec / 1e6).toFixed(0)} MB/s`
+    if (bytesPerSec >= 1e3) return `${(bytesPerSec / 1e3).toFixed(0)} kB/s`
+    return `${bytesPerSec} B/s`
+  }
+
+  #formatRemainingTime(seconds) {
+    const h = Math.floor(seconds / 3600)
+    const m = Math.floor((seconds % 3600) / 60)
+    const s = seconds % 60
+    const pad = (n) => String(n).padStart(2, "0")
+    return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`
   }
 
   #relativeTime(isoString) {
@@ -51,6 +66,14 @@ export default class extends Controller {
       if (this.hasProgressFillTarget) {
         this.progressFillTarget.style.transform = `translateX(-${100 - data.progress}%)`
       }
+      if (this.hasSpeedInfoTarget) {
+        if (data.speed != null && data.remaining_time != null) {
+          this.speedInfoTarget.textContent = `${this.#formatSpeed(data.speed)} · ${this.#formatRemainingTime(data.remaining_time)} remaining`
+          this.speedInfoTarget.classList.remove("hidden")
+        } else {
+          this.speedInfoTarget.classList.add("hidden")
+        }
+      }
     } else if (data.type === "complete") {
       if (this.hasJobStatusTarget) {
         this.jobStatusTarget.dataset.jobRunStatus = data.status
@@ -67,6 +90,9 @@ export default class extends Controller {
       }
       if (this.hasProgressBarTarget) {
         this.progressBarTarget.classList.add("hidden")
+      }
+      if (this.hasSpeedInfoTarget) {
+        this.speedInfoTarget.classList.add("hidden")
       }
       if (this.hasLogCardTarget) {
         this.logCardTarget.classList.add("hidden")

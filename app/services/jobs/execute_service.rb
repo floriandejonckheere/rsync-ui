@@ -63,7 +63,7 @@ module Jobs
           ActionCable.server.broadcast("job_run_logs_#{job_run.id}", { type: status&.bytes ? "status" : "log", content: line }) if Configuration.get("streaming")
 
           if job.opt_progress2 && status&.bytes
-            job_run.tick!(bytes_copied: status.bytes, progress: status.progress)
+            job_run.tick!(bytes_copied: status.bytes, progress: status.progress, speed: status.speed, remaining_time: status.remaining_time)
 
             last_status_line = line
           else

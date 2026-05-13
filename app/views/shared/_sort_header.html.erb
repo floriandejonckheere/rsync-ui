@@ -1,5 +1,5 @@
-<%# locals: (column:, label:) %>
-<th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+<%# locals: (column:, label:, class: nil) %>
+<th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400 <%= local_assigns[:class] %>">
   <%= link_to sort_url_for(column),
               data: { turbo_action: "replace" },
               class: "flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200 whitespace-nowrap" do %>

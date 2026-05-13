@@ -23,6 +23,15 @@
   </div>
 
   <div
+    class="text-xs text-gray-500 dark:text-gray-400<%= ' hidden' unless job_run.running? && job_run.speed.present? %>"
+    data-job-run-status-target="speedInfo"
+  >
+    <% if job_run.speed.present? %>
+      <%= I18n.t("job_runs.status.running_speed", speed: format_speed(job_run.speed), remaining: format_remaining_time(job_run.remaining_time)) %>
+    <% end %>
+  </div>
+
+  <div
     role="progressbar"
     aria-valuemin="0"
     aria-valuemax="100"

@@ -50,6 +50,7 @@ en:
       pending: Pending
       running: Running
       running_progress: Running (%{progress}%)
+      running_speed: "%{speed} · %{remaining} remaining"
     table:
       completed_at: Completed at
       duration: Duration
