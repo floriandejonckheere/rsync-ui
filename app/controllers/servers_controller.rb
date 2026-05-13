@@ -34,6 +34,9 @@ class ServersController < ApplicationController
     authorize! @server
 
     if @server.save
+      Servers::ConnectionJob.perform_later(@server) if Configuration.get("connectivity")
+      Servers::ResourceUsageJob.perform_later(@server) if Configuration.get("resource_usage")
+
       redirect_to servers_path, notice: t(".success")
     else
       render :new, status: :unprocessable_content
