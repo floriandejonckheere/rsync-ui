@@ -55,7 +55,7 @@ module JobRuns
         ##
         # Callbacks
         #
-        before_transition to: :running do |job_run|
+        before_transition on: :start do |job_run|
           job_run.started_at = Time.zone.now
         end
 
