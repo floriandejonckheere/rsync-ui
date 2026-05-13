@@ -40,7 +40,9 @@ class JobsController < ApplicationController
     authorize! @job
 
     @job = @job.dup
-    @job.name = "#{@job.name} (copy)"
+    @job.name = I18n.t("jobs.duplicate.name", job_name: @job.name)
+
+    build_hooks(@job)
 
     @command = Rsync::CommandService.new(job: @job)
   end

@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class Job < ApplicationRecord
+  include Duplicatable
+
+  duplicates_associations :hooks,
+                          :job_notifications
+
   belongs_to :user
 
   belongs_to :source_repository,

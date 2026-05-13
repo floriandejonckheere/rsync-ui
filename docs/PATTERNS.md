@@ -156,6 +156,34 @@ end
 <% end %>
 ```
 
+## Duplicatable Model Pattern
+
+Use the `Duplicatable` concern to copy a record together with its configuration associations, while leaving runtime associations (e.g. history) behind.
+
+**Model:**
+```ruby
+class Job < ApplicationRecord
+  include Duplicatable
+
+  duplicates_associations :hooks,
+                          :job_notifications
+end
+```
+
+**Controller:**
+```ruby
+def duplicate
+  authorize! @job
+
+  @job = @job.dup
+  @job.name = "#{@job.name} (copy)"
+end
+```
+
+**Notes:**
+- `dup` copies all columns automatically (via `ActiveRecord::Base#dup`). Only add an association to `duplicates_associations` when it represents configuration that should travel with the record — omit runtime/history associations (e.g. `job_runs`).
+- Each subclass gets its own copy of the association list via an `inherited` hook, so mutations to a subclass list never bleed into the parent.
+
 ## Discardable Model Pattern (Soft Deletes)
 
 Use the `Discard` concern to implement soft deletes via a timestamp column (default: `discarded_at`).
