@@ -10,7 +10,7 @@
     <% else %>
       <%= I18n.t("dashboard.jobs.next_job") %>
       :
-      <%= next_job.name %>
+      <%= link_to next_job.name, edit_job_path(next_job), class: "hover:underline" %>
     <% end %>
   </h2>
 
