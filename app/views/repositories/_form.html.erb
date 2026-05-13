@@ -121,11 +121,15 @@
             <div class="field mt-4">
               <%= f.label :server_id, I18n.t("repositories.form.server") %>
 
-              <%= f.select :server_id,
-                           @servers.map { |s| [s.name, s.id, { data: { path: s.path } }] },
-                           { include_blank: I18n.t("repositories.form.server_placeholder") },
-                           { class: "w-full",
-                             data: { "server-path-target": "select", action: "change->server-path#prefill" } } %>
+              <%= render "shared/forms/combobox",
+                         name: f.field_name(:server_id),
+                         value: repository.server_id,
+                         options: @servers.map { |server| [server.name, server.id, { path: server.path }] },
+                         blank_label: I18n.t("repositories.form.server_placeholder"),
+                         placeholder: I18n.t("repositories.form.server_search_placeholder"),
+                         select_data: { "server-path-target": "select", action: "change->server-path#prefill" },
+                         input_data: { "server-path-target": "input" },
+                         input_id: f.field_id(:server_id) %>
             </div>
 
             <p class="text-sm text-muted-foreground flex items-center gap-2 mt-4">

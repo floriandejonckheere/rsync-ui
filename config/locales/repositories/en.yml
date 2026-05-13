@@ -37,6 +37,7 @@ en:
       remote_hint: This repository is stored on the selected remote server.
       server: Server
       server_placeholder: Select a server
+      server_search_placeholder: Search servers...
       submit_create: Create repository
       submit_update: Update repository
       type: Type

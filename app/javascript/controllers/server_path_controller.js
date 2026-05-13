@@ -1,15 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["select", "path", "pathHint"]
+  static targets = ["select", "path", "pathHint", "input"]
 
   connect() {
     this.updatePathHint()
   }
 
-  prefill() {
-    const selected = this.selectTarget.selectedOptions[0]
-    const path = selected?.dataset?.path
+  prefill(event) {
+    const path = this.selectedPath(event)
 
     if (path) this.pathTarget.value = path
     this.updatePathHint()
@@ -22,5 +21,15 @@ export default class extends Controller {
     const showHint = path.length > 0 && !path.endsWith("/")
 
     this.pathHintTarget.hidden = !showHint
+  }
+
+  selectedPath(event) {
+    if (event?.detail?.value !== undefined) {
+      const option = this.selectTarget.querySelector(`[role="option"][data-value="${CSS.escape(event.detail.value)}"]`)
+      return option?.dataset?.path
+    }
+
+    const selected = this.hasInputTarget ? this.selectTarget.querySelector(`[role="option"][data-value="${CSS.escape(this.inputTarget.value)}"]`) : this.selectTarget.selectedOptions?.[0]
+    return selected?.dataset?.path
   }
 }

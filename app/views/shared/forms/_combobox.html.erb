@@ -1,5 +1,16 @@
-<%# locals: (name:, value:, options:, blank_label:, placeholder:, required: false) %>
-<div class="select">
+<%# locals: (name:, value:, options:, blank_label:, placeholder:, required: false, select_data: {}, input_data: {}, input_id: nil) %>
+<% select_data = local_assigns.fetch(:select_data, {}) %>
+<% input_data = local_assigns.fetch(:input_data, {}) %>
+<% input_id = local_assigns[:input_id] %>
+
+<div
+  class="select"
+  <% if select_data.present? %>
+    <% select_data.each do |key, val| %>
+      data-<%= key.to_s.dasherize %>="<%= val %>"
+    <% end %>
+  <% end %>
+>
   <button
     type="button"
     class="btn-outline w-full"
@@ -17,6 +28,12 @@
     type="hidden"
     name="<%= name %>"
     value="<%= value %>"
+    id="<%= input_id %>"
+    <% if input_data.present? %>
+      <% input_data.each do |key, val| %>
+        data-<%= key.to_s.dasherize %>="<%= val %>"
+      <% end %>
+    <% end %>
     <%= "required" if required %>
   >
 
@@ -30,8 +47,14 @@
     <div role="listbox">
       <div role="option" data-value=""><%= blank_label %></div>
 
-      <% options.each do |option_label, option_value| %>
-        <div role="option" data-value="<%= option_value %>">
+      <% options.each do |option_label, option_value, option_data| %>
+        <div
+          role="option"
+          data-value="<%= option_value %>"
+          <% option_data&.each do |key, val| %>
+            data-<%= key.to_s.dasherize %>="<%= val %>"
+          <% end %>
+        >
           <%= option_label %>
         </div>
       <% end %>
