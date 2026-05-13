@@ -28,14 +28,6 @@ RSpec.describe Servers::DeployService do
         .from(nil)
     end
 
-    it "deploys the public key" do
-      service.call
-
-      expect(ssh_session)
-        .to have_received(:exec!)
-        .with(match(%r(echo "ssh-rsa .+ Rsync UI key" >> ~/.ssh/authorized_keys)))
-    end
-
     it "clears the password and stores the private key" do
       expect { service.call }
         .to change(server, :password).to(nil)
@@ -50,6 +42,52 @@ RSpec.describe Servers::DeployService do
       expect(server.error_message).to be_nil
       expect(server.probed_at).not_to be_nil
       expect(server.last_seen_at).not_to be_nil
+    end
+
+    context "when the SSH key is RSA" do
+      it "deploys the public key" do
+        service.call
+
+        expect(ssh_session)
+          .to have_received(:exec!)
+          .with(match(%r(echo "ssh-rsa .+ Rsync UI key" >> ~/.ssh/authorized_keys)))
+      end
+    end
+
+    context "when the SSH key is ECDSA" do
+      let(:ecdsa_key) { OpenSSL::PKey::EC.generate("prime256v1") }
+
+      before do
+        allow(Servers::SSHKeyService)
+          .to receive(:call)
+          .and_return({ private_key: ecdsa_key, public_key: ecdsa_key })
+      end
+
+      it "deploys the public key" do
+        service.call
+
+        expect(ssh_session)
+          .to have_received(:exec!)
+          .with(match(%r(echo "ecdsa-sha2-nistp256 .+ Rsync UI key" >> ~/.ssh/authorized_keys)))
+      end
+    end
+
+    context "when the SSH key is ED25519" do
+      let(:ed25519_key) { OpenSSL::PKey.generate_key("ED25519") }
+
+      before do
+        allow(Servers::SSHKeyService)
+          .to receive(:call)
+          .and_return({ private_key: ed25519_key, public_key: ed25519_key })
+      end
+
+      it "deploys the public key" do
+        service.call
+
+        expect(ssh_session)
+          .to have_received(:exec!)
+          .with(match(%r(echo "ssh-ed25519 .+ Rsync UI key" >> ~/.ssh/authorized_keys)))
+      end
     end
 
     context "when the server already has an SSH key" do

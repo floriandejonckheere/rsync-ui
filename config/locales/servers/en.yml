@@ -53,7 +53,7 @@ en:
       path_placeholder: "/"
       port: Port
       port_placeholder: '22'
-      ssh_key: SSH Key
+      ssh_key: SSH key
       ssh_key_placeholder: "-----BEGIN OPENSSH PRIVATE KEY-----"
       ssh_key_placeholder_edit: Leave blank to keep unchanged
       submit_create: Create server
@@ -88,7 +88,7 @@ en:
       memory: Memory
       name: Name
       password: Password
-      ssh_key: SSH Key
+      ssh_key: SSH key
     test:
       failure: Connection failed
       missing_details: Host, port, username, and a password or SSH key are required to test the connection.
