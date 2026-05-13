@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import { StreamActions, visit } from "@hotwired/turbo"
 
 export default class extends Controller {
   static values = { url: String }
