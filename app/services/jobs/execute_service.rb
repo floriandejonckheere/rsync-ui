@@ -2,8 +2,6 @@
 
 module Jobs
   class ExecuteService < ApplicationService
-    STATUS_PATTERN = /^\s*([\d,]+)\s+(\d+)%\s+\S+\s+[\d:]+/
-
     attr_reader :job_run,
                 :job,
                 :trigger
@@ -58,13 +56,14 @@ module Jobs
         last_status_line = nil
 
         result = Rsync::ExecuteService.new(command, job_run).call do |line|
-          bytes_copied, progress = parse_status(line) if job.opt_progress || job.opt_progress2
+          # Parse status line if --progress or --info=progress2 is enabled
+          status = Rsync::Progress.new(line) if job.opt_progress || job.opt_progress2
 
           # Broadcast log line
-          ActionCable.server.broadcast("job_run_logs_#{job_run.id}", { type: bytes_copied && progress ? "status" : "log", content: line }) if Configuration.get("streaming")
+          ActionCable.server.broadcast("job_run_logs_#{job_run.id}", { type: status&.bytes ? "status" : "log", content: line }) if Configuration.get("streaming")
 
-          if job.opt_progress2 && bytes_copied && progress
-            job_run.tick!(bytes_copied:, progress:)
+          if job.opt_progress2 && status&.bytes
+            job_run.tick!(bytes_copied: status.bytes, progress: status.progress)
 
             last_status_line = line
           else
@@ -109,16 +108,6 @@ module Jobs
     end
 
     private
-
-    def parse_status(line)
-      match = STATUS_PATTERN.match(line)
-      return unless match
-
-      [
-        match[1].delete(",").to_i,
-        match[2].to_i,
-      ]
-    end
 
     def enqueue_notifications(job_run, event)
       return unless Configuration.get("notifications")
