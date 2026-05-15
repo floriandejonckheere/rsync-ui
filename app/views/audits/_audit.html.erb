@@ -1,0 +1,55 @@
+<tr
+  class="
+    relative border-b border-gray-100 dark:border-gray-700 last:border-b-0
+    hover:z-10 hover:bg-gray-50 dark:hover:bg-gray-700/50
+  "
+>
+  <td class="pl-6 py-4"></td>
+
+  <td class="px-6 py-4">
+    <div class="font-medium text-gray-900 dark:text-gray-100">
+      <%= link_to audit.server.name, edit_server_path(audit.server), class: "hover:underline", data: { turbo_frame: "_top" } %>
+    </div>
+  </td>
+
+  <td
+    class="
+      px-6 py-4 font-mono text-xs text-gray-600 dark:text-gray-300 max-w-xs
+      truncate
+    "
+  >
+    <%= audit.command %>
+  </td>
+
+  <td class="px-6 py-4 text-sm">
+    <% if audit.exit_status.nil? %>
+      <span class="text-gray-400">—</span>
+    <% elsif audit.exit_status.zero? %>
+      <span class="inline-flex items-center gap-1 text-green-600 dark:text-green-400">
+        <%= I18n.t("audits.status.completed") %>
+      </span>
+    <% else %>
+      <span class="inline-flex items-center gap-1 text-red-600 dark:text-red-400">
+        <%= I18n.t("audits.status.failed_with_code", code: audit.exit_status) %>
+      </span>
+    <% end %>
+  </td>
+
+  <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
+    <%= relative_time_tag(audit.started_at) %>
+  </td>
+
+  <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
+    <%= audit.completed_at? ? relative_time_tag(audit.completed_at) : "—" %>
+  </td>
+
+  <td class="px-6 py-4">
+    <div class="flex items-center justify-end gap-2">
+      <%= link_to audit_path(audit),
+                  class: "btn-icon-outline btn-icon-md",
+                  data: { tooltip: I18n.t("audits.show.title"), turbo_frame: "_top" } do %>
+        <%= lucide_icon "eye", class: "h-4 w-4" %>
+      <% end %>
+    </div>
+  </td>
+</tr>

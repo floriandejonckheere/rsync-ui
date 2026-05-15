@@ -1,0 +1,39 @@
+<div class="card mb-4">
+  <%= form_with url: audits_path, method: :get,
+               data: { turbo_frame: "audits_list", controller: "filter" } do %>
+    <div class="flex flex-row flex-wrap gap-4 items-end px-6">
+      <%= render "shared/filters/combobox",
+                 label: I18n.t("audits.table.server"),
+                 name: "filter[server_id]",
+                 options: @servers.map { |s| [s.name, s.id] },
+                 value: @filters[:server_id],
+                 blank_label: I18n.t("audits.index.filters.all_servers"),
+                 placeholder: I18n.t("audits.table.server") %>
+
+      <%= render "shared/filters/select",
+                 label: I18n.t("audits.table.status"),
+                 name: "filter[exit_status]",
+                 options: [
+                   [I18n.t("audits.status.completed"), "completed"],
+                   [I18n.t("audits.status.failed"), "failed"],
+                 ],
+                 selected: @filters[:exit_status],
+                 blank_label: I18n.t("audits.index.filters.all_statuses") %>
+
+      <%= render "shared/filters/datetime",
+                 label: I18n.t("audits.index.filters.started_at_from"),
+                 name: "filter[started_at_from]",
+                 value: @filters[:started_at_from] %>
+
+      <%= render "shared/filters/datetime",
+                 label: I18n.t("audits.index.filters.started_at_to"),
+                 name: "filter[started_at_to]",
+                 value: @filters[:started_at_to] %>
+
+      <%= link_to audits_path, class: "btn-outline flex items-center gap-2 ml-auto" do %>
+        <%= lucide_icon "x", class: "h-4 w-4" %>
+        <%= I18n.t("shared.filters.clear") %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

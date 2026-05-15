@@ -1,0 +1,98 @@
+<% content_for :back do %>
+  <%= render "shared/menu/back", path: audits_path %>
+<% end %>
+
+<% content_for :title do %>
+  <%= I18n.t("audits.show.title") %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= I18n.t("audits.show.subtitle") %>
+<% end %>
+
+<div class="card p-0 mb-6">
+  <div
+    class="
+      flex flex-wrap items-center justify-end gap-6 px-6 py-4
+      text-sm text-gray-500 dark:text-gray-400
+    "
+  >
+    <div>
+      <%= I18n.t("audits.show.server") %>:
+      <%= link_to @audit.server.name, edit_server_path(@audit.server), class: "font-medium text-gray-900 dark:text-gray-100 hover:underline" %>
+    </div>
+
+    <div>
+      <%= I18n.t("audits.show.started_at") %>:
+      <%= relative_time_tag(@audit.started_at) %>
+    </div>
+
+    <div>
+      <%= I18n.t("audits.show.completed_at") %>:
+      <% if @audit.completed_at %>
+        <%= relative_time_tag(@audit.completed_at) %>
+      <% else %>
+        —
+      <% end %>
+    </div>
+
+    <div>
+      <%= I18n.t("audits.show.exit_status") %>:
+      <% if @audit.exit_status&.zero? %>
+        <span class="text-green-600 dark:text-green-400">
+          <%= @audit.exit_status %>
+        </span>
+      <% elsif @audit.exit_status %>
+        <span class="text-red-600 dark:text-red-400">
+          <%= @audit.exit_status %>
+        </span>
+      <% else %>
+        —
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="card p-0 mb-6">
+  <div
+    class="
+      flex items-center gap-2 px-6 py-4 border-b border-gray-100
+      dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400
+    "
+  >
+    <%= lucide_icon "terminal", class: "h-4 w-4" %>
+    <span><%= I18n.t("audits.show.command") %></span>
+  </div>
+
+  <pre
+    class="
+      p-6 text-xs font-mono text-gray-800 dark:text-gray-200
+      whitespace-pre-wrap
+    "
+  ><%= @audit.command %></pre>
+</div>
+
+<div class="card p-0">
+  <div
+    class="
+      flex items-center gap-2 px-6 py-4 border-b border-gray-100
+      dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400
+    "
+  >
+    <%= lucide_icon "file-text", class: "h-4 w-4" %>
+    <span><%= I18n.t("audits.show.output") %></span>
+  </div>
+
+  <% if @audit.output.present? %>
+    <pre
+      class="
+        p-6 text-xs font-mono text-gray-800 dark:text-gray-200
+        whitespace-pre-wrap
+      "
+    ><%= @audit.output %></pre>
+  <% else %>
+    <div class="p-6 text-sm text-gray-400 dark:text-gray-500">
+      <%= I18n.t("audits.show.no_output") %>
+    </div>
+  <% end %>
+</div>

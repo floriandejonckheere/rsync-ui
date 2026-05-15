@@ -27,8 +27,8 @@ en:
     destroy:
       success: Job was successfully deleted.
     duplicate:
+      name: "%{job_name} (copy)"
       title: Duplicate job
-      name: '%{job_name} (copy)'
     edit:
       title: Edit job
     enabled:

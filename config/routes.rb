@@ -59,6 +59,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :audits, only: [:index, :show]
+
   resources :job_runs, only: [:index, :show, :create, :destroy] do
     member do
       patch :cancel
@@ -126,6 +128,8 @@ end
 #                                      job PATCH  /jobs/:id(.:format)                                                                               jobs#update
 #                                          PUT    /jobs/:id(.:format)                                                                               jobs#update
 #                                          DELETE /jobs/:id(.:format)                                                                               jobs#destroy
+#                                   audits GET    /audits(.:format)                                                                                 audits#index
+#                                    audit GET    /audits/:id(.:format)                                                                             audits#show
 #                           cancel_job_run PATCH  /job_runs/:id/cancel(.:format)                                                                    job_runs#cancel
 #                           output_job_run GET    /job_runs/:id/output(.:format)                                                                    job_runs#output
 #                                 job_runs GET    /job_runs(.:format)                                                                               job_runs#index

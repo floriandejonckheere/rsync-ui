@@ -66,6 +66,10 @@
   type: boolean
   category: features
   default: true
+- key: audits
+  type: boolean
+  category: features
+  default: true
 - key: hooks
   type: boolean
   category: features

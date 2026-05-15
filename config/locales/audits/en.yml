@@ -1,0 +1,38 @@
+---
+en:
+  audits:
+    index:
+      empty: No audit records have been created yet.
+      empty_filtered: No audits match the selected filters.
+      filters:
+        all_servers: All servers
+        all_statuses: All statuses
+        started_at_from: Started from
+        started_at_to: Started to
+      search:
+        no_results:
+          title: No audit records found
+        placeholder: Search by command...
+      subtitle: Audit log of all executed SSH commands
+      title: Audits
+    show:
+      command: Command
+      completed_at: Completed at
+      exit_status: Exit status
+      no_output: No output recorded
+      output: Output
+      server: Server
+      started_at: Started at
+      subtitle: SSH command details
+      title: Show details and output
+    status:
+      completed: Completed
+      failed: Failed
+      failed_with_code: Failed (%{code})
+    table:
+      command: Command
+      completed_at: Completed at
+      server: Server
+      started_at: Started at
+      status: Status
+    title: Audits

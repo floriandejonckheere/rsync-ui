@@ -45,7 +45,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 
 ### Smaller TODOs
 
-- [ ] Add SSH audit log
+- [x] Add SSH audit log
   - [ ] Add remote SSH command when executing a job (`rsync -e 'ssh -v' ...`)
 - [ ] Fix execution of jobs to remote servers
   - [ ] Password: `ssh user@server` ???

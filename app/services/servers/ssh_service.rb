@@ -13,13 +13,24 @@ module Servers
     end
 
     def call
-      output = nil
+      audit = Audit.create!(server:, command:, started_at: Time.zone.now) if Configuration.get("audits")
+
+      output = +""
+      exit_code = nil
 
       Net::SSH.start(server.host, server.username, ssh_options) do |ssh|
-        output = ssh
-          .exec!(command)
-          .to_s
+        ssh.open_channel do |channel|
+          channel.exec(command) do |_ch, _success|
+            channel.on_data { |_, data| output << data }
+            channel.on_extended_data { |_, _, data| output << data }
+            channel.on_request("exit-status") { |_, data| exit_code = data.read_long }
+          end
+        end
+
+        ssh.loop
       end
+
+      audit&.update!(output:, exit_status: exit_code, completed_at: Time.zone.now)
 
       output
     end

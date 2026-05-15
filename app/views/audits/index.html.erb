@@ -1,0 +1,100 @@
+<% content_for :title do %>
+  <%= I18n.t("audits.index.title") %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= I18n.t("audits.index.subtitle") %>
+<% end %>
+
+<% content_for :actions do %>
+  <%= render "shared/search/search",
+             url: audits_path,
+             query: @query,
+             frame: "audits_list",
+             placeholder: I18n.t("audits.index.search.placeholder") %>
+<% end %>
+
+<%= render "audits/filters" %>
+
+<%= turbo_frame_tag "audits_list" do %>
+  <% if @audits.empty? && @query.present? %>
+    <%= render "shared/search/no_results", title: I18n.t("audits.index.search.no_results.title") %>
+  <% elsif @audits.empty? && @filters_active %>
+    <div
+      class="
+        card flex flex-col items-center justify-center py-16 gap-4
+        text-gray-400
+      "
+    >
+      <%= lucide_icon "file-search", class: "h-12 w-12" %>
+
+      <p class="text-lg">
+        <%= I18n.t("audits.index.empty_filtered") %>
+      </p>
+    </div>
+  <% elsif @audits.empty? %>
+    <div
+      class="
+        card flex flex-col items-center justify-center py-16 gap-4
+        text-gray-400
+      "
+    >
+      <%= lucide_icon "file-search", class: "h-12 w-12" %>
+
+      <p class="text-lg">
+        <%= I18n.t("audits.index.empty") %>
+      </p>
+    </div>
+  <% else %>
+    <div class="card p-0">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-100 dark:border-gray-700">
+            <th class="py-4 w-10"></th>
+
+            <th
+              class="
+                px-6 py-4 text-left font-medium text-gray-500
+                dark:text-gray-400
+              "
+            >
+              <%= I18n.t("audits.table.server") %>
+            </th>
+
+            <th
+              class="
+                px-6 py-4 text-left font-medium text-gray-500
+                dark:text-gray-400
+              "
+            >
+              <%= I18n.t("audits.table.command") %>
+            </th>
+
+            <th
+              class="
+                px-6 py-4 text-left font-medium text-gray-500
+                dark:text-gray-400
+              "
+            >
+              <%= I18n.t("audits.table.status") %>
+            </th>
+
+            <%= render "shared/sort_header", column: "started_at", label: I18n.t("audits.table.started_at") %>
+            <%= render "shared/sort_header", column: "completed_at", label: I18n.t("audits.table.completed_at") %>
+
+            <th class="px-6 py-4"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @audits.each do |audit| %>
+            <%= render "audit", audit: %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if @pagy.pages > 1 %>
+      <%= render "shared/pagination", pagy: @pagy, path_method: :audits_path %>
+    <% end %>
+  <% end %>
+<% end %>

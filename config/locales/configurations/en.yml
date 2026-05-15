@@ -25,6 +25,8 @@ en:
       update: Update
       value_placeholder: Enter configuration value
     keys:
+      audits:
+        description: Enable or disable SSH audit log
       connectivity:
         description: Enable or disable server connectivity probing
         interval:

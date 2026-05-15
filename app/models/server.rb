@@ -12,6 +12,9 @@ class Server < ApplicationRecord
   has_many :repositories,
            dependent: :destroy
 
+  has_many :audits,
+           dependent: :destroy
+
   enum :operating_system, {
     linux: "linux",
     macos: "macos",
