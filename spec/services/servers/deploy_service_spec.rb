@@ -5,7 +5,9 @@ RSpec.describe Servers::DeployService do
 
   let(:server) { create(:server, :with_password) }
   let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
-  let(:rsa_key) { OpenSSL::PKey::RSA.generate(2048) }
+
+  with_configuration "connectivity.ssh_key.algorithm" => "rsa",
+                     "connectivity.ssh_key.length" => 2048
 
   before do
     allow(Net::SSH)
@@ -15,14 +17,10 @@ RSpec.describe Servers::DeployService do
     allow(ssh_session)
       .to receive(:exec!)
       .and_return("")
-
-    allow(Servers::SSHKeyService)
-      .to receive(:call)
-      .and_return({ private_key: rsa_key, public_key: rsa_key.public_key })
   end
 
   describe "#call" do
-    it "generates a new SSH key pair" do
+    it "generates a new SSH key" do
       expect { service.call }
         .to change { server.reload.ssh_key }
         .from(nil)
@@ -45,6 +43,9 @@ RSpec.describe Servers::DeployService do
     end
 
     context "when the SSH key is RSA" do
+      with_configuration "connectivity.ssh_key.algorithm" => "rsa",
+                         "connectivity.ssh_key.length" => 2048
+
       it "deploys the public key" do
         service.call
 
@@ -55,13 +56,7 @@ RSpec.describe Servers::DeployService do
     end
 
     context "when the SSH key is ECDSA" do
-      let(:ecdsa_key) { OpenSSL::PKey::EC.generate("prime256v1") }
-
-      before do
-        allow(Servers::SSHKeyService)
-          .to receive(:call)
-          .and_return({ private_key: ecdsa_key, public_key: ecdsa_key })
-      end
+      with_configuration "connectivity.ssh_key.algorithm" => "ecdsa"
 
       it "deploys the public key" do
         service.call
@@ -73,13 +68,7 @@ RSpec.describe Servers::DeployService do
     end
 
     context "when the SSH key is ED25519" do
-      let(:ed25519_key) { OpenSSL::PKey.generate_key("ED25519") }
-
-      before do
-        allow(Servers::SSHKeyService)
-          .to receive(:call)
-          .and_return({ private_key: ed25519_key, public_key: ed25519_key })
-      end
+      with_configuration "connectivity.ssh_key.algorithm" => "ed25519"
 
       it "deploys the public key" do
         service.call

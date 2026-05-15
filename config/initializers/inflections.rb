@@ -14,8 +14,11 @@
 
 # These inflection rules are supported but not enabled by default:
 ActiveSupport::Inflector.inflections(:en) do |inflect|
+  inflect.acronym "ECDSA"
+  inflect.acronym "ED25519"
+  inflect.acronym "OS"
+  inflect.acronym "RSA"
   inflect.acronym "SSH"
   inflect.acronym "UI"
   inflect.acronym "UUID"
-  inflect.acronym "OS"
 end
