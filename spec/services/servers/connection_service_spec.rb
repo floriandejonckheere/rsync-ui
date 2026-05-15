@@ -5,17 +5,7 @@ RSpec.describe Servers::ConnectionService do
 
   let(:server) { build(:server, :with_password) }
 
-  let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
-
-  before do
-    allow(Net::SSH)
-      .to receive(:start)
-      .and_yield(ssh_session)
-
-    allow(ssh_session)
-      .to receive(:exec!)
-      .and_return("ok\n")
-  end
+  before { stub_ssh(output: "ok\n") }
 
   describe "#call" do
     it "returns success when SSH connection succeeds" do
@@ -23,11 +13,11 @@ RSpec.describe Servers::ConnectionService do
     end
 
     it "runs 'echo ok' over SSH" do
+      channel = stub_ssh(output: "ok\n")
+
       service.call
 
-      expect(ssh_session)
-        .to have_received(:exec!)
-        .with "echo ok"
+      expect(channel).to have_received(:exec).with "echo ok"
     end
 
     it "passes the correct SSH options" do

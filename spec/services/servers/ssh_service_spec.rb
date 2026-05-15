@@ -11,27 +11,8 @@ RSpec.describe Servers::SSHService do
 
   let(:server) { create(:server) }
 
-  def stub_ssh(output: "ok\n", exit_code: 0)
-    ssh = instance_double(Net::SSH::Connection::Session)
-    channel = instance_double(Net::SSH::Connection::Channel)
-
-    allow(Net::SSH).to receive(:start).and_yield(ssh)
-    allow(ssh).to receive(:open_channel).and_yield(channel)
-    allow(ssh).to receive(:loop)
-    allow(channel).to receive(:exec).and_yield(channel, true)
-    allow(channel).to receive(:on_data).and_yield(channel, output)
-    allow(channel).to receive(:on_extended_data)
-    allow(channel).to receive(:on_request) do |name, &block|
-      if name == "exit-status"
-        data = instance_double(Net::SSH::Buffer)
-        allow(data).to receive(:read_long).and_return(exit_code)
-        block.call(nil, data)
-      end
-    end
-  end
-
   describe "audit creation" do
-    before { stub_ssh }
+    before { stub_ssh(output: "ok\n") }
 
     context "when audits feature is enabled" do
       it "creates an audit record" do

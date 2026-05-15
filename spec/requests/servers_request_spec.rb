@@ -442,18 +442,9 @@ RSpec.describe "Servers" do
   end
 
   describe "POST /servers/:id/test" do
-    let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
     let(:server) { create(:server, :with_password, user:) }
 
-    before do
-      allow(Net::SSH)
-        .to receive(:start)
-        .and_yield(ssh_session)
-
-      allow(ssh_session)
-        .to receive(:exec!)
-        .and_return("ok\n")
-    end
+    before { stub_ssh(output: "ok\n") }
 
     context "when not authenticated" do
       it "redirects to sign in" do
@@ -535,18 +526,9 @@ RSpec.describe "Servers" do
   end
 
   describe "POST /servers/:id/deploy" do
-    let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
     let(:server) { create(:server, :with_password, user:) }
 
-    before do
-      allow(Net::SSH)
-        .to receive(:start)
-        .and_yield(ssh_session)
-
-      allow(ssh_session)
-        .to receive(:exec!)
-        .and_return("ok\n")
-    end
+    before { stub_ssh(output: "ok\n") }
 
     context "when not authenticated" do
       it "redirects to sign in" do
@@ -616,17 +598,7 @@ RSpec.describe "Servers" do
   end
 
   describe "POST /servers/connection" do
-    let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
-
-    before do
-      allow(Net::SSH)
-        .to receive(:start)
-        .and_yield(ssh_session)
-
-      allow(ssh_session)
-        .to receive(:exec!)
-        .and_return("ok\n")
-    end
+    before { stub_ssh(output: "ok\n") }
 
     context "when not authenticated" do
       it "redirects to sign in" do

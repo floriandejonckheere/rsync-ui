@@ -1,23 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe Servers::ResourceUsage::HetznerService do
+  let(:service) { described_class.new(server) }
+
   let(:server) { create(:server, :with_password, path: "/") }
   let(:fixture) { Rails.root.join("spec/support/fixtures/probe_output_hetzner.txt").read }
-  let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
 
-  before do
-    allow(Net::SSH)
-      .to receive(:start)
-      .and_yield(ssh_session)
-
-    allow(ssh_session)
-      .to receive(:exec!)
-      .and_return(fixture)
-  end
+  before { stub_ssh(output: fixture) }
 
   describe "#call" do
     it "parses disk metrics only" do
-      described_class.call(server)
+      service.call
 
       usage = server.reload.resource_usage
 
@@ -36,11 +29,11 @@ RSpec.describe Servers::ResourceUsage::HetznerService do
     end
 
     it "runs the bare df command" do
-      described_class.call(server)
+      channel = stub_ssh(output: fixture)
 
-      expect(ssh_session)
-        .to have_received(:exec!)
-        .with "df"
+      service.call
+
+      expect(channel).to have_received(:exec).with "df"
     end
 
     context "when SSH connection fails" do
@@ -51,7 +44,7 @@ RSpec.describe Servers::ResourceUsage::HetznerService do
       end
 
       it "records status=failed with error details" do
-        described_class.call(server)
+        service.call
 
         usage = server.reload.resource_usage
 
@@ -62,14 +55,10 @@ RSpec.describe Servers::ResourceUsage::HetznerService do
     end
 
     context "when stdout is malformed" do
-      before do
-        allow(ssh_session)
-          .to receive(:exec!)
-          .and_return "garbage"
-      end
+      before { stub_ssh(output: "garbage") }
 
       it "records status=failed" do
-        described_class.call(server)
+        service.call
 
         expect(server.reload.resource_usage.status).to eq "failed"
       end

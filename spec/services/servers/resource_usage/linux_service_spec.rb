@@ -1,23 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe Servers::ResourceUsage::LinuxService do
+  let(:service) { described_class.new(server) }
+
   let(:server) { create(:server, :with_password, path: "/") }
   let(:fixture) { Rails.root.join("spec/support/fixtures/probe_output_linux.txt").read }
-  let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
 
-  before do
-    allow(Net::SSH)
-      .to receive(:start)
-      .and_yield(ssh_session)
-
-    allow(ssh_session)
-      .to receive(:exec!)
-      .and_return(fixture)
-  end
+  before { stub_ssh(output: fixture) }
 
   describe "#call" do
     it "parses all metrics from output" do
-      described_class.call(server)
+      service.call
 
       usage = server.reload.resource_usage
 
@@ -40,10 +33,12 @@ RSpec.describe Servers::ResourceUsage::LinuxService do
     it "embeds the server path directly in the command" do
       server.update!(path: "/var/data space")
 
-      described_class.call(server)
+      channel = stub_ssh(output: fixture)
 
-      expect(ssh_session)
-        .to have_received(:exec!)
+      service.call
+
+      expect(channel)
+        .to have_received(:exec)
         .with a_string_including("/var/data\\ space")
     end
 
@@ -55,7 +50,7 @@ RSpec.describe Servers::ResourceUsage::LinuxService do
       end
 
       it "records status=failed with error details" do
-        described_class.call(server)
+        service.call
 
         usage = server.reload.resource_usage
 
@@ -67,14 +62,10 @@ RSpec.describe Servers::ResourceUsage::LinuxService do
     end
 
     context "when stdout is malformed" do
-      before do
-        allow(ssh_session)
-          .to receive(:exec!)
-          .and_return "garbage"
-      end
+      before { stub_ssh(output: "garbage") }
 
       it "records status=failed" do
-        described_class.call(server)
+        service.call
 
         expect(server.reload.resource_usage.status).to eq "failed"
       end
@@ -84,7 +75,7 @@ RSpec.describe Servers::ResourceUsage::LinuxService do
       let(:server) { create(:server, :with_ssh_key, path: "/") }
 
       it "passes key_data to Net::SSH.start" do
-        described_class.call(server)
+        service.call
 
         expect(Net::SSH).to have_received(:start).with(
           server.host,

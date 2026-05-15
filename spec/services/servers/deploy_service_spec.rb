@@ -4,20 +4,11 @@ RSpec.describe Servers::DeployService do
   subject(:service) { described_class.new(server) }
 
   let(:server) { create(:server, :with_password) }
-  let(:ssh_session) { instance_double(Net::SSH::Connection::Session) }
 
   with_configuration "connectivity.ssh_key.algorithm" => "rsa",
                      "connectivity.ssh_key.length" => 2048
 
-  before do
-    allow(Net::SSH)
-      .to receive(:start)
-      .and_yield(ssh_session)
-
-    allow(ssh_session)
-      .to receive(:exec!)
-      .and_return("")
-  end
+  before { stub_ssh }
 
   describe "#call" do
     it "generates a new SSH key" do
@@ -47,10 +38,12 @@ RSpec.describe Servers::DeployService do
                          "connectivity.ssh_key.length" => 2048
 
       it "deploys the public key" do
+        channel = stub_ssh
+
         service.call
 
-        expect(ssh_session)
-          .to have_received(:exec!)
+        expect(channel)
+          .to have_received(:exec)
           .with(match(%r(echo "ssh-rsa .+ Rsync UI key" >> ~/.ssh/authorized_keys)))
       end
     end
@@ -59,10 +52,12 @@ RSpec.describe Servers::DeployService do
       with_configuration "connectivity.ssh_key.algorithm" => "ecdsa"
 
       it "deploys the public key" do
+        channel = stub_ssh
+
         service.call
 
-        expect(ssh_session)
-          .to have_received(:exec!)
+        expect(channel)
+          .to have_received(:exec)
           .with(match(%r(echo "ecdsa-sha2-nistp256 .+ Rsync UI key" >> ~/.ssh/authorized_keys)))
       end
     end
@@ -71,10 +66,12 @@ RSpec.describe Servers::DeployService do
       with_configuration "connectivity.ssh_key.algorithm" => "ed25519"
 
       it "deploys the public key" do
+        channel = stub_ssh
+
         service.call
 
-        expect(ssh_session)
-          .to have_received(:exec!)
+        expect(channel)
+          .to have_received(:exec)
           .with(match(%r(echo "ssh-ed25519 .+ Rsync UI key" >> ~/.ssh/authorized_keys)))
       end
     end
