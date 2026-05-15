@@ -26,10 +26,6 @@ Rails.application.routes.draw do
   resources :configurations, only: [:index, :update]
 
   resources :servers do
-    collection do
-      post :test
-    end
-
     member do
       post :test
       post :measure
@@ -89,7 +85,6 @@ end
 #                           configurations GET    /configurations(.:format)                                                                         configurations#index
 #                            configuration PATCH  /configurations/:id(.:format)                                                                     configurations#update
 #                                          PUT    /configurations/:id(.:format)                                                                     configurations#update
-#                             test_servers POST   /servers/test(.:format)                                                                           servers#test
 #                              test_server POST   /servers/:id/test(.:format)                                                                       servers#test
 #                           measure_server POST   /servers/:id/measure(.:format)                                                                    servers#measure
 #                            deploy_server POST   /servers/:id/deploy(.:format)                                                                     servers#deploy

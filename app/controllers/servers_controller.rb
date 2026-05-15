@@ -5,8 +5,7 @@ class ServersController < ApplicationController
   include Sortable
 
   before_action :authenticate_user!
-  before_action :set_server, only: [:edit, :update, :destroy, :measure, :deploy]
-  before_action :set_server_or_new, only: [:test]
+  before_action :set_server, only: [:edit, :update, :destroy, :measure, :deploy, :test]
 
   def index
     servers = authorized_scope(Server.includes(:resource_usage), type: :relation)
@@ -144,17 +143,6 @@ class ServersController < ApplicationController
 
   def set_server
     @server = Server.find(params[:id])
-  end
-
-  def set_server_or_new
-    @server = if params[:id].present?
-                Server.find(params[:id])
-              elsif params[:server_id].present?
-                Server.find(params[:server_id])
-              else
-                Server.new
-              end
-    @server.user ||= current_user
   end
 
   def server_params
