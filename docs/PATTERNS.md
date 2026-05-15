@@ -421,7 +421,6 @@ To have the section open by default, add the `open` attribute to the `<details>`
 **URL Hash Navigation:**
 Native `<details>` elements support deep-linking via URL hash automatically when the browser navigates to an element inside the collapsed content.
 
-
 ## Turbo Frame escape for row links
 
 Links rendered inside a turbo_frame_tag must include data: { turbo_frame: "_top" } to trigger
@@ -609,4 +608,84 @@ export default class extends Controller {
     </button>
   </div>
 </div>
+```
+
+
+## Conditional class names
+
+When conditionally adding classes to elements, don't use ternary statements or if statements in the views.
+Use Rails' `class_names` helper method.
+
+Instead of interpolating conditional classes with ternaries or post-statement conditionals:
+
+```erb
+class="p-4 rounded
+<%= @error ? 'bg-red-50 border-red-500' : ''%>
+<%= 'opacity-50 cursor-not-allowed' if @disabled %>">
+<%= @message %>
+```
+
+Do:
+
+```erb
+
+<%= tag.div class: class_names(
+ "p-4 rounded",
+ "bg-red-50 border-red-500": @error,
+ "opacity-50 cursor-not-allowed": @disabled
+) do %>
+  <%= @message %>
+<% end %>
+```
+
+Other examples:
+
+An active nav link:
+
+```erb
+<%= link_to "Home", root_path,
+  class: class_names("nav-link px-3 py-2",
+    "text-blue-700 font-semibold": current_page?(root_path)) %>
+```
+
+A form field with errors:
+
+```erb
+<%= f.text_field :email,
+    class: class_names("field", 
+                       "field--error": @user.errors[:email].any?) %>
+```
+
+A flash message:
+
+```erb
+<% flash.each do |type, message| %>
+ <%= tag.p message, class: class_names("flash",
+           notice: type == "notice",
+           alert: type == "alert") %>
+<% end %>
+```
+
+An active tab:
+
+```erb
+<%= link_to "Overview", project_path(@project),
+            class: class_names(
+              "tab",
+              "tab--active": current_page?(project_path(@project))) %>
+```
+
+Or wrap a repeated pattern in a helper:
+
+```ruby
+def class_names_for_project(project)
+  class_names("status-badge",
+              "status-badge--primary": project.active?,
+              "status-badge--muted": project.archived?)
+end
+```
+
+```erb
+<%= tag.span @project.status,
+    class: class_names_for_project(@project) %>
 ```
