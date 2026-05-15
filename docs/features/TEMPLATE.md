@@ -14,7 +14,7 @@
 Configuration keys:
 - [ ] `namespace.feature_name` (type: boolean, category: features, default: false)
 
-## Database model
+## Database table & model
 
 ### `model_name` table
 
@@ -99,7 +99,7 @@ Views:
 Notes:
 - [ ] Don't add sidebar item if feature is disabled
 
-## Services
+## Services & business logic
 
 Services:
 - [ ] `Models::CreateService` — wraps model creation and triggers side effects
