@@ -46,6 +46,17 @@ For remote repositories, the server should be mounted as a local directory, and 
 ### Smaller TODOs
 
 - [ ] Add SSH audit log
+  - [ ] Add remote SSH command when executing a job (`rsync -e 'ssh -v' ...`)
+- [ ] Fix execution of jobs to remote servers
+  - [ ] Password: `ssh user@server` ???
+  - [ ] Key: `ssh -i /path/to/key user@server`
+  - [ ] rsync daemon mode?
+  - [ ] Fix "The authenticity of host can't be established" error
+    - [ ] When testing connection, fingerprint the server
+    - [ ] Add to server record
+    - [ ] Add to known_hosts file
+    - [ ] Keep known_hosts file up to date (maintenance task?)
+    - [ ] When executing a job, fail immediately if fingerprint isn't known
 - [ ] Add repository size
 - [ ] Allow user to archive job runs, jobs, repositories, and servers
   - [ ] Extra tab for archived job runs, jobs, repositories, and servers
