@@ -13,6 +13,47 @@ This document describes the code style conventions used in the application.
 - Target Ruby version: 4.0
 - Plugins enabled: factory_bot, performance, rails, rspec, rspec_rails
 
+### Alignments
+
+Do NOT align assignments or blocks spanning multiple lines.
+
+NOT good:
+
+```ruby
+scope :by_server,  ->(server_id)  { where(server_id:)  if server_id.present? }
+scope :by_user,    ->(user_id)    { where(user_id:)    if user_id.present? }
+scope :by_command, ->(command)    { where("command ILIKE ?", "%#{sanitize_sql_like(command)}%") if command.present? }
+```
+
+Good:
+
+```ruby
+scope :by_server, 
+      ->(server_id) { where(server_id:) if server_id.present? }
+
+scope :by_user,
+      ->(user_id) { where(user_id:) if user_id.present? }
+
+scope :by_command, 
+      ->(command) { where("command ILIKE ?", "%#{sanitize_sql_like(command)}%") if command.present? }
+```
+
+NOT good:
+
+```ruby
+server  = create(:server)
+match   = create(:audit, server:)
+no_match = create(:audit)
+```
+
+Good:
+
+```ruby
+server = create(:server)
+match = create(:audit, server:)
+no_match = create(:audit)
+```
+
 ## ERB Style (Herb)
 
 - HTML-aware ERB parsing and linting
