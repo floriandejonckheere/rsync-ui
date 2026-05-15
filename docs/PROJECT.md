@@ -46,6 +46,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 ### Smaller TODOs
 
 - [ ] Add SSH audit log
+- [ ] Add repository size
 - [ ] Allow user to archive job runs, jobs, repositories, and servers
   - [ ] Extra tab for archived job runs, jobs, repositories, and servers
   - [ ] No connectivity polling for archived servers
@@ -59,7 +60,6 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Make job run immutable: save command and options in the database
 - [ ] Update branding
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
-- [x] Add copy to clipboard button on command preview card
 - [ ] Add a local resource usage card
 - [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
 - [ ] Implement support for OAuth2 authentication

@@ -12,10 +12,10 @@ Rsync UI is a web application that lets you create, schedule, and execute file s
 - Synchronization jobs for local and remote destinations
 - Fully customizable command-line arguments
 - Automation through scheduled jobs
-- Remote server management with SSH key deployment (not implemented yet) and resource usage visibility
+- Remote server management with SSH key deployment and resource usage visibility
 - Custom pre-/post-synchronization hooks
 - Builtin customizable notifications
-- Real-time synchronization progress (not implemented yet)
+- Real-time synchronization progress
 
 ## Screenshots
 
