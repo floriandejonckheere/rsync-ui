@@ -8,6 +8,7 @@
   category: resource_usage
   default: 15
   minimum: 1
+  maximum:
   dependencies:
     - resource_usage
 - key: resource_usage.cpu_warning
@@ -87,6 +88,7 @@
   category: connectivity
   default: 5
   minimum: 1
+  maximum:
   dependencies:
     - connectivity
 - key: connectivity.ssh_key.algorithm
@@ -102,13 +104,16 @@
   category: connectivity
   default: 2048
   minimum: 1024
+  maximum:
 - key: jobs.heartbeat_interval
   type: integer
   category: system
   default: 30
   minimum: 1
+  maximum:
 - key: jobs.stuck_threshold
   type: integer
   category: system
   default: 1
   minimum: 1
+  maximum:
