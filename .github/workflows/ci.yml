@@ -144,7 +144,7 @@ jobs:
           ADMIN_EMAIL: admin@example.com
           ADMIN_PASSWORD: password
         run: |
-          bundle exec rails db:drop db:create db:migrate --trace
+          bundle exec rails db:create db:migrate --trace
           bundle exec rails database:seed:production --trace
           bundle exec rails database:seed:development --trace
 
