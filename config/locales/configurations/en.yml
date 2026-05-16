@@ -69,6 +69,8 @@ en:
         description: Enable or disable scheduled jobs
       streaming:
         description: Enable or disable real-time log streaming
+      verify_host_key:
+        description: Verify server host key fingerprint on every SSH connection (recommended)
     title: Configuration
     update:
       error: Failed to update configuration
