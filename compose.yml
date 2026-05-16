@@ -6,6 +6,8 @@ x-app: &app
     - npm:/app/node_modules/
     - ssh:/app/.ssh
     - ./docker/hosts:/etc/hosts:ro
+    - ./docker/pre_sync.sh:/usr/local/bin/pre_sync.sh:ro
+    - ./docker/post_sync.sh:/usr/local/bin/post_sync.sh:ro
     - ./tmp/data:/data:cached
   tmpfs:
     - /app/tmp/storage:mode=755,uid=1000,gid=1000
