@@ -48,6 +48,7 @@ dd if=/dev/zero of=/data/snapshots/snap-2024-04-18.img bs=1M count=40 status=non
 dd if=/dev/zero of=/data/logs/transfer-2024-05.log bs=1M count=1 status=none
 dd if=/dev/zero of=/data/logs/transfer-2024-04.log bs=1M count=1 status=none
 dd if=/dev/zero of=/data/checksums.md5 bs=4K count=1 status=none
+chown -R user:user /data
 
 mkdir -p /run/sshd
 exec /usr/sbin/sshd -D -e

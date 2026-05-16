@@ -41,6 +41,7 @@ dd if=/dev/zero of=/data/photos/vacation-004.jpg bs=1M count=4 status=none
 dd if=/dev/zero of=/data/videos/holiday.mp4 bs=1M count=80 status=none
 dd if=/dev/zero of=/data/videos/birthday.mp4 bs=1M count=60 status=none
 dd if=/dev/zero of=/data/backup.tar bs=1M count=30 status=none
+chown -R backup:backup /data
 
 mkdir -p /run/sshd
 exec /usr/sbin/sshd -D -e
