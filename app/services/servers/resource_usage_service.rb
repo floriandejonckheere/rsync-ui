@@ -2,22 +2,31 @@
 
 module Servers
   class ResourceUsageService < ApplicationService
-    attr_reader :server,
-                :force
+    attr_reader :server
 
-    def initialize(server, force: false)
+    def initialize(server)
       super()
 
       @server = server
-      @force = force
     end
 
     def call
-      probed_at = server.resource_usage&.probed_at
-
-      return if probed_at && probed_at > 5.minutes.ago && !force
-
-      server.measure_resource_usage
+      case server.operating_system
+      when "linux"
+        Servers::ResourceUsage::LinuxService
+          .new(server)
+          .call
+      when "macos"
+        Servers::ResourceUsage::MacOSService
+          .new(server)
+          .call
+      when "hetzner"
+        Servers::ResourceUsage::HetznerService
+          .new(server)
+          .call
+      else
+        raise "Unsupported operating system: #{operating_system}"
+      end
     end
   end
 end

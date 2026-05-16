@@ -1,44 +1,60 @@
 # frozen_string_literal: true
 
 RSpec.describe Servers::ResourceUsageService do
-  let(:server) { create(:server, :with_password) }
-
-  before { allow(server).to receive(:measure_resource_usage) }
+  subject(:service) { described_class.new(server) }
 
   describe "#call" do
-    context "when resource usage has never been probed" do
-      it "delegates to server.measure_resource_usage" do
-        described_class.call(server)
+    context "when the server runs Linux" do
+      let(:server) { create(:server, :linux) }
 
-        expect(server).to have_received(:measure_resource_usage)
+      it "calls the correct service" do
+        linux_service = instance_double(Servers::ResourceUsage::LinuxService, call: true)
+
+        allow(Servers::ResourceUsage::LinuxService)
+          .to receive(:new)
+          .with(server)
+          .and_return linux_service
+
+        service.call
+
+        expect(linux_service)
+          .to have_received :call
       end
     end
 
-    context "when resource usage is stale (older than 5 minutes)" do
-      before { create(:resource_usage, server:, probed_at: 10.minutes.ago) }
+    context "when the server runs macOS" do
+      let(:server) { create(:server, :macos) }
 
-      it "delegates to server.measure_resource_usage" do
-        described_class.call(server)
+      it "calls the correct service" do
+        linux_service = instance_double(Servers::ResourceUsage::MacOSService, call: true)
 
-        expect(server).to have_received(:measure_resource_usage)
+        allow(Servers::ResourceUsage::MacOSService)
+          .to receive(:new)
+          .with(server)
+          .and_return linux_service
+
+        service.call
+
+        expect(linux_service)
+          .to have_received :call
       end
     end
 
-    context "when resource usage was probed recently (within 5 minutes)" do
-      before { create(:resource_usage, server:, probed_at: 2.minutes.ago) }
+    context "when the server is a Hetzner Storage Box" do
+      let(:server) { create(:server, :hetzner) }
 
-      it "skips" do
-        described_class.call(server)
+      it "calls the correct service" do
+        linux_service = instance_double(Servers::ResourceUsage::HetznerService, call: true)
 
-        expect(server).not_to have_received(:measure_resource_usage)
-      end
+        allow(Servers::ResourceUsage::HetznerService)
+          .to receive(:new)
+          .with(server)
+          .and_return linux_service
 
-      context "with force: true" do
-        it "delegates to server.measure_resource_usage regardless" do
-          described_class.call(server, force: true)
+        service.call
 
-          expect(server).to have_received(:measure_resource_usage)
-        end
+        expect(linux_service)
+          .to have_received :call
       end
     end
   end

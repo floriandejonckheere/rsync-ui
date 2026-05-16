@@ -10,6 +10,8 @@ FactoryBot.define do
     username { FFaker::Internet.user_name }
     password { FFaker::Internet.password }
 
+    operating_system { "linux" }
+
     trait :with_password do
       password { FFaker::Internet.password }
       ssh_key { nil }
@@ -38,6 +40,18 @@ FactoryBot.define do
       last_seen_at { nil }
       error_class { "Net::SSH::AuthenticationFailed" }
       error_message { "Authentication failed for user@example.com" }
+    end
+
+    trait :linux do
+      operating_system { "linux" }
+    end
+
+    trait :macos do
+      operating_system { "macos" }
+    end
+
+    trait :hetzner do
+      operating_system { "hetzner" }
     end
   end
 end

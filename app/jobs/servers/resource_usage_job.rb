@@ -7,7 +7,11 @@ module Servers
                        duration: 5.minutes
 
     def perform(server, force: false)
-      ResourceUsageService.call(server, force:)
+      interval = Configuration.get("resource_usage.interval").to_i.minutes
+
+      return if server&.resource_usage&.probed_at && server.resource_usage.probed_at > interval.ago && !force
+
+      ResourceUsageService.call(server)
     end
   end
 end
