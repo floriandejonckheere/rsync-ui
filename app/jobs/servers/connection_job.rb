@@ -6,10 +6,10 @@ module Servers
                        key: ->(server) { server.id },
                        duration: 5.minutes
 
-    def perform(server)
+    def perform(server, force: false)
       interval = Configuration.get("connectivity.interval").to_i.minutes
 
-      return if server.probed_at && server.probed_at > interval.ago
+      return if server.probed_at && server.probed_at > interval.ago && !force
 
       ConnectionService.call(server)
     end
