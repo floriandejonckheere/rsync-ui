@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-apk add --no-cache openssh
+apk add --no-cache openssh rsync
 
 id backup >/dev/null 2>&1 || adduser -D -s /bin/sh backup
 echo "backup:backup-password" | chpasswd
