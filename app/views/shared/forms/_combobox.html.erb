@@ -41,11 +41,11 @@
     <header>
       <%= lucide_icon "search", class: "h-4 w-4 opacity-50" %>
 
-      <input type="text" role="combobox" placeholder="<%= placeholder %>">
+      <input type="text" role="combobox" placeholder="<%= placeholder %>" autocomplete="off">
     </header>
 
     <div role="listbox">
-      <div role="option" data-value=""><%= blank_label %></div>
+      <div role="option" data-value><%= blank_label %></div>
 
       <% options.each do |option_label, option_value, option_data| %>
         <div

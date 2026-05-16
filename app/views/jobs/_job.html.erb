@@ -37,7 +37,7 @@
     <% if job.schedule.present? %>
       <span
         data-controller="cron-preview"
-        data-cron-preview-placeholder-value=""
+        data-cron-preview-placeholder-value
         data-cron-preview-invalid-value="<%= job.schedule %>"
       >
         <input

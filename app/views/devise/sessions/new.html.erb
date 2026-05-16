@@ -8,7 +8,7 @@
       <%- resource_class.omniauth_providers.each do |provider| %>
         <%= button_to omniauth_authorize_path(resource_name, provider), method: :post, data: { turbo: false }, class: "btn-outline w-full" do %>
           <% if provider == :google_oauth2 %>
-            <%= image_tag "google.svg", class: "size-5" %>
+            <%= image_tag "google.svg", class: "size-5", alt: "Sign in with Google" %>
           <% end %>
 
           <%= I18n.t("devise.sessions.sign_in_with_provider", provider: provider.to_s.sub("_oauth2", "").titleize) %>
