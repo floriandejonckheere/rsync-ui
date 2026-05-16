@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_15_141132) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_16_144809) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -236,6 +236,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_15_141132) do
     t.text "description"
     t.string "error_class"
     t.text "error_message"
+    t.string "fingerprint"
     t.string "host", null: false
     t.datetime "last_seen_at"
     t.string "name", null: false

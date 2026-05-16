@@ -21,6 +21,7 @@ module Servers
             "username",
             "password",
             "ssh_key",
+            "fingerprint",
             "operating_system",
             "probed_at",
             "last_seen_at",

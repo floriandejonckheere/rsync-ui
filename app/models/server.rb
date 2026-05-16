@@ -34,6 +34,10 @@ class Server < ApplicationRecord
   validates :username,
             presence: true
 
+  validates :fingerprint,
+            format: { with: %r(\ASHA256:[A-Za-z0-9+/=]{43}\z) },
+            allow_blank: true
+
   validate :exclusive_credentials
 
   validate :valid_ssh_key,
@@ -89,6 +93,7 @@ end
 #  description      :text             indexed
 #  error_class      :string
 #  error_message    :text
+#  fingerprint      :string
 #  host             :string           not null, indexed, indexed
 #  last_seen_at     :datetime
 #  name             :string           not null, indexed, indexed

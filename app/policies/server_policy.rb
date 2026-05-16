@@ -33,6 +33,10 @@ class ServerPolicy < ApplicationPolicy
     update?
   end
 
+  def fingerprint?
+    update?
+  end
+
   def deploy?
     update?
   end

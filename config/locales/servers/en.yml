@@ -7,6 +7,8 @@ en:
           attributes:
             base:
               exclusive_credentials: Exactly one of password or SSH key must be provided.
+            fingerprint:
+              invalid: is not a valid SHA256 fingerprint
             ssh_key:
               ssh_key_invalid: is not a valid OpenSSH private key.
               ssh_key_passphrase: must not be protected by a passphrase.
@@ -27,6 +29,10 @@ en:
       success: Server was successfully deleted.
     edit:
       title: Edit server
+    fingerprint:
+      failure: Failed to fingerprint fingerprint
+      missing_details: Host, port, username, and a password or SSH key are required to fingerprint the server.
+      success: Server fingerprinted successfully
     form:
       authentication: Authentication
       connection: Connection
@@ -36,6 +42,9 @@ en:
       description: Description
       description_placeholder: Optional description for this server
       details: Details
+      fetch_fingerprint: Fetch fingerprint
+      fingerprint: Fingerprint
+      fingerprint_hint: Verified on every connection
       host: Host
       host_placeholder: example.com
       name: Name

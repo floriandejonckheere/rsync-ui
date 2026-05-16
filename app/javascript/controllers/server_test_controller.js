@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["button", "icon", "spinner", "host", "port", "username", "password", "sshKey", "serverId"]
+  static targets = ["button", "icon", "spinner", "host", "port", "username", "password", "sshKey", "fingerprint", "serverId"]
   static values = { sourceForm: String, hasCredentials: Boolean }
 
   connect() {
@@ -30,6 +30,7 @@ export default class extends Controller {
     this.usernameTarget.value = form.querySelector("[name='server[username]']").value
     this.passwordTarget.value = form.querySelector("[name='server[password]']").value
     this.sshKeyTarget.value = form.querySelector("[name='server[ssh_key]']").value
+    this.fingerprintTarget.value = form.querySelector("[name='server[fingerprint]']").value
   }
 
   #sourceFormListener = null

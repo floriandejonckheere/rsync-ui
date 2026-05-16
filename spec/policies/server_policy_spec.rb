@@ -81,6 +81,22 @@ RSpec.describe ServerPolicy do
     end
   end
 
+  describe "#fingerprint?" do
+    it { is_expected.to be_fingerprint }
+
+    context "when user is another user" do
+      let(:user) { other_user }
+
+      it { is_expected.not_to be_fingerprint }
+    end
+
+    context "when user is admin" do
+      let(:user) { admin }
+
+      it { is_expected.to be_fingerprint }
+    end
+  end
+
   describe "#deploy?" do
     it { is_expected.to be_deploy }
 

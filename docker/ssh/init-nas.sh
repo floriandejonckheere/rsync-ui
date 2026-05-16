@@ -6,10 +6,24 @@ apk add --no-cache openssh
 adduser -D -s /bin/sh backup
 echo "backup:nas-password" | chpasswd
 
-ssh-keygen -A
+cat > /etc/ssh/ssh_host_ed25519_key << 'EOF'
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACAqrJ+8Yt0ElBYY1zvcLRoEVNfgnJIMA40LcH783pnflAAAAIgQPIUNEDyF
+DQAAAAtzc2gtZWQyNTUxOQAAACAqrJ+8Yt0ElBYY1zvcLRoEVNfgnJIMA40LcH783pnflA
+AAAECXPz4JXY0akJzI9sQQfeVv/Qh//LEPCiFtxwsdnY3foyqsn7xi3QSUFhjXO9wtGgRU
+1+CckgwDjQtwfvzemd+UAAAAAAECAwQF
+-----END OPENSSH PRIVATE KEY-----
+EOF
+chmod 600 /etc/ssh/ssh_host_ed25519_key
+
+cat > /etc/ssh/ssh_host_ed25519_key.pub << 'EOF'
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICqsn7xi3QSUFhjXO9wtGgRU1+CckgwDjQtwfvzemd+U
+EOF
 
 cat > /etc/ssh/sshd_config << 'EOF'
 Port 22
+HostKey /etc/ssh/ssh_host_ed25519_key
 PermitRootLogin no
 PasswordAuthentication yes
 PubkeyAuthentication no

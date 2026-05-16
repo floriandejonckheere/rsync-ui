@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       post :test
       post :measure
       post :deploy
+      post :fingerprint
     end
   end
 
@@ -88,6 +89,7 @@ end
 #                              test_server POST   /servers/:id/test(.:format)                                                                       servers#test
 #                           measure_server POST   /servers/:id/measure(.:format)                                                                    servers#measure
 #                            deploy_server POST   /servers/:id/deploy(.:format)                                                                     servers#deploy
+#                       fingerprint_server POST   /servers/:id/fingerprint(.:format)                                                                servers#fingerprint
 #                                  servers GET    /servers(.:format)                                                                                servers#index
 #                                          POST   /servers(.:format)                                                                                servers#create
 #                               new_server GET    /servers/new(.:format)                                                                            servers#new

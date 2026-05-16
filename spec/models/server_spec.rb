@@ -59,6 +59,35 @@ RSpec.describe Server do
       end
     end
 
+    describe "fingerprint" do
+      it "is valid when blank" do
+        server = build(:server, fingerprint: nil)
+
+        expect(server).to be_valid
+      end
+
+      it "is valid with a proper SHA256 fingerprint" do
+        server = build(:server, fingerprint: "SHA256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+
+        expect(server).to be_valid
+      end
+
+      it "is invalid with a bad format" do
+        server = build(:server, fingerprint: "notafingerprint")
+
+        expect(server).not_to be_valid
+        expect(server.errors[:fingerprint]).to include(
+          I18n.t("activerecord.errors.models.server.attributes.fingerprint.invalid"),
+        )
+      end
+
+      it "is invalid with an MD5-style fingerprint" do
+        server = build(:server, fingerprint: "ab:cd:ef:01:23:45:67:89:ab:cd:ef:01:23:45:67:89")
+
+        expect(server).not_to be_valid
+      end
+    end
+
     describe "valid SSH key" do
       context "when ssh_key is a valid unencrypted OpenSSH private key" do
         subject(:server) { build(:server, :with_ssh_key) }

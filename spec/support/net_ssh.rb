@@ -1,13 +1,20 @@
 # frozen_string_literal: true
 
 module NetSSHHelpers
-  def stub_ssh(output: "", exit_code: 0)
+  DEFAULT_FINGERPRINT = "SHA256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+  def stub_ssh(output: "", exit_code: 0, fingerprint: DEFAULT_FINGERPRINT)
     ssh = instance_double(Net::SSH::Connection::Session)
     channel = instance_double(Net::SSH::Connection::Channel)
 
     allow(Net::SSH)
-      .to receive(:start)
-      .and_yield(ssh)
+      .to receive(:start) do |_host, _user, **opts, &block|
+        if (verifier = opts[:verify_host_key]) && verifier.respond_to?(:verify)
+          verifier.verify({ fingerprint: })
+        end
+
+        block.call(ssh)
+      end
 
     allow(ssh)
       .to receive(:open_channel)

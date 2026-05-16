@@ -5,7 +5,7 @@ class ServersController < ApplicationController
   include Sortable
 
   before_action :authenticate_user!
-  before_action :set_server, only: [:edit, :update, :destroy, :measure, :deploy, :test]
+  before_action :set_server, only: [:edit, :update, :destroy, :measure, :deploy, :test, :fingerprint]
 
   def index
     servers = authorized_scope(Server.includes(:resource_usage), type: :relation)
@@ -76,6 +76,7 @@ class ServersController < ApplicationController
     @server.username = params[:username] if params[:username].present?
     @server.password = params[:password] if params[:password].present?
     @server.ssh_key = params[:ssh_key] if params[:ssh_key].present?
+    @server.fingerprint = params[:fingerprint] if params[:fingerprint].present?
 
     if @server.host.blank? || @server.port.blank? || @server.username.blank? || (@server.password.blank? && @server.ssh_key.blank?)
       return render turbo_stream: turbo_stream.prepend(
@@ -103,6 +104,55 @@ class ServersController < ApplicationController
         failure_message: t(".failure"),
       },
     )
+  end
+
+  def fingerprint
+    authorize! @server, to: :fingerprint?
+
+    @server.host = params[:host] if params[:host].present?
+    @server.port = params[:port] if params[:port].present?
+    @server.username = params[:username] if params[:username].present?
+    @server.password = params[:password] if params[:password].present?
+    @server.ssh_key = params[:ssh_key] if params[:ssh_key].present?
+
+    if @server.host.blank? || @server.port.blank? || @server.username.blank? || (@server.password.blank? && @server.ssh_key.blank?)
+      return render turbo_stream: turbo_stream.prepend(
+        "notifications",
+        partial: "shared/action_result",
+        locals: {
+          result: {
+            success: false,
+            message: t(".missing_details"),
+          },
+          success_message: t(".success"),
+          failure_message: t(".failure"),
+        },
+      )
+    end
+
+    result = Servers::FingerprintService.call(@server)
+
+    streams = [
+      turbo_stream.prepend(
+        "notifications",
+        partial: "shared/action_result",
+        locals: {
+          result:,
+          success_message: t(".success"),
+          failure_message: t(".failure"),
+        },
+      ),
+    ]
+
+    if result[:success]
+      streams << turbo_stream.replace(
+        "server_fingerprint",
+        partial: "servers/fingerprint",
+        locals: { fingerprint: result[:fingerprint] },
+      )
+    end
+
+    render turbo_stream: streams
   end
 
   def deploy
@@ -158,6 +208,7 @@ class ServersController < ApplicationController
         :username,
         :password,
         :ssh_key,
+        :fingerprint,
       )
   end
 

@@ -1,10 +1,10 @@
-name,description,host,port,username,password,ssh_key,operating_system,probed_at,last_seen_at,error_class,error_message,user_email
-NAS,Local NAS server,172.16.200.101,22,backup,nas-password,,linux,,,,,admin@example.com
-Backup,Backup server,backup.example.com,22,backup,backup-password,,linux,,,,,admin@example.com
+name,description,host,port,username,password,ssh_key,fingerprint,operating_system,probed_at,last_seen_at,error_class,error_message,user_email
+NAS,Local NAS server,172.16.200.101,22,backup,nas-password,,SHA256:T8V0LXOhPdoiJZwowdE0Et87TLlWy6p8oDFCZE5G7Bc,linux,,,,,admin@example.com
+Backup,Backup server,backup.example.com,22,backup,backup-password,,SHA256:+rXkZ9A0XYxi9+fQ/wbi3lSV2pdJJOEttzTkb4GlnDI,linux,,,,,admin@example.com
 Mirror,Encrypted off-site mirrored backup server,mirror.example.com,23,user,,"-----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
 QyNTUxOQAAACD9D+md+7SfoskO5Ec/M/+a7QgAKR+usc0GQRaoYlJX0wAAAIg+hlQpPoZU
 KQAAAAtzc2gtZWQyNTUxOQAAACD9D+md+7SfoskO5Ec/M/+a7QgAKR+usc0GQRaoYlJX0w
 AAAECk9Yb5b6otvn9sGBwgCt5gmiWpfl+tEFvSaqIUpSVQCf0P6Z37tJ+iyQ7kRz8z/5rt
 CAApH66xzQZBFqhiUlfTAAAABHRlc3QB
------END OPENSSH PRIVATE KEY-----",linux,,,,,admin@example.com
+-----END OPENSSH PRIVATE KEY-----",SHA256:XoGZAcX8YTcgBrKVl0LhyGxY0Gubq4AArh+S4lclHGU,linux,,,,,admin@example.com

@@ -9,6 +9,7 @@ FactoryBot.define do
     port { 22 }
     username { FFaker::Internet.user_name }
     password { FFaker::Internet.password }
+    fingerprint { NetSSHHelpers::DEFAULT_FINGERPRINT }
 
     operating_system { "linux" }
 

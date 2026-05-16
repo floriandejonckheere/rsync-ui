@@ -14,6 +14,7 @@
         <%= cf.hidden_field :username, data: { "server-test-target": "username" } %>
         <%= cf.hidden_field :password, data: { "server-test-target": "password" } %>
         <%= cf.hidden_field :ssh_key, data: { "server-test-target": "sshKey" } %>
+        <%= cf.hidden_field :fingerprint, data: { "server-test-target": "fingerprint" } %>
 
         <button
           type="submit"
@@ -270,12 +271,51 @@
         </div>
       </section>
 
-      <footer>
+      <section>
         <p class="text-sm text-muted-foreground flex items-center gap-2">
           <%= lucide_icon "lock", class: "h-4 w-4 shrink-0" %>
           <%= I18n.t("servers.form.credentials_encrypted_hint") %>
         </p>
-      </footer>
+      </section>
+
+      <section>
+        <div class="field">
+          <%= f.label :fingerprint, I18n.t("servers.form.fingerprint") %>
+
+          <div class="flex items-center gap-2">
+            <%= render "servers/fingerprint", fingerprint: server.fingerprint %>
+
+            <% if server.persisted? %>
+              <div
+                data-controller="server-fingerprint"
+                data-server-fingerprint-url-value="<%= fingerprint_server_path(server) %>"
+                data-server-fingerprint-source-form-value="server-form"
+              >
+                <button
+                  type="button"
+                  class="btn-outline shrink-0"
+                  data-server-fingerprint-target="button"
+                  data-action="click->server-fingerprint#request"
+                  data-tooltip="<%= I18n.t("servers.form.fetch_fingerprint") %>"
+                >
+                  <%= lucide_icon "fingerprint-pattern",
+                                  class: "h-4 w-4",
+                                  data: { "server-fingerprint-target": "icon" } %>
+
+                  <%= lucide_icon "loader-circle",
+                                  class: "h-4 w-4 hidden animate-spin",
+                                  data: { "server-fingerprint-target": "spinner" } %>
+                </button>
+              </div>
+            <% end %>
+          </div>
+
+          <p class="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+            <%= lucide_icon "shield-check", class: "h-4 w-4 shrink-0" %>
+            <%= I18n.t("servers.form.fingerprint_hint") %>
+          </p>
+        </div>
+      </section>
     </div>
   </div>
 <% end %>

@@ -61,6 +61,9 @@ application.register("server-auth", ServerAuthController)
 import ServerDeployController from "./server_deploy_controller"
 application.register("server-deploy", ServerDeployController)
 
+import ServerFingerprintController from "./server_fingerprint_controller"
+application.register("server-fingerprint", ServerFingerprintController)
+
 import ServerTestController from "./server_test_controller"
 application.register("server-test", ServerTestController)
 
