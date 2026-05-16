@@ -64,6 +64,7 @@
 /.dockerignore
 /compose.yml
 /Dockerfile*
+/docker/
 
 # Ignore IDE and tool cache files
 /.idea

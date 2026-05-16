@@ -4,12 +4,17 @@ x-app: &app
     - .:/app/:cached
     - bundle:/usr/local/bundle/
     - npm:/app/node_modules/
+    - ssh:/app/.ssh
+    - ./docker/hosts:/etc/hosts:ro
   tmpfs:
     - /app/tmp/storage:mode=755,uid=1000,gid=1000
   depends_on:
     - postgres
   env_file:
     - .development.env
+  networks:
+    - default
+    - ssh-servers
 
 services:
   postgres:
@@ -34,7 +39,44 @@ services:
     command: bin/jobs
     tty: true
 
+  nas:
+    image: alpine:3.23
+    volumes:
+      - ./docker/ssh/init-nas.sh:/init.sh:ro
+    command: /init.sh
+    networks:
+      ssh-servers:
+        ipv4_address: 172.16.200.101
+
+  backup:
+    image: alpine:3.23
+    volumes:
+      - ./docker/ssh/init-backup.sh:/init.sh:ro
+    command: /init.sh
+    networks:
+      ssh-servers:
+        ipv4_address: 172.16.200.102
+
+  mirror:
+    image: alpine:3.23
+    volumes:
+      - ./docker/ssh/init-mirror.sh:/init.sh:ro
+    command: /init.sh
+    networks:
+      ssh-servers:
+        ipv4_address: 172.16.200.103
+
 volumes:
   postgres:
   bundle:
   npm:
+  ssh:
+
+networks:
+  default: {}
+  ssh-servers:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.200.0/24
