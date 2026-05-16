@@ -1,0 +1,60 @@
+---CPU---
+6
+CPU:   3% usr   0% sys   0% nic  97% idle   0% io   0% irq   0% sirq
+---MEM---
+MemTotal:        8127216 kB
+MemFree:         4515684 kB
+MemAvailable:    6432684 kB
+Buffers:          210592 kB
+Cached:          1843300 kB
+SwapCached:            0 kB
+Active:          1764420 kB
+Inactive:        1591452 kB
+Active(anon):    1348460 kB
+Inactive(anon):        0 kB
+Active(file):     415960 kB
+Inactive(file):  1591452 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:       1048572 kB
+SwapFree:        1048572 kB
+Zswap:                 0 kB
+Zswapped:              0 kB
+Dirty:               136 kB
+Writeback:             0 kB
+AnonPages:       1284208 kB
+Mapped:           347584 kB
+Shmem:             46496 kB
+KReclaimable:     112960 kB
+Slab:             171728 kB
+SReclaimable:     112960 kB
+SUnreclaim:        58768 kB
+KernelStack:        7920 kB
+PageTables:        13912 kB
+SecPageTables:         0 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     5112180 kB
+Committed_AS:    5876300 kB
+VmallocTotal:   135288315904 kB
+VmallocUsed:        5692 kB
+VmallocChunk:          0 kB
+Percpu:             2136 kB
+AnonHugePages:    237568 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+FileHugePages:         0 kB
+FilePmdMapped:         0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:               0 kB
+---UPTIME---
+6715.04 39370.00
+0.77 0.77 0.71 1/491 188
+---DISK---
+Filesystem           1-blocks       Used Available Capacity Mounted on
+overlay              134681202688 54859497472 72933036032  43% /

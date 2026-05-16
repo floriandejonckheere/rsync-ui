@@ -61,6 +61,16 @@ RSpec.describe Servers::ResourceUsage::LinuxService do
       end
     end
 
+    context "when top outputs BSD-style CPU line" do
+      let(:fixture) { Rails.root.join("spec/support/fixtures/probe_output_bsd.txt").read }
+
+      it "parses cpu_usage correctly" do
+        service.call
+
+        expect(server.reload.resource_usage.cpu_usage).to be_within(0.01).of 3.0
+      end
+    end
+
     context "when stdout is malformed" do
       before { stub_ssh(output: "garbage") }
 

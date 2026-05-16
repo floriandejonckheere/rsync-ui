@@ -4,6 +4,7 @@ module Servers
   module ResourceUsage
     class LinuxService < BaseService
       CPU_PATTERN = /^%Cpu\(s\):\s+[\d.]+\s+us.*?\s+([\d.]+)\s+id/
+      CPU_PATTERN_BSD = /^CPU:\s+[\d.]+%\s+usr.*?\s+([\d.]+)%\s+idle/
 
       protected
 
@@ -12,7 +13,7 @@ module Servers
         <<~BASH.gsub('"$TARGET_PATH"', path)
           echo "---CPU---"
           nproc
-          top -bn2 -d1 | grep '^%Cpu' | tail -1
+          top -bn2 -d1 | grep -i '^%\\?Cpu' | tail -1
           echo "---MEM---"
           cat /proc/meminfo
           echo "---UPTIME---"
@@ -40,7 +41,7 @@ module Servers
         lines = text.lines.map(&:strip).reject(&:empty?)
         cpu_count = Integer(lines.shift)
 
-        m = lines.first&.match(CPU_PATTERN)
+        m = lines.first&.match(CPU_PATTERN) || lines.first&.match(CPU_PATTERN_BSD)
         raise "cpu sample missing" unless m
 
         { cpu_count:, cpu_usage: (100.0 - m[1].to_f).round(2) }
