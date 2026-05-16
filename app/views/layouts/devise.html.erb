@@ -28,9 +28,11 @@
   </head>
 
   <body>
-    <% if flash.any? { |_, msg| msg.present? } %>
-      <%= render "shared/message", flash: flash %>
-    <% end %>
+    <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4 sm:max-w-lg flex flex-col gap-2">
+      <% if flash.any? { |_, msg| msg.present? } %>
+        <%= render "shared/message", flash: flash %>
+      <% end %>
+    </div>
 
     <div class="min-h-screen flex justify-center p-4 pt-32 bg-white dark:bg-gray-900">
       <div class="w-full max-w-md"><%= yield %></div>
