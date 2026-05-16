@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
+  sequence(:server_slug) { |n| "server-#{n}" }
+
   factory :server do
     user
 
     name { FFaker::Internet.domain_word.capitalize }
+    slug { generate(:server_slug) }
     host { FFaker::Internet.domain_name }
     port { 22 }
     username { FFaker::Internet.user_name }

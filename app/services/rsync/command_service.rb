@@ -97,7 +97,7 @@ module Rsync
         ["-e \"ssh -F #{ssh_home}/config\""]
       else
         # Authenticate using password (via the non-interactive sshpass command)
-        ["-e \"sshpass -f #{ssh_home}/#{server.id}_password ssh -F #{ssh_home}/config\""]
+        ["-e \"sshpass -f #{ssh_home}/#{server.slug}_password ssh -F #{ssh_home}/config\""]
       end
     end
 
@@ -136,7 +136,7 @@ module Rsync
       return nil if repo.blank?
 
       if repo.remote? && repo.server.present?
-        "#{repo.server.id}:#{repo.path}"
+        "#{repo.server.slug}:#{repo.path}"
       else
         repo.path
       end

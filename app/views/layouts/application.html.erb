@@ -32,7 +32,10 @@
 
     <div
       id="notifications"
-      class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4 sm:max-w-lg flex flex-col gap-2"
+      class="
+        fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4
+        sm:max-w-lg flex flex-col gap-2
+      "
     >
       <% if flash.any? { |_, msg| msg.present? } %>
         <%= render "shared/message", flash: flash %>

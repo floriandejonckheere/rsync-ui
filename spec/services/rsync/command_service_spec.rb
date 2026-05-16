@@ -42,8 +42,8 @@ RSpec.describe Rsync::CommandService do
     let(:server) { build(:server) }
     let(:source) { build(:repository, :remote, server:, path: "/data/source") }
 
-    it "uses server UUID as hostname in the path" do
-      expect(command).to include "#{server.id}:/data/source"
+    it "uses server slug as hostname in the path" do
+      expect(command).to include "#{server.slug}:/data/source"
       expect(command).not_to include "@"
     end
 
@@ -59,7 +59,7 @@ RSpec.describe Rsync::CommandService do
       let(:server) { build(:server, :with_password) }
 
       it "includes sshpass with the password file" do
-        expect(command).to include "-e \"sshpass -f #{ssh_home}/#{server.id}_password ssh -F #{ssh_home}/config\""
+        expect(command).to include "-e \"sshpass -f #{ssh_home}/#{server.slug}_password ssh -F #{ssh_home}/config\""
       end
     end
 

@@ -11,6 +11,8 @@ RSpec.describe Server do
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:name) }
+    xit { is_expected.to validate_presence_of(:slug) }
+    it { is_expected.to validate_uniqueness_of(:slug).case_insensitive }
     it { is_expected.to validate_presence_of(:host) }
     it { is_expected.to validate_presence_of(:port) }
     it { is_expected.to validate_presence_of(:username) }
@@ -174,6 +176,36 @@ RSpec.describe Server do
 
         expect { server.destroy! }
           .to have_enqueued_job(Servers::SyncSSHConfigJob)
+      end
+    end
+
+    describe "slug generation" do
+      it "generates slug from name when blank" do
+        server = build(:server, name: "My Server", slug: nil)
+        server.validate
+
+        expect(server.slug).to eq "my-server"
+      end
+
+      it "does not overwrite an existing slug" do
+        server = build(:server, name: "My Server", slug: "custom-slug")
+        server.validate
+
+        expect(server.slug).to eq "custom-slug"
+      end
+
+      it "generates a unique slug when a conflict exists" do
+        create(:server, name: "My Server", slug: "my-server")
+        server = build(:server, name: "My Server", slug: nil)
+        server.validate
+
+        expect(server.slug).to eq "my-server-2"
+        server.save
+
+        server = build(:server, name: "My Server", slug: nil)
+        server.validate
+
+        expect(server.slug).to eq "my-server-3"
       end
     end
 

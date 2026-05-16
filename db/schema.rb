@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_16_144809) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_16_204711) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -245,6 +245,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_16_144809) do
     t.string "path", default: "/", null: false
     t.integer "port", default: 22, null: false
     t.datetime "probed_at"
+    t.string "slug", null: false
     t.text "ssh_key"
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
@@ -254,6 +255,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_16_144809) do
     t.index ["host"], name: "index_servers_on_host_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["name"], name: "index_servers_on_name"
     t.index ["name"], name: "index_servers_on_name_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["slug"], name: "index_servers_on_slug", unique: true
     t.index ["user_id"], name: "index_servers_on_user_id"
   end
 

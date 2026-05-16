@@ -24,6 +24,10 @@ class Server < ApplicationRecord
   validates :name,
             presence: true
 
+  validates :slug,
+            presence: true,
+            uniqueness: { case_sensitive: false }
+
   validates :host,
             presence: true
 
@@ -42,6 +46,8 @@ class Server < ApplicationRecord
 
   validate :valid_ssh_key,
            if: -> { ssh_key.present? }
+
+  before_validation :generate_slug
 
   before_validation :normalize_ssh_key,
                     if: -> { ssh_key.present? }
@@ -86,6 +92,18 @@ class Server < ApplicationRecord
     end
   end
 
+  def generate_slug
+    return if slug.present?
+
+    base = name.to_s.parameterize
+    candidate = base
+    n = 1
+
+    candidate = "#{base}-#{n += 1}" while Server.where.not(id:).exists?(slug: candidate)
+
+    self.slug = candidate
+  end
+
   def sync_ssh_config
     Servers::SyncSSHConfigJob.perform_later
   end
@@ -108,6 +126,7 @@ end
 #  path             :string           default("/"), not null
 #  port             :integer          default(22), not null
 #  probed_at        :datetime
+#  slug             :string           not null, uniquely indexed
 #  ssh_key          :text
 #  username         :string           not null
 #  created_at       :datetime         not null
@@ -121,6 +140,7 @@ end
 #  index_servers_on_host_trgm         (host) USING gin
 #  index_servers_on_name              (name)
 #  index_servers_on_name_trgm         (name) USING gin
+#  index_servers_on_slug              (slug) UNIQUE
 #  index_servers_on_user_id           (user_id)
 #
 # Foreign Keys

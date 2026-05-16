@@ -4,8 +4,6 @@ module Servers
   class SSHConfigService < ApplicationService
     SSH_DIR = Pathname.new(Dir.home).join(".ssh").freeze
 
-    UUID_PATTERN = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
-
     attr_reader :ssh_dir
 
     def initialize(ssh_dir: SSH_DIR)
@@ -22,18 +20,18 @@ module Servers
       ssh_dir.chmod(0o700)
 
       servers = Server.all.to_a
-      server_ids = servers.map { |s| s.id.to_s }
+      server_slugs = servers.map(&:slug)
 
       # Write private key and password files
       servers.each do |server|
         if server.ssh_key.present?
-          key_path = ssh_dir.join(server.id.to_s)
+          key_path = ssh_dir.join("#{server.slug}.pem")
           key_path.write(server.ssh_key)
 
           # Set correct permissions
           key_path.chmod(0o600)
         elsif server.password.present?
-          pass_path = ssh_dir.join("#{server.id}_password")
+          pass_path = ssh_dir.join("#{server.slug}_password")
           pass_path.write(server.password)
 
           # Set correct permissions
@@ -43,14 +41,17 @@ module Servers
 
       # Clean up orphan private key and password files
       ssh_dir.each_child do |path|
-        # Skip config file
-        next if path.basename.to_s == "config"
+        basename = path.basename.to_s
 
-        stem = path.basename.to_s.delete_suffix("_password")
-        next unless UUID_PATTERN.match?(stem)
+        stem = if basename.end_with?(".pem")
+                 basename.delete_suffix(".pem")
+               elsif basename.end_with?("_password")
+                 basename.delete_suffix("_password")
+               else
+                 next
+               end
 
-        # Skip servers that still exist
-        next if server_ids.include?(stem)
+        next if server_slugs.include?(stem)
 
         path.delete
       end
@@ -60,7 +61,7 @@ module Servers
 
       servers.each do |server|
         lines += [
-          "Host #{server.id}",
+          "Host #{server.slug}",
           "  HostName #{server.host}",
           "  Port #{server.port}",
           "  User #{server.username}",
@@ -69,7 +70,7 @@ module Servers
         ]
 
         if server.ssh_key.present?
-          lines << "  IdentityFile #{ssh_dir.join(server.id.to_s)}"
+          lines << "  IdentityFile #{ssh_dir.join("#{server.slug}.pem")}"
           lines << "  IdentitiesOnly yes"
         end
 

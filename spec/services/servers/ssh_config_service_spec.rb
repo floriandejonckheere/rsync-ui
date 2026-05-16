@@ -13,9 +13,9 @@ RSpec.describe Servers::SSHConfigService do
 
       before { service.call }
 
-      it "writes the private key to ~/.ssh/<uuid>" do
+      it "writes the private key to ~/.ssh/<slug>.pem" do
         key_file = tmpdir
-          .join(server.id.to_s)
+          .join("#{server.slug}.pem")
 
         expect(key_file).to exist
         expect(key_file.read).to eq server.ssh_key
@@ -27,16 +27,16 @@ RSpec.describe Servers::SSHConfigService do
           .join("config")
           .read
 
-        expect(config).to include "Host #{server.id}"
+        expect(config).to include "Host #{server.slug}"
         expect(config).to include "HostName #{server.host}"
         expect(config).to include "Port #{server.port}"
         expect(config).to include "User #{server.username}"
-        expect(config).to include "IdentityFile #{tmpdir.join(server.id.to_s)}"
+        expect(config).to include "IdentityFile #{tmpdir.join("#{server.slug}.pem")}"
         expect(config).to include "IdentitiesOnly yes"
       end
 
       it "does not write a password file for key-auth servers" do
-        expect(tmpdir.join("#{server.id}_password")).not_to exist
+        expect(tmpdir.join("#{server.slug}_password")).not_to exist
       end
     end
 
@@ -45,9 +45,9 @@ RSpec.describe Servers::SSHConfigService do
 
       before { service.call }
 
-      it "writes the password to ~/.ssh/<uuid>_password" do
+      it "writes the password to ~/.ssh/<slug>_password" do
         password_file = tmpdir
-          .join("#{server.id}_password")
+          .join("#{server.slug}_password")
 
         expect(password_file).to exist
         expect(password_file.read).to eq server.password
@@ -59,13 +59,13 @@ RSpec.describe Servers::SSHConfigService do
           .join("config")
           .read
 
-        expect(config).to include "Host #{server.id}"
+        expect(config).to include "Host #{server.slug}"
         expect(config).not_to include "IdentityFile"
         expect(config).not_to include "IdentitiesOnly"
       end
 
       it "does not write a key file for password-auth servers" do
-        expect(tmpdir.join(server.id.to_s)).not_to exist
+        expect(tmpdir.join(server.slug)).not_to exist
       end
     end
 
@@ -80,39 +80,39 @@ RSpec.describe Servers::SSHConfigService do
           .join("config")
           .read
 
-        expect(config).to include "Host #{key_server.id}"
-        expect(config).to include "Host #{pass_server.id}"
+        expect(config).to include "Host #{key_server.slug}"
+        expect(config).to include "Host #{pass_server.slug}"
       end
     end
 
     context "with orphaned key files" do
       let!(:server) { create(:server, :with_ssh_key) }
-      let(:orphan_id) { SecureRandom.uuid }
+      let(:orphan_slug) { "deleted-server" }
 
       before do
         # Write orphan private key file
         tmpdir
-          .join(orphan_id)
+          .join("#{orphan_slug}.pem")
           .write("orphan key")
 
         # Write orphan password file
         tmpdir
-          .join("#{orphan_id}_password")
+          .join("#{orphan_slug}_password")
           .write("orphan pass")
 
         service.call
       end
 
       it "removes the orphaned key file" do
-        expect(tmpdir.join(orphan_id)).not_to exist
+        expect(tmpdir.join("#{orphan_slug}.pem")).not_to exist
       end
 
       it "removes the orphaned password file" do
-        expect(tmpdir.join("#{orphan_id}_password")).not_to exist
+        expect(tmpdir.join("#{orphan_slug}_password")).not_to exist
       end
 
       it "keeps files for existing servers" do
-        expect(tmpdir.join(server.id.to_s)).to exist
+        expect(tmpdir.join("#{server.slug}.pem")).to exist
       end
     end
 
