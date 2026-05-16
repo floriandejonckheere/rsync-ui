@@ -46,6 +46,8 @@ class Server < ApplicationRecord
   before_validation :normalize_ssh_key,
                     if: -> { ssh_key.present? }
 
+  after_commit :sync_ssh_config
+
   def online?
     last_seen_at.present?
   end
@@ -82,6 +84,10 @@ class Server < ApplicationRecord
     else
       errors.add(:ssh_key, :ssh_key_invalid)
     end
+  end
+
+  def sync_ssh_config
+    Servers::SyncSSHConfigJob.perform_later
   end
 end
 

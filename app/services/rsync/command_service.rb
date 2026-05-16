@@ -87,10 +87,29 @@ module Rsync
     end
 
     def ssh_flags
-      port = non_standard_port
-      return [] unless port
+      # Only one server (source/destination) can be remote
+      server = remote_server
 
-      ["-e \"ssh -p #{port}\""]
+      return [] unless server
+
+      if server.ssh_key.present?
+        # Authenticate using private key (via the SSH config file)
+        ["-e \"ssh -F #{ssh_home}/config\""]
+      else
+        # Authenticate using password (via the non-interactive sshpass command)
+        ["-e \"sshpass -f #{ssh_home}/#{server.id}_password ssh -F #{ssh_home}/config\""]
+      end
+    end
+
+    def remote_server
+      [job.source_repository, job.destination_repository]
+        .compact
+        .find(&:remote?)
+        &.server
+    end
+
+    def ssh_home
+      @ssh_home ||= Pathname.new(Dir.home).join(".ssh")
     end
 
     def custom_argument_flags
@@ -105,14 +124,6 @@ module Rsync
       job.opt_exclude.map { |pattern| "--exclude=#{pattern}" }
     end
 
-    def non_standard_port
-      [job.source_repository, job.destination_repository]
-        .compact
-        .select(&:remote?)
-        .filter_map { |repo| repo.server&.port }
-        .find { |port| port != 22 }
-    end
-
     def source_path
       repository_path(job.source_repository) || "<source>"
     end
@@ -125,7 +136,7 @@ module Rsync
       return nil if repo.blank?
 
       if repo.remote? && repo.server.present?
-        "#{repo.server.username}@#{repo.server.host}:#{repo.path}"
+        "#{repo.server.id}:#{repo.path}"
       else
         repo.path
       end

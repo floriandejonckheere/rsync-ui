@@ -14,44 +14,69 @@ RSpec.describe Rsync::CommandService do
   describe "boolean flags" do
     it "includes --recursive when opt_recursive is true" do
       job.opt_recursive = true
-      expect(command).to include("--recursive")
+
+      expect(command).to include "--recursive"
     end
 
     it "omits --recursive when opt_recursive is false" do
       job.opt_recursive = false
-      expect(command).not_to include("--recursive")
+
+      expect(command).not_to include "--recursive"
     end
 
     it "includes --archive when opt_archive is true" do
       job.opt_archive = true
-      expect(command).to include("--archive")
+
+      expect(command).to include "--archive"
     end
 
     it "includes --verbose when opt_verbose is true" do
       job.opt_verbose = true
-      expect(command).to include("--verbose")
+
+      expect(command).to include "--verbose"
     end
   end
 
   describe "remote repositories" do
-    let(:server) { build(:server, username: "deploy", host: "example.com", port: 22) }
+    let(:ssh_home) { Pathname.new(Dir.home).join(".ssh") }
+    let(:server) { build(:server) }
     let(:source) { build(:repository, :remote, server:, path: "/data/source") }
 
-    it "uses user@host:path format for remote source" do
-      expect(command).to include("deploy@example.com:/data/source")
+    it "uses server UUID as hostname in the path" do
+      expect(command).to include "#{server.id}:/data/source"
+      expect(command).not_to include "@"
     end
 
-    context "with a non-standard SSH port" do
-      let(:server) { build(:server, username: "deploy", host: "example.com", port: 2222) }
+    context "with private key authentication" do
+      let(:server) { build(:server, :with_ssh_key) }
 
-      it "includes the SSH port flag" do
-        expect(command).to include('-e "ssh -p 2222"')
+      it "includes the SSH config flag" do
+        expect(command).to include "-e \"ssh -F #{ssh_home}/config\""
       end
     end
 
-    context "with the standard SSH port" do
-      it "omits the SSH port flag" do
-        expect(command).not_to include("-e")
+    context "with password authentication" do
+      let(:server) { build(:server, :with_password) }
+
+      it "includes sshpass with the password file" do
+        expect(command).to include "-e \"sshpass -f #{ssh_home}/#{server.id}_password ssh -F #{ssh_home}/config\""
+      end
+    end
+
+    context "with a non-standard SSH port" do
+      let(:server) { build(:server, :with_ssh_key, port: 2222) }
+
+      it "does not include a port flag (handled by SSH config)" do
+        expect(command).not_to include "-p 2222"
+      end
+    end
+
+    context "with local-only repositories" do
+      let(:source) { build(:repository, :local, path: "/data/source") }
+      let(:destination) { build(:repository, :local, path: "/data/destination") }
+
+      it "omits the SSH flag entirely" do
+        expect(command).not_to include "-e"
       end
     end
   end

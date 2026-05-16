@@ -154,6 +154,29 @@ RSpec.describe Server do
   end
 
   describe "callbacks" do
+    describe "SSH config sync" do
+      it "enqueues SyncSSHConfigJob after create" do
+        server = build(:server)
+
+        expect { server.save! }
+          .to have_enqueued_job(Servers::SyncSSHConfigJob)
+      end
+
+      it "enqueues SyncSSHConfigJob after update" do
+        server = create(:server)
+
+        expect { server.update! name: "New name" }
+          .to have_enqueued_job(Servers::SyncSSHConfigJob)
+      end
+
+      it "enqueues SyncSSHConfigJob after destroy" do
+        server = create(:server)
+
+        expect { server.destroy! }
+          .to have_enqueued_job(Servers::SyncSSHConfigJob)
+      end
+    end
+
     describe "SSH key normalization" do
       it "normalizes line endings and whitespace before validation" do
         ssh_key = Rails.root.join("spec/support/fixtures/ssh_key").read
