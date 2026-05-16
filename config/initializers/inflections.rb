@@ -19,6 +19,7 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "OS"
   inflect.acronym "RSA"
   inflect.acronym "SSH"
+  inflect.acronym "SSL"
   inflect.acronym "UI"
   inflect.acronym "UUID"
 end
