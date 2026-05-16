@@ -3,7 +3,7 @@ set -e
 
 apk add --no-cache openssh
 
-adduser -D -s /bin/sh backup
+id backup >/dev/null 2>&1 || adduser -D -s /bin/sh backup
 echo "backup:nas-password" | chpasswd
 
 cat > /etc/ssh/ssh_host_ed25519_key << 'EOF'
@@ -28,8 +28,6 @@ PermitRootLogin no
 PasswordAuthentication yes
 PubkeyAuthentication no
 ChallengeResponseAuthentication no
-UsePAM no
-PrintLastLog no
 EOF
 
 mkdir -p /data/documents /data/photos /data/videos

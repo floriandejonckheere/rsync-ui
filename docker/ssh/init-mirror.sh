@@ -3,7 +3,8 @@ set -e
 
 apk add --no-cache openssh
 
-adduser -D -s /bin/sh user
+id user >/dev/null 2>&1 || adduser -D -s /bin/sh user
+passwd -u user
 
 mkdir -p /home/user/.ssh
 cat > /home/user/.ssh/authorized_keys << 'EOF'
@@ -36,8 +37,6 @@ PasswordAuthentication no
 PubkeyAuthentication yes
 AuthorizedKeysFile .ssh/authorized_keys
 ChallengeResponseAuthentication no
-UsePAM no
-PrintLastLog no
 EOF
 
 mkdir -p /data/snapshots /data/logs
