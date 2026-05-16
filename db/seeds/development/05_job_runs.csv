@@ -1,11 +1,17 @@
 job_name,user_email,days_ago,trigger,status,started_at,completed_at
-System backup,admin@example.com,2,scheduled,completed,02:00:00,02:04:32
-System backup,admin@example.com,1,scheduled,completed,02:00:00,02:05:01
-System backup,admin@example.com,0,scheduled,failed,02:00:00,02:01:12
-System backup,admin@example.com,0,manual,running,09:15:00,
-System mirror,admin@example.com,2,scheduled,completed,03:30:00,03:42:18
-System mirror,admin@example.com,1,scheduled,completed,03:30:00,03:44:55
-System mirror,admin@example.com,0,scheduled,pending,,
-Documents backup,admin@example.com,0,scheduled,completed,00:00:00,00:02:45
-Documents backup,admin@example.com,0,scheduled,failed,06:00:00,06:00:08
 Docker replica,admin@example.com,0,scheduled,canceled,08:15:00,
+NAS photos sync,admin@example.com,2,scheduled,completed,01:00:00,01:08:22
+NAS photos sync,admin@example.com,1,scheduled,completed,01:00:00,01:07:45
+NAS photos sync,admin@example.com,0,scheduled,completed,01:00:00,01:09:03
+Home backup,admin@example.com,2,scheduled,completed,02:00:00,02:04:32
+Home backup,admin@example.com,1,scheduled,completed,02:00:00,02:03:58
+Home backup,admin@example.com,0,scheduled,failed,02:00:00,02:00:52
+Home backup,admin@example.com,0,manual,completed,09:02:00,09:06:44
+Projects backup,admin@example.com,1,scheduled,completed,00:00:00,00:00:28
+Projects backup,admin@example.com,0,scheduled,completed,00:00:00,00:00:31
+Projects backup,admin@example.com,0,scheduled,completed,06:00:00,06:00:34
+Projects backup,admin@example.com,0,scheduled,failed,12:00:00,12:00:08
+Photos backup,admin@example.com,2,scheduled,completed,03:00:00,03:02:18
+Photos backup,admin@example.com,1,scheduled,completed,03:00:00,03:01:42
+Photos backup,admin@example.com,0,scheduled,completed,03:00:00,03:02:05
+Mirror sync,admin@example.com,3,scheduled,completed,04:00:00,04:45:12

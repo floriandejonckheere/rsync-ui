@@ -6,6 +6,7 @@ x-app: &app
     - npm:/app/node_modules/
     - ssh:/app/.ssh
     - ./docker/hosts:/etc/hosts:ro
+    - ./tmp/data:/data:cached
   tmpfs:
     - /app/tmp/storage:mode=755,uid=1000,gid=1000
   depends_on:

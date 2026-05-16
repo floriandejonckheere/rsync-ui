@@ -26,6 +26,11 @@
 !/tmp/storage/
 !/tmp/storage/.keep
 
+# Ignore local data volume contents, but keep the directory.
+/tmp/data/*
+!/tmp/data/
+!/tmp/data/.keep
+
 /public/assets
 
 # Ignore IDE configuration

@@ -1,5 +1,7 @@
 name,description,source_repository_name,destination_repository_name,schedule,enabled,user_email
-System backup,Synchronize system configuration to the backup server,System,System (backup),0 2 * * *,true,admin@example.com
-System mirror,Replicate the backup set to the off-site mirror,System,System (mirror),30 3 * * *,true,admin@example.com
-Documents backup,Synchronize documents from the NAS to the backup server,Documents,Documents (backup),0 */6 * * *,true,admin@example.com
-Docker replica,Refresh the local Docker replica,Docker,Docker (replica),15 * * * *,false,admin@example.com
+Docker replica,Maintain a local Docker replica for quick restores,Docker,Docker Replica,15 * * * *,false,admin@example.com
+NAS photos sync,Pull latest photos from the NAS to the local library,NAS Photos,Photos,0 1 * * *,true,admin@example.com
+Home backup,Back up home directory to the backup server,Home,Backup,0 2 * * *,true,admin@example.com
+Projects backup,Sync source code repositories to the backup server,Projects,Backup,0 */6 * * *,true,admin@example.com
+Photos backup,Back up local photo library to the backup server,Photos,Backup,0 3 * * *,true,admin@example.com
+Mirror sync,Push home directory to the off-site mirror,Home,Mirror,0 4 * * 0,true,admin@example.com
