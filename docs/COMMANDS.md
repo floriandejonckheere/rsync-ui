@@ -107,3 +107,10 @@ docker compose exec app bundle exec rails mission_control:jobs  # Access job man
 docker compose logs -f worker                                   # View background worker logs
 docker compose restart worker                                   # Restart background worker
 ```
+
+## SSH Config Management
+
+The application manages `~/.ssh/config` and per-server key/password files automatically via `Servers::SSHConfigService`. The config is regenerated on server create/update/destroy and at application startup.
+
+**Prerequisites (included in Docker image):**
+- `sshpass` — used to pass SSH passwords non-interactively for rsync jobs with password authentication
