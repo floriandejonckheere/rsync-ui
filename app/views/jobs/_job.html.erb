@@ -26,11 +26,17 @@
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-    <%= job.source_repository.name %>
+    <%= link_to job.source_repository.name,
+                edit_repository_path(job.source_repository),
+                class: "hover:underline",
+                data: { turbo_frame: "_top" } %>
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-    <%= job.destination_repository.name %>
+    <%= link_to job.destination_repository.name,
+                edit_repository_path(job.destination_repository),
+                class: "hover:underline",
+                data: { turbo_frame: "_top" } %>
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
