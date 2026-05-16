@@ -10,6 +10,10 @@ RSpec.describe Hooks::ExecuteService do
     create(:job_run, job:, user:, trigger: "manual", status: "running", started_at: Time.zone.now, sequence: 1)
   end
 
+  before do
+    stub_const("Processes::ExecuteService::CANCEL_MONITOR_INTERVAL", 0.05)
+  end
+
   describe "#call" do
     it "returns a successful result" do
       result = service.call
@@ -28,7 +32,7 @@ RSpec.describe Hooks::ExecuteService do
 
       service.call
 
-      expect(Open3).to have_received(:popen2e).with("echo hello #{job.name}")
+      expect(Open3).to have_received(:popen2e).with("echo hello #{job.name}", pgroup: true)
     end
 
     context "when the command exits with a non-zero status" do

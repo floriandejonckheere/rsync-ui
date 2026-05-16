@@ -33,9 +33,13 @@ module Jobs
             .call
 
           unless result[:success]
-            job_run.error!(error_messages: "Pre-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
+            if result[:canceled]
+              job_run.cancel!
+            else
+              job_run.error!(error_messages: "Pre-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
 
-            enqueue_notifications(job_run, "failure")
+              enqueue_notifications(job_run, "failure")
+            end
 
             return
           end
@@ -131,6 +135,7 @@ module Jobs
         .call
 
       return if result[:success]
+      return if result[:canceled]
 
       job_run.error!(error_messages: "#{type.capitalize}-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
     end

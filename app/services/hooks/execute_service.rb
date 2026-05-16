@@ -18,12 +18,8 @@ module Hooks
         .join(" ")
 
       Tempfile.create(["hook_#{hook.hook_type}", ".log"]) do |file|
-        exit_status = nil
-
-        Open3.popen2e(full_command) do |_stdin, output, wait_thr|
+        result = Processes::ExecuteService.new(full_command, job_run).call do |output|
           file.write(output.read)
-
-          exit_status = wait_thr.value
         end
 
         file.rewind
@@ -34,10 +30,10 @@ module Hooks
           content_type: "text/plain",
         )
 
-        { success: exit_status.success?, exit_status: exit_status.exitstatus, error: nil }
+        { success: result.exit_status.success?, exit_status: result.exit_status.exitstatus, error: nil, canceled: result.canceled }
       end
     rescue StandardError => e
-      { success: false, exit_status: nil, error: e.message }
+      { success: false, exit_status: nil, error: e.message, canceled: false }
     end
 
     private
