@@ -43,6 +43,13 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Step two (destination): repository name, description, type (local/remote), server (if remote), path
 - [ ] Step three: schedule, rsync options, enabled
 
+### Repository size
+
+- [ ] Add repository size column to table and views
+- [ ] Add scheduled job to update repository size
+  - [ ] Local: use `du`
+  - [ ] Remote: use `du` unless the server is a storage box
+
 ### Smaller TODOs
 
 - [x] Add SSH audit log
@@ -57,16 +64,10 @@ For remote repositories, the server should be mounted as a local directory, and 
     - [ ] Add to known_hosts file
     - [ ] Keep known_hosts file up to date (maintenance task?)
     - [ ] When executing a job, fail immediately if fingerprint isn't known
-- [ ] Add repository size
 - [ ] Allow user to archive job runs, jobs, repositories, and servers
   - [ ] Extra tab for archived job runs, jobs, repositories, and servers
   - [ ] No connectivity polling for archived servers
   - [ ] No scheduling for archived jobs
-- [ ] Capture more real-time data
-  - [ ] Current speed
-  - [ ] Remaining time
-  - [ ] Number of files transferred
-  - [ ] Average speed
 - [ ] Make application responsive
 - [ ] Make job run immutable: save command and options in the database
 - [ ] Update branding
@@ -75,7 +76,4 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
 - [ ] Implement support for OAuth2 authentication
 - [ ] Do not bind postgres to port 5432, otherwise you can't use git worktrees
-- [ ] Improve configurations
-  - [ ] Add min/max value for integers
-  - [ ] Add allowed values for strings + dropdown control
 - [ ] Audit codebase
