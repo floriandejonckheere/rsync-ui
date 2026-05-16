@@ -48,7 +48,7 @@ module Servers
         port: server.port,
         timeout: CONNECT_TIMEOUT,
         non_interactive: true,
-        verify_host_key: :never,
+        verify_host_key:,
       }
 
       if server.ssh_key.present?
@@ -60,6 +60,13 @@ module Servers
       end
 
       opts
+    end
+
+    def verify_host_key
+      return :never unless Configuration.get("verify_host_key")
+
+      HostKeyVerification::VerifyService
+        .new(server)
     end
   end
 end

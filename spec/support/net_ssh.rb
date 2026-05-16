@@ -8,7 +8,7 @@ module NetSSHHelpers
     channel = instance_double(Net::SSH::Connection::Channel)
 
     allow(Net::SSH)
-      .to receive(:start) do |_host, _user, **opts, &block|
+      .to receive(:start) do |_host, _user, opts = {}, &block|
         if (verifier = opts[:verify_host_key]) && verifier.respond_to?(:verify)
           verifier.verify({ fingerprint: })
         end

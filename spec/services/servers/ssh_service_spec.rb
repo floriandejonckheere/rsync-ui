@@ -11,6 +11,50 @@ RSpec.describe Servers::SSHService do
 
   let(:server) { create(:server) }
 
+  describe "host key verification" do
+    context "when verify_host_key config is enabled" do
+      with_configuration "verify_host_key" => true
+
+      context "when server fingerprint matches the host key" do
+        before { stub_ssh(fingerprint: NetSSHHelpers::DEFAULT_FINGERPRINT) }
+
+        it "connects successfully" do
+          expect { service.call }.not_to raise_error
+        end
+      end
+
+      context "when server fingerprint is blank" do
+        let(:server) { create(:server, fingerprint: nil) }
+
+        before { stub_ssh(fingerprint: NetSSHHelpers::DEFAULT_FINGERPRINT) }
+
+        it "raises HostKeyMismatch" do
+          expect { service.call }.to raise_error(Net::SSH::HostKeyMismatch)
+        end
+      end
+
+      context "when server fingerprint does not match the host key" do
+        before { stub_ssh(fingerprint: "SHA256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb") }
+
+        it "raises HostKeyMismatch" do
+          expect { service.call }.to raise_error(Net::SSH::HostKeyMismatch)
+        end
+      end
+    end
+
+    context "when verify_host_key config is disabled" do
+      with_configuration "verify_host_key" => false
+
+      let(:server) { create(:server, fingerprint: nil) }
+
+      before { stub_ssh }
+
+      it "connects without verifying the fingerprint" do
+        expect { service.call }.not_to raise_error
+      end
+    end
+  end
+
   describe "audit creation" do
     before { stub_ssh(output: "ok\n") }
 
