@@ -88,7 +88,10 @@
               <%= render "shared/forms/combobox",
                          name: f.field_name(:source_repository_id),
                          value: job.source_repository_id,
-                         options: @repositories.map { |repository| [repository.name, repository.id] },
+                         options: @repositories.map { |repository|
+                           label = safe_join([repository.name, on_server_label(repository.server)].compact)
+                           [label, repository.id, repository.server.present? ? { label: repository.name } : {}]
+                         },
                          blank_label: I18n.t("jobs.form.source_repository_placeholder"),
                          placeholder: I18n.t("jobs.form.source_repository_search_placeholder"),
                          required: true %>
@@ -100,7 +103,10 @@
               <%= render "shared/forms/combobox",
                          name: f.field_name(:destination_repository_id),
                          value: job.destination_repository_id,
-                         options: @repositories.map { |repository| [repository.name, repository.id] },
+                         options: @repositories.map { |repository|
+                           label = safe_join([repository.name, on_server_label(repository.server)].compact)
+                           [label, repository.id, repository.server.present? ? { label: repository.name } : {}]
+                         },
                          blank_label: I18n.t("jobs.form.destination_repository_placeholder"),
                          placeholder: I18n.t("jobs.form.destination_repository_search_placeholder"),
                          required: true %>

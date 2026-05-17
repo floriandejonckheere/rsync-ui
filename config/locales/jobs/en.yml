@@ -224,6 +224,8 @@ en:
     table:
       destination: Destination
       name: Name
+      on_server: on %{server}
+      on_server_html: on %{server_html}
       schedule: Schedule
       source: Source
     title: Jobs

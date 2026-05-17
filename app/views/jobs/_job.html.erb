@@ -30,6 +30,8 @@
                 edit_repository_path(job.source_repository),
                 class: "hover:underline",
                 data: { turbo_frame: "_top" } %>
+
+    <%= on_server_tag(job.source_repository.server) %>
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
@@ -37,6 +39,8 @@
                 edit_repository_path(job.destination_repository),
                 class: "hover:underline",
                 data: { turbo_frame: "_top" } %>
+
+    <%= on_server_tag(job.destination_repository.server) %>
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
