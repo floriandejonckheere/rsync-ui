@@ -133,6 +133,36 @@ docker-compose exec app bundle exec rails database:seed
 
 The application is now available at [http://localhost:3000](http://localhost:3000).
 
+### Development environment
+
+The development environment includes three fake SSH servers that simulate remote storage targets, seeded with realistic data so jobs can be run end-to-end without real infrastructure.
+
+| Container | Script | Mount |
+|-----------|--------|-------|
+| `nas` | `docker/ssh/init-nas.sh` | `./tmp/data/nas` → `/data` |
+| `backup` | `docker/ssh/init-backup.sh` | `./tmp/data/backup` → `/backup` |
+| `mirror` | `docker/ssh/init-mirror.sh` | `./tmp/data/mirror` → `/backup` |
+
+The app container stores all local repository data under `./tmp/data/app` (mounted to `/data`).
+
+The following jobs are pre-seeded and can be run against these servers:
+
+| Job | Source | Destination | Schedule |
+|-----|--------|-------------|----------|
+| Docker replica | `Docker` (local) | `Docker Replica` (local) | Every 5 minutes, disabled |
+| Home backup | `Home` (local) | `Home backup` (Backup server) | Daily at 02:00 |
+| Projects backup | `Projects` (local) | `Projects backup` (Backup server) | Daily at 02:00 |
+| NAS photos sync | `NAS Photos` (NAS server) | `Photos` (local) | Weekly on Sunday at 03:00 |
+| Photos mirror sync | `Photos` (local) | `Photos mirror` (Mirror server) | Weekly on Monday at 03:00 |
+
+Source repositories are pre-populated with representative data. Destination repositories start empty and are filled when their job runs.
+
+To reset all destination repositories back to their initial empty state, run from the project root:
+
+```sh
+docker/reset.sh
+```
+
 ### Dependencies
 
 Use the `bin/update` script to update your development environment dependencies.

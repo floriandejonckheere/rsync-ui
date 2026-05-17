@@ -2,5 +2,4 @@ job_name,notification_name,user_email,enabled,on_start,on_success,on_failure
 Home backup,Slack,admin@example.com,true,false,true,true
 Home backup,PagerDuty,admin@example.com,true,false,false,true
 Projects backup,Slack,admin@example.com,true,false,false,true
-Photos backup,Email,admin@example.com,true,false,true,false
-Mirror sync,Email,admin@example.com,true,false,true,true
+Photos mirror sync,Email,admin@example.com,true,false,true,true

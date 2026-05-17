@@ -39,16 +39,9 @@ AuthorizedKeysFile .ssh/authorized_keys
 ChallengeResponseAuthentication no
 EOF
 
-mkdir -p /data/snapshots /data/logs
-dd if=/dev/zero of=/data/snapshots/snap-2024-05-16.img bs=1M count=50 status=none
-dd if=/dev/zero of=/data/snapshots/snap-2024-05-09.img bs=1M count=48 status=none
-dd if=/dev/zero of=/data/snapshots/snap-2024-05-02.img bs=1M count=45 status=none
-dd if=/dev/zero of=/data/snapshots/snap-2024-04-25.img bs=1M count=42 status=none
-dd if=/dev/zero of=/data/snapshots/snap-2024-04-18.img bs=1M count=40 status=none
-dd if=/dev/zero of=/data/logs/transfer-2024-05.log bs=1M count=1 status=none
-dd if=/dev/zero of=/data/logs/transfer-2024-04.log bs=1M count=1 status=none
-dd if=/dev/zero of=/data/checksums.md5 bs=4K count=1 status=none
-chown -R user:user /data
+echo "Creating Photos Mirror repository..."
+mkdir -p /backup/photos
+chown -R user:user /backup/photos
 
 mkdir -p /run/sshd
 exec /usr/sbin/sshd -D -e

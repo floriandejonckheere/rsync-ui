@@ -1,7 +1,6 @@
 name,description,source_repository_name,destination_repository_name,schedule,enabled,user_email
-Docker replica,Maintain a local Docker replica for quick restores,Docker,Docker Replica,15 * * * *,false,admin@example.com
-NAS photos sync,Pull latest photos from the NAS to the local library,NAS Photos,Photos,0 1 * * *,true,admin@example.com
-Home backup,Back up home directory to the backup server,Home,Backup,0 2 * * *,true,admin@example.com
-Projects backup,Sync source code repositories to the backup server,Projects,Backup,0 */6 * * *,true,admin@example.com
-Photos backup,Back up local photo library to the backup server,Photos,Backup,0 3 * * *,true,admin@example.com
-Mirror sync,Push home directory to the off-site mirror,Home,Mirror,0 4 * * 0,true,admin@example.com
+Docker replica,Maintain a local Docker replica for quick restores,Docker,Docker Replica,*/5 * * * *,false,admin@example.com
+Home backup,Back up home directory to the backup server,Home,Home backup,0 2 * * *,true,admin@example.com
+Projects backup,Sync source code repositories to the backup server,Projects,Projects backup,0 2 * * *,true,admin@example.com
+NAS photos sync,Pull latest photos from the NAS to the local library,NAS Photos,Photos,0 3 * * 0,true,admin@example.com
+Photos mirror sync,Push photos to the off-site mirror,Photos,Photos mirror,0 3 * * 1,true,admin@example.com

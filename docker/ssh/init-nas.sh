@@ -3,8 +3,8 @@ set -e
 
 apk add --no-cache openssh rsync
 
-id backup >/dev/null 2>&1 || adduser -D -s /bin/sh backup
-echo "backup:nas-password" | chpasswd
+id nas >/dev/null 2>&1 || adduser -D -s /bin/sh nas
+echo "nas:nas-password" | chpasswd
 
 cat > /etc/ssh/ssh_host_ed25519_key << 'EOF'
 -----BEGIN OPENSSH PRIVATE KEY-----
@@ -30,18 +30,23 @@ PubkeyAuthentication no
 ChallengeResponseAuthentication no
 EOF
 
-mkdir -p /data/documents /data/photos /data/videos
-dd if=/dev/zero of=/data/documents/report-2024.pdf bs=1M count=4 status=none
-dd if=/dev/zero of=/data/documents/report-2023.pdf bs=1M count=4 status=none
-dd if=/dev/zero of=/data/documents/spreadsheet.xlsx bs=1M count=2 status=none
-dd if=/dev/zero of=/data/photos/vacation-001.jpg bs=1M count=4 status=none
-dd if=/dev/zero of=/data/photos/vacation-002.jpg bs=1M count=3 status=none
-dd if=/dev/zero of=/data/photos/vacation-003.jpg bs=1M count=5 status=none
-dd if=/dev/zero of=/data/photos/vacation-004.jpg bs=1M count=4 status=none
-dd if=/dev/zero of=/data/videos/holiday.mp4 bs=1M count=80 status=none
-dd if=/dev/zero of=/data/videos/birthday.mp4 bs=1M count=60 status=none
-dd if=/dev/zero of=/data/backup.tar bs=1M count=30 status=none
-chown -R backup:backup /data
+echo "Creating NAS Photos repository data..."
+mkdir -p \
+  /data/photos/2024/summer \
+  /data/photos/2024/winter \
+  /data/photos/2025/spring \
+  /data/photos/2025/summer
+dd if=/dev/zero of=/data/photos/2024/summer/IMG_001.jpg bs=1M count=5 status=none
+dd if=/dev/zero of=/data/photos/2024/summer/IMG_002.jpg bs=1M count=4 status=none
+dd if=/dev/zero of=/data/photos/2024/summer/IMG_003.jpg bs=1M count=6 status=none
+dd if=/dev/zero of=/data/photos/2024/winter/IMG_001.jpg bs=1M count=4 status=none
+dd if=/dev/zero of=/data/photos/2024/winter/IMG_002.jpg bs=1M count=5 status=none
+dd if=/dev/zero of=/data/photos/2025/spring/IMG_001.jpg bs=1M count=3 status=none
+dd if=/dev/zero of=/data/photos/2025/spring/IMG_002.jpg bs=1M count=4 status=none
+dd if=/dev/zero of=/data/photos/2025/summer/IMG_001.jpg bs=1M count=5 status=none
+dd if=/dev/zero of=/data/photos/2025/summer/IMG_002.jpg bs=1M count=3 status=none
+dd if=/dev/zero of=/data/photos/2025/summer/IMG_003.jpg bs=1M count=6 status=none
+chown -R nas:nas /data/photos
 
 mkdir -p /run/sshd
 exec /usr/sbin/sshd -D -e

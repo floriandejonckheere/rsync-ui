@@ -8,7 +8,7 @@ x-app: &app
     - ./docker/hosts:/etc/hosts:ro
     - ./docker/pre_sync.sh:/usr/local/bin/pre_sync.sh:ro
     - ./docker/post_sync.sh:/usr/local/bin/post_sync.sh:ro
-    - ./tmp/data:/data:cached
+    - ./tmp/data/app:/data:cached
   tmpfs:
     - /app/tmp/storage:mode=755,uid=1000,gid=1000
   depends_on:
@@ -32,7 +32,7 @@ services:
 
   app:
     <<: *app
-    entrypoint: /app/docker-entrypoint.sh
+    entrypoint: /app/docker/ssh/init-app.sh
     command: foreman start
     tty: true
     ports:
@@ -47,6 +47,7 @@ services:
     image: alpine:3.23
     volumes:
       - ./docker/ssh/init-nas.sh:/init.sh:ro
+      - ./tmp/data/nas:/data
     command: /init.sh
     networks:
       ssh-servers:
@@ -56,6 +57,7 @@ services:
     image: alpine:3.23
     volumes:
       - ./docker/ssh/init-backup.sh:/init.sh:ro
+      - ./tmp/data/backup:/backup
     command: /init.sh
     networks:
       ssh-servers:
@@ -65,6 +67,7 @@ services:
     image: alpine:3.23
     volumes:
       - ./docker/ssh/init-mirror.sh:/init.sh:ro
+      - ./tmp/data/mirror:/backup
     command: /init.sh
     networks:
       ssh-servers:

@@ -5,5 +5,6 @@ Photos,Local photo library,/data/photos,false,local,,admin@example.com
 Docker,Docker volumes and container state,/data/docker,true,local,,admin@example.com
 Docker Replica,Local Docker replica for quick restores,/data/docker-replica,false,local,,admin@example.com
 NAS Photos,Photo library stored on the NAS,/data/photos,true,remote,NAS,admin@example.com
-Backup,Remote backup server,/data,false,remote,Backup,admin@example.com
-Mirror,Off-site encrypted mirror,/data,false,remote,Mirror,admin@example.com
+Home backup,Backup of user home directory,/backup/home,false,remote,Backup,admin@example.com
+Projects backup,Backup of software projects and source code,/backup/projects,false,remote,Backup,admin@example.com
+Photos mirror,Off-site encrypted mirror of photo library,/backup/photos,false,remote,Mirror,admin@example.com
