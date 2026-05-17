@@ -1,7 +1,12 @@
+<% remote_repository_ids = @repositories.select(&:remote?).map(&:id) %>
+<% has_remote_repo = remote_repository_ids.include?(job.source_repository_id) || remote_repository_ids.include?(job.destination_repository_id) %>
+
 <%= form_with model: job, id: "job-form", class: "form",
               data: {
-                controller: "unsaved-changes command-preview",
+                controller: "unsaved-changes command-preview ssh-arguments",
                 "command-preview-url-value": preview_jobs_path,
+                "ssh-arguments-remote-ids-value": remote_repository_ids.to_json,
+                action: "change->ssh-arguments#update",
               } do |f| %>
   <% content_for :actions do %>
     <button
@@ -446,6 +451,24 @@
               <%= f.text_field :opt_rsync_path,
                                placeholder: I18n.t("jobs.form.opt_rsync_path.placeholder"),
                                autocomplete: "off" %>
+            </div>
+
+            <div class="field">
+              <%= f.label :opt_ssh_arguments, I18n.t("jobs.form.opt_ssh_arguments.description") %>
+
+              <%= f.text_area :opt_ssh_arguments,
+                              placeholder: I18n.t("jobs.form.opt_ssh_arguments.placeholder"),
+                              rows: 3,
+                              autocomplete: "off",
+                              disabled: !has_remote_repo,
+                              data: { "ssh-arguments-target": "sshField" } %>
+
+              <p class="text-sm text-muted-foreground flex items-center gap-2 mt-1"
+                 data-ssh-arguments-target="hint"
+                 <%= "hidden" if has_remote_repo %>>
+                <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
+                <%= I18n.t("jobs.form.opt_ssh_arguments.hint") %>
+              </p>
             </div>
           </div>
         </div>

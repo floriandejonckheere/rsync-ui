@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_16_204711) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_17_130917) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -162,6 +162,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_16_204711) do
     t.boolean "opt_secluded_args", default: false, null: false
     t.boolean "opt_size_only", default: false, null: false
     t.boolean "opt_specials", default: false, null: false
+    t.text "opt_ssh_arguments"
     t.boolean "opt_superuser", default: false, null: false
     t.boolean "opt_times", default: true, null: false
     t.boolean "opt_update", default: false, null: false

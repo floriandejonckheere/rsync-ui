@@ -79,6 +79,40 @@ RSpec.describe Rsync::CommandService do
         expect(command).not_to include "-e"
       end
     end
+
+    describe "opt_ssh_arguments" do
+      context "when opt_ssh_arguments is set" do
+        before { job.opt_ssh_arguments = "-vvv" }
+
+        context "with private key authentication" do
+          let(:server) { build(:server, :with_ssh_key) }
+
+          it "appends ssh arguments after the config flag" do
+            expect(command).to include("ssh -F #{ssh_home}/config -vvv")
+          end
+        end
+
+        context "with password authentication" do
+          let(:server) { build(:server, :with_password) }
+
+          it "appends ssh arguments after the config flag" do
+            expect(command).to include("ssh -F #{ssh_home}/config -vvv")
+          end
+        end
+      end
+
+      context "when opt_ssh_arguments is blank" do
+        before { job.opt_ssh_arguments = nil }
+
+        context "with private key authentication" do
+          let(:server) { build(:server, :with_ssh_key) }
+
+          it "does not append extra content to the -e flag" do
+            expect(command).to include("-e \"ssh -F #{ssh_home}/config\"")
+          end
+        end
+      end
+    end
   end
 
   describe "opt_superuser and opt_rsync_path" do

@@ -148,6 +148,7 @@ class JobsController < ApplicationController
         :opt_superuser,
         :opt_arguments,
         :opt_rsync_path,
+        :opt_ssh_arguments,
         opt_include: [],
         opt_exclude: [],
         job_notifications_attributes: [

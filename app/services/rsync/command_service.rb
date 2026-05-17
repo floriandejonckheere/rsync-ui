@@ -92,12 +92,14 @@ module Rsync
 
       return [] unless server
 
+      ssh_args = job.opt_ssh_arguments.present? ? " #{job.opt_ssh_arguments.strip}" : ""
+
       if server.ssh_key.present?
         # Authenticate using private key (via the SSH config file)
-        ["-e \"ssh -F #{ssh_home}/config\""]
+        ["-e \"ssh -F #{ssh_home}/config#{ssh_args}\""]
       else
         # Authenticate using password (via the non-interactive sshpass command)
-        ["-e \"sshpass -f #{ssh_home}/#{server.slug}_password ssh -F #{ssh_home}/config\""]
+        ["-e \"sshpass -f #{ssh_home}/#{server.slug}_password ssh -F #{ssh_home}/config#{ssh_args}\""]
       end
     end
 

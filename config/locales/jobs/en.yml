@@ -183,6 +183,10 @@ en:
       opt_specials:
         description: Preserve special files
         flag: "--specials"
+      opt_ssh_arguments:
+        description: Custom SSH options
+        hint: Only available when source or destination is a remote repository
+        placeholder: e.g. -vvv
       opt_superuser:
         description: Run as superuser
       opt_times:

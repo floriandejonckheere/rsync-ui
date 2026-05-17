@@ -40,14 +40,14 @@ application.register("job-run-logs", JobRunLogsController)
 import JobRunStatusController from "./job_run_status_controller"
 application.register("job-run-status", JobRunStatusController)
 
-import PieChartController from "./pie_chart_controller"
-application.register("pie-chart", PieChartController)
-
 import NotificationTestController from "./notification_test_controller"
 application.register("notification-test", NotificationTestController)
 
 import PatternListController from "./pattern_list_controller"
 application.register("pattern-list", PatternListController)
+
+import PieChartController from "./pie_chart_controller"
+application.register("pie-chart", PieChartController)
 
 import RepositoryTypeController from "./repository_type_controller"
 application.register("repository-type", RepositoryTypeController)
@@ -64,11 +64,14 @@ application.register("server-deploy", ServerDeployController)
 import ServerFingerprintController from "./server_fingerprint_controller"
 application.register("server-fingerprint", ServerFingerprintController)
 
+import ServerPathController from "./server_path_controller"
+application.register("server-path", ServerPathController)
+
 import ServerTestController from "./server_test_controller"
 application.register("server-test", ServerTestController)
 
-import ServerPathController from "./server_path_controller"
-application.register("server-path", ServerPathController)
+import SshArgumentsController from "./ssh_arguments_controller"
+application.register("ssh-arguments", SshArgumentsController)
 
 import ThemeController from "./theme_controller"
 application.register("theme", ThemeController)

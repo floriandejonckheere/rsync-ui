@@ -148,6 +148,7 @@ end
 #  opt_secluded_args         :boolean          default(FALSE), not null
 #  opt_size_only             :boolean          default(FALSE), not null
 #  opt_specials              :boolean          default(FALSE), not null
+#  opt_ssh_arguments         :text
 #  opt_superuser             :boolean          default(FALSE), not null
 #  opt_times                 :boolean          default(TRUE), not null
 #  opt_update                :boolean          default(FALSE), not null
