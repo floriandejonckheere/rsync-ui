@@ -85,6 +85,55 @@ RSpec.describe Servers::SSHConfigService do
       end
     end
 
+    context "with a server that has a host key" do
+      let!(:server) { create(:server, :with_password, :with_host_key) }
+
+      before { service.call }
+
+      it "writes a known_hosts file with the server's host key entry" do
+        known_hosts = tmpdir.join("#{server.slug}_known_hosts").read
+
+        expect(known_hosts).to eq "[#{server.host}]:#{server.port} #{server.host_key}\n"
+      end
+
+      it "sets correct permissions on the known_hosts file" do
+        expect(tmpdir.join("#{server.slug}_known_hosts").stat.mode & 0o777).to eq 0o600
+      end
+
+      it "uses StrictHostKeyChecking yes in the SSH config" do
+        config = tmpdir.join("config").read
+
+        expect(config).to include "StrictHostKeyChecking yes"
+        expect(config).not_to include "StrictHostKeyChecking no"
+      end
+
+      it "points UserKnownHostsFile to the per-server known_hosts file" do
+        config = tmpdir.join("config").read
+
+        expect(config).to include "UserKnownHostsFile #{tmpdir.join("#{server.slug}_known_hosts")}"
+        expect(config).not_to include "UserKnownHostsFile /dev/null"
+      end
+    end
+
+    context "with a server that has no host key" do
+      let!(:server) { create(:server, :with_password, host_key: nil) }
+
+      before { service.call }
+
+      it "writes an empty known_hosts file" do
+        known_hosts = tmpdir.join("#{server.slug}_known_hosts")
+
+        expect(known_hosts).to exist
+        expect(known_hosts.read).to be_blank
+      end
+
+      it "still uses StrictHostKeyChecking yes" do
+        config = tmpdir.join("config").read
+
+        expect(config).to include "StrictHostKeyChecking yes"
+      end
+    end
+
     context "with orphaned key files" do
       let!(:server) { create(:server, :with_ssh_key) }
       let(:orphan_slug) { "deleted-server" }
@@ -113,6 +162,19 @@ RSpec.describe Servers::SSHConfigService do
 
       it "keeps files for existing servers" do
         expect(tmpdir.join("#{server.slug}.pem")).to exist
+      end
+    end
+
+    context "with orphaned known_hosts files" do
+      let(:orphan_slug) { "deleted-server" }
+
+      before do
+        tmpdir.join("#{orphan_slug}_known_hosts").write("orphan entry")
+        service.call
+      end
+
+      it "removes the orphaned known_hosts file" do
+        expect(tmpdir.join("#{orphan_slug}_known_hosts")).not_to exist
       end
     end
 

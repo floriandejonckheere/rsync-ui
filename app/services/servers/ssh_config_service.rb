@@ -22,7 +22,7 @@ module Servers
       servers = Server.all.to_a
       server_slugs = servers.map(&:slug)
 
-      # Write private key and password files
+      # Write private key, password, and known_hosts files
       servers.each do |server|
         if server.ssh_key.present?
           key_path = ssh_dir.join("#{server.slug}.pem")
@@ -37,9 +37,19 @@ module Servers
           # Set correct permissions
           pass_path.chmod(0o600)
         end
+
+        known_hosts_path = ssh_dir.join("#{server.slug}_known_hosts")
+
+        if server.host_key.present?
+          known_hosts_path.write("[#{server.host}]:#{server.port} #{server.host_key}\n")
+        else
+          known_hosts_path.write("")
+        end
+
+        known_hosts_path.chmod(0o600)
       end
 
-      # Clean up orphan private key and password files
+      # Clean up orphan files
       ssh_dir.each_child do |path|
         basename = path.basename.to_s
 
@@ -47,6 +57,8 @@ module Servers
                  basename.delete_suffix(".pem")
                elsif basename.end_with?("_password")
                  basename.delete_suffix("_password")
+               elsif basename.end_with?("_known_hosts")
+                 basename.delete_suffix("_known_hosts")
                else
                  next
                end
@@ -65,8 +77,8 @@ module Servers
           "  HostName #{server.host}",
           "  Port #{server.port}",
           "  User #{server.username}",
-          "  StrictHostKeyChecking no",
-          "  UserKnownHostsFile /dev/null",
+          "  StrictHostKeyChecking yes",
+          "  UserKnownHostsFile #{ssh_dir.join("#{server.slug}_known_hosts")}",
         ]
 
         if server.ssh_key.present?
