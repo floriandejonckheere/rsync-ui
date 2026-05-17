@@ -494,25 +494,6 @@ RSpec.describe "Servers" do
         expect(response.body).to include(I18n.t("servers.test.success"))
       end
 
-      it "uses server fingerprint when fingerprint param is blank" do
-        post test_server_path(server),
-             params: { host: "", port: "", username: "", password: "", ssh_key: "", fingerprint: "" },
-             headers: { "Accept" => "text/vnd.turbo-stream.html" }
-
-        expect(response.body).to include(I18n.t("servers.test.success"))
-      end
-
-      it "overrides server fingerprint with fingerprint param when present" do
-        new_fingerprint = "SHA256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-        stub_ssh(fingerprint: new_fingerprint)
-
-        post test_server_path(server),
-             params: { fingerprint: new_fingerprint },
-             headers: { "Accept" => "text/vnd.turbo-stream.html" }
-
-        expect(response.body).to include(I18n.t("servers.test.success"))
-      end
-
       it "renders a failure notification when SSH fails" do
         allow(Net::SSH)
           .to receive(:start)
@@ -649,6 +630,15 @@ RSpec.describe "Servers" do
         post fingerprint_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
         expect(response.body).to include(NetSSHHelpers::DEFAULT_FINGERPRINT)
+      end
+
+      it "saves the fingerprint and host key to the server record" do
+        server.update!(fingerprint: nil, host_key: nil)
+
+        expect do
+          post fingerprint_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+        end.to change { server.reload.fingerprint }.from(nil).to(NetSSHHelpers::DEFAULT_FINGERPRINT)
+          .and change { server.reload.host_key }.from(nil).to(NetSSHHelpers::DEFAULT_HOST_KEY)
       end
 
       it "renders a failure notification when SSH fails" do

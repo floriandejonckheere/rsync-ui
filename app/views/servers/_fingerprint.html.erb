@@ -1,10 +1,9 @@
 <div id="server_fingerprint" class="grow">
-  <input
-    class="input"
-    type="text"
-    name="server[fingerprint]"
-    value="<%= fingerprint %>"
-    placeholder="SHA256:..."
-    autocomplete="off"
-  >
+  <% if fingerprint.present? %>
+    <p class="font-mono text-sm truncate"><%= fingerprint %></p>
+  <% else %>
+    <p class="text-sm text-muted-foreground">
+      <%= I18n.t("servers.form.fingerprint_none") %>
+    </p>
+  <% end %>
 </div>

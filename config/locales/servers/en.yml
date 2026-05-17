@@ -45,6 +45,7 @@ en:
       fetch_fingerprint: Fetch fingerprint
       fingerprint: Fingerprint
       fingerprint_hint: Verified on every connection
+      fingerprint_none: Not yet fetched
       host: Host
       host_placeholder: example.com
       name: Name

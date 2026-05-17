@@ -14,6 +14,12 @@ RSpec.describe Servers::FingerprintService do
       expect(result[:fingerprint]).to eq(NetSSHHelpers::DEFAULT_FINGERPRINT)
     end
 
+    it "returns the host public key" do
+      result = service.call
+
+      expect(result[:host_key]).to eq(NetSSHHelpers::DEFAULT_HOST_KEY)
+    end
+
     it "connects regardless of stored fingerprint" do
       expect { service.call }.not_to raise_error
     end

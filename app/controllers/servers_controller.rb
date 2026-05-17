@@ -76,7 +76,6 @@ class ServersController < ApplicationController
     @server.username = params[:username] if params[:username].present?
     @server.password = params[:password] if params[:password].present?
     @server.ssh_key = params[:ssh_key] if params[:ssh_key].present?
-    @server.fingerprint = params[:fingerprint] if params[:fingerprint].present?
 
     if @server.host.blank? || @server.port.blank? || @server.username.blank? || (@server.password.blank? && @server.ssh_key.blank?)
       return render turbo_stream: turbo_stream.prepend(
@@ -145,6 +144,11 @@ class ServersController < ApplicationController
     ]
 
     if result[:success]
+      @server.update!(
+        fingerprint: result[:fingerprint],
+        host_key: result[:host_key],
+      )
+
       streams << turbo_stream.replace(
         "server_fingerprint",
         partial: "servers/fingerprint",
@@ -208,7 +212,6 @@ class ServersController < ApplicationController
         :username,
         :password,
         :ssh_key,
-        :fingerprint,
       )
   end
 

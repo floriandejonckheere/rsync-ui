@@ -5,7 +5,7 @@ module Servers
     def call
       super
 
-      { success: true, fingerprint: @capturing_verifier&.fingerprint }
+      { success: true, fingerprint: @capturing_verifier&.fingerprint, host_key: @capturing_verifier&.host_key }
     rescue StandardError => e
       { success: false, message: "#{e.class}: #{e.message}" }
     end

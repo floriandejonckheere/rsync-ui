@@ -2,15 +2,19 @@
 
 module NetSSHHelpers
   DEFAULT_FINGERPRINT = "SHA256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  DEFAULT_HOST_KEY_BLOB = "test-key-blob"
+  DEFAULT_HOST_KEY = "ssh-ed25519 #{Base64.strict_encode64(DEFAULT_HOST_KEY_BLOB)}".freeze
 
   def stub_ssh(output: "", exit_code: 0, fingerprint: DEFAULT_FINGERPRINT)
+    key = double("host_key", ssh_type: "ssh-ed25519", to_blob: DEFAULT_HOST_KEY_BLOB) # rubocop:disable RSpec/VerifiedDoubles
+
     ssh = instance_double(Net::SSH::Connection::Session)
     channel = instance_double(Net::SSH::Connection::Channel)
 
     allow(Net::SSH)
       .to receive(:start) do |_host, _user, opts = {}, &block|
         if (verifier = opts[:verify_host_key]) && verifier.respond_to?(:verify)
-          verifier.verify({ fingerprint: })
+          verifier.verify({ fingerprint:, key: })
         end
 
         block.call(ssh)

@@ -61,6 +61,33 @@ RSpec.describe Server do
       end
     end
 
+    describe "host_key" do
+      it "is valid when blank" do
+        server = build(:server, host_key: nil)
+
+        expect(server).to be_valid
+      end
+
+      it "is valid for ssh-ed25519 keys" do
+        server = build(:server, host_key: "ssh-ed25519 AAAA1234567890abcdefABCDEF==")
+
+        expect(server).to be_valid
+      end
+
+      it "is valid for ssh-rsa keys" do
+        server = build(:server, host_key: "ssh-rsa AAAA1234567890abcdefABCDEF==")
+
+        expect(server).to be_valid
+      end
+
+      it "is invalid for unrecognised key types" do
+        server = build(:server, host_key: "not-a-key-type AAAA1234")
+
+        expect(server).not_to be_valid
+        expect(server.errors[:host_key]).to be_present
+      end
+    end
+
     describe "fingerprint" do
       it "is valid when blank" do
         server = build(:server, fingerprint: nil)

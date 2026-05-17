@@ -42,6 +42,10 @@ class Server < ApplicationRecord
             format: { with: %r(\ASHA256:[A-Za-z0-9+/=]{43}\z) },
             allow_blank: true
 
+  validates :host_key,
+            format: { with: %r(\A(ssh-rsa|ssh-ed25519|ecdsa-sha2-nistp256|ecdsa-sha2-nistp384|ecdsa-sha2-nistp521) [A-Za-z0-9+/=]+\z) },
+            allow_blank: true
+
   validate :exclusive_credentials
 
   validate :valid_ssh_key,
@@ -119,6 +123,7 @@ end
 #  error_message    :text
 #  fingerprint      :string
 #  host             :string           not null, indexed, indexed
+#  host_key         :text
 #  last_seen_at     :datetime
 #  name             :string           not null, indexed, indexed
 #  operating_system :string           default("linux")

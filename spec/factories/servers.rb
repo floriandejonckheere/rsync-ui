@@ -16,6 +16,10 @@ FactoryBot.define do
 
     operating_system { "linux" }
 
+    trait :with_host_key do
+      host_key { NetSSHHelpers::DEFAULT_HOST_KEY }
+    end
+
     trait :with_password do
       password { FFaker::Internet.password }
       ssh_key { nil }
