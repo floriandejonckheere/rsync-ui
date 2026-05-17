@@ -32,6 +32,7 @@ services:
 
   app:
     <<: *app
+    entrypoint: /app/docker-entrypoint.sh
     command: foreman start
     tty: true
     ports:
