@@ -101,12 +101,10 @@
                     data: { tooltip: I18n.t("job_runs.actions.view_logs"), turbo_frame: "_top" } do %>
           <%= lucide_icon "eye", class: "h-4 w-4" %>
         <% end %>
-        <% if job_run.output.attached? %>
-          <%= link_to output_job_run_path(job_run),
-                      class: "btn-icon-outline btn-icon-md",
-                      data: { tooltip: I18n.t("job_runs.actions.download_logs"), turbo: false } do %>
-            <%= lucide_icon "download", class: "h-4 w-4" %>
-          <% end %>
+        <%= link_to output_job_run_path(job_run),
+                    class: "btn-icon-outline btn-icon-md",
+                    data: { tooltip: I18n.t("job_runs.actions.download_logs"), turbo: false } do %>
+          <%= lucide_icon "download", class: "h-4 w-4" %>
         <% end %>
       <% end %>
 

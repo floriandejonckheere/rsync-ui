@@ -116,12 +116,27 @@
       >
         <div
           class="
-            flex items-center gap-2 px-6 py-4 border-b border-red-100
-            dark:border-red-900/50 text-red-700 dark:text-red-400 font-medium
+            flex items-center justify-between px-6 py-4 border-b border-red-100
+            dark:border-red-900/50
           "
         >
-          <%= lucide_icon "alert-circle", class: "h-4 w-4" %>
-          <span><%= I18n.t("job_runs.show.error_details") %></span>
+          <div
+            class="
+              flex items-center gap-2 text-red-700 dark:text-red-400
+              font-medium
+            "
+          >
+            <%= lucide_icon "alert-circle", class: "h-4 w-4" %>
+            <span><%= I18n.t("job_runs.show.error_details") %></span>
+          </div>
+
+          <% unless @job_run.output.attached? %>
+            <%= link_to output_job_run_path(@job_run),
+                        class: "btn-icon-outline btn-icon-md",
+                        data: { tooltip: I18n.t("job_runs.actions.download_logs"), turbo: false } do %>
+              <%= lucide_icon "download", class: "h-4 w-4" %>
+            <% end %>
+          <% end %>
         </div>
 
         <div class="p-6">
