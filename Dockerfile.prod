@@ -76,6 +76,7 @@ ARG NODE_ENV=production
 
 ENV SKIP_CREDENTIALS_CHECK=1
 ENV SKIP_CONFIGURATION_CHECK=1
+ENV SKIP_SSH_CONFIG_SYNC=1
 
 # Compile assets
 RUN bin/rails assets:precompile
