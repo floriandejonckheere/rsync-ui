@@ -6,6 +6,7 @@ development:
   adapter: solid_cable
   polling_interval: 0.1.seconds
   message_retention: 1.day
+  autotrim: false
 
 test:
   adapter: test
@@ -14,3 +15,4 @@ production:
   adapter: solid_cable
   polling_interval: 0.1.seconds
   message_retention: 1.day
+  autotrim: false
