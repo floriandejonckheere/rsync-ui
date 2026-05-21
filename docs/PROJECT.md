@@ -65,3 +65,4 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Implement support for OAuth2 authentication
 - [ ] Do not bind postgres to port 5432, otherwise you can't use git worktrees
 - [ ] Audit codebase
+- [ ] Allow discovery of partitions/disks on the server and measure resource usage per partition/disk
