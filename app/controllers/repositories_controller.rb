@@ -5,8 +5,8 @@ class RepositoriesController < ApplicationController
   include Sortable
 
   before_action :authenticate_user!
-  before_action :set_repository, only: [:edit, :update, :destroy]
-  before_action :set_servers, only: [:new, :edit, :create, :update]
+  before_action :set_repository, only: [:edit, :duplicate, :update, :destroy]
+  before_action :set_servers, only: [:new, :edit, :duplicate, :create, :update]
 
   def index
     repositories = authorized_scope(Repository.all, type: :relation)
@@ -26,6 +26,13 @@ class RepositoriesController < ApplicationController
 
   def edit
     authorize! @repository
+  end
+
+  def duplicate
+    authorize! @repository
+
+    @repository = @repository.dup
+    @repository.name = I18n.t("repositories.duplicate.name", repository_name: @repository.name)
   end
 
   def create

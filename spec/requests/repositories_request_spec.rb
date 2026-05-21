@@ -165,6 +165,42 @@ RSpec.describe "Repositories" do
     end
   end
 
+  describe "GET /repositories/:id/duplicate" do
+    let(:repository) { create(:repository, user:) }
+
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      it "renders the duplicate page" do
+        get duplicate_repository_path(repository)
+
+        expect(response).to have_http_status(:ok)
+
+        expect(response.body).to include "#{repository.name} (copy)"
+      end
+    end
+
+    context "when repository belongs to another user" do
+      let(:repository) { create(:repository, user: other_user) }
+
+      before { sign_in user, scope: :user }
+
+      it "returns forbidden" do
+        get duplicate_repository_path(repository)
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        get duplicate_repository_path(repository)
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
   describe "GET /repositories/:id/edit" do
     let(:repository) { create(:repository, user:) }
 

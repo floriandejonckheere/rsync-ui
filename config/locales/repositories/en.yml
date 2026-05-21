@@ -13,11 +13,15 @@ en:
       delete: Delete repository
       delete_confirm: Are you sure you want to delete this repository? This action cannot be undone.
       delete_confirm_title: Delete repository
+      duplicate: Duplicate repository
       edit: Edit repository
     create:
       success: Repository was successfully created.
     destroy:
       success: Repository was successfully deleted.
+    duplicate:
+      name: "%{repository_name} (copy)"
+      title: Duplicate repository
     edit:
       title: Edit repository
     form:

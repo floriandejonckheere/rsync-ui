@@ -21,6 +21,10 @@ class RepositoryPolicy < ApplicationPolicy
     user.admin? || record.user == user
   end
 
+  def duplicate?
+    user.admin? || record.user == user
+  end
+
   def update?
     user.admin? || record.user == user
   end

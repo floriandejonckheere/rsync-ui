@@ -52,6 +52,12 @@
         <%= lucide_icon "pencil", class: "h-4 w-4" %>
       <% end %>
 
+      <%= link_to duplicate_repository_path(repository),
+                  class: "btn-icon-outline btn-icon-md",
+                  data: { tooltip: I18n.t("repositories.actions.duplicate"), turbo_frame: "_top" } do %>
+        <%= lucide_icon "copy", class: "h-4 w-4" %>
+      <% end %>
+
       <%= link_to repository_path(repository),
                   class: "btn-icon-outline btn-icon-md text-red-600 hover:text-red-700 dark:text-red-400",
                   data: {

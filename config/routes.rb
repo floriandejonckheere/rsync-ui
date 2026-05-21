@@ -34,7 +34,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :repositories
+  resources :repositories do
+    member do
+      get :duplicate
+    end
+  end
 
   resources :notifications do
     collection do
@@ -98,6 +102,7 @@ end
 #                                          PATCH  /servers/:id(.:format)                                                                            servers#update
 #                                          PUT    /servers/:id(.:format)                                                                            servers#update
 #                                          DELETE /servers/:id(.:format)                                                                            servers#destroy
+#                     duplicate_repository GET    /repositories/:id/duplicate(.:format)                                                             repositories#duplicate
 #                             repositories GET    /repositories(.:format)                                                                           repositories#index
 #                                          POST   /repositories(.:format)                                                                           repositories#create
 #                           new_repository GET    /repositories/new(.:format)                                                                       repositories#new

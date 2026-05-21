@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Repository < ApplicationRecord
+  include Duplicatable
+
   belongs_to :user
   belongs_to :server,
              optional: true

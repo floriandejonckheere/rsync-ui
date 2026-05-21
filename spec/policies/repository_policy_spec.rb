@@ -33,6 +33,22 @@ RSpec.describe RepositoryPolicy do
     end
   end
 
+  describe "#duplicate?" do
+    it { is_expected.to be_duplicate }
+
+    context "when user is another user" do
+      let(:user) { other_user }
+
+      it { is_expected.not_to be_duplicate }
+    end
+
+    context "when user is admin" do
+      let(:user) { admin }
+
+      it { is_expected.to be_duplicate }
+    end
+  end
+
   describe "#update?" do
     it { is_expected.to be_update }
 
