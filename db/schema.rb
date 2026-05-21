@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_17_131707) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_19_173811) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -45,6 +45,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_131707) do
   end
 
   create_table "audits", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "category", default: "connectivity", null: false
     t.text "command", null: false
     t.datetime "completed_at"
     t.datetime "created_at", null: false
@@ -53,6 +54,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_131707) do
     t.uuid "server_id", null: false
     t.datetime "started_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_audits_on_category"
     t.index ["exit_status"], name: "index_audits_on_exit_status"
     t.index ["server_id"], name: "index_audits_on_server_id"
     t.index ["started_at"], name: "index_audits_on_started_at"

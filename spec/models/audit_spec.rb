@@ -12,7 +12,27 @@ RSpec.describe Audit do
     it { is_expected.to validate_presence_of(:started_at) }
   end
 
+  describe "enums" do
+    it { is_expected.to define_enum_for(:category).with_values(connectivity: "connectivity", resource_usage: "resource_usage", job: "job").backed_by_column_of_type(:string) }
+  end
+
   describe "scopes" do
+    describe ".by_category" do
+      it "filters by category_id" do
+        match = create(:audit, category: "connectivity")
+        no_match = create(:audit, category: "job")
+
+        expect(described_class.by_category("connectivity")).to include(match)
+        expect(described_class.by_category("connectivity")).not_to include(no_match)
+      end
+
+      it "returns all when blank" do
+        create(:audit)
+
+        expect(described_class.by_category(nil).count).to eq(described_class.count)
+      end
+    end
+
     describe ".by_server" do
       it "filters by server_id" do
         server = create(:server)
@@ -25,6 +45,7 @@ RSpec.describe Audit do
 
       it "returns all when blank" do
         create(:audit)
+
         expect(described_class.by_server(nil).count).to eq(described_class.count)
       end
     end

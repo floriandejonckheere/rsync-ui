@@ -47,6 +47,10 @@ module Servers
       "echo \"#{ssh_key.ssh_type} #{ssh_key.openssh_public_key} Rsync UI key\" >> ~/.ssh/authorized_keys"
     end
 
+    def category
+      "connectivity"
+    end
+
     private
 
     def ssh_key

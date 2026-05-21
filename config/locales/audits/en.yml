@@ -1,12 +1,22 @@
 ---
 en:
   audits:
+    category:
+      connectivity: Connectivity
+      job: Job
+      resource_usage: Resource usage
     index:
       empty: No audit records have been created yet.
       empty_filtered: No audits match the selected filters.
       filters:
         all_servers: All servers
         all_statuses: All statuses
+        categories_selected:
+          zero: No categories
+          one: 1 category
+          other: "%{count} categories"
+        category: Category
+        no_categories: No categories
         started_at_from: Started from
         started_at_to: Started to
       search:
@@ -30,6 +40,7 @@ en:
       failed: Failed
       failed_with_code: Failed (%{code})
     table:
+      category: Category
       command: Command
       completed_at: Completed at
       server: Server

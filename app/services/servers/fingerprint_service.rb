@@ -16,6 +16,10 @@ module Servers
       "true"
     end
 
+    def category
+      "connectivity"
+    end
+
     private
 
     def verify_host_key

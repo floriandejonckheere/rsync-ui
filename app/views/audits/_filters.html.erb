@@ -30,6 +30,51 @@
                  name: "filter[started_at_to]",
                  value: @filters[:started_at_to] %>
 
+      <% selected_cats = JSON.parse(@filters[:categories] || @default_categories.to_json) rescue @default_categories %>
+      <% categories_label = I18n.t("audits.index.filters.categories_selected", count: selected_cats.size) %>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium text-gray-500 dark:text-gray-400">
+          <%= I18n.t("audits.index.filters.category") %>
+        </label>
+
+        <div
+          class="select"
+          data-action="change->filter#submit"
+          data-placeholder="<%= I18n.t('audits.index.filters.no_categories') %>"
+        >
+          <button
+            type="button"
+            class="btn-outline"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+          >
+            <span><%= categories_label %></span>
+            <%= lucide_icon "chevron-down", class: "h-4 w-4 opacity-50" %>
+          </button>
+
+          <input
+            type="hidden"
+            name="filter[categories]"
+            value="<%= @filters[:categories] || @default_categories.to_json %>"
+          >
+
+          <div data-popover aria-hidden="true">
+            <div role="listbox" aria-multiselectable="true">
+              <% @categories.each do |cat| %>
+                <div
+                  role="option"
+                  data-value="<%= cat %>"
+                  aria-selected="<%= selected_cats.include?(cat) %>"
+                >
+                  <%= I18n.t("audits.category.#{cat}") %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <%= link_to audits_path, class: "btn-outline flex items-center gap-2 ml-auto" do %>
         <%= lucide_icon "x", class: "h-4 w-4" %>
         <%= I18n.t("shared.filters.clear") %>

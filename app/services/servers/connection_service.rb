@@ -28,5 +28,9 @@ module Servers
     def command
       "echo ok"
     end
+
+    def category
+      "connectivity"
+    end
   end
 end

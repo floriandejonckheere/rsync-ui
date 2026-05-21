@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :audit do
     server
     command { "echo ok" }
+    category { "connectivity" }
     output { "ok\n" }
     exit_status { 0 }
     started_at { Time.current }

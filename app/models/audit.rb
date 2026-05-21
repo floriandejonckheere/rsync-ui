@@ -3,11 +3,20 @@
 class Audit < ApplicationRecord
   belongs_to :server
 
+  enum :category, {
+    connectivity: "connectivity",
+    resource_usage: "resource_usage",
+    job: "job",
+  }, validate: true
+
   validates :command,
             presence: true
 
   validates :started_at,
             presence: true
+
+  scope :by_category,
+        ->(categories) { where(category: categories) if categories.present? }
 
   scope :by_server,
         ->(server_id) { where(server_id:) if server_id.present? }
@@ -30,6 +39,7 @@ end
 # Table name: audits
 #
 #  id           :uuid             not null, primary key
+#  category     :string           default("connectivity"), not null, indexed
 #  command      :text             not null
 #  completed_at :datetime
 #  exit_status  :integer          indexed
@@ -41,6 +51,7 @@ end
 #
 # Indexes
 #
+#  index_audits_on_category     (category)
 #  index_audits_on_exit_status  (exit_status)
 #  index_audits_on_server_id    (server_id)
 #  index_audits_on_started_at   (started_at)

@@ -13,7 +13,7 @@ module Servers
     end
 
     def call
-      audit = Audit.create!(server:, command:, started_at: Time.zone.now) if Configuration.get("audits")
+      audit = Audit.create!(server:, command:, category:, started_at: Time.zone.now) if Configuration.get("audits")
 
       output = +""
       exit_code = nil
@@ -38,6 +38,10 @@ module Servers
     protected
 
     def command
+      raise NotImplementedError
+    end
+
+    def category
       raise NotImplementedError
     end
 

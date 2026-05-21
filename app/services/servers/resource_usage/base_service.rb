@@ -26,6 +26,12 @@ module Servers
         )
       end
 
+      protected
+
+      def category
+        "resource_usage"
+      end
+
       private
 
       def parse(_output)
