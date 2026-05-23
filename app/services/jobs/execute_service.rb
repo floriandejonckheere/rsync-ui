@@ -104,6 +104,22 @@ module Jobs
 
         # Send notifications
         enqueue_notifications(job_run, exit_status.success? ? "success" : "failure")
+      rescue SignalException => e
+        # Worker process received a signal (e.g. SIGTERM on shutdown). Attach
+        # whatever was captured before re-raising so logs are not lost.
+        attach_log(job_run, file)
+
+        job_run.error!(error_class: e.class.name, error_messages: e.message) if job_run.running?
+
+        enqueue_notifications(job_run, "failure")
+
+        raise
+      rescue StandardError => e
+        attach_log(job_run, file)
+
+        job_run.error!(error_class: e.class.name, error_messages: e.message) if job_run.running?
+
+        enqueue_notifications(job_run, "failure")
       end
     rescue StandardError => e
       job_run.error!(error_class: e.class.name, error_messages: e.message)
@@ -121,6 +137,18 @@ module Jobs
           .set(wait: 5.seconds) # Delay sending notifications to avoid race conditions (uncommitted database transaction)
           .perform_later(job_notification.id, job_run.id, event)
       end
+    end
+
+    def attach_log(job_run, file)
+      return if job_run.output.attached?
+
+      file.rewind
+
+      job_run.output.attach(
+        io: file,
+        filename: "job_run_#{job_run.sequence}.log",
+        content_type: "text/plain",
+      )
     end
 
     def execute_optional_hook(job_run, type)
