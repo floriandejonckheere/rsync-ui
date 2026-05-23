@@ -12,9 +12,9 @@ en:
         all_servers: All servers
         all_statuses: All statuses
         categories_selected:
-          zero: No categories
           one: 1 category
           other: "%{count} categories"
+          zero: No categories
         category: Category
         no_categories: No categories
         started_at_from: Started from

@@ -1,0 +1,41 @@
+<% disabled = !task.configuration_satisfied? %>
+
+<div class="py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 <%= 'opacity-50' if disabled %>">
+  <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-1">
+      <span class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+        <%= I18n.t("tasks.names.#{task.name}.title") %>
+      </span>
+
+      <span class="text-sm text-gray-400 dark:text-gray-500">
+        <%= I18n.t("tasks.names.#{task.name}.description") %>
+      </span>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <%= turbo_frame_tag dom_id(task, :status) %>
+
+      <div
+        data-controller="task-run"
+        data-task-run-url-value="<%= run_task_path(task) %>"
+      >
+        <button
+          type="button"
+          class="btn-icon-outline btn-icon-md"
+          data-task-run-target="button"
+          data-action="click->task-run#run"
+          data-tooltip="<%= I18n.t("tasks.index.run_tooltip") %>"
+          <%= "disabled" if disabled %>
+        >
+          <%= lucide_icon "play",
+                          class: "h-5 w-5",
+                          data: { "task-run-target": "icon" } %>
+
+          <%= lucide_icon "loader-circle",
+                          class: "h-5 w-5 hidden animate-spin",
+                          data: { "task-run-target": "spinner" } %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

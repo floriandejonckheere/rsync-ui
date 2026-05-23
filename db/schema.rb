@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_19_173811) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_23_132833) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -405,6 +405,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_19_173811) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "class_name", null: false
+    t.string "configuration"
+    t.datetime "created_at", null: false
+    t.string "error_class"
+    t.text "error_message"
+    t.datetime "last_run_at"
+    t.uuid "last_run_by_id"
+    t.string "name", null: false
+    t.string "status"
+    t.datetime "updated_at", null: false
+    t.index ["last_run_by_id"], name: "index_tasks_on_last_run_by_id"
+    t.index ["name"], name: "index_tasks_on_name", unique: true
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "current_sign_in_at"
@@ -446,4 +461,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_19_173811) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "tasks", "users", column: "last_run_by_id", on_delete: :nullify
 end

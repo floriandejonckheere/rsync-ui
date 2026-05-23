@@ -73,6 +73,9 @@ application.register("server-test", ServerTestController)
 import SshArgumentsController from "./ssh_arguments_controller"
 application.register("ssh-arguments", SshArgumentsController)
 
+import TaskRunController from "./task_run_controller"
+application.register("task-run", TaskRunController)
+
 import ThemeController from "./theme_controller"
 application.register("theme", ThemeController)
 

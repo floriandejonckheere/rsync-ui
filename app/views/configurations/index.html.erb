@@ -36,4 +36,34 @@
       </div>
     </details>
   <% end %>
+
+  <% if @tasks&.any? %>
+    <details id="category-maintenance" class="card group py-0">
+      <summary
+        class="
+          flex items-center justify-between w-full px-8 py-8 cursor-pointer
+          list-none
+        "
+      >
+        <div class="flex flex-col gap-1">
+          <h2 class="text-lg font-semibold">
+            <%= I18n.t("tasks.index.title") %>
+          </h2>
+
+          <div class="text-sm text-muted-foreground">
+            <%= I18n.t("tasks.index.subtitle") %>
+          </div>
+        </div>
+
+        <%= lucide_icon "chevron-down",
+                        class: "h-5 w-5 transition-transform duration-200 group-open:rotate-180" %>
+      </summary>
+
+      <div class="px-8 pb-8">
+        <% @tasks.each do |task| %>
+          <%= render "tasks/task", task: %>
+        <% end %>
+      </div>
+    </details>
+  <% end %>
 </div>

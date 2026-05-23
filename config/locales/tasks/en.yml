@@ -1,0 +1,15 @@
+---
+en:
+  tasks:
+    index:
+      run: Run
+      run_tooltip: Run task
+      subtitle: Run routine maintenance tasks
+      title: Maintenance
+    names:
+      sync_ssh_config:
+        description: Sync SSH config file with the database
+        title: Sync SSH config
+    run:
+      failure: Task failed
+      success: Task completed

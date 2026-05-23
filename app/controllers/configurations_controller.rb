@@ -6,6 +6,7 @@ class ConfigurationsController < ApplicationController
 
   def index
     @configurations = authorized_scope(Configuration.order(:key), type: :relation)
+    @tasks = Task.order(:name) if current_user&.admin?
 
     authorize! :configuration
   end
