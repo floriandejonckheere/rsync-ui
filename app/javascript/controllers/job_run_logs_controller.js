@@ -19,6 +19,7 @@ export default class extends Controller {
   #handleMessage(data) {
     if (data.type === "log") {
       this.logTarget.textContent += data.content.replace(/\r/g, "")
+      this.logTarget.scrollTop = this.logTarget.scrollHeight
     } else if (data.type === "status" && this.hasStatusTarget) {
       this.statusTarget.textContent = data.content
     }

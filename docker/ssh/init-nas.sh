@@ -31,21 +31,74 @@ ChallengeResponseAuthentication no
 EOF
 
 echo "Creating NAS Photos repository data..."
+
+# Create directory structure spanning multiple years and seasons
 mkdir -p \
+  /data/photos/2020/spring \
+  /data/photos/2020/summer \
+  /data/photos/2020/autumn \
+  /data/photos/2020/winter \
+  /data/photos/2021/spring \
+  /data/photos/2021/summer \
+  /data/photos/2021/autumn \
+  /data/photos/2021/winter \
+  /data/photos/2022/spring \
+  /data/photos/2022/summer \
+  /data/photos/2022/autumn \
+  /data/photos/2022/winter \
+  /data/photos/2023/spring \
+  /data/photos/2023/summer \
+  /data/photos/2023/autumn \
+  /data/photos/2023/winter \
+  /data/photos/2024/spring \
   /data/photos/2024/summer \
+  /data/photos/2024/autumn \
   /data/photos/2024/winter \
   /data/photos/2025/spring \
   /data/photos/2025/summer
-dd if=/dev/zero of=/data/photos/2024/summer/IMG_001.jpg bs=1M count=5 status=none
-dd if=/dev/zero of=/data/photos/2024/summer/IMG_002.jpg bs=1M count=4 status=none
-dd if=/dev/zero of=/data/photos/2024/summer/IMG_003.jpg bs=1M count=6 status=none
-dd if=/dev/zero of=/data/photos/2024/winter/IMG_001.jpg bs=1M count=4 status=none
-dd if=/dev/zero of=/data/photos/2024/winter/IMG_002.jpg bs=1M count=5 status=none
-dd if=/dev/zero of=/data/photos/2025/spring/IMG_001.jpg bs=1M count=3 status=none
-dd if=/dev/zero of=/data/photos/2025/spring/IMG_002.jpg bs=1M count=4 status=none
-dd if=/dev/zero of=/data/photos/2025/summer/IMG_001.jpg bs=1M count=5 status=none
-dd if=/dev/zero of=/data/photos/2025/summer/IMG_002.jpg bs=1M count=3 status=none
-dd if=/dev/zero of=/data/photos/2025/summer/IMG_003.jpg bs=1M count=6 status=none
+
+# Generate images: ~10 per season folder (22 folders × ~10 = ~220 images)
+# Sizes vary between 300KB and 2MB to simulate real photos
+create_images() {
+  dir="$1"
+  count="$2"
+  i=1
+  while [ "$i" -le "$count" ]; do
+    # Alternate between small (300KB), medium (800KB), and large (1.5MB)
+    case $(( (i + count) % 3 )) in
+      0) size=300 ;;
+      1) size=800 ;;
+      2) size=1500 ;;
+    esac
+    dd if=/dev/urandom of="${dir}/IMG_$(printf '%03d' "$i").jpg" bs=1024 count="$size" status=none 2>/dev/null || \
+      dd if=/dev/zero  of="${dir}/IMG_$(printf '%03d' "$i").jpg" bs=1024 count="$size" status=none
+    i=$(( i + 1 ))
+  done
+}
+
+create_images /data/photos/2020/spring  10
+create_images /data/photos/2020/summer  12
+create_images /data/photos/2020/autumn   9
+create_images /data/photos/2020/winter   8
+create_images /data/photos/2021/spring  11
+create_images /data/photos/2021/summer  14
+create_images /data/photos/2021/autumn  10
+create_images /data/photos/2021/winter   7
+create_images /data/photos/2022/spring  10
+create_images /data/photos/2022/summer  13
+create_images /data/photos/2022/autumn   9
+create_images /data/photos/2022/winter   8
+create_images /data/photos/2023/spring  11
+create_images /data/photos/2023/summer  15
+create_images /data/photos/2023/autumn  10
+create_images /data/photos/2023/winter   9
+create_images /data/photos/2024/spring  10
+create_images /data/photos/2024/summer  12
+create_images /data/photos/2024/autumn   8
+create_images /data/photos/2024/winter   7
+create_images /data/photos/2025/spring  11
+create_images /data/photos/2025/summer  13
+
 chown -R nas:nas /data/photos
 
 mkdir -p /run/sshd
