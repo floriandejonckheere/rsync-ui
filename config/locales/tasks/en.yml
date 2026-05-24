@@ -7,9 +7,21 @@ en:
       subtitle: Run routine maintenance tasks
       title: Maintenance
     names:
+      check_connectivity:
+        description: Check connectivity for all servers
+        title: Check connectivity
+      execute_jobs:
+        description: Schedule and execute jobs based on their cron configuration
+        title: Execute jobs
+      measure_resource_usage:
+        description: Measure resource usage for all servers
+        title: Measure resource usage
       sync_ssh_config:
         description: Sync SSH config file with the database
         title: Sync SSH config
+      terminate_stuck_jobs:
+        description: Terminate stuck or unresponsive job runs
+        title: Terminate stuck jobs
     run:
       failure: Task failed
       success: Task completed

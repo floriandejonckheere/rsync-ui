@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Tasks
-  class SyncSSHConfigService < ApplicationService
+  class TerminateStuckJobs < ApplicationService
     def call # rubocop:disable Rails/Delegate
-      Servers::SSHConfigService.call
+      Jobs::TerminateStuckJobsService.call
     end
   end
 end
