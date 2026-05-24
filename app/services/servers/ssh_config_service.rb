@@ -41,7 +41,11 @@ module Servers
         known_hosts_path = ssh_dir.join("#{server.slug}_known_hosts")
 
         if server.host_key.present?
-          known_hosts_path.write("[#{server.host}]:#{server.port} #{server.host_key}\n")
+          if server.port == 22
+            known_hosts_path.write("#{server.host} #{server.host_key}\n")
+          else
+            known_hosts_path.write("[#{server.host}]:#{server.port} #{server.host_key}\n")
+          end
         else
           known_hosts_path.write("")
         end

@@ -93,7 +93,17 @@ RSpec.describe Servers::SSHConfigService do
       it "writes a known_hosts file with the server's host key entry" do
         known_hosts = tmpdir.join("#{server.slug}_known_hosts").read
 
-        expect(known_hosts).to eq "[#{server.host}]:#{server.port} #{server.host_key}\n"
+        expect(known_hosts).to eq "#{server.host} #{server.host_key}\n"
+      end
+
+      context "when the server has a non-default port" do
+        let!(:server) { create(:server, :with_password, :with_host_key, port: 2222) }
+
+        it "writes a known_hosts file with the server's host key entry" do
+          known_hosts = tmpdir.join("#{server.slug}_known_hosts").read
+
+          expect(known_hosts).to eq "[#{server.host}]:#{server.port} #{server.host_key}\n"
+        end
       end
 
       it "sets correct permissions on the known_hosts file" do
