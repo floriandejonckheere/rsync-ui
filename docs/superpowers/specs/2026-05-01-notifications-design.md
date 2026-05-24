@@ -15,7 +15,7 @@ A new `Notification` model stores per-user destinations (Apprise URLs,
 encrypted at rest). A `JobNotification` join model links notifications to jobs
 and configures which lifecycle events trigger delivery.
 
-`Jobs::ExecuteService` enqueues `Notifications::SendJob` for each
+`JobRuns::ExecuteService` enqueues `Notifications::SendJob` for each
 (notification × event) tuple at the appropriate lifecycle hook. The job
 renders an event-specific ERB body via `Notifications::RenderService` and
 shells out to the Apprise CLI (installed in the Docker image), which performs
@@ -23,7 +23,7 @@ the actual delivery.
 
 A `notifications` boolean configuration (default `true`) gates the entire
 feature surface — UI menu items, controllers, and the hooks in
-`Jobs::ExecuteService` all check it.
+`JobRuns::ExecuteService` all check it.
 
 ## Data model
 
@@ -145,7 +145,7 @@ Template fields per spec:
 - Calls `SendService`. Logs failures. Relies on SolidQueue retries for
   transient errors.
 
-### Hook into `Jobs::ExecuteService`
+### Hook into `JobRuns::ExecuteService`
 
 A private helper:
 
@@ -305,7 +305,7 @@ Run `i18n-tasks normalize` after edits.
   - `Notifications::TestService` — analogous coverage.
 - **Job**: `Notifications::SendJob` — no-ops when feature/notification/event
   flag disabled; calls `SendService` otherwise.
-- **`Jobs::ExecuteService`** — enqueues correct events at start / success /
+- **`JobRuns::ExecuteService`** — enqueues correct events at start / success /
   failure / errored transitions; respects `Configuration.get("notifications")`.
 - **Request specs**: `NotificationsController` CRUD + `test` action; scoping
   per policy; 404 when feature disabled.
@@ -332,7 +332,7 @@ Per CLAUDE.md, one commit per migration and per gem/dependency:
 7. Add `Notifications::RenderService` + ERB body templates.
 8. Add `Notifications::SendService` + `TestService`.
 9. Add `Notifications::SendJob`.
-10. Hook into `Jobs::ExecuteService`.
+10. Hook into `JobRuns::ExecuteService`.
 11. Job form integration (nested attributes, view changes).
 12. Navigation menu entry.
 13. Update `docs/PROJECT.md` (check off completed items).

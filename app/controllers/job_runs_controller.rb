@@ -88,7 +88,7 @@ class JobRunsController < ApplicationController
   def cancel
     authorize! @job_run
 
-    result = Jobs::CancelService
+    result = JobRuns::CancelService
       .new(@job_run)
       .call
 

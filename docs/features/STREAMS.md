@@ -2,8 +2,8 @@
 
 The user should be able to stream the rsync logs while the process is running.
 The logs should be streamed in realtime using ActionCable. There are two sections that are streamed:
-- [ ] The logs of the rsync process, written to the temporary output file by `Jobs::ExecuteService`
-- [ ] The status line of the rsync process, parsed by `Jobs::ExecuteService` but not written to the temporary output file (it's written only at the end)
+- [ ] The logs of the rsync process, written to the temporary output file by `JobRuns::ExecuteService`
+- [ ] The status line of the rsync process, parsed by `JobRuns::ExecuteService` but not written to the temporary output file (it's written only at the end)
 
 ## Configuration
 

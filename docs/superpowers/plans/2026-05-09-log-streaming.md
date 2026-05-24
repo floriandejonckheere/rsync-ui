@@ -4,7 +4,7 @@
 
 **Goal:** Implement real-time rsync log streaming to the browser via ActionCable, with a dedicated `/job_runs/:id/logs` page that appends log lines and replaces the status line as they arrive.
 
-**Architecture:** `Jobs::ExecuteService` broadcasts each output line directly via `ActionCable.server.broadcast`. A `JobRunLogsChannel` authorizes subscriptions via `JobRunPolicy#logs?` and streams from a per-job-run channel. A Stimulus controller on the logs page subscribes and updates the DOM. The existing `logs` action (blob download) is first renamed to `output` in a separate commit.
+**Architecture:** `JobRuns::ExecuteService` broadcasts each output line directly via `ActionCable.server.broadcast`. A `JobRunLogsChannel` authorizes subscriptions via `JobRunPolicy#logs?` and streams from a per-job-run channel. A Stimulus controller on the logs page subscribes and updates the DOM. The existing `logs` action (blob download) is first renamed to `output` in a separate commit.
 
 **Tech Stack:** Ruby on Rails 8, ActionCable (Solid Cable), ActionPolicy, Hotwire Turbo-Rails (`subscribeTo`), Stimulus, Tailwind CSS, RSpec
 
@@ -319,7 +319,7 @@ git commit -m "Add JobRunLogsChannel with ActionCable connection"
 
 ---
 
-### Task 4: Add broadcasting to Jobs::ExecuteService
+### Task 4: Add broadcasting to JobRuns::ExecuteService
 
 TDD: write spec for broadcasting, then implement.
 
@@ -393,7 +393,7 @@ docker compose exec app bundle exec rspec spec/services/jobs/execute_service_spe
 
 Expected: FAIL — `broadcast` not received.
 
-- [ ] **Step 3: Implement broadcasting in Jobs::ExecuteService**
+- [ ] **Step 3: Implement broadcasting in JobRuns::ExecuteService**
 
 In `app/services/jobs/execute_service.rb`, replace the `Rsync::ExecuteService` call block with:
 

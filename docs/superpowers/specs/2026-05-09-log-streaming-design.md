@@ -13,7 +13,7 @@ Four moving parts:
 
 1. **ActionCable connection** — authenticates the WebSocket using Devise's warden session
 2. **`JobRunLogsChannel`** — authorizes subscription via `JobRunPolicy#logs?`, streams log and status messages
-3. **`Jobs::ExecuteService`** — broadcasts each output line to the channel as it arrives
+3. **`JobRuns::ExecuteService`** — broadcasts each output line to the channel as it arrives
 4. **Logs page** (`/job_runs/:id/logs`) — view + Stimulus controller that appends/replaces DOM content
 
 ## Configuration
@@ -62,7 +62,7 @@ Broadcast message format (JSON):
 - `{ type: "log", content: "<line>" }` — appended to the log `<pre>`
 - `{ type: "status", content: "<line>" }` — replaces the status line element
 
-## Jobs::ExecuteService Changes
+## JobRuns::ExecuteService Changes
 
 Inside the block yielded to `Rsync::ExecuteService#call`, add broadcasts alongside each existing write path:
 
@@ -104,7 +104,7 @@ Two cards:
 2. Add `streaming` configuration key
 3. Add `ApplicationCable::Connection`
 4. Add `JobRunLogsChannel`
-5. Add broadcasting to `Jobs::ExecuteService`
+5. Add broadcasting to `JobRuns::ExecuteService`
 6. Add logs controller action and view
 7. Add Stimulus controller
 8. Add specs

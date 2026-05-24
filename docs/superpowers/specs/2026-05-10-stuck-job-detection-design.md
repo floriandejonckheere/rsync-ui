@@ -4,7 +4,7 @@
 
 ## Problem
 
-When a Solid Queue worker is killed mid-execution, the rsync process it spawned is also killed. The `JobRun` record stays in `running` (or `pending`) indefinitely because the `rescue StandardError` block in `Jobs::ExecuteService` never fires — the process is dead.
+When a Solid Queue worker is killed mid-execution, the rsync process it spawned is also killed. The `JobRun` record stays in `running` (or `pending`) indefinitely because the `rescue StandardError` block in `JobRuns::ExecuteService` never fires — the process is dead.
 
 Solid Queue detects dead workers via its own heartbeat/prune mechanism (every 5 min) and marks its internal job records as failed, but this does not propagate to application-level `JobRun` records.
 
@@ -88,7 +88,7 @@ Failure notifications are enqueued after resolution, consistent with how `Execut
 
 ## Notifications
 
-`enqueue_notifications` is a private method on `Jobs::ExecuteService` and cannot be called from `SchedulerJob`. The stuck detection logic will inline the notification enqueueing directly (i.e. call `Notifications::SendJob.perform_later(...)` for each `job_notification` on the job), mirroring what `ExecuteService` does.
+`enqueue_notifications` is a private method on `JobRuns::ExecuteService` and cannot be called from `SchedulerJob`. The stuck detection logic will inline the notification enqueueing directly (i.e. call `Notifications::SendJob.perform_later(...)` for each `job_notification` on the job), mirroring what `ExecuteService` does.
 
 ## Files Affected
 

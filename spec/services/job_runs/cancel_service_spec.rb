@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Jobs::CancelService do
+RSpec.describe JobRuns::CancelService do
   subject(:service) { described_class.new(job_run) }
 
   let(:user) { create(:user) }

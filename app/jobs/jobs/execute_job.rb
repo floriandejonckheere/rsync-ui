@@ -7,7 +7,7 @@ module Jobs
                        duration: 1.hour
 
     def perform(job_run)
-      Jobs::ExecuteService
+      JobRuns::ExecuteService
         .new(job_run)
         .call
     end

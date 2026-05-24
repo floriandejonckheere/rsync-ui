@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Jobs
+module JobRuns
   class CancelService < ApplicationService
     attr_reader :job_run
 

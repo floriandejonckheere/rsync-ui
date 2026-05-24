@@ -4,7 +4,7 @@
 
 **Goal:** Allow users to configure Apprise-based notification destinations and attach them to jobs so messages are sent on lifecycle events (start / success / failure).
 
-**Architecture:** A user-scoped `Notification` model stores Apprise URLs (encrypted at rest). A `JobNotification` join model links notifications to jobs and configures per-event flags. `Jobs::ExecuteService` enqueues `Notifications::SendJob` per (notification × event), which renders an ERB body and shells out to the Apprise CLI installed in the Docker image. A `notifications` boolean configuration (default `true`) gates the entire feature.
+**Architecture:** A user-scoped `Notification` model stores Apprise URLs (encrypted at rest). A `JobNotification` join model links notifications to jobs and configures per-event flags. `JobRuns::ExecuteService` enqueues `Notifications::SendJob` per (notification × event), which renders an ERB body and shells out to the Apprise CLI installed in the Docker image. A `notifications` boolean configuration (default `true`) gates the entire feature.
 
 **Tech Stack:** Rails 8.0, PostgreSQL 18, ActiveRecord encryption, ActionPolicy, SolidQueue, ViewComponent + ERB + Tailwind/Basecoat, RSpec + FactoryBot + Shoulda Matchers, Apprise CLI (Python) installed via pip in Alpine Docker image.
 
@@ -1808,7 +1808,7 @@ git commit -m "Add notification send job"
 
 ---
 
-## Task 11: Hook into `Jobs::ExecuteService`
+## Task 11: Hook into `JobRuns::ExecuteService`
 
 **Files:**
 - Modify: `app/services/jobs/execute_service.rb`

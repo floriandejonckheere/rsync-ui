@@ -138,7 +138,7 @@ Views:
 
 Services:
 - [ ] `Hooks::ExecuteService` — executes the hook command, captures the output, and saves it to the job run
-- [ ] `Jobs::ExecuteService` — executes the job, calls the execute hook service for each hook
+- [ ] `JobRunss::ExecuteService` — executes the job run, calls the execute hook service for each hook
   - [ ] Only if feature is enabled
   - [ ] Only if hook is enabled
   - [ ] Pre-hook only: halt execution (transition to "errored" status) if pre-hook fails (exit code != 0) and set error message

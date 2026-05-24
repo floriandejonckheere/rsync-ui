@@ -42,7 +42,7 @@ git commit -m "Add state_machines-activerecord gem"
 
 ### Task 2: Create `JobRuns::BroadcastService`
 
-Extracts all ActionCable and Turbo Stream broadcast logic from `Jobs::ExecuteService` into one place. Nothing in this task changes existing behaviour — the service is new and untested code gets the tests first.
+Extracts all ActionCable and Turbo Stream broadcast logic from `JobRuns::ExecuteService` into one place. Nothing in this task changes existing behaviour — the service is new and untested code gets the tests first.
 
 **Files:**
 - Create: `app/services/job_runs/broadcast_service.rb`
@@ -667,7 +667,7 @@ git commit -m "Add JobRuns::StateMachine concern and include in JobRun"
 
 ---
 
-### Task 4: Refactor `Jobs::ExecuteService`
+### Task 4: Refactor `JobRuns::ExecuteService`
 
 Replace every raw `update!(status: ...)` call with the corresponding state machine event. Events that accept arguments — `progress!` and `error!` — are called with keyword args directly; no pre-assignment is needed. Remove `broadcast_complete` and all `if Configuration.get("streaming")` broadcast guards. The log-line broadcast (`job_run_logs_*`) is not a state transition — leave it unchanged.
 
@@ -675,7 +675,7 @@ Replace every raw `update!(status: ...)` call with the corresponding state machi
 - Modify: `app/services/jobs/execute_service.rb`
 - Modify: `spec/services/jobs/execute_service_spec.rb`
 
-- [ ] **Step 1: Rewrite `Jobs::ExecuteService`**
+- [ ] **Step 1: Rewrite `JobRuns::ExecuteService`**
 
 Replace the full file content:
 
@@ -893,5 +893,5 @@ Expected: no offences. Fix any that appear.
 
 ```bash
 git add app/services/jobs/execute_service.rb spec/services/jobs/execute_service_spec.rb
-git commit -m "Refactor Jobs::ExecuteService to use state machine events"
+git commit -m "Refactor JobRuns::ExecuteService to use state machine events"
 ```
