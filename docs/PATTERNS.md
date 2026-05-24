@@ -610,6 +610,85 @@ export default class extends Controller {
 </div>
 ```
 
+## Synchronous inline request with spinner button
+
+Use this pattern for a standalone button that fires a one-shot POST request and shows a spinner while it runs (e.g. a maintenance task). The key rules are:
+
+- Put `data-controller` on a **wrapper `<div>`**, never on the `<form>` or the `<button>` itself — Stimulus does not reliably connect to `<form>` elements.
+- Use `type="button"`, not `type="submit"`. There is no form.
+- Call `#setLoading(true)` **before** the `fetch` so the spinner is visible immediately.
+- Pass the endpoint URL via a Stimulus value so the controller stays generic.
+- Use `Turbo.renderStreamMessage(html)` to apply the turbo-stream response.
+
+**View partial**:
+```erb
+<div
+  data-controller="foo-run"
+  data-foo-run-url-value="<%= run_foo_path(foo) %>"
+>
+  <button
+    type="button"
+    class="btn-icon-outline btn-icon-md"
+    data-foo-run-target="button"
+    data-action="click->foo-run#run"
+    data-tooltip="<%= I18n.t("foos.actions.run") %>"
+  >
+    <%= lucide_icon "play", class: "h-5 w-5", data: { "foo-run-target": "icon" } %>
+    <%= lucide_icon "loader-circle", class: "h-5 w-5 hidden animate-spin",
+                    data: { "foo-run-target": "spinner" } %>
+  </button>
+</div>
+```
+
+**Stimulus controller**:
+```js
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  static targets = ["button", "icon", "spinner"]
+  static values = { url: String }
+
+  async run() {
+    this.#setLoading(true)
+
+    try {
+      const response = await fetch(this.urlValue, {
+        method: "POST",
+        headers: {
+          Accept: "text/vnd.turbo-stream.html",
+          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        },
+      })
+
+      const html = await response.text()
+      Turbo.renderStreamMessage(html)
+    } finally {
+      this.#setLoading(false)
+    }
+  }
+
+  #setLoading(loading) {
+    this.buttonTarget.disabled = loading
+    this.iconTarget.classList.toggle("hidden", loading)
+    this.spinnerTarget.classList.toggle("hidden", !loading)
+  }
+}
+```
+
+**Controller action** — renders a turbo-stream response:
+```ruby
+def run
+  authorize! @foo, to: :run?
+
+  Foos::RunService.call(@foo, user: current_user)
+
+  render turbo_stream: turbo_stream.replace(
+    dom_id(@foo, :status),
+    partial: "foos/foo_status",
+    locals: { foo: @foo.reload },
+  )
+end
+```
 
 ## Conditional class names
 
