@@ -1,10 +1,11 @@
 <%= turbo_frame_tag dom_id(task, :status) do %>
   <% if task.completed? %>
-    <%= lucide_icon "circle-check",
+    <%= lucide_icon "check",
                     class: "h-5 w-5 text-green-500" %>
   <% elsif task.failed? %>
-    <%= lucide_icon "circle-x",
-                    class: "h-5 w-5 text-red-500",
-                    data: { tooltip: "#{task.error_class}: #{task.error_message}" } %>
+    <div data-tooltip="<%= task.error_class %>: <%= task.error_message %>">
+      <%= lucide_icon "x",
+                      class: "h-5 w-5 text-red-500" %>
+    </div>
   <% end %>
 <% end %>
