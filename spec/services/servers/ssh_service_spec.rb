@@ -6,6 +6,7 @@ RSpec.describe Servers::SSHService do
   let(:my_class) do
     Class.new(described_class) do
       def command = "echo ok"
+      def category = "connectivity"
     end
   end
 
