@@ -31,8 +31,9 @@ module Processes
       end
     ensure
       # Clear the pid once the process has exited so a later cancel job
-      # does not signal a recycled PID.
-      job_run.update_column(:pid, nil) if job_run.persisted?
+      # does not signal a recycled PID. Bypass callbacks/validations — this
+      # is internal bookkeeping, not a state change.
+      job_run.update_column(:pid, nil) if job_run.persisted? # rubocop:disable Rails/SkipsModelValidations
     end
   end
 end
