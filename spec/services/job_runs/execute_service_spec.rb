@@ -12,8 +12,8 @@ RSpec.describe JobRuns::ExecuteService do
 
   let(:options) { {} }
 
-  let(:exit_status) { instance_double(Process::Status, success?: true, signaled?: false, exitstatus: 0) }
-  let(:rsync_result) { Rsync::ExecuteService::Result.new(exit_status:, canceled: false) }
+  let(:exit_status) { instance_double(Process::Status, success?: true, signaled?: false, exitstatus: 0, termsig: nil) }
+  let(:rsync_result) { Rsync::ExecuteService::Result.new(exit_status:) }
   let(:rsync_execute_service) { instance_double(Rsync::ExecuteService) }
 
   before do
@@ -89,10 +89,16 @@ RSpec.describe JobRuns::ExecuteService do
       end
     end
 
-    context "when cancellation is requested" do
-      let(:rsync_result) { Rsync::ExecuteService::Result.new(exit_status:, canceled: true) }
+    context "when cancellation is requested mid-flow (rsync was SIGTERMed)" do
+      let(:exit_status) { instance_double(Process::Status, success?: false, signaled?: true, exitstatus: nil, termsig: 15) }
 
-      before { job_run.update!(cancel_requested_at: Time.zone.now) }
+      before do
+        # Simulate the cancel job transitioning the run to canceling during rsync
+        allow(rsync_execute_service).to receive(:call) do |&_block|
+          job_run.update!(status: "canceling", cancel_requested_at: Time.zone.now)
+          rsync_result
+        end
+      end
 
       it "marks the job run as canceled" do
         service.call
@@ -104,6 +110,17 @@ RSpec.describe JobRuns::ExecuteService do
         expect(job_run.canceled_at).to be_present
         expect(job_run.completed_at).to be_present
         expect(job_run.output).to be_attached
+      end
+
+      it "skips the post-hook after cancellation" do
+        post_hook = create(:hook, :post, job:, command: "echo", arguments: "post", enabled: true)
+        allow(Configuration).to receive(:get).and_call_original
+        allow(Configuration).to receive(:get).with("hooks").and_return(true)
+
+        service.call
+
+        expect(post_hook.reload).to be_present
+        expect(job_run.reload.post_hook_status).to be_nil
       end
     end
 
@@ -216,7 +233,7 @@ RSpec.describe JobRuns::ExecuteService do
           job_run = job.job_runs.sole
 
           expect(job_run).to be_failed
-          expect(job_run.pre_hook_status).to eq "failure"
+          expect(job_run.pre_hook_status).to eq "failed"
           expect(job_run.pre_hook_exit_status).to eq 1
           expect(command_service).not_to have_received(:call)
         end
