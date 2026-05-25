@@ -17,7 +17,13 @@ FactoryBot.define do
       status { :running }
       started_at { 5.minutes.ago }
       completed_at { nil }
-      last_heartbeat_at { 1.minute.ago }
+    end
+
+    trait :canceling do
+      status { :canceling }
+      started_at { 5.minutes.ago }
+      cancel_requested_at { 1.minute.ago }
+      completed_at { nil }
     end
 
     trait :completed do

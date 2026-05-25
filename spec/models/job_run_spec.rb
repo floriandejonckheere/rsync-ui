@@ -82,15 +82,44 @@ RSpec.describe JobRun do
           .from("pending").to("canceled")
       end
 
-      it "transitions from running to canceled on cancel" do
+      it "transitions from running to canceling on cancel" do
         job_run = create(:job_run, :running)
 
         expect { job_run.cancel! }
           .to change { job_run.reload.status }
-          .from("running").to("canceled")
+          .from("running").to("canceling")
       end
 
-      it "sets cancel_requested_at, canceled_at, and completed_at when canceling" do
+      it "sets cancel_requested_at but not canceled_at when canceling a running run" do
+        job_run = create(:job_run, :running)
+        job_run.cancel!
+        job_run.reload
+
+        expect(job_run.cancel_requested_at).to be_present
+        expect(job_run.canceled_at).to be_nil
+        expect(job_run.completed_at).to be_nil
+      end
+
+      it "transitions from canceling to canceled on finish_cancel" do
+        job_run = create(:job_run, :running, cancel_requested_at: Time.zone.now)
+        job_run.update!(status: "canceling")
+
+        expect { job_run.finish_cancel! }
+          .to change { job_run.reload.status }
+          .from("canceling").to("canceled")
+      end
+
+      it "sets canceled_at and completed_at on finish_cancel" do
+        job_run = create(:job_run, :running, cancel_requested_at: Time.zone.now)
+        job_run.update!(status: "canceling")
+        job_run.finish_cancel!
+        job_run.reload
+
+        expect(job_run.canceled_at).to be_present
+        expect(job_run.completed_at).to be_present
+      end
+
+      it "sets cancel_requested_at, canceled_at, and completed_at when canceling a pending run" do
         job_run = create(:job_run, :pending)
         job_run.cancel!
         job_run.reload
@@ -118,6 +147,22 @@ RSpec.describe JobRun do
             .to change { job_run.reload.status }
             .to("errored")
         end
+      end
+
+      it "transitions from canceling to errored on error" do
+        job_run = create(:job_run, :running, cancel_requested_at: Time.zone.now)
+        job_run.update!(status: "canceling")
+
+        expect { job_run.error! }
+          .to change { job_run.reload.status }
+          .from("canceling").to("errored")
+      end
+
+      it "does not allow error from terminal states" do
+        job_run = create(:job_run, :completed)
+
+        expect { job_run.error! }
+          .to raise_error(StateMachines::InvalidTransition)
       end
 
       it "accepts error_class and error_message arguments on error" do
@@ -155,6 +200,17 @@ RSpec.describe JobRun do
     it { expect(build(:job_run, :errored)).to be_deletable }
     it { expect(build(:job_run, :pending)).not_to be_deletable }
     it { expect(build(:job_run, :running)).not_to be_deletable }
+    it { expect(build(:job_run, :canceling)).not_to be_deletable }
+  end
+
+  describe "#cancelable?" do
+    it { expect(build(:job_run, :pending)).to be_cancelable }
+    it { expect(build(:job_run, :running)).to be_cancelable }
+    it { expect(build(:job_run, :canceling)).not_to be_cancelable }
+    it { expect(build(:job_run, :completed)).not_to be_cancelable }
+    it { expect(build(:job_run, :failed)).not_to be_cancelable }
+    it { expect(build(:job_run, :canceled)).not_to be_cancelable }
+    it { expect(build(:job_run, :errored)).not_to be_cancelable }
   end
 
   describe "#duration" do
