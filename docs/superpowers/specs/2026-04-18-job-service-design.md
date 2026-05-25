@@ -17,7 +17,7 @@ New migration adds three columns to `job_runs`:
 | Column | Type | Nullable | Notes |
 |---|---|---|---|
 | `error_class` | string | yes | Ruby exception class name (e.g. `RuntimeError`) |
-| `error_messages` | text | yes | Exception message(s) |
+| `error_message` | text | yes | Exception message(s) |
 
 The `status` enum gains a sixth value: `errored` (existing five: `pending`, `running`, `completed`, `failed`, `canceled`).
 
@@ -69,7 +69,7 @@ JobService.new(job, trigger: :manual).call
    - In both cases set `completed_at: Time.current`.
 9. **Rescue `StandardError`** (wraps the entire flow from step 2 onwards):
    - Set `status: :errored`, `completed_at: Time.current`,
-     `error_class: e.class.name`, `error_messages: e.message`.
+     `error_class: e.class.name`, `error_message: e.message`.
    - Still attempt to attach the tempfile if it was opened and has content.
 10. **Ensure** tempfile is closed and unlinked.
 
@@ -93,7 +93,7 @@ content type `text/plain` and a filename of `job_run_<sequence>.log`.
 - **`JobService` spec**:
   - Happy path: `JobRun` transitions through `pending → running → completed`; output attached.
   - Failure path: non-zero exit code → `failed`; output attached.
-  - Error path: exception during execution → `errored`; `error_class`/`error_messages` set.
+  - Error path: exception during execution → `errored`; `error_class`/`error_message` set.
 - **`JobExecutionJob` spec**: delegates to `JobService`.
 - Use `instance_double` for `Rsync::CommandService` and stub subprocess execution with a
   real temp command (e.g. `echo`) to avoid spawning actual rsync in tests.

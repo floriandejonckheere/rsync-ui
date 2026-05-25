@@ -120,13 +120,13 @@ RSpec.describe JobRun do
         end
       end
 
-      it "accepts error_class and error_messages arguments on error" do
+      it "accepts error_class and error_message arguments on error" do
         job_run = create(:job_run, :running)
-        job_run.error!(error_class: "RuntimeError", error_messages: "boom")
+        job_run.error!(error_class: "RuntimeError", error_message: "boom")
         job_run.reload
 
         expect(job_run.error_class).to eq "RuntimeError"
-        expect(job_run.error_messages).to eq "boom"
+        expect(job_run.error_message).to eq "boom"
       end
 
       it "performs a loopback on tick and persists bytes_copied and progress" do

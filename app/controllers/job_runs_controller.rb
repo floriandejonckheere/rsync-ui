@@ -47,7 +47,7 @@ class JobRunsController < ApplicationController
     else
       content = [
         @job_run.error_class.presence,
-        @job_run.error_messages.presence,
+        @job_run.error_message.presence,
       ].compact.join("\n")
 
       send_data content, filename:, type: "text/plain", disposition: "attachment"

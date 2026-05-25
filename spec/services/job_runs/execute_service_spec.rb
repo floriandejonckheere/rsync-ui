@@ -84,7 +84,7 @@ RSpec.describe JobRuns::ExecuteService do
 
         expect(job_run).to be_errored
         expect(job_run.error_class).to eq "RuntimeError"
-        expect(job_run.error_messages).to eq "something went wrong"
+        expect(job_run.error_message).to eq "something went wrong"
         expect(job_run.completed_at).to be_present
       end
     end

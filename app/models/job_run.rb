@@ -55,7 +55,7 @@ end
 #  canceled_at         :datetime         indexed
 #  completed_at        :datetime         indexed
 #  error_class         :string
-#  error_messages      :text
+#  error_message       :text
 #  last_heartbeat_at   :datetime         indexed
 #  pid                 :integer
 #  progress            :integer

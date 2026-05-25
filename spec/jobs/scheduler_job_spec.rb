@@ -138,7 +138,7 @@ RSpec.describe SchedulerJob do
 
         expect(job_run.reload).to be_errored
         expect(job_run.completed_at).to be_present
-        expect(job_run.error_messages).to include("interrupted")
+        expect(job_run.error_message).to include("interrupted")
       end
     end
 
@@ -180,7 +180,7 @@ RSpec.describe SchedulerJob do
 
         expect(job_run.reload).to be_errored
         expect(job_run.completed_at).to be_present
-        expect(job_run.error_messages).to include("interrupted")
+        expect(job_run.error_message).to include("interrupted")
       end
     end
 

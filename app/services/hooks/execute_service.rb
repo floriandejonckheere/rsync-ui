@@ -58,7 +58,7 @@ module Hooks
         "{completed_at}" => job_run.completed_at&.iso8601,
         "{duration}" => job_run.duration&.to_s,
         "{status}" => job_run.status,
-        "{error}" => ([job_run.error_class, job_run.error_messages].compact.join(": ") if job_run.error_class.present?),
+        "{error}" => ([job_run.error_class, job_run.error_message].compact.join(": ") if job_run.error_class.present?),
       }
 
       template.gsub(/\{[^}]+\}/) { |match| substitutions.fetch(match, match) }

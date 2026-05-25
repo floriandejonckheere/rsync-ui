@@ -42,7 +42,7 @@ RSpec.describe Notifications::RenderService do
           status: "errored",
           completed_at: Time.zone.parse("2026-05-01 10:02:00"),
           error_class: "Errno::ENOENT",
-          error_messages: "No such file or directory",
+          error_message: "No such file or directory",
         )
       end
 

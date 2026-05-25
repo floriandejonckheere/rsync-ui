@@ -295,7 +295,7 @@ describe "stuck job detection" do
 
       expect(job_run.reload).to be_errored
       expect(job_run.completed_at).to be_present
-      expect(job_run.error_messages).to include("interrupted")
+      expect(job_run.error_message).to include("interrupted")
     end
   end
 
@@ -337,7 +337,7 @@ describe "stuck job detection" do
 
       expect(job_run.reload).to be_errored
       expect(job_run.completed_at).to be_present
-      expect(job_run.error_messages).to include("interrupted")
+      expect(job_run.error_message).to include("interrupted")
     end
   end
 
@@ -452,7 +452,7 @@ class SchedulerJob < ApplicationJob
       job_run.update!(
         status: "errored",
         completed_at: Time.zone.now,
-        error_messages: message,
+        error_message: message,
       )
 
       next unless Configuration.get("notifications")

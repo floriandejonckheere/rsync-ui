@@ -20,7 +20,7 @@ RSpec.describe Jobs::TerminateStuckJobsService do
 
           expect(job_run).to be_errored
           expect(job_run.completed_at).to be_present
-          expect(job_run.error_messages).to include "no heartbeat received for over 30 seconds"
+          expect(job_run.error_message).to include "no heartbeat received for over 30 seconds"
         end
       end
 
@@ -54,7 +54,7 @@ RSpec.describe Jobs::TerminateStuckJobsService do
 
           expect(job_run).to be_errored
           expect(job_run.completed_at).to be_present
-          expect(job_run.error_messages).to include "no heartbeat received for over 30 seconds"
+          expect(job_run.error_message).to include "no heartbeat received for over 30 seconds"
         end
       end
 

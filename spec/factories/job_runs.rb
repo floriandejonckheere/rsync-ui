@@ -43,7 +43,7 @@ FactoryBot.define do
       started_at { 10.minutes.ago }
       completed_at { 5.minutes.ago }
       error_class { "RuntimeError" }
-      error_messages { "something went wrong" }
+      error_message { "something went wrong" }
     end
   end
 end

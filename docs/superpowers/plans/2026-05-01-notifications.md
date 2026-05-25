@@ -1210,7 +1210,7 @@ RSpec.describe Notifications::RenderService do
           status: "errored",
           completed_at: Time.zone.parse("2026-05-01 10:02:00"),
           error_class: "Errno::ENOENT",
-          error_messages: "No such file or directory",
+          error_message: "No such file or directory",
         )
       end
 
@@ -1319,7 +1319,7 @@ end
 **<%= t("notifications.body.trigger") %>:** <%= job_run.trigger %>
 **<%= t("notifications.body.triggered_by") %>:** <%= job_run.user.email %>
 **<%= t("notifications.body.error_class") %>:** <%= job_run.error_class %>
-**<%= t("notifications.body.error_message") %>:** <%= job_run.error_messages %>
+**<%= t("notifications.body.error_message") %>:** <%= job_run.error_message %>
 **<%= t("notifications.body.log_url") %>:** <%= job_run_url(job_run) %>
 ```
 

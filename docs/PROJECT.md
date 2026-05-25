@@ -65,4 +65,31 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Implement support for OAuth2 authentication
 - [ ] Do not bind postgres to port 5432, otherwise you can't use git worktrees
 - [ ] Audit codebase
+- [ ] SSH config: write password/private key only when invoking SSH commands
 - [ ] Allow discovery of partitions/disks on the server and measure resource usage per partition/disk
+- [ ] Compose: docker compose up creates x-app container
+- [ ] Too many `SolidCable::TrimJob` jobs when using ActionCable
+- [ ] Only run SyncSSHConfig job periodically, not on startup
+- [ ] Make streaming job output fixed height, but scrolling (and anchored to the bottom)
+- [ ] Concurrent SyncSSHConfig jobs
+  rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [1a386230-aef4-4526-b891-6c243c0dc905] Performing Servers::SyncSSHConfigJob (Job ID: 1a386230-aef4-4526-b891-6c243c0dc905) from SolidQueue(default) enqueued at 2026-05-21T19:58:45.866266737Z
+  rsync_ui_worker-1  | SolidQueue-1.4.0 Started Scheduler (226.1ms)  pid: 29, hostname: "eb9133693bd7", process_id: 44, name: "scheduler-f43d4c1adc9b05f00348", recurring_schedule: ["clear_solid_queue_finished_jobs", "scheduler"]
+  rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [1a386230-aef4-4526-b891-6c243c0dc905] Performed Servers::SyncSSHConfigJob (Job ID: 1a386230-aef4-4526-b891-6c243c0dc905) from SolidQueue(default) in 145.55ms
+  rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [2c58323a-efed-4669-89b9-3500f15aeb31] Performing Servers::SyncSSHConfigJob (Job ID: 2c58323a-efed-4669-89b9-3500f15aeb31) from SolidQueue(default) enqueued at 2026-05-21T19:58:49.282777115Z
+  rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [34bde2a7-a0fb-4859-be9a-e3bd00db86ef] Performing Servers::SyncSSHConfigJob (Job ID: 34bde2a7-a0fb-4859-be9a-e3bd00db86ef) from SolidQueue(default) enqueued at 2026-05-21T19:58:47.573273356Z
+  rsync_ui_worker-1  | SolidQueue-1.4.0 Claim jobs (73.4ms)  process_id: 43, job_ids: [28968], claimed_job_ids: [28968], size: 1
+  rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [2c58323a-efed-4669-89b9-3500f15aeb31] Performed Servers::SyncSSHConfigJob (Job ID: 2c58323a-efed-4669-89b9-3500f15aeb31) from SolidQueue(default) in 67.32ms
+  rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [34bde2a7-a0fb-4859-be9a-e3bd00db86ef] Error performing Servers::SyncSSHConfigJob (Job ID: 34bde2a7-a0fb-4859-be9a-e3bd00db86ef) from SolidQueue(default) in 24.09ms: Errno::ENOENT (No such file or directory @ rb_file_s_rename - (/app/.ssh/config.tmp, /app/.ssh/config)):
+  rsync_ui_worker-1  | app/services/servers/ssh_config_service.rb:97:in 'File.rename'
+  rsync_ui_worker-1  | app/services/servers/ssh_config_service.rb:97:in 'Servers::SSHConfigService#call'
+  rsync_ui_worker-1  | app/services/application_service.rb:5:in 'ApplicationService.call'
+  rsync_ui_worker-1  | app/jobs/servers/sync_ssh_config_job.rb:6:in 'Servers::SyncSSHConfigJob#perform'
+  rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [55e52c2d-9607-46fd-93ca-752237800c72] Performing Servers::SyncSSHConfigJob (Job ID: 55e52c2d-9607-46fd-93ca-752237800c72) from SolidQueue(default) enqueued at 2026-05-21T19:58:50.546955919Z
+  rsync_ui_worker-1  | SolidQueue-1.4.0 Error in thread (0.0ms)  error: "Errno::ENOENT No such file or directory @ rb_file_s_rename - (/app/.ssh/config.tmp, /app/.ssh/config)"
+  rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [55e52c2d-9607-46fd-93ca-752237800c72] Performed Servers::SyncSSHConfigJob (Job ID: 55e52c2d-9607-46fd-93ca-752237800c72) from SolidQueue(default) in 103.8ms
+  rsync_ui_worker-1  | SolidQueue-1.4.0 Claim jobs (43.8ms)  process_id: 43, job_ids: [28969], claimed_job_ids: [28969], size: 1
+  rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [f8e7711a-3932-4968-8741-edddeffa9347] Performing Servers::SyncSSHConfigJob (Job ID: f8e7711a-3932-4968-8741-edddeffa9347) from SolidQueue(default) enqueued at 2026-05-21T19:58:50.955973151Z
+  rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [f8e7711a-3932-4968-8741-edddeffa9347] Performed Servers::SyncSSHConfigJob (Job ID: f8e7711a-3932-4968-8741-edddeffa9347) from SolidQueue(default) in 46.08ms
+  rsync_ui_worker-1  | SolidQueue-1.4.0 Claim jobs (96.0ms)  process_id: 43, job_ids: [28970], claimed_job_ids: [28970], size: 1
+  rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [f904c032-e8c1-472e-acd0-92f308c8ca90] Performing Servers::SyncSSHConfigJob (Job ID: f904c032-e8c1-472e-acd0-92f308c8ca90) from SolidQueue(default) enqueued at 2026-05-21T19:58:53.502571527Z
+  rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [f904c032-e8c1-472e-acd0-92f308c8ca90] Performed Servers::SyncSSHConfigJob (Job ID: f904c032-e8c1-472e-acd0-92f308c8ca90) from SolidQueue(default) in 35.01ms

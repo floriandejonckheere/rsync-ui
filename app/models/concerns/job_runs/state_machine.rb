@@ -83,7 +83,7 @@ module JobRuns
           kwargs = transition.args.first || {}
 
           job_run.error_class = kwargs[:error_class] if kwargs.key?(:error_class)
-          job_run.error_messages = kwargs[:error_messages] if kwargs.key?(:error_messages)
+          job_run.error_message = kwargs[:error_message] if kwargs.key?(:error_message)
         end
 
         after_transition on: :start do |job_run|

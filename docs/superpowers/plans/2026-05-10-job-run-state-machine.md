@@ -4,7 +4,7 @@
 
 **Goal:** Replace `JobRun`'s raw `enum :status` and scattered `update!(status: ...)` calls with a `state_machines-activerecord` state machine that owns all status transitions and fires ActionCable / Turbo Stream side effects via a dedicated `JobRuns::BroadcastService`.
 
-**Architecture:** The state machine lives in a `JobRuns::StateMachine` concern (`app/models/concerns/job_runs/state_machine.rb`) included by `JobRun`, keeping the model file thin. Events accept keyword arguments — `progress!(bytes_copied:, progress:)` and `error!(error_class: nil, error_messages: nil)` — which `before_transition` callbacks read from `transition.args.first` and assign to the record before saving. `after_transition` callbacks call `JobRuns::BroadcastService` class methods. `ExecuteService` calls events directly with no pre-assignment and contains no broadcast code.
+**Architecture:** The state machine lives in a `JobRuns::StateMachine` concern (`app/models/concerns/job_runs/state_machine.rb`) included by `JobRun`, keeping the model file thin. Events accept keyword arguments — `progress!(bytes_copied:, progress:)` and `error!(error_class: nil, error_message: nil)` — which `before_transition` callbacks read from `transition.args.first` and assign to the record before saving. `after_transition` callbacks call `JobRuns::BroadcastService` class methods. `ExecuteService` calls events directly with no pre-assignment and contains no broadcast code.
 
 **Tech Stack:** `state_machines-activerecord` gem, existing ActionCable channels, `Turbo::StreamsChannel`
 
@@ -281,7 +281,7 @@ The state machine lives in `app/models/concerns/job_runs/state_machine.rb` and i
 
 Two events accept keyword arguments read via `transition.args.first`:
 - `progress!(bytes_copied:, progress:)` — the `before_transition` assigns both columns so the loopback save persists them
-- `error!(error_class: nil, error_messages: nil)` — the `before_transition` assigns whichever keys are present
+- `error!(error_class: nil, error_message: nil)` — the `before_transition` assigns whichever keys are present
 
 The existing `cancel!` method on the model is removed; its timestamp logic moves into `before_transition to: :canceled`.
 
@@ -417,13 +417,13 @@ RSpec.describe JobRun do
         end
       end
 
-      it "accepts error_class and error_messages arguments on error" do
+      it "accepts error_class and error_message arguments on error" do
         job_run = create(:job_run, :running)
-        job_run.error!(error_class: "RuntimeError", error_messages: "boom")
+        job_run.error!(error_class: "RuntimeError", error_message: "boom")
         job_run.reload
 
         expect(job_run.error_class).to eq "RuntimeError"
-        expect(job_run.error_messages).to eq "boom"
+        expect(job_run.error_message).to eq "boom"
       end
 
       it "performs a loopback on progress and persists bytes_copied and progress" do
@@ -566,7 +566,7 @@ module JobRuns
         before_transition on: :error do |job_run, transition|
           kwargs = transition.args.first || {}
           job_run.error_class = kwargs[:error_class] if kwargs.key?(:error_class)
-          job_run.error_messages = kwargs[:error_messages] if kwargs.key?(:error_messages)
+          job_run.error_message = kwargs[:error_message] if kwargs.key?(:error_message)
         end
 
         after_transition on: :start do |job_run|
@@ -715,7 +715,7 @@ module Jobs
           result = Hooks::ExecuteService.new(hook, job_run:).call
 
           unless result[:success]
-            job_run.error!(error_messages: "Pre-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
+            job_run.error!(error_message: "Pre-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
             enqueue_notifications(job_run, "failure")
 
             return
@@ -785,7 +785,7 @@ module Jobs
         enqueue_notifications(job_run, exit_status.success? ? "success" : "failure")
       end
     rescue StandardError => e
-      job_run.error!(error_class: e.class.name, error_messages: e.message)
+      job_run.error!(error_class: e.class.name, error_message: e.message)
       enqueue_notifications(job_run, "failure")
     end
 
@@ -824,7 +824,7 @@ module Jobs
 
       return if result[:success]
 
-      job_run.error!(error_messages: "#{type.capitalize}-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
+      job_run.error!(error_message: "#{type.capitalize}-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
     end
   end
 end

@@ -36,7 +36,7 @@ module JobRuns
             if result[:canceled]
               job_run.cancel!
             else
-              job_run.error!(error_messages: "Pre-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
+              job_run.error!(error_message: "Pre-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
 
               enqueue_notifications(job_run, "failure")
             end
@@ -109,7 +109,7 @@ module JobRuns
         # whatever was captured before re-raising so logs are not lost.
         attach_log(job_run, file)
 
-        job_run.error!(error_class: e.class.name, error_messages: e.message) if job_run.running?
+        job_run.error!(error_class: e.class.name, error_message: e.message) if job_run.running?
 
         enqueue_notifications(job_run, "failure")
 
@@ -117,12 +117,12 @@ module JobRuns
       rescue StandardError => e
         attach_log(job_run, file)
 
-        job_run.error!(error_class: e.class.name, error_messages: e.message) if job_run.running?
+        job_run.error!(error_class: e.class.name, error_message: e.message) if job_run.running?
 
         enqueue_notifications(job_run, "failure")
       end
     rescue StandardError => e
-      job_run.error!(error_class: e.class.name, error_messages: e.message)
+      job_run.error!(error_class: e.class.name, error_message: e.message)
 
       enqueue_notifications(job_run, "failure")
     end
@@ -165,7 +165,7 @@ module JobRuns
       return if result[:success]
       return if result[:canceled]
 
-      job_run.error!(error_messages: "#{type.capitalize}-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
+      job_run.error!(error_message: "#{type.capitalize}-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
     end
   end
 end

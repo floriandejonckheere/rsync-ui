@@ -107,7 +107,7 @@
     </div>
   </div>
   <turbo-frame id="job-run-output">
-    <% if @job_run.error_class.present? || @job_run.error_messages.present? %>
+    <% if @job_run.error_class.present? || @job_run.error_message.present? %>
       <div
         class="
           card p-0 mb-6 border-red-200 dark:border-red-900/50 bg-red-50/50
@@ -157,7 +157,7 @@
             </div>
           <% end %>
 
-          <% if @job_run.error_messages.present? %>
+          <% if @job_run.error_message.present? %>
             <div class="mb-4 last:mb-0">
               <div
                 class="
@@ -174,7 +174,7 @@
                   whitespace-pre-wrap
                 "
               >
-                <%= @job_run.error_messages %>
+                <%= @job_run.error_message %>
               </div>
             </div>
           <% end %>

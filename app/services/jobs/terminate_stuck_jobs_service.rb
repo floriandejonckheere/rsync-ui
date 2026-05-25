@@ -20,7 +20,7 @@ module Jobs
         job_run.update!(
           status: "errored",
           completed_at: Time.zone.now,
-          error_messages: message,
+          error_message: message,
         )
 
         next unless Configuration.get("notifications")

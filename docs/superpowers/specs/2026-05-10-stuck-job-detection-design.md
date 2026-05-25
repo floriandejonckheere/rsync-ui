@@ -73,7 +73,7 @@ Both cases are resolved by updating the `JobRun`:
 job_run.update!(
   status: "errored",
   completed_at: Time.zone.now,
-  error_messages: "Job was interrupted (no heartbeat received for over #{stuck_threshold} seconds)",
+  error_message: "Job was interrupted (no heartbeat received for over #{stuck_threshold} seconds)",
 )
 ```
 
