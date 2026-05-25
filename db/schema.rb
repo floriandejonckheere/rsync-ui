@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_25_064802) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_25_072632) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -102,15 +102,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_25_064802) do
     t.datetime "created_at", null: false
     t.string "error_class"
     t.text "error_message"
+    t.string "failure_hook_error_class"
+    t.text "failure_hook_error_message"
+    t.integer "failure_hook_exit_status"
+    t.string "failure_hook_status"
     t.uuid "job_id", null: false
     t.datetime "last_heartbeat_at"
     t.integer "pid"
+    t.string "post_hook_error_class"
+    t.text "post_hook_error_message"
+    t.integer "post_hook_exit_status"
+    t.string "post_hook_status"
+    t.string "pre_hook_error_class"
+    t.text "pre_hook_error_message"
+    t.integer "pre_hook_exit_status"
+    t.string "pre_hook_status"
     t.integer "progress"
     t.integer "remaining_time"
     t.serial "sequence", null: false
     t.integer "speed"
     t.datetime "started_at"
     t.string "status", default: "pending", null: false
+    t.string "success_hook_error_class"
+    t.text "success_hook_error_message"
+    t.integer "success_hook_exit_status"
+    t.string "success_hook_status"
     t.string "trigger", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false

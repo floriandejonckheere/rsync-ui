@@ -196,22 +196,28 @@ RSpec.describe JobRuns::ExecuteService do
       context "when a pre-hook is configured" do
         before { create(:hook, :pre, job:, command: "echo", arguments: "pre", enabled: true) }
 
-        it "executes the pre-hook before running the job" do
+        it "executes the pre-hook before running the job and records success status" do
           service.call
 
-          expect(job.job_runs.sole.pre_hook_output).to be_attached
+          job_run = job.job_runs.sole
+
+          expect(job_run.pre_hook_output).to be_attached
+          expect(job_run.pre_hook_status).to eq "success"
+          expect(job_run.pre_hook_exit_status).to eq 0
         end
       end
 
       context "when the pre-hook fails" do
         before { create(:hook, :pre, job:, command: "false", enabled: true) }
 
-        it "sets the job run status to errored and does not run rsync" do
+        it "sets the job run status to failed, records hook status, and does not run rsync" do
           service.call
 
           job_run = job.job_runs.sole
 
-          expect(job_run).to be_errored
+          expect(job_run).to be_failed
+          expect(job_run.pre_hook_status).to eq "failure"
+          expect(job_run.pre_hook_exit_status).to eq 1
           expect(command_service).not_to have_received(:call)
         end
       end
@@ -219,20 +225,28 @@ RSpec.describe JobRuns::ExecuteService do
       context "when a post-hook is configured" do
         before { create(:hook, :post, job:, command: "echo", arguments: "post", enabled: true) }
 
-        it "executes the post-hook after running the job" do
+        it "executes the post-hook after running the job and records success status" do
           service.call
 
-          expect(job.job_runs.sole.post_hook_output).to be_attached
+          job_run = job.job_runs.sole
+
+          expect(job_run.post_hook_output).to be_attached
+          expect(job_run.post_hook_status).to eq "success"
+          expect(job_run.post_hook_exit_status).to eq 0
         end
       end
 
       context "when a success-hook is configured" do
         before { create(:hook, :success, job:, command: "echo", arguments: "success", enabled: true) }
 
-        it "executes the success-hook when the job completes successfully" do
+        it "executes the success-hook when the job completes successfully and records success status" do
           service.call
 
-          expect(job.job_runs.sole.success_hook_output).to be_attached
+          job_run = job.job_runs.sole
+
+          expect(job_run.success_hook_output).to be_attached
+          expect(job_run.success_hook_status).to eq "success"
+          expect(job_run.success_hook_exit_status).to eq 0
         end
 
         context "when the job fails" do
@@ -241,7 +255,10 @@ RSpec.describe JobRuns::ExecuteService do
           it "does not execute the success-hook" do
             service.call
 
-            expect(job.job_runs.sole.success_hook_output).not_to be_attached
+            job_run = job.job_runs.sole
+
+            expect(job_run.success_hook_output).not_to be_attached
+            expect(job_run.success_hook_status).to be_nil
           end
         end
       end
@@ -252,16 +269,23 @@ RSpec.describe JobRuns::ExecuteService do
         it "does not execute the failure-hook when the job succeeds" do
           service.call
 
-          expect(job.job_runs.sole.failure_hook_output).not_to be_attached
+          job_run = job.job_runs.sole
+
+          expect(job_run.failure_hook_output).not_to be_attached
+          expect(job_run.failure_hook_status).to be_nil
         end
 
         context "when the job fails" do
           let(:exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
 
-          it "executes the failure-hook" do
+          it "executes the failure-hook and records success status" do
             service.call
 
-            expect(job.job_runs.sole.failure_hook_output).to be_attached
+            job_run = job.job_runs.sole
+
+            expect(job_run.failure_hook_output).to be_attached
+            expect(job_run.failure_hook_status).to eq "success"
+            expect(job_run.failure_hook_exit_status).to eq 0
           end
         end
       end
@@ -365,12 +389,12 @@ RSpec.describe JobRuns::ExecuteService do
 
         before { create(:hook, :pre, job:, command: "false", enabled: true) }
 
-        it "broadcasts completion with errored status to the status channel" do
+        it "broadcasts completion with failed status to the status channel" do
           service.call
 
           expect(ActionCable.server)
             .to have_received(:broadcast)
-            .with("job_run_status_#{job_run.id}", hash_including(type: "complete", status: "errored"))
+            .with("job_run_status_#{job_run.id}", hash_including(type: "complete", status: "failed"))
         end
       end
 

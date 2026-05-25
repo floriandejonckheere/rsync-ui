@@ -49,26 +49,42 @@ end
 #
 # Table name: job_runs
 #
-#  id                  :uuid             not null, primary key
-#  bytes_copied        :bigint
-#  cancel_requested_at :datetime
-#  canceled_at         :datetime         indexed
-#  completed_at        :datetime         indexed
-#  error_class         :string
-#  error_message       :text
-#  last_heartbeat_at   :datetime         indexed
-#  pid                 :integer
-#  progress            :integer
-#  remaining_time      :integer
-#  sequence            :integer          not null, indexed
-#  speed               :integer
-#  started_at          :datetime         indexed
-#  status              :string           default("pending"), not null, indexed
-#  trigger             :string           not null
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  job_id              :uuid             not null, indexed
-#  user_id             :uuid             not null, indexed
+#  id                         :uuid             not null, primary key
+#  bytes_copied               :bigint
+#  cancel_requested_at        :datetime
+#  canceled_at                :datetime         indexed
+#  completed_at               :datetime         indexed
+#  error_class                :string
+#  error_message              :text
+#  failure_hook_error_class   :string
+#  failure_hook_error_message :text
+#  failure_hook_exit_status   :integer
+#  failure_hook_status        :string
+#  last_heartbeat_at          :datetime         indexed
+#  pid                        :integer
+#  post_hook_error_class      :string
+#  post_hook_error_message    :text
+#  post_hook_exit_status      :integer
+#  post_hook_status           :string
+#  pre_hook_error_class       :string
+#  pre_hook_error_message     :text
+#  pre_hook_exit_status       :integer
+#  pre_hook_status            :string
+#  progress                   :integer
+#  remaining_time             :integer
+#  sequence                   :integer          not null, indexed
+#  speed                      :integer
+#  started_at                 :datetime         indexed
+#  status                     :string           default("pending"), not null, indexed
+#  success_hook_error_class   :string
+#  success_hook_error_message :text
+#  success_hook_exit_status   :integer
+#  success_hook_status        :string
+#  trigger                    :string           not null
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
+#  job_id                     :uuid             not null, indexed
+#  user_id                    :uuid             not null, indexed
 #
 # Indexes
 #

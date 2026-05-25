@@ -32,11 +32,13 @@ module JobRuns
             .new(hook, job_run:)
             .call
 
+          record_hook_result(job_run, "pre", result)
+
           unless result[:success]
             if result[:canceled]
               job_run.cancel!
             else
-              job_run.error!(error_message: "Pre-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
+              job_run.mark_failed!
 
               enqueue_notifications(job_run, "failure")
             end
@@ -162,10 +164,27 @@ module JobRuns
         .new(hook, job_run:)
         .call
 
-      return if result[:success]
+      record_hook_result(job_run, type, result)
+    end
+
+    def record_hook_result(job_run, type, result)
       return if result[:canceled]
 
-      job_run.error!(error_message: "#{type.capitalize}-hook failed (exit #{result[:exit_status]}): #{result[:error]}")
+      status =
+        if result[:success]
+          "success"
+        elsif result[:exit_status].present?
+          "failure"
+        else
+          "errored"
+        end
+
+      job_run.update!(
+        "#{type}_hook_status": status,
+        "#{type}_hook_exit_status": result[:exit_status],
+        "#{type}_hook_error_class": result[:error_class],
+        "#{type}_hook_error_message": result[:error_message],
+      )
     end
   end
 end

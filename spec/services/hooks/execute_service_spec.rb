@@ -32,7 +32,9 @@ RSpec.describe Hooks::ExecuteService do
 
       service.call
 
-      expect(Open3).to have_received(:popen2e).with("echo hello #{job.name}", pgroup: true)
+      expect(Open3)
+        .to have_received(:popen2e)
+        .with("echo hello #{job.name}", pgroup: true)
     end
 
     context "when the command exits with a non-zero status" do
@@ -48,14 +50,17 @@ RSpec.describe Hooks::ExecuteService do
 
     context "when a Ruby error is raised" do
       before do
-        allow(Open3).to receive(:popen2e).and_raise(RuntimeError, "command not found")
+        allow(Open3)
+          .to receive(:popen2e)
+          .and_raise(RuntimeError, "command not found")
       end
 
-      it "returns a failed result with the error message" do
+      it "returns a failed result with the error class and message" do
         result = service.call
 
         expect(result[:success]).to be false
-        expect(result[:error]).to eq "command not found"
+        expect(result[:error_class]).to eq "RuntimeError"
+        expect(result[:error_message]).to eq "command not found"
       end
     end
   end

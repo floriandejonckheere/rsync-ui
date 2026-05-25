@@ -30,16 +30,28 @@ module Hooks
           content_type: "text/plain",
         )
 
-        { success: result.exit_status.success?, exit_status: result.exit_status.exitstatus, error: nil, canceled: result.canceled }
+        {
+          success: result.exit_status.success?,
+          exit_status: result.exit_status.exitstatus,
+          error_class: nil,
+          error_message: nil,
+          canceled: result.canceled,
+        }
       end
     rescue StandardError => e
-      { success: false, exit_status: nil, error: e.message, canceled: false }
+      {
+        success: false,
+        exit_status: nil,
+        error_class: e.class.name,
+        error_message: e.message,
+        canceled: false,
+      }
     end
 
     private
 
     def interpolate(template)
-      return nil if template.blank?
+      return if template.blank?
 
       job = job_run.job
 
