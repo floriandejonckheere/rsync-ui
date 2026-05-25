@@ -3,6 +3,13 @@
 class JobRun < ApplicationRecord
   include JobRuns::StateMachine
 
+  NOTIFICATION_EVENTS = {
+    "running" => "start",
+    "completed" => "success",
+    "failed" => "failure",
+    "errored" => "failure",
+  }.freeze
+
   belongs_to :job
   belongs_to :user
 
@@ -30,6 +37,8 @@ class JobRun < ApplicationRecord
   scope :started_from, ->(from) { where(started_at: from..) if from.present? }
   scope :started_to, ->(to) { where(started_at: ..to) if to.present? }
 
+  after_commit :enqueue_status_notifications, on: [:create, :update]
+
   def cancelable?
     pending? || running?
   end
@@ -42,6 +51,20 @@ class JobRun < ApplicationRecord
     return unless started_at
 
     (completed_at || Time.current) - started_at
+  end
+
+  private
+
+  def enqueue_status_notifications
+    return unless Configuration.get("notifications")
+    return unless saved_change_to_status?
+
+    event = NOTIFICATION_EVENTS[status]
+    return unless event
+
+    job.job_notifications.find_each do |job_notification|
+      Notifications::SendJob.perform_later(job_notification.id, id, event)
+    end
   end
 end
 

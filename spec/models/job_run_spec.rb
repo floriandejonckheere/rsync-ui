@@ -113,6 +113,7 @@ RSpec.describe JobRun do
         job_run = create(:job_run, :running, cancel_requested_at: Time.zone.now)
         job_run.update!(status: "canceling")
         job_run.finish_cancel!
+
         job_run.reload
 
         expect(job_run.canceled_at).to be_present
@@ -122,6 +123,7 @@ RSpec.describe JobRun do
       it "sets cancel_requested_at, canceled_at, and completed_at when canceling a pending run" do
         job_run = create(:job_run, :pending)
         job_run.cancel!
+
         job_run.reload
 
         expect(job_run.cancel_requested_at).to be_present
@@ -230,6 +232,71 @@ RSpec.describe JobRun do
       job_run = build(:job_run, :completed, started_at: 10.minutes.ago, completed_at: 5.minutes.ago)
 
       expect(job_run.duration).to be_within(1).of(5.minutes.to_i)
+    end
+  end
+
+  describe "notifications" do
+    let(:user) { create(:user) }
+    let(:job) { create(:job, user:) }
+    let!(:notification) { create(:notification, user:) }
+    let!(:job_notification) { create(:job_notification, job:, notification:) }
+
+    let(:job_run) { create(:job_run, :pending, user:, job:) }
+
+    before do
+      allow(Configuration).to receive(:get).and_call_original
+      allow(Configuration).to receive(:get).with("notifications").and_return(true)
+    end
+
+    it "enqueues a start notification on start" do
+      expect { job_run.start! }
+        .to have_enqueued_job(Notifications::SendJob)
+        .with(job_notification.id, job_run.id, "start")
+    end
+
+    it "enqueues a success notification on complete" do
+      job_run.update!(status: "running", started_at: Time.zone.now)
+
+      expect { job_run.complete! }
+        .to have_enqueued_job(Notifications::SendJob)
+        .with(job_notification.id, job_run.id, "success")
+    end
+
+    it "enqueues a failure notification on mark_failed" do
+      job_run.update!(status: "running", started_at: Time.zone.now)
+
+      expect { job_run.mark_failed! }
+        .to have_enqueued_job(Notifications::SendJob)
+        .with(job_notification.id, job_run.id, "failure")
+    end
+
+    it "enqueues a failure notification on error" do
+      expect { job_run.error!(error_class: "RuntimeError", error_message: "boom") }
+        .to have_enqueued_job(Notifications::SendJob)
+        .with(job_notification.id, job_run.id, "failure")
+    end
+
+    it "does not enqueue a notification on cancel (running -> canceling)" do
+      job_run.update!(status: "running", started_at: Time.zone.now)
+
+      expect { job_run.cancel! }.not_to have_enqueued_job(Notifications::SendJob)
+    end
+
+    it "does not enqueue a notification on finish_cancel" do
+      job_run.update!(status: "running", started_at: Time.zone.now, cancel_requested_at: Time.zone.now)
+      job_run.update!(status: "canceling")
+
+      expect { job_run.finish_cancel! }.not_to have_enqueued_job(Notifications::SendJob)
+    end
+
+    it "does not enqueue a notification on cancel from pending" do
+      expect { job_run.cancel! }.not_to have_enqueued_job(Notifications::SendJob)
+    end
+
+    it "does not enqueue when notifications are disabled" do
+      allow(Configuration).to receive(:get).with("notifications").and_return(false)
+
+      expect { job_run.start! }.not_to have_enqueued_job(Notifications::SendJob)
     end
   end
 
