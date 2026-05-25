@@ -5,32 +5,45 @@ module Jobs
     def call
       threshold = Configuration.get("jobs.stuck_threshold").to_i.seconds.ago
 
-      message = "Job was interrupted (no heartbeat received for over #{Configuration.get('jobs.stuck_threshold')} seconds)"
+      # Terminate pending job runs
+      JobRun.pending.where(created_at: ...threshold).find_each do |job_run|
+        job_run.error!(error_class: "Stuck", error_message: "Job was not picked up by a worker within the grace period")
+      end
 
-      stuck_running = JobRun.running.where(
-        "last_heartbeat_at < :threshold OR (last_heartbeat_at IS NULL AND started_at < :threshold)",
-        threshold:,
-      )
+      # Terminate running and canceling job runs
+      (JobRun.running + JobRun.canceling).each do |job_run|
+        next unless stuck?(job_run, threshold)
 
-      stuck_pending = JobRun
-        .pending
-        .where(created_at: ...threshold)
-
-      (stuck_running + stuck_pending).each do |job_run|
-        job_run.update!(
-          status: "errored",
-          completed_at: Time.zone.now,
-          error_message: message,
-        )
-
-        next unless Configuration.get("notifications")
-
-        job_run.job.job_notifications.find_each do |job_notification|
-          Notifications::SendJob
-            .set(wait: 5.seconds)
-            .perform_later(job_notification.id, job_run.id, "failure")
+        if job_run.canceling?
+          # SIGTERM presumably worked; the executor never finalized.
+          job_run.finish_cancel!
+        else
+          job_run.error!(error_class: "Stuck", error_message: "Worker process is no longer alive")
         end
       end
+    end
+
+    private
+
+    def stuck?(job_run, threshold)
+      if job_run.pid.present?
+        dead?(job_run.pid)
+      else
+        # No pid recorded — either between phases or executor died before
+        # spawning. Wait for the grace window so we don't reap a healthy row
+        # during a brief pid-gap.
+        job_run.updated_at < threshold
+      end
+    end
+
+    def dead?(pid)
+      Process.kill(0, -pid)
+
+      false
+    rescue Errno::ESRCH
+      true
+    rescue Errno::EPERM
+      false
     end
   end
 end
