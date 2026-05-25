@@ -2,7 +2,8 @@
 
 module Hooks
   class ExecuteService < ApplicationService
-    attr_reader :hook, :job_run
+    attr_reader :hook,
+                :job_run
 
     def initialize(hook, job_run:)
       super()
@@ -17,26 +18,24 @@ module Hooks
         .join(" ")
 
       Tempfile.create(["hook_#{hook.hook_type}", ".log"]) do |file|
-        begin
-          result = Processes::ExecuteService.new(full_command, job_run).call do |output|
-            file.write(output.read)
-          end
-
-          attach_output(file)
-
-          persist_status(
-            status: result.exit_status.success? ? "success" : "failed",
-            exit_status: result.exit_status.exitstatus,
-          )
-
-          { success: result.exit_status.success?, exit_status: result.exit_status.exitstatus }
-        rescue StandardError => e
-          attach_output(file)
-
-          persist_status(status: "errored", error_class: e.class.name, error_message: e.message)
-
-          { success: false, exit_status: nil }
+        result = Processes::ExecuteService.new(full_command, job_run).call do |output|
+          file.write(output.read)
         end
+
+        attach_output(file)
+
+        persist_status(
+          status: result.exit_status.success? ? "success" : "failed",
+          exit_status: result.exit_status.exitstatus,
+        )
+
+        { success: result.exit_status.success?, exit_status: result.exit_status.exitstatus }
+      rescue StandardError => e
+        attach_output(file)
+
+        persist_status(status: "errored", error_class: e.class.name, error_message: e.message)
+
+        { success: false, exit_status: nil }
       end
     end
 
@@ -58,10 +57,10 @@ module Hooks
 
     def persist_status(status:, exit_status: nil, error_class: nil, error_message: nil)
       job_run.update!(
-        :"#{hook.hook_type}_hook_status" => status,
-        :"#{hook.hook_type}_hook_exit_status" => exit_status,
-        :"#{hook.hook_type}_hook_error_class" => error_class,
-        :"#{hook.hook_type}_hook_error_message" => error_message,
+        "#{hook.hook_type}_hook_status": status,
+        "#{hook.hook_type}_hook_exit_status": exit_status,
+        "#{hook.hook_type}_hook_error_class": error_class,
+        "#{hook.hook_type}_hook_error_message": error_message,
       )
     end
 
