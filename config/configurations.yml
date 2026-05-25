@@ -109,12 +109,6 @@
   default: 2048
   minimum: 1024
   maximum:
-- key: jobs.heartbeat_interval
-  type: integer
-  category: system
-  default: 30
-  minimum: 1
-  maximum:
 - key: jobs.stuck_threshold
   type: integer
   category: system

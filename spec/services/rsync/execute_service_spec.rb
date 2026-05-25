@@ -13,8 +13,6 @@ RSpec.describe Rsync::ExecuteService do
   let(:wait_thr) { instance_double(Process::Waiter, pid: 12_345, value: exit_status) }
 
   before do
-    stub_const("Processes::ExecuteService::CANCEL_MONITOR_INTERVAL", 0.05)
-
     allow(Open3)
       .to receive(:popen2e)
         .with(command, pgroup: true) { |_command, pgroup:, &block| block.call(nil, output, wait_thr) } # rubocop:disable Lint/UnusedBlockArgument
@@ -33,7 +31,6 @@ RSpec.describe Rsync::ExecuteService do
       result = service.call
 
       expect(result.exit_status).to eq exit_status
-      expect(result.canceled).to be false
     end
 
     it "yields each output line" do
