@@ -60,7 +60,6 @@ end
 #  failure_hook_error_message :text
 #  failure_hook_exit_status   :integer
 #  failure_hook_status        :string
-#  last_heartbeat_at          :datetime         indexed
 #  pid                        :integer
 #  post_hook_error_class      :string
 #  post_hook_error_message    :text
@@ -88,14 +87,13 @@ end
 #
 # Indexes
 #
-#  index_job_runs_on_canceled_at        (canceled_at)
-#  index_job_runs_on_completed_at       (completed_at)
-#  index_job_runs_on_job_id             (job_id)
-#  index_job_runs_on_last_heartbeat_at  (last_heartbeat_at)
-#  index_job_runs_on_sequence           (sequence)
-#  index_job_runs_on_started_at         (started_at)
-#  index_job_runs_on_status             (status)
-#  index_job_runs_on_user_id            (user_id)
+#  index_job_runs_on_canceled_at   (canceled_at)
+#  index_job_runs_on_completed_at  (completed_at)
+#  index_job_runs_on_job_id        (job_id)
+#  index_job_runs_on_sequence      (sequence)
+#  index_job_runs_on_started_at    (started_at)
+#  index_job_runs_on_status        (status)
+#  index_job_runs_on_user_id       (user_id)
 #
 # Foreign Keys
 #
