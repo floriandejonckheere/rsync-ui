@@ -10,15 +10,19 @@ RSpec.describe Hooks::ExecuteService do
     create(:job_run, job:, user:, trigger: "manual", status: "running", started_at: Time.zone.now, sequence: 1)
   end
 
-  before do
-    stub_const("Processes::ExecuteService::CANCEL_MONITOR_INTERVAL", 0.05)
-  end
-
   describe "#call" do
-    it "returns a successful result" do
+    it "returns a successful result and persists per-hook status" do
       result = service.call
 
       expect(result[:success]).to be true
+      expect(result[:exit_status]).to eq 0
+
+      job_run.reload
+
+      expect(job_run.pre_hook_status).to eq("success")
+      expect(job_run.pre_hook_exit_status).to eq(0)
+      expect(job_run.pre_hook_error_class).to be_nil
+      expect(job_run.pre_hook_error_message).to be_nil
     end
 
     it "attaches the hook output to the job run" do
@@ -40,11 +44,17 @@ RSpec.describe Hooks::ExecuteService do
     context "when the command exits with a non-zero status" do
       let(:hook) { create(:hook, :pre, job:, command: "false") }
 
-      it "returns a failed result" do
+      it "returns a failed result and persists per-hook status" do
         result = service.call
 
         expect(result[:success]).to be false
         expect(result[:exit_status]).to eq 1
+
+        job_run.reload
+
+        expect(job_run.pre_hook_status).to eq("failed")
+        expect(job_run.pre_hook_exit_status).to eq(1)
+        expect(job_run.pre_hook_output).to be_attached
       end
     end
 
@@ -55,12 +65,17 @@ RSpec.describe Hooks::ExecuteService do
           .and_raise(RuntimeError, "command not found")
       end
 
-      it "returns a failed result with the error class and message" do
+      it "returns a failed result and persists the error" do
         result = service.call
 
         expect(result[:success]).to be false
-        expect(result[:error_class]).to eq "RuntimeError"
-        expect(result[:error_message]).to eq "command not found"
+        expect(result[:exit_status]).to be_nil
+
+        job_run.reload
+
+        expect(job_run.pre_hook_status).to eq("errored")
+        expect(job_run.pre_hook_error_class).to eq("RuntimeError")
+        expect(job_run.pre_hook_error_message).to eq("command not found")
       end
     end
   end
