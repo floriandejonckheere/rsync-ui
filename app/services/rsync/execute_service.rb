@@ -14,9 +14,9 @@ module Rsync
     end
 
     # Runs the rsync command and yields each complete output line to the block.
-    # Returns a Result with the exit status and whether cancellation was requested.
+    # Returns a Result with the exit status.
     def call(&block)
-      Processes::ExecuteService.new(command, job_run, heartbeat_interval:).call do |output|
+      Processes::ExecuteService.new(command, job_run).call do |output|
         # Readpartial chunk buffer
         buffer = +""
 
@@ -39,12 +39,6 @@ module Rsync
         # Flush any remaining buffered output that lacked a trailing newline
         block&.call(buffer) if buffer.present?
       end
-    end
-
-    private
-
-    def heartbeat_interval
-      @heartbeat_interval ||= Configuration.get("jobs.heartbeat_interval").to_i
     end
   end
 end

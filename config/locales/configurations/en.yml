@@ -43,10 +43,8 @@ en:
       hooks:
         description: Enable or disable pre/post/success/failure hooks on job execution
       jobs:
-        heartbeat_interval:
-          description: Interval (in minutes) between heartbeat probes
         stuck_threshold:
-          description: Threshold (in minutes) for job without heartbeat to be considered stuck
+          description: Grace period (in seconds) before a job run with no live process is reaped
       notifications:
         description: Enable or disable user notifications on job start, success, and failure
       resource_usage:
