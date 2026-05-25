@@ -9,7 +9,7 @@ RSpec.describe JobRuns::CancelService do
     context "when the job run is pending" do
       let(:job_run) { create(:job_run, :pending, user:) }
 
-      it "cancels the job run immediately" do
+      it "transitions immediately to canceled" do
         result = service.call
 
         expect(result[:success]).to be true
@@ -21,20 +21,39 @@ RSpec.describe JobRuns::CancelService do
         expect(job_run.canceled_at).to be_present
         expect(job_run.completed_at).to be_present
       end
+
+      it "does not enqueue CancelJob" do
+        expect { service.call }.not_to have_enqueued_job(JobRuns::CancelJob)
+      end
     end
 
     context "when the job run is running" do
       let(:job_run) { create(:job_run, :running, user:, pid: 12_345) }
 
-      it "requests cancellation" do
-        result = service.call
-
-        expect(result[:success]).to be true
+      it "transitions to canceling and enqueues CancelJob" do
+        expect { service.call }.to have_enqueued_job(JobRuns::CancelJob).with(job_run)
 
         job_run.reload
 
-        expect(job_run).to be_running
+        expect(job_run).to be_canceling
         expect(job_run.cancel_requested_at).to be_present
+        expect(job_run.canceled_at).to be_nil
+      end
+
+      it "returns success" do
+        expect(service.call[:success]).to be true
+      end
+    end
+
+    context "when the job run is already canceling" do
+      let(:job_run) { create(:job_run, :canceling, user:) }
+
+      it "returns failure" do
+        expect(service.call[:success]).to be false
+      end
+
+      it "does not enqueue CancelJob" do
+        expect { service.call }.not_to have_enqueued_job(JobRuns::CancelJob)
       end
     end
 

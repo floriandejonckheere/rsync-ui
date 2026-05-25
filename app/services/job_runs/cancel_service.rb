@@ -13,17 +13,20 @@ module JobRuns
     def call
       return { success: false } unless job_run.cancelable?
 
+      enqueue_cancel_job = false
+
       job_run.with_lock do
         job_run.reload
 
         return { success: false } unless job_run.cancelable?
 
-        if job_run.pending?
-          job_run.cancel!
-        else
-          job_run.update!(cancel_requested_at: job_run.cancel_requested_at || Time.current)
-        end
+        # pending -> canceled (immediate) ; running -> canceling (needs SIGTERM)
+        enqueue_cancel_job = job_run.running?
+
+        job_run.cancel!
       end
+
+      JobRuns::CancelJob.perform_later(job_run) if enqueue_cancel_job
 
       { success: true }
     end
