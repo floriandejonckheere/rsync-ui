@@ -2,6 +2,8 @@
 
 module Jobs
   class ExecuteJob < ApplicationJob
+    queue_as :workers
+
     limits_concurrency to: 1,
                        key: ->(job_run, **) { job_run.job_id },
                        duration: 1.hour

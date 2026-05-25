@@ -5,7 +5,6 @@ class SchedulerJob < ApplicationJob
 
   def perform
     schedule_jobs
-    terminate_stuck_jobs
 
     schedule_connectivity
     schedule_resource_usage
@@ -17,12 +16,6 @@ class SchedulerJob < ApplicationJob
     return unless Configuration.get("scheduler")
 
     Jobs::ScheduleJobsService.call
-  end
-
-  def terminate_stuck_jobs
-    return unless Configuration.get("scheduler")
-
-    Jobs::TerminateStuckJobsService.call
   end
 
   def schedule_connectivity

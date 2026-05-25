@@ -9,37 +9,96 @@ RSpec.describe Jobs::TerminateStuckJobsService do
   let(:job) { create(:job, user:) }
 
   describe "#call" do
-    context "with stuck running job runs" do
-      context "when last_heartbeat_at is older than the threshold" do
-        let!(:job_run) { create(:job_run, :running, job:, user:, last_heartbeat_at: 2.minutes.ago) }
+    context "with a running job whose pid is dead" do
+      let!(:job_run) { create(:job_run, :running, job:, user:, pid: 99_999) }
 
-        it "marks the job run as errored" do
-          service.call
-
-          job_run.reload
-
-          expect(job_run).to be_errored
-          expect(job_run.completed_at).to be_present
-          expect(job_run.error_message).to include "no heartbeat received for over 30 seconds"
-        end
+      before do
+        allow(Process)
+          .to receive(:kill)
+          .with(0, -99_999)
+          .and_raise Errno::ESRCH
       end
 
-      context "when last_heartbeat_at is nil and started_at is older than the threshold" do
-        let!(:job_run) { create(:job_run, :running, job:, user:, last_heartbeat_at: nil, started_at: 2.minutes.ago) }
+      it "marks the job run as errored" do
+        service.call
 
-        it "marks the job run as errored" do
-          service.call
+        job_run.reload
 
-          expect(job_run.reload).to be_errored
-        end
+        expect(job_run).to be_errored
+        expect(job_run.completed_at).to be_present
+        expect(job_run.error_message).to include("Worker")
+      end
+    end
+
+    context "with a running job whose pid is alive" do
+      let!(:job_run) { create(:job_run, :running, job:, user:, pid: 99_999) }
+
+      before do
+        allow(Process)
+          .to receive(:kill)
+          .with(0, -99_999)
+          .and_return 1
       end
 
-      context "when last_heartbeat_at is within the threshold" do
-        let!(:job_run) { create(:job_run, :running, job:, user:, last_heartbeat_at: 10.seconds.ago) }
+      it "does not modify the job run" do
+        expect { service.call }
+          .not_to(change { job_run.reload.attributes })
+      end
+    end
 
-        it "does not modify the job run" do
-          expect { service.call }.not_to(change { job_run.reload.attributes })
-        end
+    context "with a running job whose pid is nil and inside the grace window" do
+      let!(:job_run) { create(:job_run, :running, job:, user:, pid: nil) }
+
+      it "does not modify the job run" do
+        expect { service.call }
+          .not_to(change { job_run.reload.attributes })
+      end
+    end
+
+    context "with a running job whose pid is nil and past the grace window" do
+      let!(:job_run) { create(:job_run, :running, job:, user:, pid: nil, updated_at: 5.minutes.ago) }
+
+      it "marks the job run as errored" do
+        service.call
+
+        expect(job_run.reload).to be_errored
+      end
+    end
+
+    context "with a canceling job whose pid is dead" do
+      let!(:job_run) { create(:job_run, :canceling, job:, user:, pid: 99_999) }
+
+      before do
+        allow(Process)
+          .to receive(:kill)
+          .with(0, -99_999)
+          .and_raise Errno::ESRCH
+      end
+
+      it "transitions canceling to canceled" do
+        service.call
+
+        job_run.reload
+
+        expect(job_run).to be_canceled
+        expect(job_run.canceled_at).to be_present
+      end
+    end
+
+    context "with a canceling job whose pid is alive" do
+      let!(:job_run) { create(:job_run, :canceling, job:, user:, pid: 99_999) }
+
+
+      before do
+        allow(Process)
+          .to receive(:kill)
+          .with(0, -99_999)
+          .and_return 1
+      end
+
+      it "does not modify the job run" do
+        expect { service.call }
+          .not_to(change { job_run.reload.attributes })
       end
     end
 
@@ -54,7 +113,6 @@ RSpec.describe Jobs::TerminateStuckJobsService do
 
           expect(job_run).to be_errored
           expect(job_run.completed_at).to be_present
-          expect(job_run.error_message).to include "no heartbeat received for over 30 seconds"
         end
       end
 
@@ -62,7 +120,8 @@ RSpec.describe Jobs::TerminateStuckJobsService do
         let!(:job_run) { create(:job_run, :pending, job:, user:) }
 
         it "does not modify the job run" do
-          expect { service.call }.not_to(change { job_run.reload.attributes })
+          expect { service.call }
+            .not_to(change { job_run.reload.attributes })
         end
       end
     end
@@ -83,9 +142,16 @@ RSpec.describe Jobs::TerminateStuckJobsService do
 
       let!(:notification) { create(:notification, user:) }
       let!(:job_notification) { create(:job_notification, job:, notification:) }
-      let!(:job_run) { create(:job_run, :running, job:, user:, last_heartbeat_at: 2.minutes.ago) }
+      let!(:job_run) { create(:job_run, :running, job:, user:, pid: 99_999) }
 
-      it "enqueues a failure notification for each job notification" do
+      before do
+        allow(Process)
+          .to receive(:kill)
+          .with(0, -99_999)
+          .and_raise Errno::ESRCH
+      end
+
+      it "enqueues a failure notification for each job notification (via after_commit on JobRun)" do
         service.call
 
         expect(Notifications::SendJob)
