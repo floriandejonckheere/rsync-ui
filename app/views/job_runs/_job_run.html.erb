@@ -1,4 +1,4 @@
-<% live = job_run.pending? || job_run.running? %>
+<% live = job_run.pending? || job_run.running? || job_run.canceling? %>
 
 <tr
   class="
@@ -120,21 +120,23 @@
                     } do %>
           <%= lucide_icon "trash-2", class: "h-4 w-4" %>
         <% end %>
-      <% elsif job_run.pending? || job_run.running? %>
+      <% elsif live %>
         <%= link_to job_run_path(job_run),
                     class: "btn-icon-outline btn-icon-md",
                     data: { tooltip: I18n.t("job_runs.actions.view_logs"), turbo_frame: "_top" } do %>
           <%= lucide_icon "eye", class: "h-4 w-4" %>
         <% end %>
-        <%= link_to cancel_job_run_path(job_run),
-                    class: "btn-icon-outline btn-icon-md",
-                    data: {
-                      tooltip: I18n.t("job_runs.actions.cancel"),
-                      "turbo-method": :patch,
-                      "turbo-confirm": I18n.t("job_runs.actions.cancel_confirm"),
-                      "turbo-confirm-title": I18n.t("job_runs.actions.cancel_confirm_title"),
-                    } do %>
-          <%= lucide_icon "x", class: "h-4 w-4" %>
+        <% if job_run.cancelable? %>
+          <%= link_to cancel_job_run_path(job_run),
+                      class: "btn-icon-outline btn-icon-md",
+                      data: {
+                        tooltip: I18n.t("job_runs.actions.cancel"),
+                        "turbo-method": :patch,
+                        "turbo-confirm": I18n.t("job_runs.actions.cancel_confirm"),
+                        "turbo-confirm-title": I18n.t("job_runs.actions.cancel_confirm_title"),
+                      } do %>
+            <%= lucide_icon "x", class: "h-4 w-4" %>
+          <% end %>
         <% end %>
       <% end %>
     </div>

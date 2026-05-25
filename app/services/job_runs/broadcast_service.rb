@@ -2,7 +2,18 @@
 
 module JobRuns
   class BroadcastService
-    LIVE_STATES = ["pending", "running"].freeze
+    LIVE_STATES = ["pending", "running", "canceling"].freeze
+
+    def self.broadcast_canceling(job_run)
+      ActionCable.server.broadcast(
+        "job_run_status_#{job_run.id}",
+        {
+          type: "canceling",
+          status: "canceling",
+          status_text: I18n.t("job_runs.status.canceling"),
+        },
+      )
+    end
 
     def self.broadcast_started(job_run)
       ActionCable.server.broadcast(
