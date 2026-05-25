@@ -109,6 +109,12 @@ module JobRuns
           JobRuns::BroadcastService.broadcast_progress(job_run)
         end
 
+        after_transition on: :cancel, from: :running do |job_run|
+          next unless Configuration.get("streaming")
+
+          JobRuns::BroadcastService.broadcast_canceling(job_run)
+        end
+
         after_transition on: [:complete, :mark_failed, :finish_cancel, :error] do |job_run, transition|
           next unless Configuration.get("streaming")
 

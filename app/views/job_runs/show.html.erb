@@ -10,7 +10,7 @@
   <%= I18n.t("job_runs.show.subtitle", job: @job_run.job.name) %>
 <% end %>
 
-<% if @job_run.pending? || @job_run.running? %>
+<% if @job_run.pending? || @job_run.running? || @job_run.canceling? %>
   <div
     data-controller="job-run-status"
     data-job-run-status-job-run-id-value="<%= @job_run.id %>"

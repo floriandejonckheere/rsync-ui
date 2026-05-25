@@ -44,6 +44,7 @@ en:
       title: 'Job run #%{sequence}'
     status:
       canceled: Canceled
+      canceling: Canceling
       completed: Completed
       errored: Errored
       failed: Failed

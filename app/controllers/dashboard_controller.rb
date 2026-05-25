@@ -15,7 +15,7 @@ class DashboardController < ApplicationController
       .where(user: current_user)
       .where(started_at: 24.hours.ago..)
 
-    status_order = ["pending", "running", "completed", "failed", "errored", "canceled"]
+    status_order = ["pending", "running", "canceling", "completed", "failed", "errored", "canceled"]
 
     @job_run_stats = recent_runs
       .group(:status)
@@ -32,13 +32,13 @@ class DashboardController < ApplicationController
                      end
 
     @running_job_runs = JobRun
-      .where(user: current_user, status: ["pending", "running"])
+      .where(user: current_user, status: JobRuns::BroadcastService::LIVE_STATES)
       .includes(:job)
       .order(created_at: :asc)
 
     @last_job_run = JobRun
       .where(user: current_user)
-      .where.not(status: ["pending", "running"])
+      .where.not(status: JobRuns::BroadcastService::LIVE_STATES)
       .includes(:job)
       .order(created_at: :desc)
       .first
