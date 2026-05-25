@@ -6,7 +6,7 @@ on:
       - '**'
 
 concurrency:
-  group: ${{ github.workflow }}-ci-${{ github.event.repository.name }}
+  group: ${{ github.workflow }}-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
