@@ -7,6 +7,7 @@ module JobRuns
     included do
       scope :pending,   -> { with_status(:pending) }
       scope :running,   -> { with_status(:running) }
+      scope :canceling, -> { with_status(:canceling) }
       scope :completed, -> { with_status(:completed) }
       scope :failed,    -> { with_status(:failed) }
       scope :canceled,  -> { with_status(:canceled) }
@@ -18,6 +19,7 @@ module JobRuns
         #
         state :pending
         state :running
+        state :canceling
         state :completed
         state :failed
         state :canceled
@@ -45,11 +47,16 @@ module JobRuns
         end
 
         event :cancel do
-          transition [:pending, :running] => :canceled
+          transition pending: :canceled
+          transition running: :canceling
+        end
+
+        event :finish_cancel do
+          transition canceling: :canceled
         end
 
         event :error do
-          transition any => :errored
+          transition [:pending, :running, :canceling] => :errored
         end
 
         ##
@@ -60,7 +67,11 @@ module JobRuns
         end
 
         before_transition to: [:completed, :failed, :canceled, :errored] do |job_run|
-          job_run.completed_at = Time.zone.now
+          job_run.completed_at ||= Time.zone.now
+        end
+
+        before_transition on: :cancel do |job_run|
+          job_run.cancel_requested_at ||= Time.zone.now
         end
 
         before_transition to: :canceled do |job_run|
@@ -98,7 +109,7 @@ module JobRuns
           JobRuns::BroadcastService.broadcast_progress(job_run)
         end
 
-        after_transition on: [:complete, :mark_failed, :cancel, :error] do |job_run, transition|
+        after_transition on: [:complete, :mark_failed, :finish_cancel, :error] do |job_run, transition|
           next unless Configuration.get("streaming")
 
           JobRuns::BroadcastService.broadcast_complete(job_run, from: transition.from)
