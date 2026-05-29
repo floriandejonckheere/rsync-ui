@@ -33,7 +33,7 @@ class JobRunsController < ApplicationController
   def output
     authorize! @job_run
 
-    return head :not_found unless @job_run.output.attached? || @job_run.errored?
+    return head :not_found unless @job_run.output.attached?
 
     filename = [
       "job",
@@ -42,16 +42,7 @@ class JobRunsController < ApplicationController
       @job_run.started_at&.iso8601,
     ].compact.join("-").concat(".log")
 
-    if @job_run.output.attached?
-      redirect_to rails_blob_path(@job_run.output, disposition: "attachment; filename=\"#{filename}\""), allow_other_host: true
-    else
-      content = [
-        @job_run.error_class.presence,
-        @job_run.error_message.presence,
-      ].compact.join("\n")
-
-      send_data content, filename:, type: "text/plain", disposition: "attachment"
-    end
+    redirect_to rails_blob_path(@job_run.output, disposition: "attachment; filename=\"#{filename}\""), allow_other_host: true
   end
 
   def create
