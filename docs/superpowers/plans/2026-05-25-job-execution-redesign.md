@@ -1390,7 +1390,7 @@ git commit -m "Rewrite JobRuns::ExecuteService as linear phases with cancellatio
 
 ```ruby
 # spec/services/jobs/terminate_stuck_jobs_service_spec.rb
-RSpec.describe Jobs::TerminateStuckJobsService do
+RSpec.describe Jobs::TerminateStuckService do
   subject(:service) { described_class }
 
   with_configuration "jobs.stuck_threshold" => 30

@@ -19,7 +19,7 @@ en:
       sync_ssh_config:
         description: Sync SSH config file with the database
         title: Sync SSH config
-      terminate_stuck_jobs:
+      terminate_stuck_job_runs:
         description: Terminate stuck or unresponsive job runs
         title: Terminate stuck jobs
     run:

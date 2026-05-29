@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Jobs::TerminateStuckJobsService do
+RSpec.describe JobRuns::TerminateStuckService do
   subject(:service) { described_class.new }
 
   with_configuration "jobs.stuck_threshold" => 30

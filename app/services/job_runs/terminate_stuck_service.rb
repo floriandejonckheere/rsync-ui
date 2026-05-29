@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Jobs
-  class TerminateStuckJobsService < ApplicationService
+module JobRuns
+  class TerminateStuckService < ApplicationService
     def call
       threshold = Configuration.get("jobs.stuck_threshold").to_i.seconds.ago
 

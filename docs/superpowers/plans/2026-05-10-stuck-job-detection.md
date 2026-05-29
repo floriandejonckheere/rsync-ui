@@ -390,7 +390,7 @@ class SchedulerJob < ApplicationJob
     schedule_jobs
     schedule_connectivity
     schedule_resource_usage
-    terminate_stuck_jobs
+    terminate_stuck_job_runs
   end
 
   private
