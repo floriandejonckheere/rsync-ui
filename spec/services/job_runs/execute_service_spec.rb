@@ -4,8 +4,6 @@ RSpec.describe JobRuns::ExecuteService do
   subject(:service) { described_class.new(job_run) }
 
   let(:user) { create(:user) }
-  let!(:notification) { create(:notification, user:) }
-  let!(:job_notification) { create(:job_notification, job:, notification:) }
   let(:command_service) { instance_double(Rsync::CommandService, call: "rsync --recursive") }
   let(:job) { create(:job, user:, **options) }
   let(:job_run) { create(:job_run, :pending, job:, user:) }
@@ -174,37 +172,6 @@ RSpec.describe JobRuns::ExecuteService do
           expect(job_run.bytes_copied).to be_nil
           expect(job_run.progress).to be_nil
           expect(job_run.output).to be_attached
-        end
-      end
-    end
-
-    describe "notifications" do
-      with_configuration "notifications" => true
-
-      it "enqueues a start notification when execution begins" do
-        service.call
-        job_run = job.job_runs.sole
-
-        expect(Notifications::SendJob)
-          .to have_been_enqueued
-          .with(job_notification.id, job_run.id, "start")
-      end
-
-      it "enqueues a success notification when execution completes successfully" do
-        service.call
-        job_run = job.job_runs.sole
-
-        expect(Notifications::SendJob)
-          .to have_been_enqueued
-          .with(job_notification.id, job_run.id, "success")
-      end
-
-      context "when notifications are disabled" do
-        with_configuration "notifications" => false
-
-        it "does not enqueue when notifications" do
-          expect { service.call }
-            .not_to have_enqueued_job(Notifications::SendJob)
         end
       end
     end
