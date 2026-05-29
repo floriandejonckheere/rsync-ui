@@ -18,7 +18,7 @@ module Jobs
           .job_runs
           .create!(user: job.user, trigger: "scheduled", status: "pending")
 
-        Jobs::ExecuteJob.perform_later(job_run)
+        JobRuns::ExecuteJob.perform_later(job_run)
       end
     end
   end
