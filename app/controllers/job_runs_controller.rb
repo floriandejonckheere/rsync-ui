@@ -58,7 +58,7 @@ class JobRunsController < ApplicationController
 
     job_run.save!
 
-    Jobs::ExecuteJob.perform_later(job_run)
+    JobRuns::ExecuteJob.perform_later(job_run)
 
     redirect_to job_runs_path, notice: t(".success")
   end

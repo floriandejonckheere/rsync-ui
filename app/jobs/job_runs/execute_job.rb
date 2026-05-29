@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Jobs
+module JobRuns
   class ExecuteJob < ApplicationJob
     queue_as :workers
 
@@ -9,7 +9,7 @@ module Jobs
                        duration: 1.hour
 
     def perform(job_run)
-      JobRuns::ExecuteService
+      ExecuteService
         .new(job_run)
         .call
     end

@@ -4,7 +4,7 @@ RSpec.describe SchedulerJob do
   before { travel_to(Time.zone.local(2026, 4, 19, 2, 0, 30)) }
 
   describe "job scheduling" do
-    it "enqueues Jobs::ExecuteJob for due enabled jobs" do
+    it "enqueues JobRuns::ExecuteJob for due enabled jobs" do
       create(:job, schedule: "0 2 * * *", enabled: true)
 
       described_class.perform_now
@@ -12,21 +12,24 @@ RSpec.describe SchedulerJob do
       job_run = JobRun.sole
       expect(job_run).to be_pending
       expect(job_run.trigger).to eq "scheduled"
-      expect(Jobs::ExecuteJob).to have_been_enqueued.with(job_run)
+
+      expect(JobRuns::ExecuteJob)
+        .to have_been_enqueued
+        .with(job_run)
     end
 
     it "skips disabled jobs" do
       create(:job, schedule: "0 2 * * *", enabled: false)
 
       expect { described_class.perform_now }
-        .not_to have_enqueued_job(Jobs::ExecuteJob)
+        .not_to have_enqueued_job(JobRuns::ExecuteJob)
     end
 
     it "skips jobs without a schedule" do
       create(:job, schedule: nil)
 
       expect { described_class.perform_now }
-        .not_to have_enqueued_job(Jobs::ExecuteJob)
+        .not_to have_enqueued_job(JobRuns::ExecuteJob)
     end
 
     it "does not double-enqueue when a scheduled run already exists for the current tick" do
@@ -34,7 +37,7 @@ RSpec.describe SchedulerJob do
       create(:job_run, job:, user: job.user, trigger: :scheduled, created_at: Time.zone.local(2026, 4, 19, 2, 0, 5))
 
       expect { described_class.perform_now }
-        .not_to have_enqueued_job(Jobs::ExecuteJob)
+        .not_to have_enqueued_job(JobRuns::ExecuteJob)
     end
 
     it "enqueues when the last scheduled run predates the current tick" do
@@ -46,7 +49,7 @@ RSpec.describe SchedulerJob do
       new_run = JobRun.order(:created_at).last
       expect(new_run).to be_pending
       expect(new_run.trigger).to eq "scheduled"
-      expect(Jobs::ExecuteJob).to have_been_enqueued.with(new_run)
+      expect(JobRuns::ExecuteJob).to have_been_enqueued.with(new_run)
     end
 
     it "ignores jobs with an unparseable cron expression without raising" do
@@ -64,7 +67,7 @@ RSpec.describe SchedulerJob do
         create(:job, schedule: "0 2 * * *", enabled: true)
 
         expect { described_class.perform_now }
-          .not_to have_enqueued_job(Jobs::ExecuteJob)
+          .not_to have_enqueued_job(JobRuns::ExecuteJob)
       end
     end
   end

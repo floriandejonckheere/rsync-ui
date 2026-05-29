@@ -224,18 +224,20 @@ RSpec.describe "JobRuns" do
   describe "POST /job_runs" do
     let!(:job) { create(:job, user:) }
 
-    before { allow(Jobs::ExecuteJob).to receive(:perform_later) }
-
     context "when authenticated" do
       before { sign_in user, scope: :user }
 
-      it "creates a pending job run and enqueues Jobs::ExecuteJob" do
+      it "creates a pending job run and enqueues JobRuns::ExecuteJob" do
         expect { post job_runs_path, params: { job_id: job.id } }
           .to change(JobRun, :count).by(1)
 
         job_run = JobRun.last
         expect(job_run).to be_pending
-        expect(Jobs::ExecuteJob).to have_received(:perform_later).with(job_run)
+
+        expect(JobRuns::ExecuteJob)
+          .to have_been_enqueued
+          .with(job_run)
+
         expect(response).to redirect_to(job_runs_path)
       end
 
@@ -260,10 +262,11 @@ RSpec.describe "JobRuns" do
             .not_to change(JobRun, :count)
         end
 
-        it "does not enqueue Jobs::ExecuteJob" do
+        it "does not enqueue JobRuns::ExecuteJob" do
           post job_runs_path, params: { job_id: job.id }
 
-          expect(Jobs::ExecuteJob).not_to have_received(:perform_later)
+          expect(JobRuns::ExecuteJob)
+            .not_to have_been_enqueued
         end
       end
     end
@@ -284,10 +287,11 @@ RSpec.describe "JobRuns" do
           .not_to change(JobRun, :count)
       end
 
-      it "does not enqueue Jobs::ExecuteJob" do
+      it "does not enqueue JobRuns::ExecuteJob" do
         post job_runs_path, params: { job_id: job.id }
 
-        expect(Jobs::ExecuteJob).not_to have_received(:perform_later)
+        expect(JobRuns::ExecuteJob)
+          .not_to have_been_enqueued
       end
     end
 

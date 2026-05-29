@@ -18,7 +18,10 @@ RSpec.describe Jobs::ScheduleJobsService do
 
         expect(job_run.trigger).to eq "scheduled"
         expect(job_run).to be_pending
-        expect(Jobs::ExecuteJob).to have_been_enqueued.with(job_run)
+
+        expect(JobRuns::ExecuteJob)
+          .to have_been_enqueued
+          .with(job_run)
       end
     end
 
@@ -49,7 +52,10 @@ RSpec.describe Jobs::ScheduleJobsService do
         service.call
 
         new_run = job.job_runs.order(:created_at).last
-        expect(Jobs::ExecuteJob).to have_been_enqueued.with(new_run)
+
+        expect(JobRuns::ExecuteJob)
+          .to have_been_enqueued
+          .with(new_run)
       end
     end
 
@@ -57,7 +63,7 @@ RSpec.describe Jobs::ScheduleJobsService do
       before { create(:job, user:, schedule: nil) }
 
       it "does not create a job run" do
-        expect { service.call }.not_to have_enqueued_job(Jobs::ExecuteJob)
+        expect { service.call }.not_to have_enqueued_job(JobRuns::ExecuteJob)
       end
     end
 
@@ -80,7 +86,7 @@ RSpec.describe Jobs::ScheduleJobsService do
       before { create(:job, user:, schedule: "0 2 * * *", enabled: false) }
 
       it "does not create a job run" do
-        expect { service.call }.not_to have_enqueued_job(Jobs::ExecuteJob)
+        expect { service.call }.not_to have_enqueued_job(JobRuns::ExecuteJob)
       end
     end
   end
