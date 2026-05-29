@@ -193,26 +193,28 @@ RSpec.describe JobRun do
           .to raise_error StateMachines::InvalidTransition
       end
     end
-  end
 
-  describe "#deletable?" do
-    it { expect(build(:job_run, :completed)).to be_deletable }
-    it { expect(build(:job_run, :failed)).to be_deletable }
-    it { expect(build(:job_run, :canceled)).to be_deletable }
-    it { expect(build(:job_run, :errored)).to be_deletable }
-    it { expect(build(:job_run, :pending)).not_to be_deletable }
-    it { expect(build(:job_run, :running)).not_to be_deletable }
-    it { expect(build(:job_run, :canceling)).not_to be_deletable }
-  end
+    describe "predicates" do
+      describe "#deletable?" do
+        it { expect(build(:job_run, :completed)).to be_deletable }
+        it { expect(build(:job_run, :failed)).to be_deletable }
+        it { expect(build(:job_run, :canceled)).to be_deletable }
+        it { expect(build(:job_run, :errored)).to be_deletable }
+        it { expect(build(:job_run, :pending)).not_to be_deletable }
+        it { expect(build(:job_run, :running)).not_to be_deletable }
+        it { expect(build(:job_run, :canceling)).not_to be_deletable }
+      end
 
-  describe "#cancelable?" do
-    it { expect(build(:job_run, :pending)).to be_cancelable }
-    it { expect(build(:job_run, :running)).to be_cancelable }
-    it { expect(build(:job_run, :canceling)).not_to be_cancelable }
-    it { expect(build(:job_run, :completed)).not_to be_cancelable }
-    it { expect(build(:job_run, :failed)).not_to be_cancelable }
-    it { expect(build(:job_run, :canceled)).not_to be_cancelable }
-    it { expect(build(:job_run, :errored)).not_to be_cancelable }
+      describe "#cancelable?" do
+        it { expect(build(:job_run, :pending)).to be_cancelable }
+        it { expect(build(:job_run, :running)).to be_cancelable }
+        it { expect(build(:job_run, :canceling)).not_to be_cancelable }
+        it { expect(build(:job_run, :completed)).not_to be_cancelable }
+        it { expect(build(:job_run, :failed)).not_to be_cancelable }
+        it { expect(build(:job_run, :canceled)).not_to be_cancelable }
+        it { expect(build(:job_run, :errored)).not_to be_cancelable }
+      end
+    end
   end
 
   describe "#duration" do

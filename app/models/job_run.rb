@@ -39,14 +39,6 @@ class JobRun < ApplicationRecord
 
   after_commit :enqueue_status_notifications, on: [:create, :update]
 
-  def cancelable?
-    pending? || running?
-  end
-
-  def deletable?
-    completed? || failed? || canceled? || errored?
-  end
-
   def duration
     return unless started_at
 
