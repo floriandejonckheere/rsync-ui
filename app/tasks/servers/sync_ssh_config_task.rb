@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Tasks
-  class SyncSSHConfigService < ApplicationService
+module Servers
+  class SyncSSHConfigTask < ApplicationTask
     def call # rubocop:disable Rails/Delegate
       Servers::SSHConfigService.call
     end

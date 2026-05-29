@@ -1,6 +1,6 @@
 name,class_name,configuration
-sync_ssh_config,Tasks::SyncSSHConfigService,
-execute_jobs,Tasks::ExecuteJobsService,scheduler
-terminate_stuck_job_runs,Tasks::TerminateStuckJobs,scheduler
-check_connectivity,Tasks::CheckConnectivityService,connectivity
-measure_resource_usage,Tasks::MeasureResourceUsage,resource_usage
+sync_ssh_config,Servers::SyncSSHConfigTask,
+execute_jobs,Jobs::ExecuteTask,scheduler
+terminate_stuck_job_runs,JobRuns::TerminateStuckTask,scheduler
+check_connectivity,Servers::CheckConnectivityTask,connectivity
+measure_resource_usage,Servers::MeasureResourceUsageTask,resource_usage

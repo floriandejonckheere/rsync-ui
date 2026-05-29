@@ -6,7 +6,7 @@ RSpec.describe "Run tasks" do
   before { sign_in admin, scope: :user }
 
   describe "sync_ssh_config" do
-    let(:task) { create(:task, name: "sync_ssh_config", class_name: "Tasks::SyncSSHConfigService") }
+    let(:task) { create(:task, name: "sync_ssh_config", class_name: "Servers::SyncSSHConfigTask") }
 
     it "calls Servers::SSHConfigService" do
       allow(Servers::SSHConfigService)
@@ -20,7 +20,7 @@ RSpec.describe "Run tasks" do
   end
 
   describe "execute_jobs" do
-    let(:task) { create(:task, name: "execute_jobs", class_name: "Tasks::ExecuteJobsService") }
+    let(:task) { create(:task, name: "execute_jobs", class_name: "Jobs::ExecuteTask") }
 
     it "calls Jobs::ScheduleJobsService" do
       allow(Jobs::ScheduleJobsService)
@@ -34,21 +34,21 @@ RSpec.describe "Run tasks" do
   end
 
   describe "terminate_stuck_job_runs" do
-    let(:task) { create(:task, name: "terminate_stuck_job_runs", class_name: "Tasks::TerminateStuckJobs") }
+    let(:task) { create(:task, name: "terminate_stuck_job_runs", class_name: "JobRuns::TerminateStuckTask") }
 
-    it "calls Jobs::TerminateStuckService" do
-      allow(Jobs::TerminateStuckService)
+    it "calls JobRuns::TerminateStuckService" do
+      allow(JobRuns::TerminateStuckService)
         .to receive :call
 
       run(task)
 
-      expect(Jobs::TerminateStuckService)
+      expect(JobRuns::TerminateStuckService)
         .to have_received :call
     end
   end
 
   describe "check_connectivity" do
-    let(:task) { create(:task, name: "check_connectivity", class_name: "Tasks::CheckConnectivityService") }
+    let(:task) { create(:task, name: "check_connectivity", class_name: "Servers::CheckConnectivityTask") }
     let!(:server) { create(:server, :with_password) }
 
     it "calls Servers::ConnectionService for each server" do
@@ -63,7 +63,7 @@ RSpec.describe "Run tasks" do
   end
 
   describe "measure_resource_usage" do
-    let(:task) { create(:task, name: "measure_resource_usage", class_name: "Tasks::MeasureResourceUsage") }
+    let(:task) { create(:task, name: "measure_resource_usage", class_name: "Servers::MeasureResourceUsageTask") }
     let!(:server) { create(:server, :with_password) }
 
     it "calls Servers::ResourceUsageService for each server" do
