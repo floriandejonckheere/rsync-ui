@@ -126,5 +126,4 @@ RSpec.describe SchedulerJob do
       end
     end
   end
-
 end

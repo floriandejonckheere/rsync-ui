@@ -92,7 +92,7 @@ class JobRunsController < ApplicationController
       .new(@job_run)
       .call
 
-    return head :unprocessable_content unless result[:success]
+    return head :unprocessable_content unless result.success
 
     redirect_to job_runs_path, notice: t(".success"), status: :see_other
   end

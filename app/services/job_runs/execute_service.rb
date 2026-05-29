@@ -27,13 +27,13 @@ module JobRuns
       Rails.logger.info "[#{job.id}] Executing job #{job.name}"
 
       pre_hook_success = run_hook(job.pre_hook)
-      return finish_cancel if canceling?
+      return finalize_cancel if canceling?
 
       rsync_success = pre_hook_success ? run_rsync : nil
-      return finish_cancel if canceling?
+      return finalize_cancel if canceling?
 
       post_hook_success = pre_hook_success ? run_hook(job.post_hook) : nil
-      return finish_cancel if canceling?
+      return finalize_cancel if canceling?
 
       if pre_hook_success && rsync_success && post_hook_success
         job_run.complete!
@@ -103,17 +103,18 @@ module JobRuns
 
       Hooks::ExecuteService
         .new(hook, job_run:)
-        .call[:success]
+        .call
+        .success
     end
 
     def canceling?
       job_run.reload.canceling?
     end
 
-    def finish_cancel
-      job_run.finish_cancel!
+    def finalize_cancel
+      job_run.cancel!
 
-      run_outcome_hook(:failed) # cancellation routes to failure-hook semantics
+      run_hook(job.failure_hook) if hooks? # cancellation routes to failure-hook semantics
     end
 
     def attach_rsync_log(file)

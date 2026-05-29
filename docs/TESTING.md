@@ -43,6 +43,7 @@ This document describes the testing setup, conventions, and CI/CD pipeline.
 - Prefer `build` in model specs for validation tests (faster, no database writes)
 - Use `create` in request/integration specs when you need persisted data
 - Leverage factory traits for different states: `create(:user, :admin)`
+- Never stub `Configuration.get` directly with `allow(Configuration).to receive(:get)`. The `Configuration` model is a thin wrapper around persisted settings; mocking it bypasses the real read/write path and produces brittle, leaky tests. Always go through the `with_configuration` helper instead — it sets the value before the example and restores the original after, so configuration changes never leak between examples.
 - When testing different configurations, use the `with_configuration` helper:
   ```ruby
   context "when notifications are enabled" do

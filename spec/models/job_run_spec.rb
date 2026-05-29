@@ -74,25 +74,25 @@ RSpec.describe JobRun do
           .from("running").to("failed")
       end
 
-      it "transitions from pending to canceled on cancel" do
+      it "transitions from pending to canceled on request_cancel" do
         job_run = create(:job_run, :pending)
 
-        expect { job_run.cancel! }
+        expect { job_run.request_cancel! }
           .to change { job_run.reload.status }
           .from("pending").to("canceled")
       end
 
-      it "transitions from running to canceling on cancel" do
+      it "transitions from running to canceling on request_cancel" do
         job_run = create(:job_run, :running)
 
-        expect { job_run.cancel! }
+        expect { job_run.request_cancel! }
           .to change { job_run.reload.status }
           .from("running").to("canceling")
       end
 
       it "sets cancel_requested_at but not canceled_at when canceling a running run" do
         job_run = create(:job_run, :running)
-        job_run.cancel!
+        job_run.request_cancel!
         job_run.reload
 
         expect(job_run.cancel_requested_at).to be_present
@@ -100,19 +100,19 @@ RSpec.describe JobRun do
         expect(job_run.completed_at).to be_nil
       end
 
-      it "transitions from canceling to canceled on finish_cancel" do
+      it "transitions from canceling to canceled on cancel" do
         job_run = create(:job_run, :running, cancel_requested_at: Time.zone.now)
         job_run.update!(status: "canceling")
 
-        expect { job_run.finish_cancel! }
+        expect { job_run.cancel! }
           .to change { job_run.reload.status }
           .from("canceling").to("canceled")
       end
 
-      it "sets canceled_at and completed_at on finish_cancel" do
+      it "sets canceled_at and completed_at on cancel" do
         job_run = create(:job_run, :running, cancel_requested_at: Time.zone.now)
         job_run.update!(status: "canceling")
-        job_run.finish_cancel!
+        job_run.cancel!
 
         job_run.reload
 
@@ -122,7 +122,7 @@ RSpec.describe JobRun do
 
       it "sets cancel_requested_at, canceled_at, and completed_at when canceling a pending run" do
         job_run = create(:job_run, :pending)
-        job_run.cancel!
+        job_run.request_cancel!
 
         job_run.reload
 
@@ -134,7 +134,7 @@ RSpec.describe JobRun do
       it "does not overwrite existing cancel_requested_at when canceling" do
         cancel_requested_at = 1.minute.ago
         job_run = create(:job_run, :pending, cancel_requested_at:)
-        job_run.cancel!
+        job_run.request_cancel!
 
         expect(job_run.reload.cancel_requested_at)
           .to be_within(1.second)
@@ -236,17 +236,14 @@ RSpec.describe JobRun do
   end
 
   describe "notifications" do
+    with_configuration "notifications" => true
+
     let(:user) { create(:user) }
     let(:job) { create(:job, user:) }
     let!(:notification) { create(:notification, user:) }
     let!(:job_notification) { create(:job_notification, job:, notification:) }
 
     let(:job_run) { create(:job_run, :pending, user:, job:) }
-
-    before do
-      allow(Configuration).to receive(:get).and_call_original
-      allow(Configuration).to receive(:get).with("notifications").and_return(true)
-    end
 
     it "enqueues a start notification on start" do
       expect { job_run.start! }
@@ -276,27 +273,29 @@ RSpec.describe JobRun do
         .with(job_notification.id, job_run.id, "failure")
     end
 
-    it "does not enqueue a notification on cancel (running -> canceling)" do
+    it "does not enqueue a notification on request_cancel (running -> canceling)" do
       job_run.update!(status: "running", started_at: Time.zone.now)
 
-      expect { job_run.cancel! }.not_to have_enqueued_job(Notifications::SendJob)
+      expect { job_run.request_cancel! }.not_to have_enqueued_job(Notifications::SendJob)
     end
 
-    it "does not enqueue a notification on finish_cancel" do
+    it "does not enqueue a notification on cancel (canceling -> canceled)" do
       job_run.update!(status: "running", started_at: Time.zone.now, cancel_requested_at: Time.zone.now)
       job_run.update!(status: "canceling")
 
-      expect { job_run.finish_cancel! }.not_to have_enqueued_job(Notifications::SendJob)
-    end
-
-    it "does not enqueue a notification on cancel from pending" do
       expect { job_run.cancel! }.not_to have_enqueued_job(Notifications::SendJob)
     end
 
-    it "does not enqueue when notifications are disabled" do
-      allow(Configuration).to receive(:get).with("notifications").and_return(false)
+    it "does not enqueue a notification on request_cancel from pending" do
+      expect { job_run.request_cancel! }.not_to have_enqueued_job(Notifications::SendJob)
+    end
 
-      expect { job_run.start! }.not_to have_enqueued_job(Notifications::SendJob)
+    context "when notifications are disabled" do
+      with_configuration "notifications" => false
+
+      it "does not enqueue" do
+        expect { job_run.start! }.not_to have_enqueued_job(Notifications::SendJob)
+      end
     end
   end
 

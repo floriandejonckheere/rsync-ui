@@ -13,7 +13,7 @@ default: &default
   scheduler:
     class: "SchedulerJob"
     schedule: every minute
-  reap_stuck_job_runs:
+  terminate_stuck_job_runs:
     command: "Jobs::TerminateStuckJobsService.call"
     queue: workers
     schedule: every minute

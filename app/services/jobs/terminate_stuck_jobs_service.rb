@@ -16,7 +16,7 @@ module Jobs
 
         if job_run.canceling?
           # SIGTERM presumably worked; the executor never finalized.
-          job_run.finish_cancel!
+          job_run.cancel!
         else
           job_run.error!(error_class: "Stuck", error_message: "Worker process is no longer alive")
         end
