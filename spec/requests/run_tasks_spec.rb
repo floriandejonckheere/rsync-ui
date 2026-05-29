@@ -33,16 +33,16 @@ RSpec.describe "Run tasks" do
     end
   end
 
-  describe "terminate_stuck_jobs" do
-    let(:task) { create(:task, name: "terminate_stuck_jobs", class_name: "Tasks::TerminateStuckJobs") }
+  describe "terminate_stuck_job_runs" do
+    let(:task) { create(:task, name: "terminate_stuck_job_runs", class_name: "Tasks::TerminateStuckJobs") }
 
-    it "calls Jobs::TerminateStuckJobsService" do
-      allow(Jobs::TerminateStuckJobsService)
+    it "calls Jobs::TerminateStuckService" do
+      allow(Jobs::TerminateStuckService)
         .to receive :call
 
       run(task)
 
-      expect(Jobs::TerminateStuckJobsService)
+      expect(Jobs::TerminateStuckService)
         .to have_received :call
     end
   end
