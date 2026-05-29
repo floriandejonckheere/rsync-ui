@@ -121,6 +121,17 @@ module JobRuns
           JobRuns::BroadcastService.broadcast_complete(job_run, from: transition.from)
         end
       end
+
+      ##
+      # Predicates
+      #
+      def cancelable?
+        pending? || running?
+      end
+
+      def deletable?
+        completed? || failed? || canceled? || errored?
+      end
     end
   end
 end
