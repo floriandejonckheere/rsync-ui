@@ -46,12 +46,12 @@ module JobRuns
           transition running: :failed
         end
 
-        event :cancel do
+        event :request_cancel do
           transition pending: :canceled
           transition running: :canceling
         end
 
-        event :finish_cancel do
+        event :cancel do
           transition canceling: :canceled
         end
 
@@ -70,7 +70,7 @@ module JobRuns
           job_run.completed_at ||= Time.zone.now
         end
 
-        before_transition on: :cancel do |job_run|
+        before_transition on: :request_cancel do |job_run|
           job_run.cancel_requested_at ||= Time.zone.now
         end
 
@@ -109,13 +109,13 @@ module JobRuns
           JobRuns::BroadcastService.broadcast_progress(job_run)
         end
 
-        after_transition on: :cancel, from: :running do |job_run|
+        after_transition on: :request_cancel, from: :running do |job_run|
           next unless Configuration.get("streaming")
 
           JobRuns::BroadcastService.broadcast_canceling(job_run)
         end
 
-        after_transition on: [:complete, :mark_failed, :finish_cancel, :error] do |job_run, transition|
+        after_transition on: [:complete, :mark_failed, :cancel, :error] do |job_run, transition|
           next unless Configuration.get("streaming")
 
           JobRuns::BroadcastService.broadcast_complete(job_run, from: transition.from)

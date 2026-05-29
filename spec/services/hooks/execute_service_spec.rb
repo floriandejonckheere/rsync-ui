@@ -14,8 +14,8 @@ RSpec.describe Hooks::ExecuteService do
     it "returns a successful result and persists per-hook status" do
       result = service.call
 
-      expect(result[:success]).to be true
-      expect(result[:exit_status]).to eq 0
+      expect(result.success).to be true
+      expect(result.exit_status).to eq 0
 
       job_run.reload
 
@@ -47,8 +47,8 @@ RSpec.describe Hooks::ExecuteService do
       it "returns a failed result and persists per-hook status" do
         result = service.call
 
-        expect(result[:success]).to be false
-        expect(result[:exit_status]).to eq 1
+        expect(result.success).to be false
+        expect(result.exit_status).to eq 1
 
         job_run.reload
 
@@ -68,8 +68,8 @@ RSpec.describe Hooks::ExecuteService do
       it "returns a failed result and persists the error" do
         result = service.call
 
-        expect(result[:success]).to be false
-        expect(result[:exit_status]).to be_nil
+        expect(result.success).to be false
+        expect(result.exit_status).to be_nil
 
         job_run.reload
 

@@ -2,6 +2,8 @@
 
 module Hooks
   class ExecuteService < ApplicationService
+    Result = Data.define(:success, :exit_status)
+
     attr_reader :hook,
                 :job_run
 
@@ -18,28 +20,38 @@ module Hooks
         .join(" ")
 
       Tempfile.create(["hook_#{hook.hook_type}", ".log"]) do |file|
-        result = Processes::ExecuteService.new(full_command, job_run).call do |output|
-          file.write(output.read)
-        end
+        exit_status = run(full_command, file)
 
         attach_output(file)
 
         persist_status(
-          status: result.exit_status.success? ? "success" : "failed",
-          exit_status: result.exit_status.exitstatus,
+          status: exit_status.success? ? "success" : "failed",
+          exit_status: exit_status.exitstatus,
         )
 
-        { success: result.exit_status.success?, exit_status: result.exit_status.exitstatus }
+        Result.new(success: exit_status.success?, exit_status: exit_status.exitstatus)
       rescue StandardError => e
         attach_output(file)
 
         persist_status(status: "errored", error_class: e.class.name, error_message: e.message)
 
-        { success: false, exit_status: nil }
+        Result.new(success: false, exit_status: nil)
       end
     end
 
     private
+
+    def run(command, file)
+      Open3.popen2e(command, pgroup: true) do |_stdin, output, wait_thr|
+        job_run.update!(pid: wait_thr.pid)
+
+        file.write(output.read)
+
+        wait_thr.value
+      end
+    ensure
+      job_run.update_column(:pid, nil) if job_run.persisted? # rubocop:disable Rails/SkipsModelValidations
+    end
 
     def attach_output(file)
       attachment = job_run.public_send(:"#{hook.hook_type}_hook_output")

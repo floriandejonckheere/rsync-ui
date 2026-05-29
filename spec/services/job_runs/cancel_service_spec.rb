@@ -12,7 +12,7 @@ RSpec.describe JobRuns::CancelService do
       it "transitions immediately to canceled" do
         result = service.call
 
-        expect(result[:success]).to be true
+        expect(result.success).to be true
 
         job_run.reload
 
@@ -41,7 +41,7 @@ RSpec.describe JobRuns::CancelService do
       end
 
       it "returns success" do
-        expect(service.call[:success]).to be true
+        expect(service.call.success).to be true
       end
     end
 
@@ -49,7 +49,7 @@ RSpec.describe JobRuns::CancelService do
       let(:job_run) { create(:job_run, :canceling, user:) }
 
       it "returns failure" do
-        expect(service.call[:success]).to be false
+        expect(service.call.success).to be false
       end
 
       it "does not enqueue CancelJob" do
@@ -63,7 +63,7 @@ RSpec.describe JobRuns::CancelService do
       it "returns failure" do
         result = service.call
 
-        expect(result[:success]).to be false
+        expect(result.success).to be false
       end
 
       it "does not modify the job run" do

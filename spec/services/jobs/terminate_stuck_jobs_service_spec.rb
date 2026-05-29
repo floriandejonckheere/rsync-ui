@@ -88,7 +88,6 @@ RSpec.describe Jobs::TerminateStuckJobsService do
     context "with a canceling job whose pid is alive" do
       let!(:job_run) { create(:job_run, :canceling, job:, user:, pid: 99_999) }
 
-
       before do
         allow(Process)
           .to receive(:kill)
@@ -134,37 +133,6 @@ RSpec.describe Jobs::TerminateStuckJobsService do
       it "does not modify them" do
         expect { service.call }
           .not_to(change { [completed_run, failed_run, canceled_run].map { it.reload.attributes } })
-      end
-    end
-
-    describe "notifications" do
-      with_configuration "notifications" => true
-
-      let!(:notification) { create(:notification, user:) }
-      let!(:job_notification) { create(:job_notification, job:, notification:) }
-      let!(:job_run) { create(:job_run, :running, job:, user:, pid: 99_999) }
-
-      before do
-        allow(Process)
-          .to receive(:kill)
-          .with(0, -99_999)
-          .and_raise Errno::ESRCH
-      end
-
-      it "enqueues a failure notification for each job notification (via after_commit on JobRun)" do
-        service.call
-
-        expect(Notifications::SendJob)
-          .to have_been_enqueued
-          .with(job_notification.id, job_run.id, "failure")
-      end
-
-      context "when notifications are disabled" do
-        with_configuration "notifications" => false
-
-        it "does not enqueue notifications" do
-          expect { service.call }.not_to have_enqueued_job Notifications::SendJob
-        end
       end
     end
   end

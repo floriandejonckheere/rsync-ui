@@ -112,15 +112,17 @@ RSpec.describe JobRuns::ExecuteService do
         expect(job_run.output).to be_attached
       end
 
-      it "skips the post-hook after cancellation" do
-        post_hook = create(:hook, :post, job:, command: "echo", arguments: "post", enabled: true)
-        allow(Configuration).to receive(:get).and_call_original
-        allow(Configuration).to receive(:get).with("hooks").and_return(true)
+      context "with hooks enabled" do
+        with_configuration "hooks" => true
 
-        service.call
+        it "skips the post-hook after cancellation" do
+          post_hook = create(:hook, :post, job:, command: "echo", arguments: "post", enabled: true)
 
-        expect(post_hook.reload).to be_present
-        expect(job_run.reload.post_hook_status).to be_nil
+          service.call
+
+          expect(post_hook.reload).to be_present
+          expect(job_run.reload.post_hook_status).to be_nil
+        end
       end
     end
 
