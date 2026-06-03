@@ -4,8 +4,8 @@ FactoryBot.define do
   factory :hook do
     job
     hook_type { "pre" }
-    command { "/usr/local/bin/backup.sh" }
-    arguments { nil }
+    command { "echo" }
+    arguments { "ok" }
     enabled { true }
 
     trait :pre do

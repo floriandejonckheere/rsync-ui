@@ -57,10 +57,13 @@ For remote repositories, the server should be mounted as a local directory, and 
   - [ ] No connectivity polling for archived servers
   - [ ] No scheduling for archived jobs
 - [ ] Make application responsive
-- [ ] Make job run immutable: save command and options in the database
+- [ ] Make job run immutable: save command, options, and hooks in the database
 - [ ] Allow retrying jobs, or automatic retry (e.g. with incremental/exponential backoff)
 - [ ] Update branding
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
+- [ ] Should a canceled job run (during pre-, rsync, or post-hook) should run failure hook?
+- [ ] Hooks::ExecuteService: timeout on command execution
+- [ ] Save exit status of rsync command on job run
 - [ ] Add a local resource usage card
 - [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
 - [ ] Implement support for OAuth2 authentication
