@@ -10,8 +10,8 @@ RSpec.describe JobRuns::ExecuteService do
 
   let(:options) { {} }
 
-  let(:exit_status) { instance_double(Process::Status, success?: true, signaled?: false, exitstatus: 0, termsig: nil) }
-  let(:rsync_result) { Rsync::ExecuteService::Result.new(exit_status:) }
+  let(:rsync_exit_status) { instance_double(Process::Status, success?: true, signaled?: false, exitstatus: 0, termsig: nil) }
+  let(:rsync_result) { Rsync::ExecuteService::Result.new(exit_status: rsync_exit_status) }
   let(:rsync_execute_service) { instance_double(Rsync::ExecuteService) }
 
   before do
@@ -30,7 +30,7 @@ RSpec.describe JobRuns::ExecuteService do
   end
 
   describe "#call" do
-    it "executes the job run" do
+    it "transitions to completed" do
       service.call
 
       job_run.reload
@@ -49,15 +49,19 @@ RSpec.describe JobRuns::ExecuteService do
       it "does not execute" do
         service.call
 
-        expect(job_run.reload).to be_running
-        expect(command_service).not_to have_received(:call)
+        job_run.reload
+
+        expect(job_run).to be_running
+
+        expect(command_service)
+          .not_to have_received(:call)
       end
     end
 
     context "when the command exits with a non-zero status" do
-      let(:exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
+      let(:rsync_exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
 
-      it "sets status to failed and completed_at" do
+      it "transitions to failed" do
         service.call
 
         job_run.reload
@@ -75,7 +79,7 @@ RSpec.describe JobRuns::ExecuteService do
           .and_raise(RuntimeError, "something went wrong")
       end
 
-      it "sets status to errored, error class, and message" do
+      it "transitions to errored" do
         service.call
 
         job_run.reload
@@ -87,39 +91,160 @@ RSpec.describe JobRuns::ExecuteService do
       end
     end
 
-    context "when cancellation is requested mid-flow (rsync was SIGTERMed)" do
-      let(:exit_status) { instance_double(Process::Status, success?: false, signaled?: true, exitstatus: nil, termsig: 15) }
+    describe "cancellation" do
+      let(:hook_exit_status) { instance_double(Process::Status, success?: true, signaled?: false, exitstatus: 0, termsig: nil) }
+      let(:hook_result) { Hooks::ExecuteService::Result.new(success: true, exit_status: hook_exit_status) }
+      let(:hook_execute_service) { instance_double(Hooks::ExecuteService) }
+
+      let(:job) { create(:job, :with_hooks, user:, **options) }
 
       before do
-        # Simulate the cancel job transitioning the run to canceling during rsync
-        allow(rsync_execute_service).to receive(:call) do |&_block|
-          job_run.update!(status: "canceling", cancel_requested_at: Time.zone.now)
-          rsync_result
+        allow(Hooks::ExecuteService)
+          .to receive(:new)
+          .and_return hook_execute_service
+
+        allow(hook_execute_service)
+          .to receive(:call)
+          .and_return hook_result
+      end
+
+      context "when cancellation was requested during the pre-hook" do
+        with_configuration "hooks" => true
+
+        before do
+          allow(hook_execute_service)
+            .to receive(:call) do |&_block|
+            job_run.request_cancel!
+
+            hook_result
+          end
+        end
+
+        it "transitions to canceled" do
+          service.call
+
+          job_run.reload
+
+          expect(job_run).to be_canceled
+          expect(job_run.cancel_requested_at).to be_present
+          expect(job_run.canceled_at).to be_present
+          expect(job_run.completed_at).to be_present
+        end
+
+        it "skips the rsync execution" do
+          service.call
+
+          expect(rsync_execute_service)
+            .not_to have_received(:call)
+        end
+
+        it "skips the post-hook" do
+          service.call
+
+          expect(job_run.reload.post_hook_status).to be_nil
+        end
+
+        it "skips the success hook" do
+          service.call
+
+          expect(job_run.reload.success_hook_status).to be_nil
+        end
+
+        it "skips the failure hook" do
+          service.call
+
+          expect(job_run.reload.failure_hook_status).to be_nil
         end
       end
 
-      it "marks the job run as canceled" do
-        service.call
+      context "when cancellation was requested during the rsync execution" do
+        before do
+          allow(rsync_execute_service)
+            .to receive(:call) do |&_block|
+            job_run.request_cancel!
 
-        job_run.reload
+            rsync_result
+          end
+        end
 
-        expect(job_run).to be_canceled
-        expect(job_run.cancel_requested_at).to be_present
-        expect(job_run.canceled_at).to be_present
-        expect(job_run.completed_at).to be_present
-        expect(job_run.output).to be_attached
-      end
-
-      context "with hooks enabled" do
-        with_configuration "hooks" => true
-
-        it "skips the post-hook after cancellation" do
-          post_hook = create(:hook, :post, job:, command: "echo", arguments: "post", enabled: true)
-
+        it "transitions to canceled" do
           service.call
 
-          expect(post_hook.reload).to be_present
-          expect(job_run.reload.post_hook_status).to be_nil
+          job_run.reload
+
+          expect(job_run).to be_canceled
+          expect(job_run.cancel_requested_at).to be_present
+          expect(job_run.canceled_at).to be_present
+          expect(job_run.completed_at).to be_present
+        end
+
+        context "with hooks enabled" do
+          with_configuration "hooks" => true
+
+          it "skips the post-hook" do
+            service.call
+
+            expect(job_run.reload.post_hook_status).to be_nil
+          end
+
+          it "skips the success hook" do
+            service.call
+
+            expect(job_run.reload.success_hook_status).to be_nil
+          end
+
+          it "skips the failure hook" do
+            service.call
+
+            expect(job_run.reload.failure_hook_status).to be_nil
+          end
+        end
+      end
+
+      context "when cancellation was requested during the post-hook" do
+        with_configuration "hooks" => true
+
+        before do
+          # Skip pre-hook so only the post-hook runs
+          job_run.job.pre_hook.destroy!
+          job_run.job.reload
+
+          allow(hook_execute_service)
+            .to receive(:call) do |&_block|
+            job_run.request_cancel!
+
+            hook_result
+          end
+        end
+
+        it "transitions to canceled" do
+          service.call
+
+          job_run.reload
+
+          expect(job_run).to be_canceled
+          expect(job_run.cancel_requested_at).to be_present
+          expect(job_run.canceled_at).to be_present
+          expect(job_run.completed_at).to be_present
+        end
+
+        it "executes rsync" do
+          service.call
+
+          expect(rsync_execute_service)
+            .to have_received(:call)
+        end
+
+        it "skips the success hook" do
+          service.call
+
+          expect(job_run.reload.success_hook_status).to be_nil
+        end
+
+        it "skips the failure hook" do
+          service.call
+
+          expect(job_run.reload.failure_hook_status).to be_nil
         end
       end
     end
@@ -131,7 +256,7 @@ RSpec.describe JobRuns::ExecuteService do
         allow(rsync_execute_service)
           .to receive(:call)
           .and_yield(status_line)
-          .and_return(rsync_result)
+          .and_return rsync_result
       end
 
       context "when only opt_progress is enabled" do
@@ -157,7 +282,7 @@ RSpec.describe JobRuns::ExecuteService do
 
           expect(job_run.bytes_copied).to eq 1_234_567
           expect(job_run.progress).to eq 75
-          expect(job_run.output.download).to include(status_line)
+          expect(job_run.output.download).to include status_line
         end
       end
 
@@ -171,7 +296,7 @@ RSpec.describe JobRuns::ExecuteService do
 
           expect(job_run.bytes_copied).to be_nil
           expect(job_run.progress).to be_nil
-          expect(job_run.output).to be_attached
+          expect(job_run.output.download).to include status_line
         end
       end
     end
@@ -179,99 +304,269 @@ RSpec.describe JobRuns::ExecuteService do
     describe "hooks" do
       with_configuration "hooks" => true
 
-      context "when a pre-hook is configured" do
-        before { create(:hook, :pre, job:, command: "echo", arguments: "pre", enabled: true) }
+      let(:pre_hook) { create(:hook, :pre, command: "echo", arguments: "running pre-hook") }
+      let(:post_hook) { create(:hook, :post, command: "echo", arguments: "running post-hook") }
+      let(:success_hook) { create(:hook, :success, command: "echo", arguments: "running success hook") }
+      let(:failure_hook) { create(:hook, :failure, command: "echo", arguments: "running failure hook") }
+      let(:job) { create(:job, :with_hooks, pre_hook:, post_hook:, success_hook:, failure_hook:, user:, **options) }
 
-        it "executes the pre-hook before running the job and records success status" do
+      describe "pre-hook" do
+        it "executes the pre-hook before running rsync" do
           service.call
 
-          job_run = job.job_runs.sole
+          job_run.reload
 
-          expect(job_run.pre_hook_output).to be_attached
           expect(job_run.pre_hook_status).to eq "success"
           expect(job_run.pre_hook_exit_status).to eq 0
+          expect(job_run.pre_hook_output.download).to include "running pre-hook"
         end
-      end
 
-      context "when the pre-hook fails" do
-        before { create(:hook, :pre, job:, command: "false", enabled: true) }
-
-        it "sets the job run status to failed, records hook status, and does not run rsync" do
+        it "executes the success hook" do
           service.call
 
-          job_run = job.job_runs.sole
+          job_run.reload
 
-          expect(job_run).to be_failed
-          expect(job_run.pre_hook_status).to eq "failed"
-          expect(job_run.pre_hook_exit_status).to eq 1
-          expect(command_service).not_to have_received(:call)
-        end
-      end
-
-      context "when a post-hook is configured" do
-        before { create(:hook, :post, job:, command: "echo", arguments: "post", enabled: true) }
-
-        it "executes the post-hook after running the job and records success status" do
-          service.call
-
-          job_run = job.job_runs.sole
-
-          expect(job_run.post_hook_output).to be_attached
-          expect(job_run.post_hook_status).to eq "success"
-          expect(job_run.post_hook_exit_status).to eq 0
-        end
-      end
-
-      context "when a success-hook is configured" do
-        before { create(:hook, :success, job:, command: "echo", arguments: "success", enabled: true) }
-
-        it "executes the success-hook when the job completes successfully and records success status" do
-          service.call
-
-          job_run = job.job_runs.sole
-
-          expect(job_run.success_hook_output).to be_attached
           expect(job_run.success_hook_status).to eq "success"
           expect(job_run.success_hook_exit_status).to eq 0
+          expect(job_run.success_hook_output.download).to include "running success hook"
         end
 
-        context "when the job fails" do
-          let(:exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
+        it "skips the failure hook" do
+          service.call
 
-          it "does not execute the success-hook" do
+          expect(job_run.reload.failure_hook_status).to be_nil
+        end
+
+        context "when the pre-hook is disabled" do
+          let(:pre_hook) { create(:hook, :pre, command: "echo", arguments: "running pre-hook", enabled: false) }
+
+          it "does not execute the pre-hook" do
             service.call
 
-            job_run = job.job_runs.sole
+            expect(job_run.pre_hook_status).to be_nil
+            expect(job_run.pre_hook_exit_status).to be_nil
+            expect(job_run.pre_hook_output).not_to be_attached
+          end
+        end
 
-            expect(job_run.success_hook_output).not_to be_attached
-            expect(job_run.success_hook_status).to be_nil
+        context "when the pre-hook fails" do
+          let(:pre_hook) { create(:hook, :pre, command: "false", arguments: nil) }
+
+          it "transitions to failed" do
+            service.call
+
+            job_run.reload
+
+            expect(job_run).to be_failed
+            expect(job_run.pre_hook_status).to eq "failed"
+            expect(job_run.pre_hook_exit_status).to eq 1
+          end
+
+          it "skips rsync" do
+            service.call
+
+            expect(rsync_execute_service)
+              .not_to have_received(:call)
+          end
+
+          it "skips the success hook" do
+            service.call
+
+            expect(job_run.reload.success_hook_status).to be_nil
+          end
+
+          it "executes the failure hook" do
+            service.call
+
+            job_run.reload
+
+            expect(job_run.failure_hook_status).to eq "success"
+            expect(job_run.failure_hook_exit_status).to eq 0
+            expect(job_run.failure_hook_output.download).to include "running failure hook"
           end
         end
       end
 
-      context "when a failure-hook is configured" do
-        before { create(:hook, :failure, job:, command: "echo", arguments: "failure", enabled: true) }
-
-        it "does not execute the failure-hook when the job succeeds" do
+      describe "post-hook" do
+        it "executes the post-hook after running rsync" do
           service.call
 
-          job_run = job.job_runs.sole
+          job_run.reload
 
-          expect(job_run.failure_hook_output).not_to be_attached
-          expect(job_run.failure_hook_status).to be_nil
+          expect(job_run.post_hook_status).to eq "success"
+          expect(job_run.post_hook_exit_status).to eq 0
+          expect(job_run.post_hook_output.download).to include "running post-hook"
         end
 
-        context "when the job fails" do
-          let(:exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
+        it "executes the success hook" do
+          service.call
 
-          it "executes the failure-hook and records success status" do
+          job_run.reload
+
+          expect(job_run.success_hook_status).to eq "success"
+          expect(job_run.success_hook_exit_status).to eq 0
+          expect(job_run.success_hook_output.download).to include "running success hook"
+        end
+
+        it "skips the failure hook" do
+          service.call
+
+          expect(job_run.reload.failure_hook_status).to be_nil
+        end
+
+        context "when the post-hook is disabled" do
+          let(:post_hook) { create(:hook, :post, command: "echo", arguments: "running post-hook", enabled: false) }
+
+          it "does not execute the post-hook" do
             service.call
 
-            job_run = job.job_runs.sole
+            expect(job_run.post_hook_status).to be_nil
+            expect(job_run.post_hook_exit_status).to be_nil
+            expect(job_run.post_hook_output).not_to be_attached
+          end
+        end
 
-            expect(job_run.failure_hook_output).to be_attached
+        context "when the post-hook fails" do
+          let(:post_hook) { create(:hook, :post, command: "false", arguments: nil) }
+
+          it "transitions to failed" do
+            service.call
+
+            job_run.reload
+
+            expect(job_run).to be_failed
+            expect(job_run.post_hook_status).to eq "failed"
+            expect(job_run.post_hook_exit_status).to eq 1
+          end
+
+          it "skips the success hook" do
+            service.call
+
+            expect(job_run.reload.success_hook_status).to be_nil
+          end
+
+          it "executes the failure hook" do
+            service.call
+
+            job_run.reload
+
             expect(job_run.failure_hook_status).to eq "success"
             expect(job_run.failure_hook_exit_status).to eq 0
+            expect(job_run.failure_hook_output.download).to include "running failure hook"
+          end
+        end
+      end
+
+      describe "success hook" do
+        context "when rsync exits successfully" do
+          it "executes the success hook" do
+            service.call
+
+            job_run.reload
+
+            expect(job_run.success_hook_status).to eq "success"
+            expect(job_run.success_hook_exit_status).to eq 0
+            expect(job_run.success_hook_output.download).to include "running success hook"
+          end
+
+          context "when the success hook is disabled" do
+            let(:success_hook) { create(:hook, :success, command: "echo", arguments: "running success hook", enabled: false) }
+
+            it "does not execute the success hook" do
+              service.call
+
+              expect(job_run.success_hook_status).to be_nil
+              expect(job_run.success_hook_exit_status).to be_nil
+              expect(job_run.success_hook_output).not_to be_attached
+            end
+          end
+
+          context "when the success hook fails" do
+            let(:success_hook) { create(:hook, :success, command: "false", arguments: nil) }
+
+            it "transitions to failed" do
+              service.call
+
+              job_run.reload
+
+              expect(job_run).to be_failed
+              expect(job_run.success_hook_status).to eq "failed"
+              expect(job_run.success_hook_exit_status).to eq 1
+            end
+
+            it "executes the failure hook" do
+              service.call
+
+              job_run.reload
+
+              expect(job_run.failure_hook_status).to eq "success"
+              expect(job_run.failure_hook_exit_status).to eq 0
+              expect(job_run.failure_hook_output.download).to include "running failure hook"
+            end
+          end
+        end
+
+        context "when rsync fails" do
+          let(:rsync_exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1, termsig: nil) }
+
+          it "skips the success hook" do
+            service.call
+
+            job_run.reload
+
+            expect(job_run.reload.success_hook_status).to be_nil
+          end
+        end
+      end
+
+      describe "failure hook" do
+        context "when rsync exits successfully" do
+          it "skips the failure hook" do
+            service.call
+
+            job_run.reload
+
+            expect(job_run.reload.failure_hook_status).to be_nil
+          end
+        end
+
+        context "when rsync fails" do
+          let(:rsync_exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1, termsig: nil) }
+
+          it "executes the failure hook" do
+            service.call
+
+            job_run.reload
+
+            expect(job_run.failure_hook_status).to eq "success"
+            expect(job_run.failure_hook_exit_status).to eq 0
+            expect(job_run.failure_hook_output.download).to include "running failure hook"
+          end
+
+          context "when the failure hook is disabled" do
+            let(:failure_hook) { create(:hook, :failure, command: "echo", arguments: "running failure hook", enabled: false) }
+
+            it "does not execute the failure hook" do
+              service.call
+
+              expect(job_run.failure_hook_status).to be_nil
+              expect(job_run.failure_hook_exit_status).to be_nil
+              expect(job_run.failure_hook_output).not_to be_attached
+            end
+          end
+
+          context "when the failure hook fails" do
+            let(:failure_hook) { create(:hook, :failure, command: "false", arguments: nil) }
+
+            it "transitions to failed" do
+              service.call
+
+              job_run.reload
+
+              expect(job_run).to be_failed
+              expect(job_run.failure_hook_status).to eq "failed"
+              expect(job_run.failure_hook_exit_status).to eq 1
+            end
           end
         end
       end
@@ -279,12 +574,15 @@ RSpec.describe JobRuns::ExecuteService do
       context "when hooks feature is disabled" do
         with_configuration "hooks" => false
 
-        before { create(:hook, :pre, job:, command: "echo", arguments: "pre", enabled: true) }
-
-        it "does not execute the pre-hook" do
+        it "skips all hooks" do
           service.call
 
-          expect(job.job_runs.sole.pre_hook_output).not_to be_attached
+          job_run.reload
+
+          expect(job_run.pre_hook_status).to be_nil
+          expect(job_run.post_hook_status).to be_nil
+          expect(job_run.success_hook_status).to be_nil
+          expect(job_run.failure_hook_status).to be_nil
         end
       end
     end
@@ -298,9 +596,14 @@ RSpec.describe JobRuns::ExecuteService do
         allow(ActionCable.server)
           .to receive(:broadcast)
 
-        allow(Turbo::StreamsChannel).to receive(:broadcast_remove_to)
-        allow(Turbo::StreamsChannel).to receive(:broadcast_prepend_to)
-        allow(Turbo::StreamsChannel).to receive(:broadcast_append_to)
+        allow(Turbo::StreamsChannel)
+          .to receive(:broadcast_remove_to)
+
+        allow(Turbo::StreamsChannel)
+          .to receive(:broadcast_prepend_to)
+
+        allow(Turbo::StreamsChannel)
+          .to receive(:broadcast_append_to)
 
         allow(rsync_execute_service)
           .to receive(:call)
@@ -313,7 +616,7 @@ RSpec.describe JobRuns::ExecuteService do
 
         expect(ActionCable.server)
           .to have_received(:broadcast)
-          .with("job_run_status_#{job_run.id}", hash_including(type: "started", status: "running"))
+          .with "job_run_status_#{job_run.id}", hash_including(type: "started", status: "running")
       end
 
       it "broadcasts the complete event to the status channel" do
@@ -321,7 +624,7 @@ RSpec.describe JobRuns::ExecuteService do
 
         expect(ActionCable.server)
           .to have_received(:broadcast)
-          .with("job_run_status_#{job_run.id}", hash_including(type: "complete", status: "completed"))
+          .with "job_run_status_#{job_run.id}", hash_including(type: "complete", status: "completed")
       end
 
       it "broadcasts log lines to the logs channel" do
@@ -329,7 +632,7 @@ RSpec.describe JobRuns::ExecuteService do
 
         expect(ActionCable.server)
           .to have_received(:broadcast)
-          .with("job_run_logs_#{job_run.id}", { type: "log", content: log_line })
+          .with "job_run_logs_#{job_run.id}", { type: "log", content: log_line }
       end
 
       context "when line matches status pattern and opt_progress2 is enabled" do
@@ -348,7 +651,7 @@ RSpec.describe JobRuns::ExecuteService do
 
           expect(ActionCable.server)
             .to have_received(:broadcast)
-            .with("job_run_logs_#{job_run.id}", { type: "status", content: status_line })
+            .with "job_run_logs_#{job_run.id}", { type: "status", content: status_line }
         end
 
         it "broadcasts the progress event to the status channel" do
@@ -356,7 +659,7 @@ RSpec.describe JobRuns::ExecuteService do
 
           expect(ActionCable.server)
             .to have_received(:broadcast)
-            .with("job_run_status_#{job_run.id}", hash_including(type: "progress", progress: 75))
+            .with "job_run_status_#{job_run.id}", hash_including(type: "progress", progress: 75)
         end
       end
 
@@ -366,21 +669,22 @@ RSpec.describe JobRuns::ExecuteService do
         it "does not broadcast" do
           service.call
 
-          expect(ActionCable.server).not_to have_received(:broadcast)
+          expect(ActionCable.server)
+            .not_to have_received :broadcast
         end
       end
 
       context "when the pre-hook fails" do
         with_configuration "hooks" => true
 
-        before { create(:hook, :pre, job:, command: "false", enabled: true) }
+        let(:pre_hook) { create(:hook, :pre, command: "false", arguments: nil) }
 
         it "broadcasts completion with failed status to the status channel" do
           service.call
 
           expect(ActionCable.server)
             .to have_received(:broadcast)
-            .with("job_run_status_#{job_run.id}", hash_including(type: "complete", status: "failed"))
+            .with "job_run_status_#{job_run.id}", hash_including(type: "complete", status: "failed")
         end
       end
 
@@ -396,7 +700,7 @@ RSpec.describe JobRuns::ExecuteService do
 
           expect(ActionCable.server)
             .to have_received(:broadcast)
-            .with("job_run_status_#{job_run.id}", hash_including(type: "complete", status: "errored"))
+            .with "job_run_status_#{job_run.id}", hash_including(type: "complete", status: "errored")
         end
       end
     end

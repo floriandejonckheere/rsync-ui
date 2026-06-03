@@ -13,46 +13,60 @@ module JobRuns
     end
 
     def call
-      started = false
-      job_run.with_lock do
-        if job_run.reload.pending?
-          job_run.start!
-
-          started = true
-        end
-      end
-
-      return unless started
-
       Rails.logger.info "[#{job.id}] Executing job #{job.name}"
 
+      job_run.with_lock do
+        return unless job_run.pending?
+
+        # Transition to running
+        job_run.start!
+      end
+
+      # Run pre-hook
       pre_hook_success = run_hook(job.pre_hook)
-      return finalize_cancel if canceling?
+      return cancel if canceling?
 
-      rsync_success = pre_hook_success ? run_rsync : nil
-      return finalize_cancel if canceling?
+      # Run rsync if pre-hook was successful
+      if pre_hook_success
+        rsync_success = run_rsync
+        return cancel if canceling?
+      end
 
-      post_hook_success = pre_hook_success ? run_hook(job.post_hook) : nil
-      return finalize_cancel if canceling?
+      # Run post-hook if pre-hook was successful (regardless of rsync success or failure)
+      if pre_hook_success
+        post_hook_success = run_hook(job.post_hook)
+        return cancel if canceling?
+      end
 
-      if pre_hook_success && rsync_success && post_hook_success
+      # Run success hook if pre-, rsync, and post-hook succeeded
+      success_hook_success = if pre_hook_success && rsync_success && post_hook_success
+                               run_hook(job.success_hook)
+                             else
+                               true
+                             end
+
+      # Run failure hook if pre-, rsync, post-, or success hook failed
+      failure_hook_success = if pre_hook_success && rsync_success && post_hook_success && success_hook_success
+                               true
+                             else
+                               run_hook(job.failure_hook)
+                             end
+
+      # Transition to final complete/failed status
+      if pre_hook_success && rsync_success && post_hook_success && success_hook_success && failure_hook_success
         job_run.complete!
-
-        run_hook(job.success_hook) if hooks?
       else
         job_run.mark_failed!
-
-        run_hook(job.failure_hook) if hooks?
       end
     rescue StandardError => e
-      # rsync's own log is attached inside run_rsync (both happy path and its
-      # rescue clause), and each hook attaches its own log. Nothing to salvage.
-      job_run.error!(error_class: e.class.name, error_message: e.message) if job_run.running? || job_run.canceling?
+      # Transition to errored, and save error class and message
+      job_run.error!(error_class: e.class.name, error_message: e.message) if job_run.pending? || job_run.running? || job_run.canceling?
     end
 
     private
 
     def run_rsync
+      # Generate command-line
       command = Rsync::CommandService
         .new(job:)
         .call
@@ -62,17 +76,23 @@ module JobRuns
 
         last_status_line = nil
 
+        Rails.logger.debug { "[#{job_run.id}] Executing #{command.join(' ')}" }
+
         begin
           result = Rsync::ExecuteService.new(command, job_run).call do |line|
             status = Rsync::Progress.new(line) if job.opt_progress || job.opt_progress2
 
             if streaming?
-              payload = { type: status&.bytes ? "status" : "log", content: line }
+              payload = {
+                type: status&.bytes ? "status" : "log",
+                content: line,
+              }
 
               ActionCable.server.broadcast("job_run_logs_#{job_run.id}", payload)
             end
 
             if job.opt_progress2 && status&.bytes
+              # Update statistics on record
               job_run.tick!(bytes_copied: status.bytes, progress: status.progress, speed: status.speed, remaining_time: status.remaining_time)
 
               last_status_line = line
@@ -81,9 +101,11 @@ module JobRuns
             end
           end
 
+          # Write only the last status line to the log file
           file.write(last_status_line) if last_status_line
 
-          attach_rsync_log(file)
+          # Upload complete log
+          attach_log(file)
 
           exit_status = result.exit_status
 
@@ -91,7 +113,8 @@ module JobRuns
 
           exit_status.success?
         rescue StandardError
-          attach_rsync_log(file)
+          # Upload complete log in case of error
+          attach_log(file)
 
           raise
         end
@@ -111,13 +134,13 @@ module JobRuns
       job_run.reload.canceling?
     end
 
-    def finalize_cancel
+    def cancel
       job_run.cancel!
 
-      run_hook(job.failure_hook) if hooks? # cancellation routes to failure-hook semantics
+      run_hook(job.failure_hook)
     end
 
-    def attach_rsync_log(file)
+    def attach_log(file)
       return if job_run.output.attached?
 
       file.rewind
@@ -126,8 +149,6 @@ module JobRuns
         filename: "job_run_#{job_run.sequence}.log",
         content_type: "text/plain",
       )
-    rescue StandardError
-      nil
     end
 
     def hooks?
