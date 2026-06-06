@@ -176,14 +176,22 @@ RSpec.describe JobRun do
         expect(job_run.error_message).to eq "boom"
       end
 
-      it "performs a loopback on tick and persists bytes_copied and progress" do
+      it "performs a loopback on tick_progress and persists bytes_copied and progress" do
         job_run = create(:job_run, :running)
-        job_run.tick!(bytes_copied: 1_000, progress: 50)
+        job_run.tick_progress!(bytes_copied: 1_000, progress: 50)
         job_run.reload
 
         expect(job_run.status).to eq "running"
         expect(job_run.bytes_copied).to eq 1_000
         expect(job_run.progress).to eq 50
+      end
+
+      it "performs a loopback on tick_status and remains running" do
+        job_run = create(:job_run, :running)
+        job_run.tick_status!(type: "log", content: "file.txt\n")
+        job_run.reload
+
+        expect(job_run.status).to eq "running"
       end
 
       it "raises on an invalid transition" do

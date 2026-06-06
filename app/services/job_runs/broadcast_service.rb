@@ -52,9 +52,17 @@ module JobRuns
       )
     end
 
-    def self.broadcast_complete(job_run, from: nil)
-      helpers = ActionController::Base.helpers
+    def self.broadcast_status(job_run, type, content)
+      ActionCable.server.broadcast(
+        "job_run_logs_#{job_run.id}",
+        {
+          type:,
+          content:,
+        },
+      )
+    end
 
+    def self.broadcast_complete(job_run, from: nil)
       ActionCable.server.broadcast(
         "job_run_status_#{job_run.id}",
         {
@@ -63,7 +71,7 @@ module JobRuns
           status_text: I18n.t("job_runs.status.#{job_run.status}"),
           started_at: job_run.started_at&.iso8601,
           completed_at: job_run.completed_at&.iso8601,
-          duration: job_run.started_at ? helpers.distance_of_time_in_words(job_run.started_at, job_run.completed_at || Time.zone.now) : nil,
+          duration: job_run.started_at ? ActionController::Base.helpers.distance_of_time_in_words(job_run.started_at, job_run.completed_at || Time.zone.now) : nil,
         },
       )
 

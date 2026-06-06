@@ -13,7 +13,7 @@ module JobRuns
     end
 
     def call
-      Rails.logger.info "[#{job.id}] Executing job #{job.name}"
+      Rails.logger.info "[#{job.id}] Executing job #{job.name} (hooks: #{hooks?}, streaming: #{streaming?})"
 
       job_run.with_lock do
         return unless job_run.pending?
@@ -83,17 +83,13 @@ module JobRuns
             status = Rsync::Progress.new(line) if job.opt_progress || job.opt_progress2
 
             if streaming?
-              payload = {
-                type: status&.bytes ? "status" : "log",
-                content: line,
-              }
-
-              ActionCable.server.broadcast("job_run_logs_#{job_run.id}", payload)
+              # Broadcast status or log line
+              job_run.tick_status!(type: (status&.bytes ? "status" : "log"), content: line)
             end
 
             if job.opt_progress2 && status&.bytes
               # Update statistics on record
-              job_run.tick!(bytes_copied: status.bytes, progress: status.progress, speed: status.speed, remaining_time: status.remaining_time)
+              job_run.tick_progress!(bytes_copied: status.bytes, progress: status.progress, speed: status.speed, remaining_time: status.remaining_time)
 
               last_status_line = line
             else
