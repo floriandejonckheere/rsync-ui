@@ -32,8 +32,11 @@ module JobRuns
           transition pending: :running
         end
 
-        # Named :tick instead of :progress to avoid overriding the progress column reader
-        event :tick do
+        event :tick_progress do
+          transition running: :running
+        end
+
+        event :tick_status do
           transition running: :running
         end
 
@@ -81,7 +84,7 @@ module JobRuns
           job_run.canceled_at ||= at
         end
 
-        before_transition on: :tick do |job_run, transition|
+        before_transition on: :tick_progress do |job_run, transition|
           kwargs = transition.args.first || {}
 
           job_run.bytes_copied = kwargs[:bytes_copied]
@@ -103,10 +106,17 @@ module JobRuns
           JobRuns::BroadcastService.broadcast_started(job_run)
         end
 
-        after_transition on: :tick do |job_run|
+        after_transition on: :tick_progress do |job_run|
           next unless Configuration.get("streaming")
 
           JobRuns::BroadcastService.broadcast_progress(job_run)
+        end
+
+        after_transition on: :tick_status do |job_run, transition|
+          next unless Configuration.get("streaming")
+
+          kwargs = transition.args.first || {}
+          JobRuns::BroadcastService.broadcast_status(job_run, kwargs[:type], kwargs[:content])
         end
 
         after_transition on: :request_cancel, from: :running do |job_run|

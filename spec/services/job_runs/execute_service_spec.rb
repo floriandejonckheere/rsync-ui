@@ -590,7 +590,7 @@ RSpec.describe JobRuns::ExecuteService do
     describe "streaming" do
       with_configuration "streaming" => true
 
-      let(:log_line) { "file.txt\n" }
+      let(:line) { "file.txt\n" }
 
       before do
         allow(ActionCable.server)
@@ -607,7 +607,7 @@ RSpec.describe JobRuns::ExecuteService do
 
         allow(rsync_execute_service)
           .to receive(:call)
-          .and_yield(log_line)
+          .and_yield(line)
           .and_return(rsync_result)
       end
 
@@ -632,26 +632,19 @@ RSpec.describe JobRuns::ExecuteService do
 
         expect(ActionCable.server)
           .to have_received(:broadcast)
-          .with "job_run_logs_#{job_run.id}", { type: "log", content: log_line }
+          .with "job_run_logs_#{job_run.id}", { type: "log", content: line }
       end
 
       context "when line matches status pattern and opt_progress2 is enabled" do
-        let(:status_line) { "  1,234,567  75%  10.00MB/s  0:00:10\r" }
+        let(:line) { "  1,234,567  75%  10.00MB/s  0:00:10\r" }
         let(:options) { { opt_progress: true, opt_progress2: true } }
-
-        before do
-          allow(rsync_execute_service)
-            .to receive(:call)
-            .and_yield(status_line)
-            .and_return(rsync_result)
-        end
 
         it "broadcasts the line as a status message to the logs channel" do
           service.call
 
           expect(ActionCable.server)
             .to have_received(:broadcast)
-            .with "job_run_logs_#{job_run.id}", { type: "status", content: status_line }
+            .with "job_run_logs_#{job_run.id}", { type: "status", content: line }
         end
 
         it "broadcasts the progress event to the status channel" do
@@ -678,6 +671,67 @@ RSpec.describe JobRuns::ExecuteService do
         with_configuration "hooks" => true
 
         let(:pre_hook) { create(:hook, :pre, command: "false", arguments: nil) }
+        let(:job) { create(:job, :with_hooks, pre_hook:, user:, **options) }
+
+        it "broadcasts completion with failed status to the status channel" do
+          service.call
+
+          expect(ActionCable.server)
+            .to have_received(:broadcast)
+            .with "job_run_status_#{job_run.id}", hash_including(type: "complete", status: "failed")
+        end
+      end
+
+      context "when rsync fails" do
+        with_configuration "hooks" => true
+
+        let(:rsync_exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
+
+        it "broadcasts completion with failed status to the status channel" do
+          service.call
+
+          expect(ActionCable.server)
+            .to have_received(:broadcast)
+            .with "job_run_status_#{job_run.id}", hash_including(type: "complete", status: "failed")
+        end
+      end
+
+      context "when the post-hook fails" do
+        with_configuration "hooks" => true
+
+        let(:post_hook) { create(:hook, :post, command: "false", arguments: nil) }
+        let(:job) { create(:job, :with_hooks, post_hook:, user:, **options) }
+
+        it "broadcasts completion with failed status to the status channel" do
+          service.call
+
+          expect(ActionCable.server)
+            .to have_received(:broadcast)
+            .with "job_run_status_#{job_run.id}", hash_including(type: "complete", status: "failed")
+        end
+      end
+
+      context "when the success hook fails" do
+        with_configuration "hooks" => true
+
+        let(:success_hook) { create(:hook, :success, command: "false", arguments: nil) }
+        let(:job) { create(:job, :with_hooks, success_hook:, user:, **options) }
+
+        it "broadcasts completion with failed status to the status channel" do
+          service.call
+
+          expect(ActionCable.server)
+            .to have_received(:broadcast)
+            .with "job_run_status_#{job_run.id}", hash_including(type: "complete", status: "failed")
+        end
+      end
+
+      context "when the failure hook fails" do
+        with_configuration "hooks" => true
+
+        let(:rsync_exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
+        let(:failure_hook) { create(:hook, :failure, command: "false", arguments: nil) }
+        let(:job) { create(:job, :with_hooks, failure_hook:, user:, **options) }
 
         it "broadcasts completion with failed status to the status channel" do
           service.call
