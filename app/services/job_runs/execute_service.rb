@@ -13,7 +13,7 @@ module JobRuns
     end
 
     def call
-      Rails.logger.info "[#{job.id}] Executing job #{job.name} (hooks: #{hooks?}, streaming: #{streaming?})"
+      Rails.logger.info { "[#{job_run.id}] #{job.name} Executing job (hooks: #{hooks?}, streaming: #{streaming?})" }
 
       job_run.with_lock do
         return unless job_run.pending?
@@ -54,12 +54,17 @@ module JobRuns
 
       # Transition to final complete/failed status
       if pre_hook_success && rsync_success && post_hook_success && success_hook_success && failure_hook_success
+        Rails.logger.info { "[#{job_run.id}] [#{job.name}] Completed job successfully" }
         job_run.complete!
       else
+        Rails.logger.info { "[#{job_run.id}] [#{job.name}] Completed job with failure" }
         job_run.mark_failed!
       end
     rescue StandardError => e
       # Transition to errored, and save error class and message
+      Rails.logger.error { "[#{job_run.id}] [#{job.name}] Completed job with error: #{e.class.name} #{e.message}" }
+      Rails.logger.error { e.backtrace.map { "[#{job_run.id}] [#{job.name}] #{it}" }.join("\n") }
+
       job_run.error!(error_class: e.class.name, error_message: e.message) if job_run.pending? || job_run.running? || job_run.canceling?
     end
 
@@ -71,15 +76,17 @@ module JobRuns
         .new(job:)
         .call
 
+      Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Running command #{command.inspect}" }
+
       Tempfile.create(["job_run_#{job.name.parameterize(separator: '_')}_#{job_run.sequence}", ".log"]) do |file|
         file.write("#{command}\n")
 
         last_status_line = nil
 
-        Rails.logger.debug { "[#{job_run.id}] Executing #{command.join(' ')}" }
-
         begin
           result = Rsync::ExecuteService.new(command, job_run).call do |line|
+            Rails.logger.debug { "[#{job_run.id}] [#{job.name}] #{line.chomp}" }
+
             status = Rsync::Progress.new(line) if job.opt_progress || job.opt_progress2
 
             if streaming?
@@ -105,7 +112,7 @@ module JobRuns
 
           exit_status = result.exit_status
 
-          Rails.logger.info { "[#{job.id}] rsync exited: #{exit_status.exitstatus || "signal #{exit_status.termsig}"}" }
+          Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Exited with exit status #{exit_status} and #{file.pos} bytes of output" }
 
           exit_status.success?
         rescue StandardError
@@ -120,6 +127,8 @@ module JobRuns
     def run_hook(hook)
       return true unless hooks? && hook&.enabled?
 
+      Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Running #{hook.hook_type}-hook #{hook.id}" }
+
       Hooks::ExecuteService
         .new(hook, job_run:)
         .call
@@ -131,8 +140,11 @@ module JobRuns
     end
 
     def cancel
+      Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Cancelling job" }
+
       job_run.cancel!
 
+      Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Running failure hook #{job.failure_hook.id}" } if job.failure_hook
       run_hook(job.failure_hook)
     end
 
