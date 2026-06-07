@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe "Audits" do
+  with_configuration "audits" => true
+
   let(:admin) { create(:user, :admin) }
   let(:user) { create(:user) }
 
@@ -28,9 +30,7 @@ RSpec.describe "Audits" do
       end
 
       context "when feature is disabled" do
-        before { Configuration.set("audits", false) }
-
-        after { Configuration.set("audits", true) }
+        with_configuration "audits" => false
 
         it "returns 404" do
           get audits_path
@@ -72,9 +72,7 @@ RSpec.describe "Audits" do
       end
 
       context "when feature is disabled" do
-        before { Configuration.set("audits", false) }
-
-        after { Configuration.set("audits", true) }
+        with_configuration "audits" => false
 
         it "returns 404" do
           audit = create(:audit)

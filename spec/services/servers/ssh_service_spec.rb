@@ -60,6 +60,8 @@ RSpec.describe Servers::SSHService do
     before { stub_ssh(output: "ok\n") }
 
     context "when audits feature is enabled" do
+      with_configuration "audits" => true
+
       it "creates an audit record" do
         expect { service.call }.to change(Audit, :count).by(1)
       end
