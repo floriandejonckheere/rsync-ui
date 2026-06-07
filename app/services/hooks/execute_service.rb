@@ -15,12 +15,16 @@ module Hooks
     end
 
     def call
-      full_command = [hook.command, interpolate(hook.arguments)]
+      command = [hook.command, interpolate(hook.arguments)]
         .compact_blank
         .join(" ")
 
+      Rails.logger.debug { "[#{job_run.id}] [#{hook.id}] Running command #{command.inspect}" }
+
       Tempfile.create(["hook_#{hook.hook_type}", ".log"]) do |file|
-        exit_status = run(full_command, file)
+        exit_status = run(command, file)
+
+        Rails.logger.debug { "[#{job_run.id}] [#{hook.id}] Exited with exit status #{exit_status.exitstatus} and #{file.pos} bytes of output" }
 
         attach_output(file)
 
@@ -31,6 +35,9 @@ module Hooks
 
         Result.new(success: exit_status.success?, exit_status: exit_status.exitstatus)
       rescue StandardError => e
+        Rails.logger.error { "[#{job_run.id}] [#{hook.id}] Exited with error #{e.class.name} #{e.message} and #{file.pos} bytes of output" }
+        Rails.logger.error { e.backtrace.map { "[#{job_run.id}] [#{hook.id}] #{it}" }.join("\n") }
+
         attach_output(file)
 
         persist_status(status: "errored", error_class: e.class.name, error_message: e.message)
