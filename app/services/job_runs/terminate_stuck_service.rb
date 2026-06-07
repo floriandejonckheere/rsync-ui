@@ -5,8 +5,12 @@ module JobRuns
     def call
       threshold = Configuration.get("jobs.stuck_threshold").to_i.seconds.ago
 
+      Rails.logger.info { "Terminating all job runs stuck since #{threshold.iso8601}" }
+
       # Terminate pending job runs
       JobRun.pending.where(created_at: ...threshold).find_each do |job_run|
+        Rails.logger.info { "Terminating stuck job run #{job_run.id} (still pending after grace period)" }
+
         job_run.error!(error_class: "Stuck", error_message: "Job was not picked up by a worker within the grace period")
       end
 
@@ -14,8 +18,10 @@ module JobRuns
       (JobRun.running + JobRun.canceling).each do |job_run|
         next unless stuck?(job_run, threshold)
 
+        Rails.logger.info { "Terminating #{job_run.status} stuck job run #{job_run.id} (dead)" }
+
         if job_run.canceling?
-          # SIGTERM presumably worked; the executor never finalized.
+          # SIGTERM presumably worked, the job run was never completed
           job_run.cancel!
         else
           job_run.error!(error_class: "Stuck", error_message: "Worker process is no longer alive")
@@ -26,14 +32,11 @@ module JobRuns
     private
 
     def stuck?(job_run, threshold)
-      if job_run.pid.present?
-        dead?(job_run.pid)
-      else
-        # No pid recorded — either between phases or executor died before
-        # spawning. Wait for the grace window so we don't reap a healthy row
-        # during a brief pid-gap.
-        job_run.updated_at < threshold
-      end
+      return dead?(job_run.pid) if job_run.pid.present?
+
+      # No pid recorded: either between hooks/rsync or executor died before spawning
+      # Wait for the grace window, so a healthy process isn't reaped between hooks/rsync
+      job_run.updated_at < threshold
     end
 
     def dead?(pid)

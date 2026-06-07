@@ -17,13 +17,13 @@ module JobRuns
         ##
         # States
         #
-        state :pending
-        state :running
-        state :canceling
-        state :completed
-        state :failed
-        state :canceled
-        state :errored
+        state :pending    # Initial state
+        state :running    # Currently executing
+        state :canceling  # Cancel requested by user
+        state :completed  # Completed successfully
+        state :failed     # Competed with failure
+        state :canceled   # Canceled by user
+        state :errored    # Completed with error
 
         ##
         # Events
