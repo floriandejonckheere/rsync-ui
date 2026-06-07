@@ -70,7 +70,7 @@
 - key: audits
   type: boolean
   category: features
-  default: true
+  default: false
 - key: hooks
   type: boolean
   category: features
