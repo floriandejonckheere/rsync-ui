@@ -13,10 +13,6 @@ default: &default
   scheduler:
     class: "SchedulerJob"
     schedule: every minute
-  terminate_stuck_job_runs:
-    command: "Jobs::TerminateStuckService.call"
-    queue: workers
-    schedule: every minute
   clear_solid_queue_finished_jobs:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
