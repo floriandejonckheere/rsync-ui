@@ -6,13 +6,18 @@ class SchedulerJob < ApplicationJob
                      duration: 30.seconds
 
   def perform
-    schedule_jobs
+    terminate_stuck_job_runs
 
+    schedule_jobs
     schedule_connectivity
     schedule_resource_usage
   end
 
   private
+
+  def terminate_stuck_job_runs
+    JobRuns::TerminateStuckService.call
+  end
 
   def schedule_jobs
     return unless Configuration.get("scheduler")
