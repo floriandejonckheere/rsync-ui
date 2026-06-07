@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class SchedulerJob < ApplicationJob
-  limits_concurrency to: 1, key: "scheduler_job", duration: 1.minute
+  limits_concurrency to: 1,
+                     key: "scheduler_job",
+                     duration: 30.seconds
 
   def perform
     schedule_jobs
