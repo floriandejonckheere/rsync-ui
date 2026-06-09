@@ -4,7 +4,6 @@ RSpec.describe JobRuns::ExecuteService do
   subject(:service) { described_class.new(job_run) }
 
   let(:user) { create(:user) }
-  let(:command_service) { instance_double(Rsync::CommandService, call: "rsync --recursive") }
   let(:job) { create(:job, user:, **options) }
   let(:job_run) { create(:job_run, :pending, job:, user:) }
 
@@ -15,11 +14,6 @@ RSpec.describe JobRuns::ExecuteService do
   let(:rsync_execute_service) { instance_double(Rsync::ExecuteService) }
 
   before do
-    allow(Rsync::CommandService)
-      .to receive(:new)
-      .with(job:)
-      .and_return(command_service)
-
     allow(Rsync::ExecuteService)
       .to receive(:new)
       .and_return(rsync_execute_service)
@@ -53,7 +47,7 @@ RSpec.describe JobRuns::ExecuteService do
 
         expect(job_run).to be_running
 
-        expect(command_service)
+        expect(rsync_execute_service)
           .not_to have_received(:call)
       end
     end
@@ -74,7 +68,7 @@ RSpec.describe JobRuns::ExecuteService do
 
     context "when a Ruby error is raised" do
       before do
-        allow(command_service)
+        allow(rsync_execute_service)
           .to receive(:call)
           .and_raise(RuntimeError, "something went wrong")
       end
@@ -744,7 +738,7 @@ RSpec.describe JobRuns::ExecuteService do
 
       context "when a Ruby error is raised" do
         before do
-          allow(command_service)
+          allow(rsync_execute_service)
             .to receive(:call)
             .and_raise(RuntimeError, "boom")
         end

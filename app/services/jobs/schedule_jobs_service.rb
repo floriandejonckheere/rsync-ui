@@ -14,9 +14,9 @@ module Jobs
 
         next if last_scheduled_run && last_scheduled_run.created_at >= prev_tick
 
-        job_run = job
-          .job_runs
-          .create!(user: job.user, trigger: "scheduled", status: "pending")
+        job_run = JobRuns::CreateService
+          .new(job:, user: job.user, trigger: "scheduled")
+          .call
 
         JobRuns::ExecuteJob.perform_later(job_run)
       end

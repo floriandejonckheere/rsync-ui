@@ -45,6 +45,27 @@
       </div>
     </div>
 
+    <% if @job_run.command.present? %>
+      <div class="card p-0 mb-6">
+        <div
+          class="
+            flex items-center gap-2 px-6 py-4 border-b border-gray-100
+            dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400
+          "
+        >
+          <%= lucide_icon "terminal", class: "h-4 w-4" %>
+          <span><%= I18n.t("job_runs.show.command") %></span>
+        </div>
+
+        <pre
+          class="
+            p-6 text-xs font-mono text-gray-800 dark:text-gray-200
+            whitespace-pre-wrap
+          "
+        ><%= @job_run.command %></pre>
+      </div>
+    <% end %>
+
     <div
       class="card p-0"
       data-job-run-status-target="logCard"
@@ -106,6 +127,27 @@
       </div>
     </div>
   </div>
+  <% if @job_run.command.present? %>
+    <div class="card p-0 mb-6">
+      <div
+        class="
+          flex items-center gap-2 px-6 py-4 border-b border-gray-100
+          dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400
+        "
+      >
+        <%= lucide_icon "terminal", class: "h-4 w-4" %>
+        <span><%= I18n.t("job_runs.show.command") %></span>
+      </div>
+
+      <pre
+        class="
+          p-6 text-xs font-mono text-gray-800 dark:text-gray-200
+          whitespace-pre-wrap
+        "
+      ><%= @job_run.command %></pre>
+    </div>
+  <% end %>
+
   <turbo-frame id="job-run-output">
     <% if @job_run.error_class.present? || @job_run.error_message.present? %>
       <div

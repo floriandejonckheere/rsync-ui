@@ -68,6 +68,7 @@ end
 #  bytes_copied               :bigint
 #  cancel_requested_at        :datetime
 #  canceled_at                :datetime         indexed
+#  command                    :text
 #  completed_at               :datetime         indexed
 #  error_class                :string
 #  error_message              :text

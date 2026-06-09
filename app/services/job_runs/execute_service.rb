@@ -71,20 +71,13 @@ module JobRuns
     private
 
     def run_rsync
-      # Generate command-line
-      command = Rsync::CommandService
-        .new(job:)
-        .call
-
-      Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Running command #{command.inspect}" }
+      Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Running command #{job_run.command.inspect}" }
 
       Tempfile.create(["job_run_#{job.name.parameterize(separator: '_')}_#{job_run.sequence}", ".log"]) do |file|
-        file.write("#{command}\n")
-
         last_status_line = nil
 
         begin
-          result = Rsync::ExecuteService.new(command, job_run).call do |line|
+          result = Rsync::ExecuteService.new(job_run).call do |line|
             Rails.logger.debug { "[#{job_run.id}] [#{job.name}] #{line.chomp}" }
 
             status = Rsync::Progress.new(line) if job.opt_progress || job.opt_progress2

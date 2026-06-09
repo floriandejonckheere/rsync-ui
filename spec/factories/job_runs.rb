@@ -6,6 +6,7 @@ FactoryBot.define do
     user
     trigger { :manual }
     status { :pending }
+    command { "rsync --archive /src/ /dst/" }
 
     trait :pending do
       status { :pending }

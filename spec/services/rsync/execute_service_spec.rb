@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe Rsync::ExecuteService do
-  subject(:service) { described_class.new(command, job_run) }
+  subject(:service) { described_class.new(job_run) }
 
   let(:user) { create(:user) }
   let(:job) { create(:job, user:) }
   let(:job_run) { create(:job_run, :pending, job:, user:) }
-  let(:command) { "rsync --recursive" }
 
   let(:output) { instance_double(IO) }
   let(:exit_status) { instance_double(Process::Status, success?: true, signaled?: false, exitstatus: 0) }
@@ -15,7 +14,7 @@ RSpec.describe Rsync::ExecuteService do
   before do
     allow(Open3)
       .to receive(:popen2e)
-        .with(command, pgroup: true) { |_command, pgroup:, &block| block.call(nil, output, wait_thr) } # rubocop:disable Lint/UnusedBlockArgument
+        .with(job_run.command, pgroup: true) { |_command, pgroup:, &block| block.call(nil, output, wait_thr) } # rubocop:disable Lint/UnusedBlockArgument
 
     calls = 0
     allow(output).to receive(:readpartial) do

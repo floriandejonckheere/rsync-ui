@@ -30,6 +30,7 @@ en:
       subtitle: Overview of synchronization job executions
       title: Activity log
     show:
+      command: Command
       completed_at: Completed at
       error_class: Error class
       error_details: Error details

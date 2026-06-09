@@ -2,12 +2,11 @@
 
 module Rsync
   class ExecuteService < ApplicationService
-    attr_reader :command, :job_run
+    attr_reader :job_run
 
-    def initialize(command, job_run)
+    def initialize(job_run)
       super()
 
-      @command = command
       @job_run = job_run
     end
 
@@ -19,7 +18,7 @@ module Rsync
     # status. Callers must check job_run.canceling? after the call to
     # distinguish "exited non-zero because of SIGTERM" from a regular failure.
     def call(&block)
-      Open3.popen2e(command, pgroup: true) do |_stdin, output, wait_thr|
+      Open3.popen2e(job_run.command, pgroup: true) do |_stdin, output, wait_thr|
         job_run.update!(pid: wait_thr.pid)
 
         buffer = +""

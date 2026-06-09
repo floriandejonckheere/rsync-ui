@@ -48,15 +48,13 @@ class JobRunsController < ApplicationController
   def create
     job = Job.find(params[:job_id])
 
-    job_run = job
-      .job_runs
-      .build(user: current_user, trigger: "manual", status: "pending")
-
-    authorize! job_run
+    authorize! job.job_runs.build(user: current_user, trigger: "manual", status: "pending")
 
     return head :unprocessable_content unless job.enabled?
 
-    job_run.save!
+    job_run = JobRuns::CreateService
+      .new(job:, user: current_user, trigger: "manual")
+      .call
 
     JobRuns::ExecuteJob.perform_later(job_run)
 
