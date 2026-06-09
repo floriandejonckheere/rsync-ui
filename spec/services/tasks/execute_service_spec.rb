@@ -3,12 +3,12 @@
 RSpec.describe Tasks::ExecuteService do
   subject(:service) { described_class.new(task, user:) }
 
-  let(:task) { create(:task, class_name: "Servers::SyncSSHConfigTask") }
+  let(:task) { create(:task) }
   let(:user) { create(:user, :admin) }
 
   describe "#call" do
     context "when task executes successfully" do
-      before { allow(Servers::SyncSSHConfigTask).to receive(:call) }
+      before { allow(DummyTask).to receive(:call) }
 
       it "calls the service and returns success" do
         task.update!(status: "failed", error_class: "StandardError", error_message: "old error")
@@ -26,7 +26,7 @@ RSpec.describe Tasks::ExecuteService do
 
     context "when task raises an error" do
       before do
-        allow(Servers::SyncSSHConfigTask)
+        allow(DummyTask)
           .to receive(:call)
           .and_raise StandardError, "SSH config failed"
       end

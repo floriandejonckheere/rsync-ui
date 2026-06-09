@@ -15,9 +15,9 @@ RSpec.describe Tasks::ImportService do
     it "sets the task attributes from CSV" do
       service.call
 
-      task = Task.find_by!(name: "sync_ssh_config")
+      task = Task.find_by!(name: "test_import_task")
 
-      expect(task.class_name).to eq "Tasks::SyncSSHConfigService"
+      expect(task.class_name).to eq "Servers::SyncSSHConfigTask"
       expect(task.configuration).to be_nil
     end
 
