@@ -59,6 +59,8 @@ Rails.application.configure do
 
   # Log Solid Queue messages to the main Rails logger.
   config.solid_queue.logger = ActiveSupport::Logger.new($stdout)
+  config.solid_queue.logger.level = ENV.fetch("RAILS_LOG_LEVEL", "info").to_sym
+  config.solid_queue.silence_polling = true
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
