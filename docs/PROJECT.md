@@ -63,7 +63,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Allow retrying jobs, or automatic retry (e.g. with incremental/exponential backoff)
 - [ ] Update branding
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
-- [ ] Should a canceled job run (during pre-, rsync, or post-hook) should run failure hook?
+- [x] Should a canceled job run (during pre-, rsync, or post-hook) should run failure hook?
 - [ ] Hooks::ExecuteService: timeout on command execution
 - [ ] Save exit status of rsync command on job run
 - [ ] Add a local resource usage card
