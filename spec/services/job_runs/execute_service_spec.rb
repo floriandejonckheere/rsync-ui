@@ -11,7 +11,7 @@ RSpec.describe JobRuns::ExecuteService do
   let(:options) { {} }
 
   let(:rsync_exit_status) { instance_double(Process::Status, success?: true, signaled?: false, exitstatus: 0, termsig: nil) }
-  let(:rsync_result) { Rsync::ExecuteService::Result.new(exit_status: rsync_exit_status) }
+  let(:rsync_result) { ExecutionResult.new(exit_status: rsync_exit_status) }
   let(:rsync_execute_service) { instance_double(Rsync::ExecuteService) }
 
   before do
@@ -93,7 +93,7 @@ RSpec.describe JobRuns::ExecuteService do
 
     describe "cancellation" do
       let(:hook_exit_status) { instance_double(Process::Status, success?: true, signaled?: false, exitstatus: 0, termsig: nil) }
-      let(:hook_result) { Hooks::ExecuteService::Result.new(success: true, exit_status: hook_exit_status) }
+      let(:hook_result) { ExecutionResult.new(success: true, exit_status: hook_exit_status) }
       let(:hook_execute_service) { instance_double(Hooks::ExecuteService) }
 
       let(:job) { create(:job, :with_hooks, user:, **options) }

@@ -2,8 +2,6 @@
 
 module Rsync
   class ExecuteService < ApplicationService
-    Result = Data.define(:exit_status)
-
     attr_reader :command, :job_run
 
     def initialize(command, job_run)
@@ -14,7 +12,7 @@ module Rsync
     end
 
     # Runs the rsync command and yields each complete output line to the block.
-    # Returns a Result with the exit status.
+    # Returns an execution result with the exit status.
     #
     # Cancellation is handled externally: JobRuns::CancelJob signals the pid.
     # This service merely waits for the process to exit and reports the
@@ -45,7 +43,7 @@ module Rsync
         # Flush any remaining buffered output that lacked a trailing newline
         block&.call(buffer) if buffer.present?
 
-        Result.new(exit_status: wait_thr.value)
+        ExecutionResult.new(exit_status: wait_thr.value)
       end
     ensure
       job_run.update_column(:pid, nil) if job_run.persisted? # rubocop:disable Rails/SkipsModelValidations

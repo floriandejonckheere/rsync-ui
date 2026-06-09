@@ -306,7 +306,7 @@ RSpec.describe "JobRuns" do
 
   describe "PATCH /job_runs/:id/cancel" do
     let(:job_run) { create(:job_run, :pending, user:) }
-    let(:cancel_service) { instance_double(JobRuns::CancelService, call: JobRuns::CancelService::Result.new(success: true)) }
+    let(:cancel_service) { instance_double(JobRuns::CancelService, call: ExecutionResult.new(success: true)) }
 
     before { allow(JobRuns::CancelService).to receive(:new).and_return(cancel_service) }
 
@@ -328,7 +328,7 @@ RSpec.describe "JobRuns" do
       end
 
       context "when the job run is not cancelable" do
-        let(:cancel_service) { instance_double(JobRuns::CancelService, call: JobRuns::CancelService::Result.new(success: false)) }
+        let(:cancel_service) { instance_double(JobRuns::CancelService, call: ExecutionResult.new(success: false)) }
 
         it "returns unprocessable content" do
           patch cancel_job_run_path(job_run)

@@ -2,8 +2,6 @@
 
 module Hooks
   class ExecuteService < ApplicationService
-    Result = Data.define(:success, :exit_status)
-
     attr_reader :hook,
                 :job_run
 
@@ -33,7 +31,7 @@ module Hooks
           exit_status: exit_status.exitstatus,
         )
 
-        Result.new(success: exit_status.success?, exit_status: exit_status.exitstatus)
+        ExecutionResult.new(success: exit_status.success?, exit_status: exit_status.exitstatus)
       rescue StandardError => e
         Rails.logger.error { "[#{job_run.id}] [#{hook.id}] Exited with error #{e.class.name} #{e.message} and #{file.pos} bytes of output" }
         Rails.logger.error { e.backtrace.map { "[#{job_run.id}] [#{hook.id}] #{it}" }.join("\n") }
@@ -42,7 +40,7 @@ module Hooks
 
         persist_status(status: "errored", error_class: e.class.name, error_message: e.message)
 
-        Result.new(success: false, exit_status: nil)
+        ExecutionResult.new(success: false, exit_status: nil)
       end
     end
 
