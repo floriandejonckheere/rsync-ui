@@ -77,6 +77,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Only run SyncSSHConfig job periodically, not on startup
 - [ ] Throttle/rate limit status updates
 - [ ] Make streaming job output fixed height, but scrolling (and anchored to the bottom)
+- [ ] Drop `Net::SSH` in favor of plain `ssh`
 - [ ] Concurrent SyncSSHConfig jobs
   rsync_ui_worker-1  | [ActiveJob] [Servers::SyncSSHConfigJob] [1a386230-aef4-4526-b891-6c243c0dc905] Performing Servers::SyncSSHConfigJob (Job ID: 1a386230-aef4-4526-b891-6c243c0dc905) from SolidQueue(default) enqueued at 2026-05-21T19:58:45.866266737Z
   rsync_ui_worker-1  | SolidQueue-1.4.0 Started Scheduler (226.1ms)  pid: 29, hostname: "eb9133693bd7", process_id: 44, name: "scheduler-f43d4c1adc9b05f00348", recurring_schedule: ["clear_solid_queue_finished_jobs", "scheduler"]
