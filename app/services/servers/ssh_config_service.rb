@@ -101,12 +101,14 @@ module Servers
         lines << "\n"
       end
 
-      # Atomically write config file
-      file = ssh_dir.join("config.tmp")
-      file.write(lines.join("\n"))
-      file.chmod(0o600)
+      # Write config file and rename atomically
+      Tempfile.open("config", ssh_dir) do |file|
+        file.write(lines.join("\n"))
+        file.flush
+        file.chmod(0o600)
 
-      File.rename(file, ssh_dir.join("config"))
+        File.rename(file.path, ssh_dir.join("config"))
+      end
     end
 
     private
