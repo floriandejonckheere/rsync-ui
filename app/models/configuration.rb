@@ -10,6 +10,8 @@ class Configuration < ApplicationRecord
             presence: true,
             allow_blank: true
 
+  after_commit :run_service
+
   def default
     Configuration.configurations.dig(key, :default)
   end
@@ -114,7 +116,7 @@ class Configuration < ApplicationRecord
   end
 
   def self.configurations
-    @configurations ||= load_paths.each_with_object({}) do |path, configurations|
+    @@app_configurations ||= load_paths.each_with_object({}) do |path, configurations| # rubocop:disable Style/ClassVars
       configurations.merge!(YAML
         .load_file(path)
         .to_h { |c| [c["key"], c.except("key").symbolize_keys] })
@@ -122,12 +124,23 @@ class Configuration < ApplicationRecord
   end
 
   def self.load_paths
-    @load_paths ||= [Rails.root.join("config/configurations.yml")]
+    @@app_load_paths ||= [Rails.root.join("config/configurations.yml")] # rubocop:disable Style/ClassVars
   end
 
   def self.load_paths=(paths)
-    @load_paths = paths
-    @configurations = nil
+    @@app_load_paths = paths # rubocop:disable Style/ClassVars
+    @@app_configurations = nil # rubocop:disable Style/ClassVars
+  end
+
+  private
+
+  def run_service
+    self
+      .class
+      .configurations
+      .dig(key, :service)
+      &.constantize
+      &.call
   end
 
   class String < Configuration

@@ -11,6 +11,27 @@ RSpec.describe Configuration do
     it { is_expected.to validate_presence_of(:value).allow_blank }
   end
 
+  describe "callbacks" do
+    context "when a service is configured" do
+      it "enqueues the associated job after commit" do
+        service = instance_double(ApplicationService, call: true)
+        stub_const("TestConfigurationService", service)
+
+        described_class.set("test.with_service", "new_value")
+
+        expect(service)
+          .to have_received(:call)
+          .twice # once when creating, once when updating
+      end
+    end
+
+    context "when no service is configured" do
+      it "does not raise" do
+        expect { described_class.set("test.key", "new_value") }.not_to raise_error
+      end
+    end
+  end
+
   describe ".dependencies" do
     it "returns direct dependencies" do
       expect(described_class.dependencies("test.dependent")).to contain_exactly "test.feature"

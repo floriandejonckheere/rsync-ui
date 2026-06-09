@@ -46,3 +46,8 @@
   allowed_values:
     - foo
     - bar
+- key: test.with_service
+  type: string
+  category: system
+  default: "test_value"
+  service: TestConfigurationService

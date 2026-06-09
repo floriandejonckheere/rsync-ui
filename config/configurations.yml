@@ -87,6 +87,7 @@
   type: boolean
   category: connectivity
   default: true
+  service: Configurations::VerifyHostKeyService
 - key: connectivity.interval
   type: integer
   category: connectivity
