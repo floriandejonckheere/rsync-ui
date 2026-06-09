@@ -35,6 +35,7 @@ RSpec.describe JobRuns::ExecuteService do
       expect(job_run.started_at).to be_present
       expect(job_run.completed_at).to be_present
       expect(job_run.output).to be_attached
+      expect(job_run.exit_status).to eq 0
     end
 
     context "when the job run is not pending" do
@@ -63,6 +64,7 @@ RSpec.describe JobRuns::ExecuteService do
         expect(job_run).to be_failed
         expect(job_run.completed_at).to be_present
         expect(job_run.output).to be_attached
+        expect(job_run.exit_status).to eq 1
       end
     end
 

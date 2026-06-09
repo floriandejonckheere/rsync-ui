@@ -125,6 +125,13 @@
         <%= I18n.t("job_runs.show.completed_at") %>:
         <%= @job_run.completed_at ? relative_time_tag(@job_run.completed_at) : "—" %>
       </div>
+
+      <% if @job_run.exit_status&.nonzero? %>
+        <div>
+          <%= I18n.t("job_runs.show.exit_status") %>:
+          <span class="text-red-600 dark:text-red-400"><%= @job_run.exit_status %></span>
+        </div>
+      <% end %>
     </div>
   </div>
   <% if @job_run.command.present? %>
@@ -147,7 +154,6 @@
       ><%= @job_run.command %></pre>
     </div>
   <% end %>
-
   <turbo-frame id="job-run-output">
     <% if @job_run.error_class.present? || @job_run.error_message.present? %>
       <div

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_09_184816) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_09_190557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -103,6 +103,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_184816) do
     t.datetime "created_at", null: false
     t.string "error_class"
     t.text "error_message"
+    t.integer "exit_status"
     t.string "failure_hook_error_class"
     t.text "failure_hook_error_message"
     t.integer "failure_hook_exit_status"

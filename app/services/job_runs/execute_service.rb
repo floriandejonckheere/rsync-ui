@@ -107,6 +107,8 @@ module JobRuns
 
           Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Exited with exit status #{exit_status} and #{file.pos} bytes of output" }
 
+          job_run.update!(exit_status: exit_status.exitstatus)
+
           exit_status.success?
         rescue StandardError
           # Upload complete log in case of error

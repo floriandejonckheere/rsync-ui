@@ -72,6 +72,7 @@ end
 #  completed_at               :datetime         indexed
 #  error_class                :string
 #  error_message              :text
+#  exit_status                :integer
 #  failure_hook_error_class   :string
 #  failure_hook_error_message :text
 #  failure_hook_exit_status   :integer

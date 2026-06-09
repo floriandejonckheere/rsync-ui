@@ -36,20 +36,12 @@
       <% end %>
     </div>
 
-    <div>
-      <%= I18n.t("audits.show.exit_status") %>:
-      <% if @audit.exit_status&.zero? %>
-        <span class="text-green-600 dark:text-green-400">
-          <%= @audit.exit_status %>
-        </span>
-      <% elsif @audit.exit_status %>
-        <span class="text-red-600 dark:text-red-400">
-          <%= @audit.exit_status %>
-        </span>
-      <% else %>
-        —
-      <% end %>
-    </div>
+    <% if @audit.exit_status&.nonzero? %>
+      <div>
+        <%= I18n.t("audits.show.exit_status") %>:
+        <span class="text-red-600 dark:text-red-400"><%= @audit.exit_status %></span>
+      </div>
+    <% end %>
   </div>
 </div>
 
