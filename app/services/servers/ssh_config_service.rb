@@ -38,6 +38,8 @@ module Servers
           pass_path.chmod(0o600)
         end
 
+        next unless verify_host_key?
+
         known_hosts_path = ssh_dir.join("#{server.slug}_known_hosts")
 
         if server.host_key.present?
@@ -81,9 +83,15 @@ module Servers
           "  HostName #{server.host}",
           "  Port #{server.port}",
           "  User #{server.username}",
-          "  StrictHostKeyChecking yes",
-          "  UserKnownHostsFile #{ssh_dir.join("#{server.slug}_known_hosts")}",
         ]
+
+        if verify_host_key?
+          lines << "  StrictHostKeyChecking yes"
+          lines << "  UserKnownHostsFile #{ssh_dir.join("#{server.slug}_known_hosts")}"
+        else
+          lines << "  StrictHostKeyChecking no"
+          lines << "  UserKnownHostsFile #{File::NULL}"
+        end
 
         if server.ssh_key.present?
           lines << "  IdentityFile #{ssh_dir.join("#{server.slug}.pem")}"
@@ -99,6 +107,12 @@ module Servers
       file.chmod(0o600)
 
       File.rename(file, ssh_dir.join("config"))
+    end
+
+    private
+
+    def verify_host_key?
+      Configuration.get("verify_host_key")
     end
   end
 end

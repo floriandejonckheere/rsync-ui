@@ -117,7 +117,7 @@ RSpec.describe Servers::SSHConfigService do
         expect(config).not_to include "StrictHostKeyChecking no"
       end
 
-      it "points UserKnownHostsFile to the per-server known_hosts file" do
+      it "sets UserKnownHostsFile to the per-server known_hosts file" do
         config = tmpdir.join("config").read
 
         expect(config).to include "UserKnownHostsFile #{tmpdir.join("#{server.slug}_known_hosts")}"
@@ -141,6 +141,32 @@ RSpec.describe Servers::SSHConfigService do
         config = tmpdir.join("config").read
 
         expect(config).to include "StrictHostKeyChecking yes"
+      end
+    end
+
+    context "when host key verification is disabled" do
+      with_configuration "verify_host_key" => false
+
+      let!(:server) { create(:server, :with_password, :with_host_key) }
+
+      before { service.call }
+
+      it "does not write a known_hosts file" do
+        expect(tmpdir.join("#{server.slug}_known_hosts")).not_to exist
+      end
+
+      it "uses StrictHostKeyChecking no in the SSH config" do
+        config = tmpdir.join("config").read
+
+        expect(config).to include "StrictHostKeyChecking no"
+        expect(config).not_to include "StrictHostKeyChecking yes"
+      end
+
+      it "sets UserKnownHostsFile to /dev/null in the SSH config" do
+        config = tmpdir.join("config").read
+
+        expect(config).to include "UserKnownHostsFile #{File::NULL}"
+        expect(config).not_to include "UserKnownHostsFile #{tmpdir}"
       end
     end
 
