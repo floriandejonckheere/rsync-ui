@@ -66,6 +66,7 @@ Rails.application.configure do
 
   # Log Solid Queue messages to stderr (consistent with main logger)
   config.solid_queue.logger = ActiveSupport::Logger.new($stdout)
+  config.solid_queue.logger.level = ENV.fetch("RAILS_LOG_LEVEL", "info").to_sym
   config.solid_queue.silence_polling = true
 
   # Raises error for missing translations.
