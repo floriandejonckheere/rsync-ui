@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :task do
-    name { "sync_ssh_config" }
-    class_name { "Tasks::SyncSSHConfigService" }
+    sequence(:name) { |n| "task_#{n}" }
+    class_name { "DummyTask" }
     status { nil }
     configuration { nil }
 

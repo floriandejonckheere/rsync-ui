@@ -1,2 +1,2 @@
 name,class_name,configuration
-sync_ssh_config,Tasks::SyncSSHConfigService,
+test_import_task,Servers::SyncSSHConfigTask,
