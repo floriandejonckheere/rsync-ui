@@ -6,6 +6,8 @@
   <%= I18n.t("job_runs.index.subtitle") %>
 <% end %>
 
+<%= turbo_stream_from "job_runs_#{current_user.id}" %>
+
 <%= render "job_runs/filters" %>
 
 <%= turbo_frame_tag "job_runs_list" do %>

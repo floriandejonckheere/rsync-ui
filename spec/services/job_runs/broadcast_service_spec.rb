@@ -9,6 +9,7 @@ RSpec.describe JobRuns::BroadcastService do
     allow(Turbo::StreamsChannel).to receive(:broadcast_remove_to)
     allow(Turbo::StreamsChannel).to receive(:broadcast_prepend_to)
     allow(Turbo::StreamsChannel).to receive(:broadcast_append_to)
+    allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
   end
 
   describe ".broadcast_started" do
@@ -107,6 +108,17 @@ RSpec.describe JobRuns::BroadcastService do
         )
     end
 
+    it "replaces the job run row in the job runs list" do
+      described_class.broadcast_complete(job_run, from: "running")
+
+      expect(Turbo::StreamsChannel)
+        .to have_received(:broadcast_replace_to)
+        .with(
+          "job_runs_#{user.id}",
+          hash_including(target: "job_run_#{job_run.id}", partial: "job_runs/job_run"),
+        )
+    end
+
     context "when transitioning from a live state" do
       it "removes the job run from the dashboard running list" do
         described_class.broadcast_complete(job_run, from: "running")
@@ -143,6 +155,14 @@ RSpec.describe JobRuns::BroadcastService do
 
         expect(Turbo::StreamsChannel).not_to have_received(:broadcast_remove_to)
         expect(Turbo::StreamsChannel).not_to have_received(:broadcast_append_to)
+      end
+
+      it "still replaces the job run row in the job runs list" do
+        described_class.broadcast_complete(job_run, from: "completed")
+
+        expect(Turbo::StreamsChannel)
+          .to have_received(:broadcast_replace_to)
+          .with("job_runs_#{user.id}", hash_including(target: "job_run_#{job_run.id}"))
       end
     end
   end

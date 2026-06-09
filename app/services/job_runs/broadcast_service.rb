@@ -71,8 +71,14 @@ module JobRuns
           status_text: I18n.t("job_runs.status.#{job_run.status}"),
           started_at: job_run.started_at&.iso8601,
           completed_at: job_run.completed_at&.iso8601,
-          duration: job_run.started_at ? ActionController::Base.helpers.distance_of_time_in_words(job_run.started_at, job_run.completed_at || Time.zone.now) : nil,
         },
+      )
+
+      Turbo::StreamsChannel.broadcast_replace_to(
+        "job_runs_#{job_run.user_id}",
+        target: "job_run_#{job_run.id}",
+        partial: "job_runs/job_run",
+        locals: { job_run: },
       )
 
       return unless from.nil? || LIVE_STATES.include?(from.to_s)

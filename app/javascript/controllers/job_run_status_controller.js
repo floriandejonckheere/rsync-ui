@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { cable } from "@hotwired/turbo-rails"
 
 export default class extends Controller {
-  static targets = ["jobStatus", "startedAt", "completedAt", "duration", "progressBar", "progressFill", "speedInfo", "logCard", "outputFrame"]
+  static targets = ["jobStatus", "startedAt", "completedAt", "progressBar", "progressFill", "speedInfo", "logCard", "outputFrame"]
   static values = { jobRunId: String }
 
   async connect() {
@@ -84,15 +84,6 @@ export default class extends Controller {
       }
       if (this.hasCompletedAtTarget) {
         this.completedAtTarget.textContent = this.#relativeTime(data.completed_at)
-      }
-      if (this.hasDurationTarget && data.duration) {
-        this.durationTarget.textContent = data.duration
-      }
-      if (this.hasProgressBarTarget) {
-        this.progressBarTarget.classList.add("hidden")
-      }
-      if (this.hasSpeedInfoTarget) {
-        this.speedInfoTarget.classList.add("hidden")
       }
       if (this.hasLogCardTarget) {
         this.logCardTarget.classList.add("hidden")

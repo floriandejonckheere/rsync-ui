@@ -1,6 +1,7 @@
 <% live = job_run.pending? || job_run.running? || job_run.canceling? %>
 
 <tr
+  id="<%= dom_id(job_run) %>"
   class="
     relative border-b border-gray-100 dark:border-gray-700 last:border-b-0
     hover:z-10 hover:bg-gray-50 dark:hover:bg-gray-700/50
@@ -78,7 +79,7 @@
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-    <span data-job-run-status-target="<%= 'duration' if live %>">
+    <span>
       <% if job_run.started_at.present? %>
         <%= distance_of_time_in_words(job_run.started_at, job_run.completed_at || Time.current) %>
       <% else %>
@@ -88,7 +89,7 @@
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-    <span data-job-run-status-target="<%= 'completedAt' if live %>">
+    <span>
       <%= job_run.completed_at ? relative_time_tag(job_run.completed_at) : "—" %>
     </span>
   </td>
