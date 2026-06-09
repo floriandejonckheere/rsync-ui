@@ -8,6 +8,7 @@ Rails.application.config.after_initialize do
   saved_logger = ActiveRecord::Base.logger
   ActiveRecord::Base.logger = nil
 
+  # Create missing configurations
   Configuration.configurations.each do |key, configuration|
     "Configuration::#{configuration[:type].camelize}"
       .constantize
@@ -15,6 +16,12 @@ Rails.application.config.after_initialize do
       .find_or_create_by!(key:)
       .value
   end
+
+  # Delete unused configurations
+  Configuration
+    .where
+    .not(key: Configuration.configurations.keys)
+    .delete_all
 rescue ActiveRecord::NoDatabaseError
   # nil
 ensure
