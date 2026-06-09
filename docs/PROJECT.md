@@ -67,6 +67,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Add a local resource usage card
 - [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
 - [ ] Implement support for OAuth2 authentication
+- [ ] Improve auditing: add login, change password, notification sending
 - [ ] Do not bind postgres to port 5432, otherwise you can't use git worktrees
 - [ ] Audit codebase
 - [ ] SSH config: write password/private key only when invoking SSH commands
