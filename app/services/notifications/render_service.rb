@@ -26,7 +26,10 @@ module Notifications
     end
 
     def body
-      ApplicationController.render(
+      ApplicationController.renderer.new(
+        http_host: Rails.application.routes.default_url_options.fetch(:host, "localhost"),
+        https: Rails.env.production?,
+      ).render(
         partial: "notifications/templates/#{event}",
         formats: [:html],
         locals: { job_run: },
