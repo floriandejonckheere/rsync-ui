@@ -24,6 +24,11 @@ class Repository < ApplicationRecord
     remote: "remote",
   }, validate: true
 
+  enum :disk_size_status, {
+    ok: "ok",
+    failed: "failed",
+  }, prefix: :disk_size, validate: { allow_nil: true }
+
   validates :name,
             presence: true
 
@@ -43,26 +48,32 @@ end
 #
 # Table name: repositories
 #
-#  id              :uuid             not null, primary key
-#  description     :text             indexed
-#  name            :string           not null, indexed, indexed
-#  path            :string           not null, indexed
-#  read_only       :boolean          default(FALSE), not null
-#  repository_type :string           not null, indexed
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  server_id       :uuid             indexed
-#  user_id         :uuid             not null, indexed
+#  id                      :uuid             not null, primary key
+#  description             :text             indexed
+#  disk_size               :bigint
+#  disk_size_error_class   :string
+#  disk_size_error_message :text
+#  disk_size_measured_at   :datetime         indexed
+#  disk_size_status        :string
+#  name                    :string           not null, indexed, indexed
+#  path                    :string           not null, indexed
+#  read_only               :boolean          default(FALSE), not null
+#  repository_type         :string           not null, indexed
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  server_id               :uuid             indexed
+#  user_id                 :uuid             not null, indexed
 #
 # Indexes
 #
-#  index_repositories_on_description_trgm  (description) USING gin
-#  index_repositories_on_name              (name)
-#  index_repositories_on_name_trgm         (name) USING gin
-#  index_repositories_on_path              (path)
-#  index_repositories_on_repository_type   (repository_type)
-#  index_repositories_on_server_id         (server_id)
-#  index_repositories_on_user_id           (user_id)
+#  index_repositories_on_description_trgm       (description) USING gin
+#  index_repositories_on_disk_size_measured_at  (disk_size_measured_at)
+#  index_repositories_on_name                   (name)
+#  index_repositories_on_name_trgm              (name) USING gin
+#  index_repositories_on_path                   (path)
+#  index_repositories_on_repository_type        (repository_type)
+#  index_repositories_on_server_id              (server_id)
+#  index_repositories_on_user_id                (user_id)
 #
 # Foreign Keys
 #
