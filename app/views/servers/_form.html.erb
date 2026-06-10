@@ -32,15 +32,6 @@
                           data: { "server-test-target": "spinner" } %>
         </button>
       <% end %>
-    <% else %>
-      <button
-        type="button"
-        class="btn-icon-outline btn-icon-lg"
-        data-tooltip="<%= I18n.t("servers.form.test_connection") %>"
-        disabled
-      >
-        <%= lucide_icon "plug", class: "h-6 w-6" %>
-      </button>
     <% end %>
 
     <% if server.persisted? && server.password.present? %>
