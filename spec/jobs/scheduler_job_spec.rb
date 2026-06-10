@@ -72,4 +72,39 @@ RSpec.describe SchedulerJob do
       end
     end
   end
+
+  describe "disk size scheduling" do
+    with_configuration "disk_size" => true, "disk_size.interval" => 15
+
+    let!(:never_measured) { create(:repository, :local) }
+    let!(:recent) { create(:repository, :local, disk_size_measured_at: 2.minutes.ago) }
+    let!(:stale) { create(:repository, :remote, disk_size_measured_at: 30.minutes.ago) }
+
+    it "enqueues Repositories::DiskSizeJob for never-measured and stale repositories" do
+      expect { described_class.perform_now }
+        .to have_enqueued_job(Repositories::DiskSizeJob)
+        .exactly(2).times
+
+      expect(Repositories::DiskSizeJob)
+        .to have_been_enqueued
+        .with(never_measured)
+
+      expect(Repositories::DiskSizeJob)
+        .to have_been_enqueued
+        .with(stale)
+
+      expect(Repositories::DiskSizeJob)
+        .not_to have_been_enqueued
+        .with(recent)
+    end
+
+    context "when disk_size is disabled" do
+      with_configuration "disk_size" => false
+
+      it "does not enqueue any disk size jobs" do
+        expect { described_class.perform_now }
+          .not_to have_enqueued_job(Repositories::DiskSizeJob)
+      end
+    end
+  end
 end

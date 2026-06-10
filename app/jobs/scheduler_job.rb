@@ -11,6 +11,7 @@ class SchedulerJob < ApplicationJob
     schedule_jobs
     schedule_connectivity
     schedule_resource_usage
+    schedule_disk_size
   end
 
   private
@@ -44,5 +45,15 @@ class SchedulerJob < ApplicationJob
       .left_joins(:resource_usage)
       .where(resource_usages: { probed_at: [nil, ..interval.ago] })
       .find_each { |server| Servers::ResourceUsageJob.perform_later(server) }
+  end
+
+  def schedule_disk_size
+    return unless Configuration.get("disk_size")
+
+    interval = Configuration.get("disk_size.interval").to_i.minutes
+
+    Repository
+      .where(disk_size_measured_at: [nil, ..interval.ago])
+      .find_each { |repository| Repositories::DiskSizeJob.perform_later(repository) }
   end
 end
