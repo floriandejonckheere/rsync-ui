@@ -59,6 +59,18 @@
   maximum: 100
   dependencies:
     - resource_usage
+- key: disk_size
+  type: boolean
+  category: resource_usage
+  default: true
+- key: disk_size.interval
+  type: integer
+  category: resource_usage
+  default: 240
+  minimum: 1
+  maximum:
+  dependencies:
+    - disk_size
 - key: scheduler
   type: boolean
   category: system

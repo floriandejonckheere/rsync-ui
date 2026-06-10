@@ -40,6 +40,10 @@ en:
             description: Algorithm used for generating SSH keys
           length:
             description: Length of generated SSH keys
+      disk_size:
+        description: Enable or disable repository disk size measurement
+        interval:
+          description: Interval (in minutes) between repository disk size measurements
       hooks:
         description: Enable or disable pre/post/success/failure hooks on job execution
       jobs:
