@@ -541,17 +541,16 @@ RSpec.describe "Servers" do
     context "when authenticated" do
       before { sign_in user, scope: :user }
 
-      it "returns a Turbo Stream response" do
+      it "redirects to servers path on successful deploy" do
         post deploy_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-        expect(response).to have_http_status(:ok)
-        expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+        expect(response).to redirect_to(servers_path)
       end
 
-      it "renders a success notification when deploy succeeds" do
+      it "sets a flash notice when deploy succeeds" do
         post deploy_server_path(server), headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-        expect(response.body).to include(I18n.t("servers.deploy.success"))
+        expect(flash[:notice]).to eq(I18n.t("servers.deploy.success"))
       end
 
       it "uses server credentials when params are blank" do
@@ -563,7 +562,7 @@ RSpec.describe "Servers" do
           .to have_received(:start)
           .with(anything, anything, hash_including(password: server.password))
 
-        expect(response.body).to include(I18n.t("servers.deploy.success"))
+        expect(response).to redirect_to(servers_path)
       end
 
       it "renders a failure notification when deploy fails" do

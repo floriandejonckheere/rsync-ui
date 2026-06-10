@@ -182,15 +182,19 @@ class ServersController < ApplicationController
 
     result = Servers::DeployService.call(@server)
 
-    render turbo_stream: turbo_stream.prepend(
-      "notifications",
-      partial: "shared/action_result",
-      locals: {
-        result:,
-        success_message: t(".success"),
-        failure_message: t(".failure"),
-      },
-    )
+    if result[:success]
+      redirect_to servers_path, notice: t(".success")
+    else
+      render turbo_stream: turbo_stream.prepend(
+        "notifications",
+        partial: "shared/action_result",
+        locals: {
+          result:,
+          success_message: t(".success"),
+          failure_message: t(".failure"),
+        },
+      )
+    end
   end
 
   private
