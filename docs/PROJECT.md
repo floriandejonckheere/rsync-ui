@@ -45,10 +45,10 @@ For remote repositories, the server should be mounted as a local directory, and 
 
 ### Repository size
 
-- [ ] Add repository size column to table and views
-- [ ] Add scheduled job to update repository size
-  - [ ] Local: use `du`
-  - [ ] Remote: use `du` unless the server is a storage box
+- [x] Add repository size column to table and views
+- [x] Add scheduled job to update repository size
+  - [x] Local: use `du`
+  - [x] Remote: use `du` (also supported by Hetzner Storage Boxes)
 
 ### Smaller TODOs
 
