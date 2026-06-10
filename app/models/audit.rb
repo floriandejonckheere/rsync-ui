@@ -6,6 +6,7 @@ class Audit < ApplicationRecord
   enum :category, {
     connectivity: "connectivity",
     resource_usage: "resource_usage",
+    disk_size: "disk_size",
     job: "job",
   }, validate: true
 

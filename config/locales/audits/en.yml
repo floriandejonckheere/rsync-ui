@@ -3,6 +3,7 @@ en:
   audits:
     category:
       connectivity: Connectivity
+      disk_size: Repository size
       job: Job
       resource_usage: Resource usage
     index:

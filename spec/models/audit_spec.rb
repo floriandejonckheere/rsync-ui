@@ -13,7 +13,7 @@ RSpec.describe Audit do
   end
 
   describe "enums" do
-    it { is_expected.to define_enum_for(:category).with_values(connectivity: "connectivity", resource_usage: "resource_usage", job: "job").backed_by_column_of_type(:string) }
+    it { is_expected.to define_enum_for(:category).with_values(connectivity: "connectivity", resource_usage: "resource_usage", disk_size: "disk_size", job: "job").backed_by_column_of_type(:string) }
   end
 
   describe "scopes" do
