@@ -11,7 +11,7 @@ class RepositoriesController < ApplicationController
   def index
     repositories = authorized_scope(Repository.all, type: :relation)
     repositories = search_for(repositories, "name", "description")
-    repositories = sort_for(repositories, allowed: ["name", "repository_type", "path"], default: { name: :asc })
+    repositories = sort_for(repositories, allowed: ["name", "repository_type", "path", "disk_size"], default: { name: :asc })
 
     @pagy, @repositories = pagy(repositories)
 

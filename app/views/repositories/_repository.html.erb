@@ -41,6 +41,18 @@
   </td>
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
+    <div class="flex items-center gap-1.5">
+      <%= repository.disk_size ? number_to_human_size(repository.disk_size) : "—" %>
+
+      <% if repository.disk_size_failed? %>
+        <div data-tooltip="<%= I18n.t("repositories.table.size_failed", error: repository.disk_size_error_message) %>">
+          <%= lucide_icon "triangle-alert", class: "h-4 w-4 text-amber-500" %>
+        </div>
+      <% end %>
+    </div>
+  </td>
+
+  <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
     <%= server_link(repository.server) || "—" %>
   </td>
 
