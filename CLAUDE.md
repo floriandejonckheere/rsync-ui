@@ -11,7 +11,7 @@ This is a production-ready Rails 8.0 application template with modern frontend t
 - **Ruby**: 4.0
 - **Rails**: 8.0.3
 - **Database**: PostgreSQL 18
-- **Frontend**: Hotwire (Turbo + Stimulus), Tailwind CSS 4.x with Basecoat UI, ViewComponent
+- **Frontend**: Hotwire (Turbo + Stimulus), Tailwind CSS 4.x with Basecoat UI
 - **Icons**: Lucide
 - **Authentication**: Devise
 - **Authorization**: ActionPolicy

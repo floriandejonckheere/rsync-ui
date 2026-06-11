@@ -41,8 +41,8 @@ scope :by_command,
 NOT good:
 
 ```ruby
-server  = create(:server)
-match   = create(:audit, server:)
+server   = create(:server)
+match    = create(:audit, server:)
 no_match = create(:audit)
 ```
 
