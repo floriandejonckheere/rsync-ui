@@ -171,6 +171,19 @@ RSpec.describe JobRuns::StateMachine do
 
         expect(job_run.completed_at).to be_present
       end
+
+      context "when disk_size is enabled" do
+        with_configuration "disk_size" => true
+
+        it "schedules a disk size job" do
+          job_run = create(:job_run, :running)
+          job_run.complete!
+
+          expect(Repositories::DiskSizeJob)
+            .to have_been_enqueued
+            .with(job_run.job.destination_repository)
+        end
+      end
     end
 
     describe "on failed" do
@@ -181,6 +194,19 @@ RSpec.describe JobRuns::StateMachine do
         job_run.reload
 
         expect(job_run.completed_at).to be_present
+      end
+
+      context "when disk_size is enabled" do
+        with_configuration "disk_size" => true
+
+        it "schedules a disk size job" do
+          job_run = create(:job_run, :running)
+          job_run.complete!
+
+          expect(Repositories::DiskSizeJob)
+            .to have_been_enqueued
+            .with(job_run.job.destination_repository)
+        end
       end
     end
 
@@ -235,6 +261,19 @@ RSpec.describe JobRuns::StateMachine do
             .of(cancel_requested_at)
         end
       end
+
+      context "when disk_size is enabled" do
+        with_configuration "disk_size" => true
+
+        it "schedules a disk size job" do
+          job_run = create(:job_run, :running)
+          job_run.complete!
+
+          expect(Repositories::DiskSizeJob)
+            .to have_been_enqueued
+            .with(job_run.job.destination_repository)
+        end
+      end
     end
 
     describe "on error" do
@@ -247,6 +286,19 @@ RSpec.describe JobRuns::StateMachine do
         expect(job_run.error_class).to eq "RuntimeError"
         expect(job_run.error_message).to eq "boom"
         expect(job_run.completed_at).to be_present
+      end
+
+      context "when disk_size is enabled" do
+        with_configuration "disk_size" => true
+
+        it "schedules a disk size job" do
+          job_run = create(:job_run, :running)
+          job_run.complete!
+
+          expect(Repositories::DiskSizeJob)
+            .to have_been_enqueued
+            .with(job_run.job.destination_repository)
+        end
       end
     end
   end
