@@ -43,13 +43,6 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Step two (destination): repository name, description, type (local/remote), server (if remote), path
 - [ ] Step three: schedule, rsync options, enabled
 
-### Repository size
-
-- [x] Add repository size column to table and views
-- [x] Add scheduled job to update repository size
-  - [x] Local: use `du`
-  - [x] Remote: use `du` (also supported by Hetzner Storage Boxes)
-
 ### Smaller TODOs
 
 - [ ] Allow user to archive job runs, jobs, repositories, and servers
@@ -58,14 +51,15 @@ For remote repositories, the server should be mounted as a local directory, and 
   - [ ] No scheduling for archived jobs
 - [ ] Make application responsive
 - [ ] Make job run immutable and reproducible
+  - [ ] Temporary: lock job, repositories, hooks, notifications rows when executing job
   - [x] Save command and options in the database
   - [ ] Save hooks in the database
+  - [ ] Save repository in the database
+  - [ ] Save notifications in the database
 - [ ] Allow retrying jobs, or automatic retry (e.g. with incremental/exponential backoff)
 - [ ] Update branding
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
-- [x] Should a canceled job run (during pre-, rsync, or post-hook) should run failure hook?
 - [ ] Hooks::ExecuteService: timeout on command execution
-- [x] Save exit status of rsync command on job run
 - [ ] Add a local resource usage card
 - [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
 - [ ] Implement support for OAuth2 authentication
