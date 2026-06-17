@@ -24,6 +24,9 @@ class JobRun < ApplicationRecord
     scheduled: "scheduled",
   }, validate: true
 
+  validates :name,
+            presence: true
+
   validates :trigger,
             presence: true
 
@@ -70,6 +73,7 @@ end
 #  canceled_at                :datetime         indexed
 #  command                    :text
 #  completed_at               :datetime         indexed
+#  description                :text
 #  error_class                :string
 #  error_message              :text
 #  exit_status                :integer
@@ -77,6 +81,7 @@ end
 #  failure_hook_error_message :text
 #  failure_hook_exit_status   :integer
 #  failure_hook_status        :string
+#  name                       :string           default(""), not null
 #  pid                        :integer
 #  post_hook_error_class      :string
 #  post_hook_error_message    :text

@@ -22,7 +22,7 @@ module Notifications
     private
 
     def title
-      I18n.t("notifications.events.#{event}.title", job: job_run.job.name)
+      I18n.t("notifications.events.#{event}.title", job: job_run.name)
     end
 
     def body

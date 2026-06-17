@@ -7,7 +7,7 @@
 <% end %>
 
 <% content_for :subtitle do %>
-  <%= I18n.t("job_runs.show.subtitle", job: @job_run.job.name) %>
+  <%= I18n.t("job_runs.show.subtitle", job: @job_run.name) %>
 <% end %>
 
 <% if @job_run.pending? || @job_run.running? || @job_run.canceling? %>

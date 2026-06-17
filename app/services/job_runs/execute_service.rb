@@ -13,7 +13,7 @@ module JobRuns
     end
 
     def call
-      Rails.logger.info { "[#{job_run.id}] #{job.name} Executing job (hooks: #{hooks?}, streaming: #{streaming?})" }
+      Rails.logger.info { "[#{job_run.id}] #{job_run.name} Executing job (hooks: #{hooks?}, streaming: #{streaming?})" }
 
       job_run.with_lock do
         return unless job_run.pending?
@@ -54,16 +54,16 @@ module JobRuns
 
       # Transition to final complete/failed status
       if pre_hook_success && rsync_success && post_hook_success && success_hook_success && failure_hook_success
-        Rails.logger.info { "[#{job_run.id}] [#{job.name}] Completed job successfully" }
+        Rails.logger.info { "[#{job_run.id}] [#{job_run.name}] Completed job successfully" }
         job_run.complete!
       else
-        Rails.logger.info { "[#{job_run.id}] [#{job.name}] Completed job with failure" }
+        Rails.logger.info { "[#{job_run.id}] [#{job_run.name}] Completed job with failure" }
         job_run.mark_failed!
       end
     rescue StandardError => e
       # Transition to errored, and save error class and message
-      Rails.logger.error { "[#{job_run.id}] [#{job.name}] Completed job with error: #{e.class.name} #{e.message}" }
-      Rails.logger.error { e.backtrace.map { "[#{job_run.id}] [#{job.name}] #{it}" }.join("\n") }
+      Rails.logger.error { "[#{job_run.id}] [#{job_run.name}] Completed job with error: #{e.class.name} #{e.message}" }
+      Rails.logger.error { e.backtrace.map { "[#{job_run.id}] [#{job_run.name}] #{it}" }.join("\n") }
 
       job_run.error!(error_class: e.class.name, error_message: e.message) if job_run.pending? || job_run.running? || job_run.canceling?
     end
@@ -71,14 +71,14 @@ module JobRuns
     private
 
     def run_rsync
-      Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Running command #{job_run.command.inspect}" }
+      Rails.logger.debug { "[#{job_run.id}] [#{job_run.name}] Running command #{job_run.command.inspect}" }
 
-      Tempfile.create(["job_run_#{job.name.parameterize(separator: '_')}_#{job_run.sequence}", ".log"]) do |file|
+      Tempfile.create(["job_run_#{job_run.name.parameterize(separator: '_')}_#{job_run.sequence}", ".log"]) do |file|
         last_status_line = nil
 
         begin
           result = Rsync::ExecuteService.new(job_run).call do |line|
-            Rails.logger.debug { "[#{job_run.id}] [#{job.name}] #{line.chomp}" }
+            Rails.logger.debug { "[#{job_run.id}] [#{job_run.name}] #{line.chomp}" }
 
             status = Rsync::Progress.new(line) if job.opt_progress || job.opt_progress2
 
@@ -105,7 +105,7 @@ module JobRuns
 
           exit_status = result.exit_status
 
-          Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Exited with exit status #{exit_status} and #{file.pos} bytes of output" }
+          Rails.logger.debug { "[#{job_run.id}] [#{job_run.name}] Exited with exit status #{exit_status} and #{file.pos} bytes of output" }
 
           job_run.update!(exit_status: exit_status.exitstatus)
 
@@ -122,7 +122,7 @@ module JobRuns
     def run_hook(hook)
       return true unless hooks? && hook&.enabled?
 
-      Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Running #{hook.hook_type}-hook #{hook.id}" }
+      Rails.logger.debug { "[#{job_run.id}] [#{job_run.name}] Running #{hook.hook_type}-hook #{hook.id}" }
 
       Hooks::ExecuteService
         .new(hook, job_run:)
@@ -135,11 +135,11 @@ module JobRuns
     end
 
     def cancel
-      Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Cancelling job" }
+      Rails.logger.debug { "[#{job_run.id}] [#{job_run.name}] Cancelling job" }
 
       job_run.cancel!
 
-      Rails.logger.debug { "[#{job_run.id}] [#{job.name}] Running failure hook #{job.failure_hook.id}" } if job.failure_hook
+      Rails.logger.debug { "[#{job_run.id}] [#{job_run.name}] Running failure hook #{job.failure_hook.id}" } if job.failure_hook
       run_hook(job.failure_hook)
     end
 

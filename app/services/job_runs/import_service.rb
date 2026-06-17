@@ -29,6 +29,8 @@ module JobRuns
       {
         job:,
         user:,
+        name: job.name,
+        description: job.description,
         trigger: row["trigger"],
         status: row["status"],
         started_at:,
