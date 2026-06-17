@@ -100,13 +100,13 @@ module JobRuns
           job_run.error_message = kwargs[:error_message] if kwargs.key?(:error_message)
         end
 
-        after_transition on: :start do |job_run|
+        after_transition on: :start do |job_run, _transition|
           next unless Configuration.get("streaming")
 
           JobRuns::BroadcastService.broadcast_started(job_run)
         end
 
-        after_transition on: :tick_progress do |job_run|
+        after_transition on: :tick_progress do |job_run, _transition|
           next unless Configuration.get("streaming")
 
           JobRuns::BroadcastService.broadcast_progress(job_run)
@@ -119,13 +119,13 @@ module JobRuns
           JobRuns::BroadcastService.broadcast_status(job_run, kwargs[:type], kwargs[:content])
         end
 
-        after_transition on: :request_cancel, from: :running do |job_run|
+        after_transition on: :request_cancel do |job_run, _transition|
           next unless Configuration.get("streaming")
 
           JobRuns::BroadcastService.broadcast_canceling(job_run)
         end
 
-        after_transition on: [:complete, :mark_failed, :cancel, :error] do |job_run, transition|
+        after_transition to: [:completed, :failed, :canceled, :errored] do |job_run, transition|
           next unless Configuration.get("streaming")
 
           JobRuns::BroadcastService.broadcast_complete(job_run, from: transition.from)
