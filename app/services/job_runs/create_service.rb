@@ -25,6 +25,8 @@ module JobRuns
         trigger:,
         status: "pending",
         command:,
+        name: job.name,
+        description: job.description,
       )
     end
   end

@@ -4,6 +4,10 @@ FactoryBot.define do
   factory :job_run do
     job
     user
+
+    name { job.name }
+    description { job.description }
+
     trigger { :manual }
     status { :pending }
     command { "rsync --archive /src/ /dst/" }

@@ -38,7 +38,7 @@ class JobRunsController < ApplicationController
     filename = [
       "job",
       @job_run.sequence,
-      @job_run.job.name.titleize,
+      @job_run.name.titleize,
       @job_run.started_at&.iso8601,
     ].compact.join("-").concat(".log")
 

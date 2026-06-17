@@ -22,21 +22,20 @@ RSpec.describe JobRuns::CreateService do
         .to change(JobRun, :count)
         .by(1)
 
+      expect(command_service)
+        .to have_received(:call)
+
       job_run = JobRun.last
 
       expect(job_run).to be_pending
       expect(job_run.job).to eq job
       expect(job_run.user).to eq user
       expect(job_run.trigger).to eq trigger
-    end
-
-    it "sets the command from Rsync::CommandService" do
-      job_run = service.call
 
       expect(job_run.command).to eq "rsync --archive /src/ /dst/"
 
-      expect(command_service)
-        .to have_received(:call)
+      expect(job_run.name).to eq job.name
+      expect(job_run.description).to eq job.description
     end
 
     context "when trigger is scheduled" do
