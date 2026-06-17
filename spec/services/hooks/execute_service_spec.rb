@@ -6,21 +6,19 @@ RSpec.describe Hooks::ExecuteService do
   let(:user) { create(:user) }
   let(:job) { create(:job, user:) }
   let(:hook) { create(:hook, :pre, job:, command: "echo", arguments: "hello {job_name}") }
-  let(:job_run) do
-    create(:job_run, job:, user:, trigger: "manual", status: "running", started_at: Time.zone.now, sequence: 1)
-  end
+  let(:job_run) { create(:job_run, job:, user:, trigger: "manual", status: "running", started_at: Time.zone.now, sequence: 1) }
 
   describe "#call" do
     it "returns a successful result and persists per-hook status" do
       result = service.call
 
       expect(result.success).to be true
-      expect(result.exit_status).to eq 0
+      expect(result.exit_status).to be_zero
 
       job_run.reload
 
       expect(job_run.pre_hook_status).to eq("success")
-      expect(job_run.pre_hook_exit_status).to eq(0)
+      expect(job_run.pre_hook_exit_status).to be_zero
       expect(job_run.pre_hook_error_class).to be_nil
       expect(job_run.pre_hook_error_message).to be_nil
     end
@@ -32,7 +30,9 @@ RSpec.describe Hooks::ExecuteService do
     end
 
     it "interpolates job_name into arguments" do
-      allow(Open3).to receive(:popen2e).and_call_original
+      allow(Open3)
+        .to receive(:popen2e)
+        .and_call_original
 
       service.call
 
@@ -76,6 +76,55 @@ RSpec.describe Hooks::ExecuteService do
         expect(job_run.pre_hook_status).to eq("errored")
         expect(job_run.pre_hook_error_class).to eq("RuntimeError")
         expect(job_run.pre_hook_error_message).to eq("command not found")
+      end
+    end
+
+    describe "timeouts" do
+      before do
+        allow(Timeout)
+          .to receive(:timeout)
+          .with(a_kind_of(Integer))
+          .and_raise Timeout::Error
+
+        allow(Timeout)
+          .to receive(:timeout)
+          .with(0)
+          .and_call_original
+      end
+
+      context "when hook timeouts are disabled" do
+        with_configuration "hooks.timeout" => 0
+
+        it "returns a successful result" do
+          result = service.call
+
+          expect(result.success).to be true
+          expect(result.exit_status).to be_zero
+
+          job_run.reload
+
+          expect(job_run.pre_hook_status).to eq("success")
+          expect(job_run.pre_hook_exit_status).to be_zero
+          expect(job_run.pre_hook_error_class).to be_nil
+          expect(job_run.pre_hook_error_message).to be_nil
+        end
+      end
+
+      context "when timeouts are enabled" do
+        with_configuration "hooks.timeout" => 1
+
+        it "returns a failed result" do
+          result = service.call
+
+          expect(result.success).to be false
+          expect(result.exit_status).to be_nil
+
+          job_run.reload
+
+          expect(job_run.pre_hook_status).to eq("errored")
+          expect(job_run.pre_hook_error_class).to eq("Timeout::Error")
+          expect(job_run.pre_hook_error_message).to eq("execution expired after 1 minute")
+        end
       end
     end
   end

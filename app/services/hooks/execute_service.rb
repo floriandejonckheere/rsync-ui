@@ -47,13 +47,19 @@ module Hooks
     private
 
     def run(command, file)
-      Open3.popen2e(command, pgroup: true) do |_stdin, output, wait_thr|
-        job_run.update!(pid: wait_thr.pid)
+      Timeout.timeout(timeout.in_seconds) do
+        Open3.popen2e(command, pgroup: true) do |_stdin, output, wait_thr|
+          job_run.update!(pid: wait_thr.pid)
 
-        file.write(output.read)
+          file.write(output.read)
 
-        wait_thr.value
+          wait_thr.value
+        end
       end
+    rescue Timeout::Error
+      Rails.logger.debug { "[#{job_run.id}] [#{hook.id}] Timed out after #{timeout.inspect}" }
+
+      raise Timeout::Error, "execution expired after #{timeout.inspect}"
     ensure
       job_run.update_column(:pid, nil) if job_run.persisted? # rubocop:disable Rails/SkipsModelValidations
     end
@@ -105,6 +111,10 @@ module Hooks
       }
 
       template.gsub(/\{[^}]+\}/) { |match| substitutions.fetch(match, match) }
+    end
+
+    def timeout
+      Configuration.get("hooks.timeout").minutes
     end
   end
 end

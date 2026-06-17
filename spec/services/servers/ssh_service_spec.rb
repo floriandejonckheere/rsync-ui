@@ -74,7 +74,7 @@ RSpec.describe Servers::SSHService do
         expect(audit.server).to eq(server)
         expect(audit.command).to eq("echo ok")
         expect(audit.output).to eq("ok\n")
-        expect(audit.exit_status).to eq(0)
+        expect(audit.exit_status).to be_zero
         expect(audit.started_at).to be_present
         expect(audit.completed_at).to be_present
       end
