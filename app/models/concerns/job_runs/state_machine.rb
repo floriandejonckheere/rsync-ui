@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module JobRuns
-  module StateMachine
+  module StateMachine # rubocop:disable Metrics/ModuleLength
     extend ActiveSupport::Concern
 
     included do
@@ -129,6 +129,12 @@ module JobRuns
           next unless Configuration.get("streaming")
 
           JobRuns::BroadcastService.broadcast_complete(job_run, from: transition.from)
+        end
+
+        after_transition to: [:completed, :failed, :canceled, :errored] do |job_run, _transition|
+          next unless Configuration.get("disk_size")
+
+          Repositories::DiskSizeJob.perform_later(job_run.job.destination_repository)
         end
       end
 
