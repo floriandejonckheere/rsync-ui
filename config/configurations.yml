@@ -87,6 +87,14 @@
   type: boolean
   category: features
   default: true
+- key: hooks.timeout
+  type: integer
+  category: features
+  default: 10
+  minimum: 0
+  maximum:
+  dependencies:
+    - hooks
 - key: streaming
   type: boolean
   category: features

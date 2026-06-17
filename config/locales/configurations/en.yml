@@ -46,6 +46,8 @@ en:
           description: Interval (in minutes) between repository disk size measurements
       hooks:
         description: Enable or disable pre/post/success/failure hooks on job execution
+        timeout:
+          description: Hook timeout (in minutes)
       jobs:
         stuck_threshold:
           description: Grace period (in seconds) before a job run with no live process is reaped

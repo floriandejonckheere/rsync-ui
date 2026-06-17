@@ -59,7 +59,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Allow retrying jobs, or automatic retry (e.g. with incremental/exponential backoff)
 - [ ] Update branding
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
-- [ ] Hooks::ExecuteService: timeout on command execution
+- [x] Hooks::ExecuteService: timeout on command execution
 - [ ] Add a local resource usage card
 - [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
 - [ ] Implement support for OAuth2 authentication
