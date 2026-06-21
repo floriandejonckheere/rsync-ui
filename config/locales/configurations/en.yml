@@ -51,6 +51,8 @@ en:
       jobs:
         stuck_threshold:
           description: Grace period (in seconds) before a job run with no live process is reaped
+        timeout:
+          description: Job timeout, not including hooks (in minutes)
       notifications:
         description: Enable or disable user notifications on job start, success, and failure
       resource_usage:

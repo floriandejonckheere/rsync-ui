@@ -53,5 +53,53 @@ RSpec.describe Rsync::ExecuteService do
 
       expect(lines).to eq ["no newline at end"]
     end
+
+    describe "timeouts" do
+      before do
+        allow(Timeout)
+          .to receive(:timeout)
+          .with(a_kind_of(Integer))
+          .and_raise Timeout::Error
+
+        allow(Timeout)
+          .to receive(:timeout)
+          .with(0)
+          .and_call_original
+      end
+
+      context "when job timeouts are disabled" do
+        with_configuration "jobs.timeout" => 0
+
+        it "returns a successful result" do
+          result = service.call
+
+          expect(result.success).to be true
+          expect(result.exit_status).to be_zero
+
+          job_run.reload
+
+          expect(job_run).to be_completed
+          expect(job_run.error_class).to be_nil
+          expect(job_run.error_message).to be_nil
+        end
+      end
+
+      context "when timeouts are enabled" do
+        with_configuration "jobs.timeout" => 1
+
+        it "returns a failed result" do
+          result = service.call
+
+          expect(result.success).to be true
+          expect(result.exit_status).to be_zero
+
+          job_run.reload
+
+          expect(job_run).to be_errored
+          expect(job_run.error_class).to eq("Timeout::Error")
+          expect(job_run.error_message).to eq("execution expired after 1 minutes")
+        end
+      end
+    end
   end
 end
