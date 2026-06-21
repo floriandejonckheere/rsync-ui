@@ -9,8 +9,7 @@ RSpec.describe JobRuns::ExecuteService do
 
   let(:options) { {} }
 
-  let(:rsync_exit_status) { instance_double(Process::Status, success?: true, signaled?: false, exitstatus: 0, termsig: nil) }
-  let(:rsync_result) { ExecutionResult.new(exit_status: rsync_exit_status) }
+  let(:rsync_result) { ExecutionResult.new(success: true, exit_status: 0) }
   let(:rsync_execute_service) { instance_double(Rsync::ExecuteService) }
 
   before do
@@ -54,7 +53,7 @@ RSpec.describe JobRuns::ExecuteService do
     end
 
     context "when the command exits with a non-zero status" do
-      let(:rsync_exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
+      let(:rsync_result) { ExecutionResult.new(success: false, exit_status: 1) }
 
       it "transitions to failed" do
         service.call
@@ -503,7 +502,7 @@ RSpec.describe JobRuns::ExecuteService do
         end
 
         context "when rsync fails" do
-          let(:rsync_exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1, termsig: nil) }
+          let(:rsync_result) { ExecutionResult.new(success: false, exit_status: 1) }
 
           it "skips the success hook" do
             service.call
@@ -527,7 +526,7 @@ RSpec.describe JobRuns::ExecuteService do
         end
 
         context "when rsync fails" do
-          let(:rsync_exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1, termsig: nil) }
+          let(:rsync_result) { ExecutionResult.new(success: false, exit_status: 1) }
 
           it "executes the failure hook" do
             service.call
@@ -681,7 +680,7 @@ RSpec.describe JobRuns::ExecuteService do
       context "when rsync fails" do
         with_configuration "hooks" => true
 
-        let(:rsync_exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
+        let(:rsync_result) { ExecutionResult.new(success: false, exit_status: 1) }
 
         it "broadcasts completion with failed status to the status channel" do
           service.call
@@ -725,7 +724,7 @@ RSpec.describe JobRuns::ExecuteService do
       context "when the failure hook fails" do
         with_configuration "hooks" => true
 
-        let(:rsync_exit_status) { instance_double(Process::Status, success?: false, signaled?: false, exitstatus: 1) }
+        let(:rsync_result) { ExecutionResult.new(success: false, exit_status: 1) }
         let(:failure_hook) { create(:hook, :failure, command: "false", arguments: nil) }
         let(:job) { create(:job, :with_hooks, failure_hook:, user:, **options) }
 
