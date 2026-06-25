@@ -6,32 +6,60 @@ updates:
     schedule:
       interval: "weekly"
     groups:
-      dependencies:
+      dependencies-major:
+        update-types:
+          - "major"
+        exclude-patterns:
+          - "rubocop*"
+      dependencies-minor-patch:
         update-types:
           - "minor"
           - "patch"
         exclude-patterns:
           - "rubocop*"
-      rubocop:
+      rubocop-major:
         patterns:
           - "rubocop*"
+        update-types:
+          - "major"
+      rubocop-minor-patch:
+        patterns:
+          - "rubocop*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      dependencies-major:
+        update-types:
+          - "major"
+      dependencies-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
     groups:
-      dependencies:
+      dependencies-major:
+        update-types:
+          - "major"
+      dependencies-minor-patch:
         update-types:
           - "minor"
           - "patch"
@@ -40,3 +68,11 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      dependencies-major:
+        update-types:
+          - "major"
+      dependencies-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
