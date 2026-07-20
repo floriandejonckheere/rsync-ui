@@ -1,4 +1,4 @@
-FROM ruby:4.0.5-alpine3.23
+FROM ruby:4.0.6-alpine3.23
 
 LABEL maintainer="Florian Dejonckheere <florian@floriandejonckheere.be>"
 LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/rsync-ui
