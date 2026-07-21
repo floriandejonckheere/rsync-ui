@@ -1,0 +1,61 @@
+<%# locals: (f:, has_remote_repo:) %>
+<details class="card group py-0">
+  <summary
+    class="
+      flex items-center justify-between w-full px-8 py-8
+      cursor-pointer list-none
+    "
+  >
+    <h2 class="text-lg font-semibold">
+      <%= I18n.t("jobs.form.custom_options") %>
+    </h2>
+
+    <%= lucide_icon "chevron-down", class: "h-5 w-5 transition-transform duration-200 group-open:rotate-180" %>
+  </summary>
+
+  <div class="px-8 pb-8">
+    <div class="flex flex-col gap-6">
+      <div class="field flex-row items-center gap-4">
+        <%= f.check_box :opt_superuser, role: "switch" %>
+        <%= f.label :opt_superuser, I18n.t("jobs.form.opt_superuser.description") %>
+      </div>
+
+      <div class="field">
+        <%= f.label :opt_arguments, I18n.t("jobs.form.opt_arguments.description") %>
+
+        <%= f.text_area :opt_arguments,
+                        placeholder: I18n.t("jobs.form.opt_arguments.placeholder"),
+                        rows: 3,
+                        autocomplete: "off" %>
+      </div>
+
+      <div class="field">
+        <%= f.label :opt_rsync_path, I18n.t("jobs.form.opt_rsync_path.description") %>
+
+        <%= f.text_field :opt_rsync_path,
+                         placeholder: I18n.t("jobs.form.opt_rsync_path.placeholder"),
+                         autocomplete: "off" %>
+      </div>
+
+      <div class="field">
+        <%= f.label :opt_ssh_arguments, I18n.t("jobs.form.opt_ssh_arguments.description") %>
+
+        <%= f.text_area :opt_ssh_arguments,
+                        placeholder: I18n.t("jobs.form.opt_ssh_arguments.placeholder"),
+                        rows: 3,
+                        autocomplete: "off",
+                        disabled: !has_remote_repo,
+                        data: { "ssh-arguments-target": "sshField" } %>
+
+        <p
+          class="text-sm text-muted-foreground flex items-center gap-2 mt-1"
+          data-ssh-arguments-target="hint"
+          <%= "hidden" if has_remote_repo %>
+        >
+          <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
+          <%= I18n.t("jobs.form.opt_ssh_arguments.hint") %>
+        </p>
+      </div>
+    </div>
+  </div>
+</details>

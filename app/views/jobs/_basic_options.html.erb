@@ -1,0 +1,26 @@
+<%# locals: (f:) %>
+<details class="card group py-0">
+  <summary
+    class="
+      flex items-center justify-between w-full px-8 py-8
+      cursor-pointer list-none
+    "
+  >
+    <h2 class="text-lg font-semibold">
+      <%= I18n.t("jobs.form.basic_options") %>
+    </h2>
+
+    <%= lucide_icon "chevron-down", class: "h-5 w-5 transition-transform duration-200 group-open:rotate-180" %>
+  </summary>
+
+  <div class="px-8 pb-8">
+    <div class="flex flex-col gap-6">
+      <% %i[opt_archive opt_recursive opt_relative opt_links opt_times opt_perms opt_owner opt_group opt_one_file_system opt_delete opt_delete_excluded opt_existing opt_ignore_existing opt_update opt_dry_run opt_inplace opt_size_only opt_progress].each do |field| %>
+        <div class="field flex-row items-center gap-4">
+          <%= f.check_box field, role: "switch" %>
+          <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), data: { tooltip: I18n.t(:flag, scope: [:jobs, :form, field]) } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</details>
