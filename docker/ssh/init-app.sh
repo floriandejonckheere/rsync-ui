@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+[ "${SKIP_REPOSITORY_INIT}" = "0" ] && exec "$@"
+
 echo "Creating Home repository data..."
 mkdir -p \
   /data/home/Documents \
