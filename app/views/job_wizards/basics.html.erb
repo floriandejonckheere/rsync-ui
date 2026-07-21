@@ -1,0 +1,94 @@
+<% content_for :subtitle do %>
+  <%= I18n.t("job_wizards.subtitle") %>
+<% end %>
+
+<% content_for :back do %>
+  <%= render "shared/menu/back", path: jobs_path %>
+<% end %>
+
+<%= render "progress" %>
+
+<%= form_with model: @form, url: wizard_path, method: :patch, scope: :job_wizard, id: "job-wizard-form", class: "form" do |f| %>
+  <% content_for :actions do %>
+    <button
+      type="submit"
+      form="job-wizard-form"
+      class="btn-icon-outline btn-icon-lg"
+      data-tooltip="<%= I18n.t("job_wizards.form.next") %>"
+    >
+      <%= lucide_icon "arrow-right", class: "h-6 w-6" %>
+    </button>
+  <% end %>
+
+  <% if @form.errors.any? %>
+    <div class="mb-8">
+      <%= render "shared/forms/messages", model: @form %>
+    </div>
+  <% end %>
+
+  <% selected_sync_type = @form.sync_type.presence || JobForm::SYNC_TYPES.first %>
+
+  <div class="card max-w-2xl">
+    <section>
+      <div class="tabs w-full flex flex-col gap-6" data-controller="sync-type">
+        <%= f.hidden_field :sync_type, data: { "sync-type-target": "input" }, value: selected_sync_type %>
+
+        <nav role="tablist" aria-orientation="horizontal" class="w-full">
+          <% JobForm::SYNC_TYPES.each do |sync_type| %>
+            <button
+              type="button"
+              role="tab"
+              id="sync-type-tab-<%= sync_type.dasherize %>"
+              aria-controls="sync-type-panel-<%= sync_type.dasherize %>"
+              aria-selected="<%= sync_type == selected_sync_type %>"
+              tabindex="0"
+              data-sync-type-target="tab"
+              data-value="<%= sync_type %>"
+              data-action="click->sync-type#select"
+            >
+              <%= I18n.t("job_wizards.form.sync_types.#{sync_type}.label") %>
+            </button>
+          <% end %>
+        </nav>
+
+        <% JobForm::SYNC_TYPES.each do |sync_type| %>
+          <div
+            role="tabpanel"
+            id="sync-type-panel-<%= sync_type.dasherize %>"
+            aria-labelledby="sync-type-tab-<%= sync_type.dasherize %>"
+            tabindex="-1"
+            data-sync-type-target="panel"
+            data-value="<%= sync_type %>"
+            <%= "hidden" if sync_type != selected_sync_type %>
+          >
+            <p class="text-sm text-muted-foreground">
+              <%= I18n.t("job_wizards.form.sync_types.#{sync_type}.description") %>
+            </p>
+          </div>
+        <% end %>
+      </div>
+    </section>
+
+    <section>
+      <div class="flex flex-col gap-6">
+        <div class="field">
+          <%= f.label :name, I18n.t("job_wizards.form.name") %>
+
+          <%= f.text_field :name,
+                           placeholder: I18n.t("job_wizards.form.name_placeholder"),
+                           required: true,
+                           autocomplete: "off" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :description, I18n.t("job_wizards.form.description") %>
+
+          <%= f.text_area :description,
+                          placeholder: I18n.t("job_wizards.form.description_placeholder"),
+                          rows: 3,
+                          autocomplete: "off" %>
+        </div>
+      </div>
+    </section>
+  </div>
+<% end %>

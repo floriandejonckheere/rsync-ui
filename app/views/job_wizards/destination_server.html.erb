@@ -1,0 +1,38 @@
+<% content_for :title do %>
+  <%= I18n.t("job_wizards.title") %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= wizard_summary || I18n.t("job_wizards.subtitle") %>
+<% end %>
+
+<% content_for :back do %>
+  <%= render "shared/menu/back", path: previous_wizard_path %>
+<% end %>
+
+<%= render "progress" %>
+
+<%= form_with model: @server, url: wizard_path, method: :patch, scope: :job_wizard, id: "job-wizard-form", class: "form" do |f| %>
+  <% content_for :actions do %>
+    <button
+      type="submit"
+      form="job-wizard-form"
+      class="btn-icon-outline btn-icon-lg"
+      data-tooltip="<%= I18n.t("job_wizards.form.next") %>"
+    >
+      <%= lucide_icon "arrow-right", class: "h-6 w-6" %>
+    </button>
+  <% end %>
+
+  <% if @server.errors.any? %>
+    <div class="mb-8">
+      <%= render "shared/forms/messages", model: @server %>
+    </div>
+  <% end %>
+
+  <h2 class="text-lg font-semibold mb-4">
+    <%= I18n.t("job_wizards.steps.destination_server") %>
+  </h2>
+
+  <%= render "server_fields", f: f, server: @server %>
+<% end %>

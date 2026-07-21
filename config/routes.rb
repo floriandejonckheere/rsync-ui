@@ -66,6 +66,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :job_wizards, only: [:show, :update]
+
   resources :audits, only: [:index, :show]
 
   resources :job_runs, only: [:index, :show, :create, :destroy] do
@@ -137,6 +139,9 @@ end
 #                                      job PATCH  /jobs/:id(.:format)                                                                               jobs#update
 #                                          PUT    /jobs/:id(.:format)                                                                               jobs#update
 #                                          DELETE /jobs/:id(.:format)                                                                               jobs#destroy
+#                               job_wizard GET    /job_wizards/:id(.:format)                                                                        job_wizards#show
+#                                          PATCH  /job_wizards/:id(.:format)                                                                        job_wizards#update
+#                                          PUT    /job_wizards/:id(.:format)                                                                        job_wizards#update
 #                                   audits GET    /audits(.:format)                                                                                 audits#index
 #                                    audit GET    /audits/:id(.:format)                                                                             audits#show
 #                           cancel_job_run PATCH  /job_runs/:id/cancel(.:format)                                                                    job_runs#cancel

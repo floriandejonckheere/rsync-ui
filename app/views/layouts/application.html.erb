@@ -55,7 +55,7 @@
           <% end %>
         </div>
 
-        <%= render "shared/menu/item", path: root_path, controllers: ["dashboard"], icon: "circle-gauge", title: I18n.t("dashboard.title") %>
+        <%= render "shared/menu/item", path: root_path, controllers: ["dashboard", "job_wizards"], icon: "circle-gauge", title: I18n.t("dashboard.title") %>
         <%= render "shared/menu/item", path: job_runs_path, controllers: "job_runs", icon: "clock", title: I18n.t("job_runs.title") %>
         <%= render "shared/menu/item", path: servers_path, controllers: "servers", icon: "server", title: I18n.t("servers.title") %>
         <%= render "shared/menu/item", path: repositories_path, controllers: "repositories", icon: "folders", title: I18n.t("repositories.title") %>

@@ -84,7 +84,7 @@ gem "image_processing"
 # Ruby extension for the libvips image processing library [https://github.com/libvips/ruby-vips]
 gem "ruby-vips"
 
-  # Active Storage validations [https://github.com/igorkasyanchuk/active_storage_validations]
+# Active Storage validations [https://github.com/igorkasyanchuk/active_storage_validations]
 gem "active_storage_validations"
 
 # Flexible authentication solution for Rails [https://github.com/heartcombo/devise]

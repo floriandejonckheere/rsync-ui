@@ -1,0 +1,66 @@
+<% content_for :title do %>
+  <%= I18n.t("job_wizards.title") %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= wizard_summary || I18n.t("job_wizards.subtitle") %>
+<% end %>
+
+<% content_for :back do %>
+  <%= render "shared/menu/back", path: previous_wizard_path %>
+<% end %>
+
+<%= render "progress" %>
+
+<%= form_with model: @form, url: wizard_path, method: :patch, scope: :job_wizard, id: "job-wizard-form", class: "form" do |f| %>
+  <% content_for :actions do %>
+    <button
+      type="submit"
+      form="job-wizard-form"
+      class="btn-icon-outline btn-icon-lg"
+      data-tooltip="<%= I18n.t("job_wizards.form.next") %>"
+    >
+      <%= lucide_icon "arrow-right", class: "h-6 w-6" %>
+    </button>
+  <% end %>
+
+  <% if @form.errors.any? %>
+    <div class="mb-8">
+      <%= render "shared/forms/messages", model: @form %>
+    </div>
+  <% end %>
+
+  <div class="card max-w-2xl">
+    <header>
+      <h2><%= I18n.t("job_wizards.steps.destination") %></h2>
+    </header>
+
+    <section>
+      <div class="flex flex-col gap-6">
+        <% if @servers %>
+          <div class="field">
+            <%= f.label :server_id, I18n.t("job_wizards.form.server") %>
+
+            <%= render "shared/forms/combobox",
+                       name: f.field_name(:server_id),
+                       value: @form.server_id,
+                       options: @servers.map { |server| [server.name, server.id] } +
+                                [[I18n.t("job_wizards.form.new_server_option"), PathForm::NEW_SERVER]],
+                       blank_label: I18n.t("job_wizards.form.server_placeholder"),
+                       placeholder: I18n.t("job_wizards.form.server_search_placeholder"),
+                       required: true %>
+          </div>
+        <% end %>
+
+        <div class="field">
+          <%= f.label :path, I18n.t("job_wizards.form.path") %>
+
+          <%= f.text_field :path,
+                           placeholder: I18n.t("job_wizards.form.path_placeholder"),
+                           required: true,
+                           autocomplete: "off" %>
+        </div>
+      </div>
+    </section>
+  </div>
+<% end %>

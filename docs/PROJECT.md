@@ -38,11 +38,12 @@ For remote repositories, the server should be mounted as a local directory, and 
 
 ### Job creation wizard
 
-- [ ] Implement a wizard that guides the user through the process of creating a sync job
-  - [ ] Use the `wicked` gem
-  - [ ] Step one (source): repository name, description, type (local/remote), server (if remote), path
-  - [ ] Step two (destination): repository name, description, type (local/remote), server (if remote), path
-  - [ ] Step three: schedule, rsync options, enabled
+- [x] Implement a wizard that guides the user through the process of creating a sync job
+  - [x] Use the `wicked` gem
+  - [x] Step one (basics): job name, description, synchronization type (local-to-local/local-to-remote/remote-to-local)
+  - [x] Step two (source): path, and server (existing or newly created) when the source is remote
+  - [x] Step three (destination): path, and server (existing or newly created) when the destination is remote
+  - [x] Step four: schedule, rsync options, enabled
 
 ### Archiving
 

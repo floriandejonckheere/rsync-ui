@@ -8,6 +8,7 @@ en:
       no_jobs: No jobs scheduled
       no_runs: No runs yet
       runs_in: in %{time}
+    new_job_wizard: New job
     repositories:
       local: Local
       remote: Remote

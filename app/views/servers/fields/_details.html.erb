@@ -1,0 +1,61 @@
+<%# locals: (f:, extended: false) %>
+<div class="card">
+  <header>
+    <h2><%= I18n.t("servers.form.details") %></h2>
+  </header>
+
+  <section>
+    <div class="flex flex-col gap-6">
+      <div class="field">
+        <%= f.label :name, I18n.t("servers.form.name") %>
+
+        <%= f.text_field :name,
+                         placeholder: I18n.t("servers.form.name_placeholder"),
+                         required: true,
+                         autocomplete: "off" %>
+      </div>
+
+      <% if extended %>
+        <div class="field">
+          <%= f.label :description, I18n.t("servers.form.description") %>
+
+          <%= f.text_area :description,
+                          placeholder: I18n.t("servers.form.description_placeholder"),
+                          rows: 3,
+                          autocomplete: "off" %>
+        </div>
+      <% end %>
+
+      <% if Configuration.get("resource_usage") %>
+        <div class="field">
+          <%= f.label :operating_system, I18n.t("servers.form.operating_system") %>
+
+          <%= f.select :operating_system,
+                       [[I18n.t("servers.form.operating_system_linux"), "linux"],
+                        [I18n.t("servers.form.operating_system_macos"), "macos"],
+                        [I18n.t("servers.form.operating_system_hetzner"), "hetzner"]],
+                       { include_blank: I18n.t("servers.form.operating_system_placeholder") },
+                       { class: "w-full" } %>
+        </div>
+      <% end %>
+
+      <% if extended %>
+        <div class="field">
+          <%= f.label :path, I18n.t("servers.form.path") %>
+
+          <%= f.text_field :path,
+                           placeholder: I18n.t("servers.form.path_placeholder"),
+                           required: true,
+                           autocomplete: "off" %>
+
+          <% if Configuration.get("resource_usage") %>
+            <p class="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+              <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
+              <%= I18n.t("servers.form.path_hint") %>
+            </p>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+</div>

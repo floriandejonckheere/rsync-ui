@@ -1,0 +1,79 @@
+<% content_for :title do %>
+  <%= I18n.t("job_wizards.title") %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= wizard_summary || I18n.t("job_wizards.subtitle") %>
+<% end %>
+
+<% content_for :back do %>
+  <%= render "shared/menu/back", path: previous_wizard_path %>
+<% end %>
+
+<%= render "progress" %>
+
+<%= form_with model: @job, url: wizard_path, method: :patch, scope: :job_wizard, id: "job-wizard-form", class: "form" do |f| %>
+  <% content_for :actions do %>
+    <button
+      type="submit"
+      form="job-wizard-form"
+      class="btn-icon-outline btn-icon-lg"
+      data-tooltip="<%= I18n.t("job_wizards.form.finish") %>"
+    >
+      <%= lucide_icon "check", class: "h-6 w-6" %>
+    </button>
+  <% end %>
+
+  <% if @job.errors.any? %>
+    <div class="mb-8">
+      <%= render "shared/forms/messages", model: @job %>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-2 gap-8 items-start">
+    <div class="flex flex-col gap-8">
+      <div class="card">
+        <header>
+          <h2><%= I18n.t("job_wizards.steps.schedule") %></h2>
+        </header>
+
+        <section>
+          <div class="flex flex-col gap-6">
+            <div
+              class="field"
+              data-controller="cron-preview"
+              data-cron-preview-placeholder-value="<%= I18n.t("jobs.form.schedule_preview_placeholder") %>"
+              data-cron-preview-invalid-value="<%= I18n.t("jobs.form.schedule_preview_invalid") %>"
+            >
+              <%= f.label :schedule, I18n.t("jobs.form.schedule") %>
+
+              <%= f.text_field :schedule,
+                               placeholder: I18n.t("jobs.form.schedule_placeholder"),
+                               autocomplete: "off",
+                               data: { cron_preview_target: "input", action: "input->cron-preview#update" } %>
+
+              <span
+                class="text-muted-foreground mt-1 text-sm"
+                data-cron-preview-target="output"
+              ></span>
+            </div>
+
+            <div class="field flex-row items-center gap-4">
+              <%= f.check_box :enabled, role: "switch" %>
+
+              <%= f.label :enabled, I18n.t("jobs.form.enabled") %>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <%= render "jobs/include_exclude_patterns", f: f, job: @job %>
+    </div>
+
+    <div class="flex flex-col gap-8">
+      <%= render "jobs/basic_options", f: f %>
+      <%= render "jobs/advanced_options", f: f %>
+      <%= render "jobs/custom_options", f: f, has_remote_repo: job_form.remote_repo? %>
+    </div>
+  </div>
+<% end %>

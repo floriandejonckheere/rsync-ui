@@ -1,0 +1,41 @@
+---
+en:
+  job_wizards:
+    form:
+      description: Description
+      description_placeholder: Optional description for this job
+      finish: Create job
+      name: Name
+      name_placeholder: Daily backup
+      new_server_option: "+ Create a new server"
+      next: Next
+      path: Path
+      path_placeholder: "/data/example"
+      server: Server
+      server_placeholder: Select a server
+      server_search_placeholder: Search servers...
+      sync_types:
+        local_to_local:
+          description: Sync between two local directories on this server
+          label: Local to local
+        local_to_remote:
+          description: Sync from a local directory to a remote server
+          label: Local to remote
+        remote_to_local:
+          description: Sync from a remote server to a local directory
+          label: Remote to local
+    repository_name:
+      destination: "%{job_name} (destination)"
+      source: "%{job_name} (source)"
+    steps:
+      basics: Basics
+      destination: Destination
+      destination_server: New destination server
+      schedule: Schedule & options
+      source: Source
+      source_server: New source server
+    subtitle: Set up a new synchronization job
+    summary: "%{name} (%{sync_type})"
+    title: New job
+    update:
+      success: Job was successfully created.

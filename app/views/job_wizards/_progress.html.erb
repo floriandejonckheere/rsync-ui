@@ -1,0 +1,14 @@
+<%# locals: () %>
+<div class="card mb-8">
+  <nav class="flex items-center gap-2 px-6 py-4 text-sm flex-wrap">
+    <% wizard_steps.each_with_index do |wizard_step, index| %>
+      <span class="<%= current_step?(wizard_step) ? "font-semibold text-gray-900 dark:text-gray-100" : "text-muted-foreground" %>">
+        <%= I18n.t("job_wizards.steps.#{wizard_step}") %>
+      </span>
+
+      <% unless index == wizard_steps.length - 1 %>
+        <%= lucide_icon "chevron-right", class: "h-4 w-4 text-muted-foreground" %>
+      <% end %>
+    <% end %>
+  </nav>
+</div>

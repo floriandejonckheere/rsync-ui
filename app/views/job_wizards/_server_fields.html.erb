@@ -1,0 +1,9 @@
+<%# locals: (f:, server:) %>
+<div class="grid grid-cols-2 gap-8 items-start">
+  <div class="flex flex-col gap-8">
+    <%= render "servers/fields/details", f: f %>
+    <%= render "servers/fields/connection", f: f %>
+  </div>
+
+  <%= render "servers/fields/authentication", f: f, server: server %>
+</div>

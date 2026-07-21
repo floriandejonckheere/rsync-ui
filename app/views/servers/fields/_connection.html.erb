@@ -1,0 +1,38 @@
+<%# locals: (f:) %>
+<div class="card">
+  <header>
+    <h2><%= I18n.t("servers.form.connection") %></h2>
+  </header>
+
+  <section>
+    <div class="flex flex-col gap-6">
+      <div class="field">
+        <%= f.label :host, I18n.t("servers.form.host") %>
+
+        <%= f.text_field :host,
+                         placeholder: I18n.t("servers.form.host_placeholder"),
+                         required: true,
+                         autocomplete: "off" %>
+      </div>
+
+      <div class="field">
+        <%= f.label :port, I18n.t("servers.form.port") %>
+
+        <%= f.number_field :port,
+                           placeholder: I18n.t("servers.form.port_placeholder"),
+                           required: true,
+                           min: 1,
+                           max: 65_535 %>
+      </div>
+
+      <div class="field">
+        <%= f.label :username, I18n.t("servers.form.username") %>
+
+        <%= f.text_field :username,
+                         placeholder: I18n.t("servers.form.username_placeholder"),
+                         required: true,
+                         autocomplete: "off" %>
+      </div>
+    </div>
+  </section>
+</div>
