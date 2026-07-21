@@ -39,27 +39,40 @@ For remote repositories, the server should be mounted as a local directory, and 
 ### Job creation wizard
 
 - [ ] Implement a wizard that guides the user through the process of creating a sync job
-- [ ] Step one (source): repository name, description, type (local/remote), server (if remote), path
-- [ ] Step two (destination): repository name, description, type (local/remote), server (if remote), path
-- [ ] Step three: schedule, rsync options, enabled
+  - [ ] Use the `wicked` gem
+  - [ ] Step one (source): repository name, description, type (local/remote), server (if remote), path
+  - [ ] Step two (destination): repository name, description, type (local/remote), server (if remote), path
+  - [ ] Step three: schedule, rsync options, enabled
+
+### Archiving
+
+- [ ] Add `archived_at` column
+  - [ ] `job_runs` table
+  - [ ] `jobs` table
+  - [ ] `repositories` table
+  - [ ] `servers` table
+- [ ] Add `Archivable` concern
+  - [ ] `archive!` method sets `archived_at` on table and dependent tables (e.g. archiving server also archives related repositories)
+- [ ] Add archived tab
+  - [ ] Job runs page
+  - [ ] Jobs page
+  - [ ] Repositories page
+  - [ ] Servers page
+- [ ] Disable features for archived tables
+  - [ ] Disable connectivity polling for archived servers
+  - [ ] Disable scheduling for archived jobs
 
 ### Smaller TODOs
 
-- [ ] Allow user to archive job runs, jobs, repositories, and servers
-  - [ ] Extra tab for archived job runs, jobs, repositories, and servers
-  - [ ] No connectivity polling for archived servers
-  - [ ] No scheduling for archived jobs
 - [ ] Make application responsive
 - [ ] Make job run immutable and reproducible
   - [ ] Temporary: lock job, repositories, hooks, notifications rows when executing job
-  - [x] Save command and options in the database
   - [ ] Save hooks in the database
   - [ ] Save repository in the database
   - [ ] Save notifications in the database
 - [ ] Allow retrying jobs, or automatic retry (e.g. with incremental/exponential backoff)
 - [ ] Update branding
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
-- [x] Hooks::ExecuteService: timeout on command execution
 - [ ] Add a local resource usage card
 - [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
 - [ ] Implement support for OAuth2 authentication
