@@ -67,6 +67,23 @@ This document describes the testing setup, conventions, and CI/CD pipeline.
   end
   ```
 
+## Browser testing
+
+In order to test or validate something using the running app, use [http://localhost:3000](http://localhost:3000) once `docker compose up` is running.
+
+**Default logins** (seeded via `db:setup`/`database:seed:development`):
+
+- Email: `admin@example.com`
+- Password: `password`
+
+Tips for an AI agent validating changes live in a browser:
+
+- Start (or confirm) the stack with `docker compose up -d` and tail `docker compose logs -f app` to catch server-side errors while clicking through the UI.
+- Development seeds (`db/seeds/development/`) also create sample servers and users beyond the admin account — check the CSVs there if a test needs more varied data.
+- If a page 500s, the Rails error page and `docker compose logs -f app` are more informative than the browser console; check both.
+- After seed/model changes, re-run `docker compose exec app bundle exec rails db:seed` (or `db:reset` for a clean slate) so the browser session reflects current data.
+- CSS/JS changes are picked up by the `css`/`js` watch processes inside the `app` container's Foreman setup; a browser refresh is enough, no rebuild needed.
+
 ## Testing Best Practices
 
 - Test behavior, not implementation
