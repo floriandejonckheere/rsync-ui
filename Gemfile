@@ -81,7 +81,10 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing"
 
-# Active Storage validations [https://github.com/igorkasyanchuk/active_storage_validations]
+# Ruby extension for the libvips image processing library [https://github.com/libvips/ruby-vips]
+gem "ruby-vips"
+
+  # Active Storage validations [https://github.com/igorkasyanchuk/active_storage_validations]
 gem "active_storage_validations"
 
 # Flexible authentication solution for Rails [https://github.com/heartcombo/devise]
