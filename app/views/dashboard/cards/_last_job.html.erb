@@ -6,8 +6,7 @@
     <% if last_job_run.nil? %>
       <%= I18n.t("dashboard.jobs.last_job") %>
     <% else %>
-      <%= I18n.t("dashboard.jobs.last_job") %>
-      :
+      <%= I18n.t("dashboard.jobs.last_job") %> :
       <%= link_to last_job_run.name, edit_job_path(last_job_run.job), class: "hover:underline" %>
     <% end %>
   </h2>
