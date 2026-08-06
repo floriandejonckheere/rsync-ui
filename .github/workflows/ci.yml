@@ -35,6 +35,11 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Install libvips
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libvips-dev
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.288.0
         with:
@@ -121,6 +126,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6.0.2
         with:
           fetch-depth: 1
+
+      - name: Install libvips
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libvips-dev
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.288.0
