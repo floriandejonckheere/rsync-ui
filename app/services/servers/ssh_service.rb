@@ -18,16 +18,22 @@ module Servers
       output = +""
       exit_code = nil
 
-      Net::SSH.start(server.host, server.username, ssh_options) do |ssh|
-        ssh.open_channel do |channel|
-          channel.exec(command) do |_ch, _success|
-            channel.on_data { |_, data| output << data }
-            channel.on_extended_data { |_, _, data| output << data }
-            channel.on_request("exit-status") { |_, data| exit_code = data.read_long }
+      begin
+        Net::SSH.start(server.host, server.username, ssh_options) do |ssh|
+          ssh.open_channel do |channel|
+            channel.exec(command) do |_ch, _success|
+              channel.on_data { |_, data| output << data }
+              channel.on_extended_data { |_, _, data| output << data }
+              channel.on_request("exit-status") { |_, data| exit_code = data.read_long }
+            end
           end
-        end
 
-        ssh.loop
+          ssh.loop
+        end
+      rescue StandardError => e
+        audit&.update!(output: "#{output}\n#{e.class}: #{e.message}", exit_status: -1, completed_at: Time.zone.now)
+
+        raise
       end
 
       audit&.update!(output:, exit_status: exit_code, completed_at: Time.zone.now)

@@ -78,6 +78,32 @@ RSpec.describe Servers::SSHService do
         expect(audit.started_at).to be_present
         expect(audit.completed_at).to be_present
       end
+
+      context "when the SSH connection raises an error" do
+        with_configuration "audits" => true
+
+        before do
+          allow(Net::SSH)
+            .to receive(:start)
+            .and_raise(Net::SSH::ConnectionTimeout, "timed out")
+        end
+
+        it "re-raises the error" do
+          expect { service.call }
+            .to raise_error(Net::SSH::ConnectionTimeout)
+        end
+
+        it "finalizes the audit record instead of leaving it incomplete" do
+          expect { service.call }
+            .to raise_error(Net::SSH::ConnectionTimeout)
+
+          audit = Audit.last
+
+          expect(audit.completed_at).to be_present
+          expect(audit.exit_status).to eq(-1)
+          expect(audit.output).to include "Net::SSH::ConnectionTimeout: timed out"
+        end
+      end
     end
 
     context "when audits feature is disabled" do
