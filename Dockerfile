@@ -4,7 +4,7 @@ LABEL maintainer="Florian Dejonckheere <florian@floriandejonckheere.be>"
 LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/rsync-ui
 
 ENV RUNTIME_DEPS postgresql gmp vips openssh rsync python3 py3-pip sshpass
-ENV BUILD_DEPS build-base curl-dev git postgresql-dev yaml-dev cmake nodejs-current npm gmp-dev libffi-dev esbuild perl libvips
+ENV BUILD_DEPS build-base curl-dev git postgresql-dev yaml-dev cmake nodejs-current npm gmp-dev libffi-dev esbuild perl
 
 ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
