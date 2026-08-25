@@ -5,7 +5,8 @@ class ConfigurationsController < ApplicationController
   before_action :set_configuration, only: [:update]
 
   def index
-    @configurations = authorized_scope(Configuration.order(:key), type: :relation)
+    @configurations = authorized_scope(Configuration.all, type: :relation)
+      .sort_by { |configuration| Configuration.configurations.keys.index(configuration.key) }
     @tasks = Task.order(:name) if current_user&.admin?
 
     authorize! :configuration
