@@ -3,8 +3,8 @@ FROM ruby:4.0.6-alpine3.23
 LABEL maintainer="Florian Dejonckheere <florian@floriandejonckheere.be>"
 LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/rsync-ui
 
-ENV RUNTIME_DEPS postgresql gmp vips openssh rsync python3 py3-pip sshpass
-ENV BUILD_DEPS build-base curl-dev git postgresql-dev yaml-dev cmake nodejs-current npm gmp-dev libffi-dev esbuild perl
+ENV RUNTIME_DEPS gmp openssh postgresql py3-pip python3 rsync sshpass vips
+ENV BUILD_DEPS build-base cmake curl-dev esbuild git gmp-dev libffi-dev nodejs-current npm perl postgresql-dev yaml-dev
 
 ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8

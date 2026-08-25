@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/rsy
 WORKDIR /app
 
 # Install runtime dependencies only
-RUN apk add --no-cache libpq gmp libffi tzdata openssh rsync python3 py3-pip
+RUN apk add --no-cache gmp libpq openssh py3-pip python3 rsync sshpass tzdata vips
 
 # Install Apprise (notification dispatcher)
 ADD requirements.txt /app/
@@ -18,7 +18,7 @@ ENV PATH="/opt/apprise-venv/bin:$PATH"
 FROM base AS ruby
 
 # Install build dependencies
-RUN apk add --no-cache build-base curl-dev git postgresql-dev yaml-dev cmake gmp-dev libffi-dev
+RUN apk add --no-cache build-base cmake curl-dev git gmp-dev libffi-dev postgresql-dev yaml-dev
 
 # Pin RubyGems and Bundler to specific versions for reproducibility
 RUN gem update --system 4.0.10 && gem install bundler -v 4.0.6
