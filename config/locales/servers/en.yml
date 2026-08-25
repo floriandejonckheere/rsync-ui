@@ -87,6 +87,7 @@ en:
       title: New server
     table:
       connectivity:
+        failure: 'Last attempt %{probed_at} ago: %{error_message}'
         offline: Server is offline
         online: Last seen %{last_seen_at} ago
       cpu: CPU

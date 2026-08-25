@@ -58,12 +58,12 @@ class Server < ApplicationRecord
 
   after_commit :sync_ssh_config
 
-  def online?
-    last_seen_at.present?
-  end
+  def connectivity_status
+    return :offline if last_seen_at.nil? || error_message.present?
 
-  def offline?
-    last_seen_at.nil?
+    threshold = Configuration.get("connectivity.threshold").to_i.minutes
+
+    last_seen_at > threshold.ago ? :online : :stale
   end
 
   private

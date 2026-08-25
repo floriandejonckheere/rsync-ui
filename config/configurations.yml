@@ -116,6 +116,14 @@
   maximum:
   dependencies:
     - connectivity
+- key: connectivity.threshold
+  type: integer
+  category: connectivity
+  default: 15
+  minimum: 1
+  maximum:
+  dependencies:
+    - connectivity
 - key: connectivity.ssh_key.algorithm
   type: string
   category: connectivity

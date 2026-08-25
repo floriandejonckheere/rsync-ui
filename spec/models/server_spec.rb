@@ -154,31 +154,31 @@ RSpec.describe Server do
     end
   end
 
-  describe "#online?" do
-    context "when last_seen_at is present" do
-      subject(:server) { build(:server, last_seen_at: Time.current) }
-
-      it { is_expected.to be_online }
-    end
+  describe "#connectivity_status" do
+    with_configuration "connectivity.threshold" => 15
 
     context "when last_seen_at is nil" do
       subject(:server) { build(:server, last_seen_at: nil) }
 
-      it { is_expected.not_to be_online }
-    end
-  end
-
-  describe "#offline?" do
-    context "when last_seen_at is nil" do
-      subject(:server) { build(:server, last_seen_at: nil) }
-
-      it { is_expected.to be_offline }
+      it { expect(server.connectivity_status).to eq :offline }
     end
 
-    context "when last_seen_at is present" do
-      subject(:server) { build(:server, last_seen_at: Time.current) }
+    context "when last_seen_at is within the threshold" do
+      subject(:server) { build(:server, last_seen_at: 5.minutes.ago, error_message: nil) }
 
-      it { is_expected.not_to be_offline }
+      it { expect(server.connectivity_status).to eq :online }
+    end
+
+    context "when last_seen_at is outside the threshold" do
+      subject(:server) { build(:server, last_seen_at: 20.minutes.ago, error_message: nil) }
+
+      it { expect(server.connectivity_status).to eq :stale }
+    end
+
+    context "when last_seen_at is present but a connection error occurred" do
+      subject(:server) { build(:server, last_seen_at: 5.minutes.ago, error_message: "Connection refused") }
+
+      it { expect(server.connectivity_status).to eq :offline }
     end
   end
 
