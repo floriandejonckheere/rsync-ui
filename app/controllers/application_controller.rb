@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   verify_authorized
 
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :authenticate_user!, if: :mission_control_controller?
   before_action :authorize_mission_control, if: :mission_control_controller?
 
   skip_after_action :verify_authorized, if: :devise_controller?
