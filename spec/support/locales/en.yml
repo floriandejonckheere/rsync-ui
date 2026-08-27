@@ -1,0 +1,8 @@
+---
+en:
+  configurations:
+    keys:
+      test:
+        string_allowed:
+          allowed_values:
+            bar: Bar

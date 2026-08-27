@@ -28,6 +28,14 @@ class Configuration < ApplicationRecord
     Configuration.configurations.dig(key, :allowed_values)
   end
 
+  def display_value
+    raw_value = value.presence || default
+
+    return raw_value if allowed_values.blank?
+
+    I18n.t("configurations.keys.#{key}.allowed_values.#{raw_value}", default: raw_value)
+  end
+
   def category
     Configuration.configurations.dig(key, :category) || "other"
   end

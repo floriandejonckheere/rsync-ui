@@ -208,6 +208,40 @@ RSpec.describe Configuration do
     end
   end
 
+  describe "#display_value" do
+    context "when allowed_values is not defined" do
+      subject(:configuration) { build(:configuration, key: "test.key", value: "my_value") }
+
+      it "returns the raw value" do
+        expect(configuration.display_value).to eq "my_value"
+      end
+    end
+
+    context "when value is blank" do
+      subject(:configuration) { build(:configuration, key: "test.key", value: nil) }
+
+      it "returns the default value" do
+        expect(configuration.display_value).to eq described_class.configurations["test.key"][:default]
+      end
+    end
+
+    context "when allowed_values is defined without a translation" do
+      subject(:configuration) { build(:string_configuration, key: "test.string_allowed", value: "foo") }
+
+      it "returns the raw value" do
+        expect(configuration.display_value).to eq "foo"
+      end
+    end
+
+    context "when allowed_values is defined with a translation" do
+      subject(:configuration) { build(:string_configuration, key: "test.string_allowed", value: "bar") }
+
+      it "returns the translated label" do
+        expect(configuration.display_value).to eq "Bar"
+      end
+    end
+  end
+
   describe ".set" do
     it "updates existing configuration" do
       create(:configuration, key: "test.key", value: "old-value")
