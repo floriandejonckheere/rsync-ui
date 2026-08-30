@@ -74,12 +74,14 @@ x-app: &app
 services:
   web:
     <<: *app
+    hostname: rsync_ui_app
     ports:
       - "3000:3000"
 
   worker:
     <<: *app
     command: bin/jobs
+    hostname: rsync_ui_worker
 
   postgres:
     image: postgres:18

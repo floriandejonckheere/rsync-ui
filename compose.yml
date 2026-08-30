@@ -32,6 +32,7 @@ services:
 
   app:
     <<: *app
+    hostname: app
     entrypoint: /app/docker/ssh/init-app.sh
     command: foreman start
     tty: true
@@ -40,6 +41,7 @@ services:
 
   worker:
     <<: *app
+    hostname: worker
     command: bin/jobs
     tty: true
 
