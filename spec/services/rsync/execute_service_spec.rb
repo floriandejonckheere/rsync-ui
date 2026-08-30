@@ -27,6 +27,20 @@ RSpec.describe Rsync::ExecuteService do
       end
     end
 
+    context "when output contains non-ASCII characters" do
+      let(:filename) { "Classics/Albert Camus/L'étranger - Albert Camus (2011).epub" }
+      let(:job_run) { create(:job_run, :pending, job:, user:, command: "printf '%s\\n' #{Shellwords.escape(filename)}") }
+
+      it "yields lines decoded as UTF-8 without raising" do
+        lines = []
+
+        expect { service.call { |line| lines << line } }.not_to raise_error
+
+        expect(lines).to eq ["#{filename}\n"]
+        expect(lines.first.encoding).to eq Encoding::UTF_8
+      end
+    end
+
     context "when output has no trailing newline" do
       let(:job_run) { create(:job_run, :pending, job:, user:, command: "printf 'no newline at end'") }
 

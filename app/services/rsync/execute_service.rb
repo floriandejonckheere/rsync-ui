@@ -27,7 +27,9 @@ module Rsync
           buffer = +""
 
           loop do
-            chunk = output.readpartial(4096)
+            chunk = output
+              .readpartial(4096)
+              .force_encoding(Encoding::UTF_8)
 
             Rails.logger.debug { chunk }
 
