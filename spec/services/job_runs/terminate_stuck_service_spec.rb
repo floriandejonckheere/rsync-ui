@@ -3,7 +3,8 @@
 RSpec.describe JobRuns::TerminateStuckService do
   subject(:service) { described_class.new }
 
-  with_configuration "jobs.stuck_threshold" => 30
+  with_configuration "terminate_stuck_jobs" => true,
+                     "terminate_stuck_jobs.interval" => 30
 
   let(:user) { create(:user) }
   let(:job) { create(:job, user:) }

@@ -3,7 +3,7 @@
 module JobRuns
   class TerminateStuckService < ApplicationService
     def call
-      threshold = Configuration.get("jobs.stuck_threshold").to_i.seconds.ago
+      threshold = Configuration.get("terminate_stuck_jobs.interval").to_i.seconds.ago
 
       Rails.logger.info { "Terminating all job runs stuck since #{threshold.iso8601}" }
 

@@ -17,6 +17,8 @@ class SchedulerJob < ApplicationJob
   private
 
   def terminate_stuck_job_runs
+    return unless Configuration.get("terminate_stuck_jobs")
+
     JobRuns::TerminateStuckService.call
   end
 

@@ -53,8 +53,6 @@ en:
         timeout:
           description: Hook timeout (in minutes)
       jobs:
-        stuck_threshold:
-          description: Grace period (in seconds) before a job run with no live process is reaped
         timeout:
           description: Job timeout, not including hooks (in minutes)
       notifications:
@@ -79,6 +77,10 @@ en:
         description: Enable or disable scheduled jobs
       streaming:
         description: Enable or disable real-time log streaming
+      terminate_stuck_jobs:
+        description: Enable or disable termination of stuck job runs
+        interval:
+          description: Grace period (in seconds) before a job run with no live process is reaped
       verify_host_key:
         description: Verify server host key fingerprint on every SSH connection (recommended)
     title: Configuration

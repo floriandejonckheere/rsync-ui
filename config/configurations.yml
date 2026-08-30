@@ -144,12 +144,18 @@
   default: 2048
   minimum: 1024
   maximum:
-- key: jobs.stuck_threshold
+- key: terminate_stuck_jobs
+  type: boolean
+  category: system
+  default: true
+- key: terminate_stuck_jobs.interval
   type: integer
   category: system
   default: 1
   minimum: 1
   maximum:
+  dependencies:
+    - terminate_stuck_jobs
 - key: jobs.timeout
   type: integer
   category: system

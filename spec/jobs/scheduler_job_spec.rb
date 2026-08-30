@@ -3,6 +3,34 @@
 RSpec.describe SchedulerJob do
   before { travel_to(Time.zone.local(2026, 4, 19, 2, 0, 30)) }
 
+  describe "stuck job run termination" do
+    with_configuration "terminate_stuck_jobs" => true
+
+    it "calls JobRuns::TerminateStuckService" do
+      allow(JobRuns::TerminateStuckService)
+        .to receive(:call)
+
+      described_class.perform_now
+
+      expect(JobRuns::TerminateStuckService)
+        .to have_received(:call)
+    end
+
+    context "when terminate_stuck_jobs is disabled" do
+      with_configuration "terminate_stuck_jobs" => false
+
+      it "does not call JobRuns::TerminateStuckService" do
+        allow(JobRuns::TerminateStuckService)
+          .to receive(:call)
+
+        described_class.perform_now
+
+        expect(JobRuns::TerminateStuckService)
+          .not_to have_received(:call)
+      end
+    end
+  end
+
   describe "connectivity scheduling" do
     with_configuration "connectivity" => true, "connectivity.interval" => 15
 
