@@ -47,6 +47,14 @@
           <%= I18n.t("job_runs.show.duration") %>:
           <span data-job-run-status-target="duration" data-started-at="<%= @job_run.started_at&.iso8601 %>"><%= @job_run.duration ? format_time(@job_run.duration.to_i) : "—" %></span>
         </div>
+
+        <div class="hidden" data-job-run-status-target="exitStatus">
+          <%= I18n.t("job_runs.show.exit_status") %>:
+          <span
+            class="text-red-600 dark:text-red-400"
+            data-job-run-status-target="exitStatusValue"
+          ></span>
+        </div>
       </div>
     </div>
 

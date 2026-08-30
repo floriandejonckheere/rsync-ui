@@ -71,6 +71,7 @@ module JobRuns
           status_text: I18n.t("job_runs.status.#{job_run.status}"),
           started_at: job_run.started_at&.iso8601,
           completed_at: job_run.completed_at&.iso8601,
+          exit_status: job_run.exit_status,
         },
       )
 
