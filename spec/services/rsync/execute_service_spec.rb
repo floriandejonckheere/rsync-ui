@@ -41,6 +41,21 @@ RSpec.describe Rsync::ExecuteService do
       end
     end
 
+    context "when a multi-byte character straddles a read chunk boundary" do
+      let(:padding) { "a" * 4095 }
+      let(:filename) { "#{padding}é rest" }
+      let(:job_run) { create(:job_run, :pending, job:, user:, command: "printf '%s\\n' #{Shellwords.escape(filename)}") }
+
+      it "reassembles the character correctly without raising" do
+        lines = []
+
+        expect { service.call { |line| lines << line } }.not_to raise_error
+
+        expect(lines).to eq ["#{filename}\n"]
+        expect(lines.first.encoding).to eq Encoding::UTF_8
+      end
+    end
+
     context "when output has no trailing newline" do
       let(:job_run) { create(:job_run, :pending, job:, user:, command: "printf 'no newline at end'") }
 

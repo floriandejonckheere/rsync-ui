@@ -24,12 +24,11 @@ module Rsync
         Open3.popen2e(*Shellwords.split(job_run.command), pgroup: true) do |_stdin, output, wait_thr|
           job_run.update!(pid: wait_thr.pid)
 
-          buffer = +""
+          # Binary string buffer
+          buffer = +"".b
 
           loop do
-            chunk = output
-              .readpartial(4096)
-              .force_encoding(Encoding::UTF_8)
+            chunk = output.readpartial(4096)
 
             Rails.logger.debug { chunk }
 
@@ -37,15 +36,16 @@ module Rsync
 
             # Split on line endings, keeping the terminator attached; hold back any trailing incomplete line
             lines = buffer.split(/(?<=[\r\n])/)
-            buffer = lines.last&.match?(/[\r\n]\z/) ? +"" : (lines.pop || +"")
+            buffer = lines.last&.match?(/[\r\n]\z/) ? +"".b : (lines.pop || +"".b)
 
-            lines.each { |line| block&.call(line) }
+            # Encode as UTF-8
+            lines.each { |line| block&.call(line.force_encoding(Encoding::UTF_8).scrub) }
           rescue EOFError
             break
           end
 
           # Flush any remaining buffered output that lacked a trailing newline
-          block&.call(buffer) if buffer.present?
+          block&.call(buffer.force_encoding(Encoding::UTF_8).scrub) if buffer.present?
 
           ExecutionResult.new(success: true, exit_status: wait_thr.value.exitstatus)
         end
