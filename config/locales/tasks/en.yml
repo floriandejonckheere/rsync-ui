@@ -13,6 +13,9 @@ en:
       execute_jobs:
         description: Schedule and execute jobs based on their cron configuration
         title: Execute jobs
+      measure_disk_size:
+        description: Measure disk size for all repositories
+        title: Measure disk size
       measure_resource_usage:
         description: Measure resource usage for all servers
         title: Measure resource usage

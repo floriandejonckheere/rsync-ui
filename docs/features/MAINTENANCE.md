@@ -98,8 +98,7 @@ Implemented, but not planned above — seeded in `db/seeds/02_tasks.csv`:
 - [x] `check_connectivity` — `Servers::CheckConnectivityTask`, depends on `connectivity`
 - [x] `measure_resource_usage` — `Servers::MeasureResourceUsageTask`, depends on `resource_usage`
 
-Missing:
-- [ ] A repository disk-size measurement task (e.g. `measure_disk_size` / `Repositories::MeasureDiskSizeTask`, depends on `disk_size`) is not seeded in `db/seeds/02_tasks.csv`. Disk size is currently only measured automatically by `SchedulerJob#schedule_disk_size` (`app/jobs/scheduler_job.rb`) and after a job run completes — there is no way for a user to trigger it manually from the Maintenance card.
+- [x] `measure_disk_size` — `Repositories::MeasureDiskSizeTask`, depends on `disk_size` (added; disk size was previously only measured automatically by `SchedulerJob#schedule_disk_size` and after a job run completes)
 
 ## Implementation order
 
