@@ -65,6 +65,8 @@ module JobRuns
       Rails.logger.error { "[#{job_run.id}] [#{job_run.name}] Completed job with error: #{e.class.name} #{e.message}" }
       Rails.logger.error { e.backtrace.map { "[#{job_run.id}] [#{job_run.name}] #{it}" }.join("\n") }
 
+      Appsignal.send_error(e) { |transaction| transaction.set_tags(job_run_id: job_run.id) }
+
       job_run.error!(error_class: e.class.name, error_message: e.message, error_stacktrace: e.backtrace&.join("\n")) if job_run.pending? || job_run.running? || job_run.canceling?
     end
 
