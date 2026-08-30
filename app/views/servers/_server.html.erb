@@ -15,6 +15,7 @@
         </div>
       <% else %>
         <div
+          class="<%= "tooltip-wide" if server.error_message.present? %>"
           data-tooltip="<%= server.error_message.present? ? I18n.t('servers.table.connectivity.failure', probed_at: distance_of_time_in_words(Time.zone.now, server.probed_at), error_message: server.error_message) : I18n.t('servers.table.connectivity.offline') %>"
         >
           <span class="inline-block h-3 w-3 rounded-full bg-red-500"></span>
