@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "shellwords"
+
 module Rsync
   class CommandService < ApplicationService
     BASIC_FLAGS = {
@@ -51,13 +53,13 @@ module Rsync
     end
 
     def call
-      parts.join(" ")
+      parts.map { |part| part.include?(" ") ? %("#{part}") : part }.join(" ")
     end
 
     def parts
       [
         # Command
-        rsync_path,
+        *rsync_path,
 
         # Flags
         *ssh_flags,
@@ -79,7 +81,7 @@ module Rsync
       [
         ("sudo" if job.opt_superuser),
         job.opt_rsync_path.presence || "rsync",
-      ].compact.join(" ")
+      ].compact
     end
 
     def boolean_flags(map)
@@ -94,13 +96,16 @@ module Rsync
 
       ssh_args = job.opt_ssh_arguments.present? ? " #{job.opt_ssh_arguments.strip}" : ""
 
-      if server.ssh_key.present?
-        # Authenticate using private key (via the SSH config file)
-        ["-e \"ssh -F #{ssh_home}/config#{ssh_args}\""]
-      else
-        # Authenticate using password (via the non-interactive sshpass command)
-        ["-e \"sshpass -f #{ssh_home}/#{server.slug}_password ssh -F #{ssh_home}/config#{ssh_args}\""]
-      end
+      remote_shell =
+        if server.ssh_key.present?
+          # Authenticate using private key (via the SSH config file)
+          "ssh -F #{ssh_home}/config#{ssh_args}"
+        else
+          # Authenticate using password (via the non-interactive sshpass command)
+          "sshpass -f #{ssh_home}/#{server.slug}_password ssh -F #{ssh_home}/config#{ssh_args}"
+        end
+
+      ["-e", remote_shell]
     end
 
     def remote_server
@@ -115,7 +120,7 @@ module Rsync
     end
 
     def custom_argument_flags
-      job.opt_arguments.present? ? [job.opt_arguments.strip] : []
+      job.opt_arguments.present? ? Shellwords.split(job.opt_arguments) : []
     end
 
     def include_flags

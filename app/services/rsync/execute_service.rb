@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "shellwords"
+
 module Rsync
   class ExecuteService < ApplicationService
     attr_reader :job_run
@@ -19,7 +21,7 @@ module Rsync
     # distinguish "exited non-zero because of SIGTERM" from a regular failure.
     def call(&block)
       Timeout.timeout(timeout.in_seconds) do
-        Open3.popen2e(job_run.command, pgroup: true) do |_stdin, output, wait_thr|
+        Open3.popen2e(*Shellwords.split(job_run.command), pgroup: true) do |_stdin, output, wait_thr|
           job_run.update!(pid: wait_thr.pid)
 
           buffer = +""
