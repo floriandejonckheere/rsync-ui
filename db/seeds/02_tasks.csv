@@ -5,3 +5,4 @@ terminate_stuck_job_runs,JobRuns::TerminateStuckTask,scheduler
 check_connectivity,Servers::CheckConnectivityTask,connectivity
 measure_resource_usage,Servers::MeasureResourceUsageTask,resource_usage
 measure_disk_size,Repositories::MeasureDiskSizeTask,disk_size
+purge_audits,Audits::PurgeTask,audits

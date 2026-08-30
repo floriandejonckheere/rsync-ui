@@ -83,6 +83,12 @@
   type: boolean
   category: features
   default: false
+- key: audits.retention
+  type: integer
+  category: features
+  default: 7
+  minimum: 1
+  maximum:
 - key: hooks
   type: boolean
   category: features

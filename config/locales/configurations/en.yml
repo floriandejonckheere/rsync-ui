@@ -27,6 +27,8 @@ en:
     keys:
       audits:
         description: Enable or disable SSH audit log
+        retention:
+          description: Number of days to retain audits before they are purged
       connectivity:
         description: Enable or disable server connectivity probing
         interval:
