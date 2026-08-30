@@ -42,6 +42,11 @@
           <%= I18n.t("job_runs.show.completed_at") %>:
           <span data-job-run-status-target="completedAt"><%= @job_run.completed_at ? relative_time_tag(@job_run.completed_at) : "—" %></span>
         </div>
+
+        <div>
+          <%= I18n.t("job_runs.show.duration") %>:
+          <span data-job-run-status-target="duration" data-started-at="<%= @job_run.started_at&.iso8601 %>"><%= @job_run.duration ? format_time(@job_run.duration.to_i) : "—" %></span>
+        </div>
       </div>
     </div>
 
@@ -124,6 +129,11 @@
       <div>
         <%= I18n.t("job_runs.show.completed_at") %>:
         <%= @job_run.completed_at ? relative_time_tag(@job_run.completed_at) : "—" %>
+      </div>
+
+      <div>
+        <%= I18n.t("job_runs.show.duration") %>:
+        <%= @job_run.duration ? format_time(@job_run.duration.to_i) : "—" %>
       </div>
 
       <% if @job_run.exit_status&.nonzero? %>

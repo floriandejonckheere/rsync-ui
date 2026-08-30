@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { cable } from "@hotwired/turbo-rails"
 
 export default class extends Controller {
-  static targets = ["jobStatus", "startedAt", "completedAt", "progressBar", "progressFill", "speedInfo", "logCard", "outputFrame"]
+  static targets = ["jobStatus", "startedAt", "completedAt", "duration", "progressBar", "progressFill", "speedInfo", "logCard", "outputFrame"]
   static values = { jobRunId: String }
 
   async connect() {
@@ -10,10 +10,36 @@ export default class extends Controller {
       { channel: "JobRunStatusChannel", job_run_id: this.jobRunIdValue },
       { received: (data) => this.#handleMessage(data) },
     )
+
+    this.#startDurationTimer()
   }
 
   disconnect() {
     this.subscription?.unsubscribe()
+    this.#stopDurationTimer()
+  }
+
+  #startDurationTimer() {
+    if (!this.hasDurationTarget || this.durationInterval) return
+    if (!this.durationTarget.dataset.startedAt) return
+
+    this.#tickDuration()
+    this.durationInterval = setInterval(() => this.#tickDuration(), 1000)
+  }
+
+  #stopDurationTimer() {
+    if (this.durationInterval) {
+      clearInterval(this.durationInterval)
+      this.durationInterval = null
+    }
+  }
+
+  #tickDuration() {
+    const startedAt = this.durationTarget.dataset.startedAt
+    if (!startedAt) return
+
+    const seconds = Math.max(0, Math.floor((Date.now() - new Date(startedAt)) / 1000))
+    this.durationTarget.textContent = this.#formatRemainingTime(seconds)
   }
 
   #formatSpeed(bytesPerSec) {
@@ -55,6 +81,10 @@ export default class extends Controller {
       if (this.hasStartedAtTarget) {
         this.startedAtTarget.textContent = this.#relativeTime(data.started_at)
       }
+      if (this.hasDurationTarget) {
+        this.durationTarget.dataset.startedAt = data.started_at
+        this.#startDurationTimer()
+      }
     } else if (data.type === "progress") {
       if (this.hasJobStatusTarget) {
         this.jobStatusTarget.textContent = data.status_text
@@ -84,6 +114,11 @@ export default class extends Controller {
       }
       if (this.hasCompletedAtTarget) {
         this.completedAtTarget.textContent = this.#relativeTime(data.completed_at)
+      }
+      this.#stopDurationTimer()
+      if (this.hasDurationTarget && data.started_at && data.completed_at) {
+        const seconds = Math.max(0, Math.floor((new Date(data.completed_at) - new Date(data.started_at)) / 1000))
+        this.durationTarget.textContent = this.#formatRemainingTime(seconds)
       }
       if (this.hasLogCardTarget) {
         this.logCardTarget.classList.add("hidden")

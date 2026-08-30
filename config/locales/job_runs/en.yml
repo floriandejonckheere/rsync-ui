@@ -32,6 +32,7 @@ en:
     show:
       command: Command
       completed_at: Completed at
+      duration: Duration
       error_class: Error class
       error_details: Error details
       error_message: Error message

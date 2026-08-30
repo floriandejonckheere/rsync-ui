@@ -21,7 +21,7 @@ module JobRunHelper
     end
   end
 
-  def format_remaining_time(seconds)
+  def format_time(seconds)
     return unless seconds
 
     h = seconds / 3600

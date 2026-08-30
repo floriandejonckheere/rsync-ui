@@ -27,7 +27,7 @@
     data-job-run-status-target="speedInfo"
   >
     <% if job_run.speed.present? %>
-      <%= I18n.t("job_runs.status.running_speed", speed: format_speed(job_run.speed), remaining: format_remaining_time(job_run.remaining_time)) %>
+      <%= I18n.t("job_runs.status.running_speed", speed: format_speed(job_run.speed), remaining: format_time(job_run.remaining_time)) %>
     <% end %>
   </div>
 
