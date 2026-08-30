@@ -98,6 +98,11 @@
     @apply h-12 w-12;
   }
 
+  /* Allow long tooltip text to wrap instead of being truncated */
+  .tooltip-wide[data-tooltip]:before {
+    @apply whitespace-normal text-clip overflow-visible w-max max-w-lg;
+  }
+
   .alert, .alert-destructive {
     @apply rounded-md py-8 shadow-sm border-0 dark:border-0 dark:bg-gray-800;
   }

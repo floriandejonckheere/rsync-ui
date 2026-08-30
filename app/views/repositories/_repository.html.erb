@@ -46,6 +46,7 @@
 
       <% if repository.disk_size_failed? %>
         <div
+          class="tooltip-wide"
           data-tooltip="<%= I18n.t("repositories.table.size_failed", error: repository.disk_size_error_message) %>"
         >
           <%= lucide_icon "triangle-alert", class: "h-4 w-4 text-amber-500" %>
