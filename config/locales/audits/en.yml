@@ -19,6 +19,9 @@ en:
         no_categories: No categories
         started_at_from: Started from
         started_at_to: Started to
+      retention_notice:
+        one: Audits are automatically purged after 1 day.
+        other: Audits are automatically purged after %{count} days.
       search:
         no_results:
           title: No audit records found

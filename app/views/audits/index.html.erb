@@ -14,6 +14,14 @@
              placeholder: I18n.t("audits.index.search.placeholder") %>
 <% end %>
 
+<div role="alert" class="alert alert-info mb-6">
+  <%= lucide_icon "info", class: "w-4 h-4" %>
+
+  <section>
+    <%= I18n.t("audits.index.retention_notice", count: Configuration.get("audits.retention")) %>
+  </section>
+</div>
+
 <%= render "audits/filters" %>
 
 <%= turbo_frame_tag "audits_list" do %>
