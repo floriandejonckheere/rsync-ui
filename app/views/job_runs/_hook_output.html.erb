@@ -5,18 +5,20 @@
     <% attachment = job_run.public_send(:"#{hook_type}_hook_output") %>
 
     <% if attachment.attached? %>
-      <div class="card p-0 mt-4">
-        <div
+      <details class="card group p-0 mt-4">
+        <summary
           class="
-            flex items-center justify-between px-6 py-4 border-b border-gray-100
-            dark:border-gray-700
+            flex items-center justify-between px-6 py-4 border-b
+            border-gray-100 dark:border-gray-700 cursor-pointer list-none
           "
         >
           <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
             <%= lucide_icon "terminal", class: "h-4 w-4" %>
             <span><%= I18n.t("job_runs.show.#{hook_type}_hook_output") %></span>
           </div>
-        </div>
+
+          <%= lucide_icon "chevron-down", class: "h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform duration-200 group-open:rotate-180" %>
+        </summary>
 
         <pre
           class="
@@ -24,7 +26,7 @@
             whitespace-pre-wrap
           "
         ><%= attachment.download %></pre>
-      </div>
+      </details>
     <% end %>
   <% end %>
 <% end %>
