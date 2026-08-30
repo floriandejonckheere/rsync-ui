@@ -76,6 +76,7 @@ end
 #  description                :text
 #  error_class                :string
 #  error_message              :text
+#  error_stacktrace           :text
 #  exit_status                :integer
 #  failure_hook_error_class   :string
 #  failure_hook_error_message :text

@@ -98,6 +98,7 @@ module JobRuns
 
           job_run.error_class = kwargs[:error_class] if kwargs.key?(:error_class)
           job_run.error_message = kwargs[:error_message] if kwargs.key?(:error_message)
+          job_run.error_stacktrace = kwargs[:error_stacktrace] if kwargs.key?(:error_stacktrace)
         end
 
         after_transition on: :start do |job_run, _transition|
