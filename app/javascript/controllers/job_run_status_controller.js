@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { cable } from "@hotwired/turbo-rails"
 
 export default class extends Controller {
-  static targets = ["jobStatus", "startedAt", "completedAt", "duration", "exitStatus", "exitStatusValue", "progressBar", "progressFill", "speedInfo", "logCard", "outputFrame"]
+  static targets = ["jobStatus", "startedAt", "completedAt", "duration", "bytesCopied", "bytesCopiedValue", "exitStatus", "exitStatusValue", "progressBar", "progressFill", "speedInfo", "logCard", "outputFrame"]
   static values = { jobRunId: String }
 
   async connect() {
@@ -40,6 +40,13 @@ export default class extends Controller {
 
     const seconds = Math.max(0, Math.floor((Date.now() - new Date(startedAt)) / 1000))
     this.durationTarget.textContent = this.#formatRemainingTime(seconds)
+  }
+
+  #formatBytes(bytes) {
+    const units = ["Bytes", "KB", "MB", "GB", "TB", "PB"]
+    if (bytes < 1024) return `${bytes} Bytes`
+    const exponent = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1)
+    return `${(bytes / 1024 ** exponent).toFixed(1)} ${units[exponent]}`
   }
 
   #formatSpeed(bytesPerSec) {
@@ -119,6 +126,10 @@ export default class extends Controller {
       if (this.hasDurationTarget && data.started_at && data.completed_at) {
         const seconds = Math.max(0, Math.floor((new Date(data.completed_at) - new Date(data.started_at)) / 1000))
         this.durationTarget.textContent = this.#formatRemainingTime(seconds)
+      }
+      if (this.hasBytesCopiedTarget && this.hasBytesCopiedValueTarget && data.bytes_copied) {
+        this.bytesCopiedValueTarget.textContent = this.#formatBytes(data.bytes_copied)
+        this.bytesCopiedTarget.classList.remove("hidden")
       }
       if (this.hasExitStatusTarget && this.hasExitStatusValueTarget && data.exit_status) {
         this.exitStatusValueTarget.textContent = data.exit_status

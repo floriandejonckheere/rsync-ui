@@ -48,6 +48,11 @@
           <span data-job-run-status-target="duration" data-started-at="<%= @job_run.started_at&.iso8601 %>"><%= @job_run.duration ? format_time(@job_run.duration.to_i) : "—" %></span>
         </div>
 
+        <div class="hidden" data-job-run-status-target="bytesCopied">
+          <%= I18n.t("job_runs.show.bytes_copied") %>:
+          <span data-job-run-status-target="bytesCopiedValue"></span>
+        </div>
+
         <div class="hidden" data-job-run-status-target="exitStatus">
           <%= I18n.t("job_runs.show.exit_status") %>:
           <span
@@ -143,6 +148,13 @@
         <%= I18n.t("job_runs.show.duration") %>:
         <%= @job_run.duration ? format_time(@job_run.duration.to_i) : "—" %>
       </div>
+
+      <% if @job_run.bytes_copied.present? %>
+        <div>
+          <%= I18n.t("job_runs.show.bytes_copied") %>:
+          <%= number_to_human_size(@job_run.bytes_copied) %>
+        </div>
+      <% end %>
 
       <% if @job_run.exit_status&.nonzero? %>
         <div>

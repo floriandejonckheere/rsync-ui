@@ -30,6 +30,7 @@ en:
       subtitle: Overview of synchronization job executions
       title: Activity log
     show:
+      bytes_copied: Data transferred
       command: Command
       completed_at: Completed at
       duration: Duration

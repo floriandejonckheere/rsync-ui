@@ -47,7 +47,7 @@ module Rsync
           # Flush any remaining buffered output that lacked a trailing newline
           block&.call(buffer.force_encoding(Encoding::UTF_8).scrub) if buffer.present?
 
-          ExecutionResult.new(success: true, exit_status: wait_thr.value.exitstatus)
+          ExecutionResult.new(success: wait_thr.value.success?, exit_status: wait_thr.value.exitstatus)
         end
       end
     rescue Timeout::Error

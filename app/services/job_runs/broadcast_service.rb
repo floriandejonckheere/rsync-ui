@@ -72,6 +72,7 @@ module JobRuns
           started_at: job_run.started_at&.iso8601,
           completed_at: job_run.completed_at&.iso8601,
           exit_status: job_run.exit_status,
+          bytes_copied: job_run.bytes_copied,
         },
       )
 

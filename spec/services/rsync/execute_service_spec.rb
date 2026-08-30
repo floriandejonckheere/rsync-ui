@@ -15,6 +15,17 @@ RSpec.describe Rsync::ExecuteService do
       expect(result.exit_status).to be_zero
     end
 
+    context "when the command exits with a non-zero status" do
+      let(:job_run) { create(:job_run, :pending, job:, user:, command: "false") }
+
+      it "returns an unsuccessful result" do
+        result = service.call
+
+        expect(result.success).to be false
+        expect(result.exit_status).to eq 1
+      end
+    end
+
     context "when output contains full lines" do
       let(:job_run) { create(:job_run, :pending, job:, user:, command: "echo 'output line'") }
 
