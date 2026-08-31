@@ -67,6 +67,46 @@ RSpec.describe Job do
     end
   end
 
+  describe "#local?" do
+    it "returns true when both repositories are local" do
+      job = build(:job, source_repository: build(:repository, :local), destination_repository: build(:repository, :local))
+
+      expect(job.local?).to be(true)
+    end
+
+    it "returns false when the source repository is remote" do
+      job = build(:job, source_repository: build(:repository, :remote), destination_repository: build(:repository, :local))
+
+      expect(job.local?).to be(false)
+    end
+
+    it "returns false when the destination repository is remote" do
+      job = build(:job, source_repository: build(:repository, :local), destination_repository: build(:repository, :remote))
+
+      expect(job.local?).to be(false)
+    end
+  end
+
+  describe "#remote?" do
+    it "returns false when both repositories are local" do
+      job = build(:job, source_repository: build(:repository, :local), destination_repository: build(:repository, :local))
+
+      expect(job.remote?).to be(false)
+    end
+
+    it "returns true when the source repository is remote" do
+      job = build(:job, source_repository: build(:repository, :remote), destination_repository: build(:repository, :local))
+
+      expect(job.remote?).to be(true)
+    end
+
+    it "returns true when the destination repository is remote" do
+      job = build(:job, source_repository: build(:repository, :local), destination_repository: build(:repository, :remote))
+
+      expect(job.remote?).to be(true)
+    end
+  end
+
   describe "#scheduled_next_run" do
     it "returns nil when the job is disabled" do
       job = build(:job, schedule: "0 2 * * *", enabled: false)

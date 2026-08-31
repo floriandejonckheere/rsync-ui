@@ -65,6 +65,14 @@ class Job < ApplicationRecord
   validate :validate_destination_repository_writable
   validate :validate_schedule
 
+  def local?
+    source_repository.local? && destination_repository.local?
+  end
+
+  def remote?
+    !local?
+  end
+
   def scheduled_next_run
     return unless enabled? && schedule.present?
 

@@ -232,6 +232,10 @@ en:
       on_server_html: on %{server_html}
       schedule: Schedule
       source: Source
+      type: Type
     title: Jobs
+    types:
+      local: Local
+      remote: Remote
     update:
       success: Job was successfully updated.
