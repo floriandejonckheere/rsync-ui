@@ -271,28 +271,52 @@ RSpec.describe JobRuns::ExecuteService do
       context "when opt_progress2 is enabled" do
         let(:options) { { opt_progress: true, opt_progress2: true } }
 
-        it "updates bytes_copied and progress and writes the last status line to the log" do
+        it "updates bytes_copied and progress and writes the last status line to the log with the carriage return replaced by a newline" do
           service.call
 
           job_run.reload
 
           expect(job_run.bytes_copied).to eq 1_234_567
           expect(job_run.progress).to eq 75
-          expect(job_run.output.download).to include status_line
+          expect(job_run.output.download).to include status_line.tr("\r", "\n")
+          expect(job_run.output.download).not_to include "\r"
         end
       end
 
       context "when opt_progress2 is disabled" do
         let(:options) { { opt_progress: true, opt_progress2: false } }
 
-        it "writes the status line to the log" do
+        it "writes the status line to the log with the carriage return replaced by a newline" do
           service.call
 
           job_run.reload
 
           expect(job_run.bytes_copied).to be_nil
           expect(job_run.progress).to be_nil
-          expect(job_run.output.download).to include status_line
+          expect(job_run.output.download).to include status_line.tr("\r", "\n")
+          expect(job_run.output.download).not_to include "\r"
+        end
+      end
+    end
+
+    describe "log file output" do
+      context "when a line contains carriage returns from in-place terminal updates" do
+        let(:line) { "0 files...\r100 files...\r200 files...\r300 files...\n" }
+
+        before do
+          allow(rsync_execute_service)
+            .to receive(:call)
+            .and_yield(line)
+            .and_return rsync_result
+        end
+
+        it "replaces carriage returns with newlines so each update is on its own line" do
+          service.call
+
+          job_run.reload
+
+          expect(job_run.output.download).to include line.tr("\r", "\n")
+          expect(job_run.output.download).not_to include "\r"
         end
       end
     end

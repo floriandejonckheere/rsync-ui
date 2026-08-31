@@ -99,12 +99,12 @@ module JobRuns
 
               last_status_line = line
             else
-              file.write(line)
+              file.write(line.tr("\r", "\n"))
             end
           end
 
           # Write only the last status line to the log file
-          file.write(last_status_line) if last_status_line
+          file.write(last_status_line.tr("\r", "\n")) if last_status_line
 
           output_buffer&.flush
 
