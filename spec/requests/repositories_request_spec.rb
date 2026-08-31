@@ -344,4 +344,58 @@ RSpec.describe "Repositories" do
       end
     end
   end
+
+  describe "POST /repositories/:id/measure" do
+    let(:repository) { create(:repository, user:) }
+
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      it "enqueues a disk size job with force: true and redirects to the index" do
+        expect { post measure_repository_path(repository) }
+          .to have_enqueued_job(Repositories::DiskSizeJob)
+          .with(repository, force: true)
+
+        post measure_repository_path(repository)
+
+        expect(response).to redirect_to(repositories_path)
+      end
+
+      it "displays success message" do
+        allow(Repositories::DiskSizeJob)
+          .to receive(:perform_later)
+
+        post measure_repository_path(repository)
+
+        follow_redirect!
+
+        expect(response.body).to include(I18n.t("repositories.measure.success"))
+      end
+    end
+
+    context "when repository belongs to another user" do
+      let(:repository) { create(:repository, user: other_user) }
+
+      before { sign_in user, scope: :user }
+
+      it "returns forbidden" do
+        post measure_repository_path(repository)
+
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "does not enqueue a job" do
+        expect { post measure_repository_path(repository) }
+          .not_to have_enqueued_job(Repositories::DiskSizeJob)
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        post measure_repository_path(repository)
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
 end

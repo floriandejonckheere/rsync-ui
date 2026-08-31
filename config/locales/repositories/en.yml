@@ -15,6 +15,7 @@ en:
       delete_confirm_title: Delete repository
       duplicate: Duplicate repository
       edit: Edit repository
+      measure: Measure disk size
     create:
       success: Repository was successfully created.
     destroy:
@@ -54,6 +55,8 @@ en:
         placeholder: Search by name or description...
       subtitle: Manage local and remote repositories
       title: Repositories
+    measure:
+      success: Disk size measurement scheduled.
     new:
       subtitle: Add a new repository
       title: New repository

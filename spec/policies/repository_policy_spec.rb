@@ -81,6 +81,22 @@ RSpec.describe RepositoryPolicy do
     end
   end
 
+  describe "#measure?" do
+    it { is_expected.to be_measure }
+
+    context "when user is another user" do
+      let(:user) { other_user }
+
+      it { is_expected.not_to be_measure }
+    end
+
+    context "when user is admin" do
+      let(:user) { admin }
+
+      it { is_expected.to be_measure }
+    end
+  end
+
   describe ".relation_scope" do
     subject(:scope) { policy.apply_scope(Repository.all, type: :relation) }
 

@@ -5,7 +5,7 @@ class RepositoriesController < ApplicationController
   include Sortable
 
   before_action :authenticate_user!
-  before_action :set_repository, only: [:edit, :duplicate, :update, :destroy]
+  before_action :set_repository, only: [:edit, :duplicate, :update, :destroy, :measure]
   before_action :set_servers, only: [:new, :edit, :duplicate, :create, :update]
 
   def index
@@ -63,6 +63,14 @@ class RepositoriesController < ApplicationController
     @repository.destroy!
 
     redirect_to repositories_path, notice: t(".success"), status: :see_other
+  end
+
+  def measure
+    authorize! @repository
+
+    Repositories::DiskSizeJob.perform_later(@repository, force: true)
+
+    redirect_to repositories_path, notice: t(".success")
   end
 
   private

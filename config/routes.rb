@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   resources :repositories do
     member do
       get :duplicate
+      post :measure
     end
   end
 
@@ -112,6 +113,7 @@ end
 #                                          PUT    /servers/:id(.:format)                                                                            servers#update
 #                                          DELETE /servers/:id(.:format)                                                                            servers#destroy
 #                     duplicate_repository GET    /repositories/:id/duplicate(.:format)                                                             repositories#duplicate
+#                       measure_repository POST   /repositories/:id/measure(.:format)                                                               repositories#measure
 #                             repositories GET    /repositories(.:format)                                                                           repositories#index
 #                                          POST   /repositories(.:format)                                                                           repositories#create
 #                           new_repository GET    /repositories/new(.:format)                                                                       repositories#new

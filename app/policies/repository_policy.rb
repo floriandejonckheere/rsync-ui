@@ -32,4 +32,8 @@ class RepositoryPolicy < ApplicationPolicy
   def destroy?
     user.admin? || record.user == user
   end
+
+  def measure?
+    user.admin? || record.user == user
+  end
 end
