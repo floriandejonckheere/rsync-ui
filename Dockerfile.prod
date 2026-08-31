@@ -1,3 +1,18 @@
+FROM ruby:4.0.6-alpine3.23 AS apprise
+
+WORKDIR /app
+
+# Install pip and prebuild venv
+RUN apk add --no-cache py3-pip python3
+
+ADD requirements.txt /app/
+RUN python3 -m venv /opt/apprise-venv \
+ && /opt/apprise-venv/bin/pip install --no-cache-dir -r /app/requirements.txt \
+ && /opt/apprise-venv/bin/apprise --version \
+ && rm -rf /opt/apprise-venv/lib/python3*/site-packages/pip* \
+           /opt/apprise-venv/lib/python3*/site-packages/setuptools* \
+           /opt/apprise-venv/bin/pip*
+
 FROM ruby:4.0.6-alpine3.23 AS base
 
 LABEL maintainer="Florian Dejonckheere <florian@floriandejonckheere.be>"
@@ -6,13 +21,10 @@ LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/rsy
 WORKDIR /app
 
 # Install runtime dependencies only
-RUN apk add --no-cache gmp libpq openssh py3-pip python3 rsync sshpass tzdata vips
+RUN apk add --no-cache gmp libpq openssh python3 rsync sshpass tzdata vips
 
-# Install Apprise (notification dispatcher)
-ADD requirements.txt /app/
-RUN python3 -m venv /opt/apprise-venv \
- && /opt/apprise-venv/bin/pip install --no-cache-dir -r /app/requirements.txt \
- && /opt/apprise-venv/bin/apprise --version
+# Copy prebuilt venv
+COPY --from=apprise /opt/apprise-venv /opt/apprise-venv
 ENV PATH="/opt/apprise-venv/bin:$PATH"
 
 FROM base AS ruby
@@ -26,12 +38,12 @@ RUN gem update --system 4.0.10 && gem install bundler -v 4.0.6
 # Install Gem dependencies
 COPY Gemfile Gemfile.lock /app/
 
-# Install ALL gems so git sources get checked out (Bundler validates git
-# sources at runtime even for groups excluded via BUNDLE_WITHOUT).
-# The runtime image filters loaded gems via the BUNDLE_WITHOUT env var.
+# Install all gems, then prune development/test-only gems
 RUN bundle config set --global path /usr/local/bundle && \
     bundle config set --global jobs 4 && \
     bundle install && \
+    bundle config set --global without development test && \
+    bundle clean --force && \
     gem pristine --all
 
 FROM ruby AS node
@@ -90,7 +102,7 @@ ENV RAILS_ENV=production
 # BUNDLE_FROZEN prevents gem installs/updates at runtime; GEM_HOME still needs
 # to be writable for Bundler's internal spec cache (GEM_HOME/ruby/x.y.z/cache/).
 ENV BUNDLE_PATH=/usr/local/bundle
-ENV BUNDLE_WITHOUT=test,development
+ENV BUNDLE_WITHOUT=test:development
 ENV BUNDLE_FROZEN=1
 
 WORKDIR /app
