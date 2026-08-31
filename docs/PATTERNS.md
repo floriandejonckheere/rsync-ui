@@ -423,12 +423,22 @@ Native `<details>` elements support deep-linking via URL hash automatically when
 
 ## Turbo Frame escape for row links
 
-Links rendered inside a turbo_frame_tag must include data: { turbo_frame: "_top" } to trigger
-full-page navigation. Without it, Turbo looks for a matching frame on the destination page and
-renders nothing if it isn't found.
+Links and button_to forms rendered inside a turbo_frame_tag must include
+data: { turbo_frame: "_top" } to trigger full-page navigation. Without it, Turbo scopes the
+response to the enclosing frame instead of the whole page.
+
+If the destination has no matching frame id, Turbo renders nothing and the click appears to do
+nothing. If the destination is the same index page (e.g. a button_to action that redirects back
+to the list it lives in), Turbo *does* find a matching frame and quietly replaces only that frame
+— the action itself works, but anything outside the frame (flash notices in particular) doesn't
+update until the next real page load. This second case is easy to miss in testing because the
+underlying action still succeeds; check for it whenever a row action's flash message seems
+delayed or only shows up after a manual refresh.
 
 ```erb
 <%= link_to edit_foo_path(foo), data: { turbo_frame: "_top", tooltip: "..." }, class: "..." do %>
+
+<%= button_to measure_foo_path(foo), data: { turbo_frame: "_top", tooltip: "..." }, class: "..." do %>
 ```
 
 ## Disable/enable toggle button

@@ -70,7 +70,7 @@
       <% if Configuration.get("resource_usage") %>
         <%= button_to measure_server_path(server),
                       class: "btn-icon-outline btn-icon-md",
-                      data: { tooltip: I18n.t("servers.actions.measure") } do %>
+                      data: { tooltip: I18n.t("servers.actions.measure"), turbo_frame: "_top" } do %>
           <%= lucide_icon "activity", class: "h-4 w-4" %>
         <% end %>
       <% end %>
