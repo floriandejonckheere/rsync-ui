@@ -36,15 +36,6 @@ For remote repositories, the server should be mounted as a local directory, and 
   - [ ] Local repositories
   - [ ] Remote repositories
 
-### Job creation wizard
-
-- [x] Implement a wizard that guides the user through the process of creating a sync job
-  - [x] Use the `wicked` gem
-  - [x] Step one (basics): job name, description, synchronization type (local-to-local/local-to-remote/remote-to-local)
-  - [x] Step two (source): path, and server (existing or newly created) when the source is remote
-  - [x] Step three (destination): path, and server (existing or newly created) when the destination is remote
-  - [x] Step four: schedule, rsync options, enabled
-
 ### Archiving
 
 - [ ] Add `archived_at` column
@@ -74,7 +65,6 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Allow retrying jobs, or automatic retry (e.g. with incremental/exponential backoff)
 - [ ] Update branding
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
-- [ ] Add a local resource usage card
 - [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
 - [ ] Implement support for OAuth2 authentication
 - [ ] Improve auditing: add login, change password, notification sending
@@ -82,7 +72,6 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Audit codebase
 - [ ] SSH config: write password/private key only when invoking SSH commands
 - [ ] Allow discovery of partitions/disks on the server and measure resource usage per partition/disk
-- [ ] Compose: docker compose up creates x-app container
 - [ ] Too many `SolidCable::TrimJob` jobs when using ActionCable
 - [ ] Only run SyncSSHConfig job periodically, not on startup
 - [ ] Throttle/rate limit status updates
