@@ -28,6 +28,7 @@ en:
         started_at_to: Started to
         status: Status
       retention_notice:
+        link: Configure or disable this in the system configuration.
         one: Job runs are automatically purged after 1 day.
         other: Job runs are automatically purged after %{count} days.
       subtitle: Overview of synchronization job runs

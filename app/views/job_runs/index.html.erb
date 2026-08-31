@@ -12,7 +12,10 @@
   <%= lucide_icon "info", class: "w-4 h-4" %>
 
   <section>
-    <%= I18n.t("job_runs.index.retention_notice", count: Configuration.get("job_runs.retention")) %>
+    <p>
+      <%= I18n.t("job_runs.index.retention_notice", count: Configuration.get("job_runs.retention")) %>
+      <%= link_to I18n.t("job_runs.index.retention_notice.link"), configurations_path, class: "underline" if current_user.admin? %>
+    </p>
   </section>
 </div>
 

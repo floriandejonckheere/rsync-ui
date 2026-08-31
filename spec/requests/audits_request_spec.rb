@@ -16,6 +16,12 @@ RSpec.describe "Audits" do
         expect(response).to have_http_status(:ok)
       end
 
+      it "renders a link to the configuration page" do
+        get audits_path
+
+        expect(response.body).to include(configurations_path)
+      end
+
       context "when filter by server" do
         it "filters by server_id" do
           server = create(:server)

@@ -14,6 +14,22 @@ RSpec.describe "JobRuns" do
         expect(response).to have_http_status(:ok)
       end
 
+      it "does not render a link to the configuration page" do
+        get job_runs_path
+
+        expect(response.body).not_to include(configurations_path)
+      end
+
+      context "when authenticated as admin" do
+        before { sign_in create(:user, :admin), scope: :user }
+
+        it "renders a link to the configuration page" do
+          get job_runs_path
+
+          expect(response.body).to include(configurations_path)
+        end
+      end
+
       context "when sort parameters are present" do
         it "sorts job runs by sequence ascending" do
           job = create(:job, user:)
