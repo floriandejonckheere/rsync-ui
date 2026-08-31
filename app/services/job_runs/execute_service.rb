@@ -77,6 +77,7 @@ module JobRuns
 
       Tempfile.create(["job_run_#{job_run.name.parameterize(separator: '_')}_#{job_run.sequence}", ".log"]) do |file|
         last_status_line = nil
+        output_buffer = JobRuns::OutputBuffer.new(job_run) if streaming?
 
         begin
           result = Rsync::ExecuteService.new(job_run).call do |line|
@@ -87,6 +88,9 @@ module JobRuns
             if streaming?
               # Broadcast status or log line
               job_run.tick_status!(type: (status&.bytes ? "status" : "log"), content: line)
+
+              # Buffer output so a page connecting mid-run can fetch what already streamed
+              output_buffer << line
             end
 
             if job.opt_progress2 && status&.bytes
@@ -102,6 +106,8 @@ module JobRuns
           # Write only the last status line to the log file
           file.write(last_status_line) if last_status_line
 
+          output_buffer&.flush
+
           # Upload complete log
           attach_log(file)
 
@@ -111,6 +117,8 @@ module JobRuns
 
           result.success
         rescue StandardError
+          output_buffer&.flush
+
           # Upload complete log in case of error
           attach_log(file)
 

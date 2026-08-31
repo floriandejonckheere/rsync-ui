@@ -126,6 +126,10 @@ module JobRuns
           JobRuns::BroadcastService.broadcast_canceling(job_run)
         end
 
+        after_transition to: [:completed, :failed, :canceled, :errored] do |job_run, _transition|
+          JobRuns::OutputBuffer.clear(job_run)
+        end
+
         after_transition to: [:completed, :failed, :canceled, :errored] do |job_run, transition|
           next unless Configuration.get("streaming")
 

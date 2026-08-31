@@ -9,6 +9,7 @@ en:
       delete_confirm: Are you sure you want to delete this job run? This action cannot be undone.
       delete_confirm_title: Delete job run
       download_logs: Download logs
+      show_older_log_lines: Show older log lines
       view_logs: View logs
     cancel:
       success: Cancellation requested.

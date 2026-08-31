@@ -89,6 +89,7 @@
       data-job-run-status-target="logCard"
       data-controller="job-run-logs"
       data-job-run-logs-job-run-id-value="<%= @job_run.id %>"
+      data-job-run-logs-output-url-value="<%= output_job_run_path(@job_run) %>"
     >
       <div
         class="
@@ -98,6 +99,18 @@
       >
         <%= lucide_icon "file-text", class: "h-4 w-4" %>
         <span><%= I18n.t("job_runs.show.output_file") %></span>
+      </div>
+
+      <div class="px-6 pt-4">
+        <button
+          type="button"
+          class="btn-outline"
+          data-job-run-logs-target="loadOlderButton"
+          data-action="job-run-logs#loadOlder"
+        >
+          <%= lucide_icon "history", class: "h-4 w-4" %>
+          <%= I18n.t("job_runs.actions.show_older_log_lines") %>
+        </button>
       </div>
 
       <pre

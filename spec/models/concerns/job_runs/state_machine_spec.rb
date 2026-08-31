@@ -172,6 +172,15 @@ RSpec.describe JobRuns::StateMachine do
         expect(job_run.completed_at).to be_present
       end
 
+      it "clears the output buffer" do
+        job_run = create(:job_run, :running)
+        Rails.cache.write(JobRuns::OutputBuffer.cache_key(job_run), "file.txt\n")
+
+        job_run.complete!
+
+        expect(JobRuns::OutputBuffer.read(job_run)).to eq ""
+      end
+
       context "when disk_size is enabled" do
         with_configuration "disk_size" => true
 

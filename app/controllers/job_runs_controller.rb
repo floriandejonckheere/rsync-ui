@@ -33,16 +33,18 @@ class JobRunsController < ApplicationController
   def output
     authorize! @job_run
 
-    return head :not_found unless @job_run.output.attached?
+    if @job_run.output.attached?
+      filename = [
+        "job",
+        @job_run.sequence,
+        @job_run.name.titleize,
+        @job_run.started_at&.iso8601,
+      ].compact.join("-").concat(".log")
 
-    filename = [
-      "job",
-      @job_run.sequence,
-      @job_run.name.titleize,
-      @job_run.started_at&.iso8601,
-    ].compact.join("-").concat(".log")
-
-    redirect_to rails_blob_path(@job_run.output, disposition: "attachment; filename=\"#{filename}\""), allow_other_host: true
+      redirect_to rails_blob_path(@job_run.output, disposition: "attachment; filename=\"#{filename}\""), allow_other_host: true
+    else
+      render plain: JobRuns::OutputBuffer.read(@job_run)
+    end
   end
 
   def create

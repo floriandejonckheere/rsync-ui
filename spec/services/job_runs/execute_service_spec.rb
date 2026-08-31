@@ -631,6 +631,23 @@ RSpec.describe JobRuns::ExecuteService do
           .with "job_run_logs_#{job_run.id}", { type: "log", content: line }
       end
 
+      it "buffers the output so it can be fetched while the job run is in progress" do
+        output_buffer = instance_double(JobRuns::OutputBuffer, :<< => nil, flush: nil)
+
+        allow(JobRuns::OutputBuffer)
+          .to receive(:new)
+          .and_return(output_buffer)
+
+        service.call
+
+        expect(output_buffer)
+          .to have_received(:<<)
+          .with(line)
+
+        expect(output_buffer)
+          .to have_received(:flush)
+      end
+
       context "when line matches status pattern and opt_progress2 is enabled" do
         let(:line) { "  1,234,567  75%  10.00MB/s  0:00:10\r" }
         let(:options) { { opt_progress: true, opt_progress2: true } }
@@ -660,6 +677,16 @@ RSpec.describe JobRuns::ExecuteService do
 
           expect(ActionCable.server)
             .not_to have_received :broadcast
+        end
+
+        it "does not buffer output" do
+          allow(JobRuns::OutputBuffer)
+            .to receive(:new)
+
+          service.call
+
+          expect(JobRuns::OutputBuffer)
+            .not_to have_received(:new)
         end
       end
 

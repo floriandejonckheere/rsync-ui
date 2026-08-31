@@ -145,10 +145,24 @@ RSpec.describe "JobRuns" do
       end
 
       context "when output is not attached" do
-        it "returns not found" do
+        let(:job_run) { create(:job_run, :running, user:) }
+
+        it "renders the buffered output" do
+          Rails.cache.write(JobRuns::OutputBuffer.cache_key(job_run), "file.txt\n")
+
           get output_job_run_path(job_run)
 
-          expect(response).to have_http_status(:not_found)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to eq "file.txt\n"
+        end
+
+        context "when nothing has been buffered" do
+          it "renders an empty response" do
+            get output_job_run_path(job_run)
+
+            expect(response).to have_http_status(:ok)
+            expect(response.body).to eq ""
+          end
         end
       end
     end
