@@ -466,7 +466,7 @@ In `config/locales/en.yml`, add the following block at the top level (alphabetic
       success: Job run was successfully deleted.
     index:
       empty: No job runs have been recorded yet.
-      subtitle: Overview of synchronization job executions
+      subtitle: Overview of synchronization job runs
       title: Activity log
     status:
       canceled: Canceled

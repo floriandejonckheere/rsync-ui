@@ -220,7 +220,7 @@ en:
         no_results:
           title: No jobs found
         placeholder: Search by name or description...
-      subtitle: Manage synchronization tasks between repositories
+      subtitle: Manage synchronization jobs between repositories
       title: Jobs
     new:
       subtitle: Add a new synchronization job

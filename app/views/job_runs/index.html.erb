@@ -8,6 +8,14 @@
 
 <%= turbo_stream_from "job_runs_#{current_user.id}" %>
 
+<div role="alert" class="alert alert-info mb-6">
+  <%= lucide_icon "info", class: "w-4 h-4" %>
+
+  <section>
+    <%= I18n.t("job_runs.index.retention_notice", count: Configuration.get("job_runs.retention")) %>
+  </section>
+</div>
+
 <%= render "job_runs/filters" %>
 
 <%= turbo_frame_tag "job_runs_list" do %>

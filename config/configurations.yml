@@ -164,3 +164,9 @@
   default: 480
   minimum: 0
   maximum:
+- key: job_runs.retention
+  type: integer
+  category: system
+  default: 31
+  minimum: 1
+  maximum:

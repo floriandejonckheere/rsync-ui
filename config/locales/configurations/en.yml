@@ -49,9 +49,12 @@ en:
         interval:
           description: Interval (in minutes) between repository disk size measurements
       hooks:
-        description: Enable or disable pre/post/success/failure hooks on job execution
+        description: Enable or disable pre/post/success/failure hooks on job run
         timeout:
           description: Hook timeout (in minutes)
+      job_runs:
+        retention:
+          description: Number of days to retain job runs before they are purged
       jobs:
         timeout:
           description: Job timeout, not including hooks (in minutes)

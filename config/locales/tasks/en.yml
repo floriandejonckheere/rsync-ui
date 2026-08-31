@@ -22,6 +22,9 @@ en:
       purge_audits:
         description: Remove audits older than the retention period
         title: Purge audits
+      purge_job_runs:
+        description: Remove job runs older than the retention period
+        title: Purge job runs
       sync_ssh_config:
         description: Sync SSH config file with the database
         title: Sync SSH config

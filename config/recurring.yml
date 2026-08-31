@@ -22,6 +22,9 @@ default: &default
   purge_audits:
     class: "Audits::PurgeJob"
     schedule: every day at 3am
+  purge_job_runs:
+    class: "JobRuns::PurgeJob"
+    schedule: every day at 3am
 
 development:
   <<: *default

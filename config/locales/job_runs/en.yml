@@ -27,7 +27,10 @@ en:
         started_at_from: Started from
         started_at_to: Started to
         status: Status
-      subtitle: Overview of synchronization job executions
+      retention_notice:
+        one: Job runs are automatically purged after 1 day.
+        other: Job runs are automatically purged after %{count} days.
+      subtitle: Overview of synchronization job runs
       title: Activity log
     show:
       bytes_copied: Data transferred
