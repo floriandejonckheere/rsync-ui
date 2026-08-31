@@ -3,6 +3,8 @@
 module Audits
   class PurgeService < ApplicationService
     def call
+      return unless Configuration.get("audits")
+
       threshold = Configuration.get("audits.retention").to_i.days.ago
 
       Rails.logger.info { "Purging audits started before #{threshold.iso8601}" }

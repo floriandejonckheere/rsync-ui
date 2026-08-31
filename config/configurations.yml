@@ -89,6 +89,8 @@
   default: 7
   minimum: 1
   maximum:
+  dependencies:
+    - audits
 - key: hooks
   type: boolean
   category: features
