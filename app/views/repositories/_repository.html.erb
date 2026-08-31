@@ -15,6 +15,8 @@
   <td class="pl-3 pr-6 py-4">
     <div class="font-medium text-gray-900 dark:text-gray-100">
       <%= repository.name %>
+
+      <%= on_server_tag(repository.server) %>
     </div>
 
     <% if repository.description.present? %>
@@ -53,10 +55,6 @@
         </div>
       <% end %>
     </div>
-  </td>
-
-  <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-    <%= server_link(repository.server) || "—" %>
   </td>
 
   <td class="px-6 py-4">

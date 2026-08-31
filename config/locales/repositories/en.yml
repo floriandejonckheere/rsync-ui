@@ -64,7 +64,6 @@ en:
       name: Name
       path: Path
       read_only: Read-only
-      server: Server
       size: Size
       size_failed: 'Size measurement failed: %{error}'
       type: Type
