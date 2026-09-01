@@ -6,6 +6,10 @@ export default class extends Controller {
   static values = { jobRunId: String, outputUrl: String }
 
   async connect() {
+    this.olderContent = ""
+    this.lines = []
+    this.current = ""
+
     this.subscription = await cable.subscribeTo(
       { channel: "JobRunLogsChannel", job_run_id: this.jobRunIdValue },
       { received: (data) => this.#handleMessage(data) },
@@ -25,7 +29,8 @@ export default class extends Controller {
       })
 
       const content = await response.text()
-      this.logTarget.textContent = content.replace(/\r/g, "") + this.logTarget.textContent
+      this.olderContent = content.replace(/\r/g, "")
+      this.#render()
     } finally {
       if (this.hasLoadOlderButtonTarget) this.loadOlderButtonTarget.remove()
     }
@@ -33,10 +38,36 @@ export default class extends Controller {
 
   #handleMessage(data) {
     if (data.type === "log") {
-      this.logTarget.textContent += data.content.replace(/\r/g, "")
-      this.logTarget.scrollTop = this.logTarget.scrollHeight
+      this.#appendLog(data.content)
     } else if (data.type === "status" && this.hasStatusTarget) {
       this.statusTarget.textContent = data.content
     }
+  }
+
+  // rsync progress output uses "\r" to redraw the current line in place rather
+  // than starting a new one, so a naive append would print every intermediate
+  // progress update on its own line instead of overwriting the previous one.
+  #appendLog(content) {
+    const parts = content.split(/(\r\n|\r|\n)/)
+
+    for (const part of parts) {
+      if (part === "") continue
+
+      if (part === "\r\n" || part === "\n") {
+        this.lines.push(this.current)
+        this.current = ""
+      } else if (part === "\r") {
+        this.current = ""
+      } else {
+        this.current += part
+      }
+    }
+
+    this.#render()
+  }
+
+  #render() {
+    this.logTarget.textContent = this.olderContent + [...this.lines, this.current].join("\n")
+    this.logTarget.scrollTop = this.logTarget.scrollHeight
   }
 }
