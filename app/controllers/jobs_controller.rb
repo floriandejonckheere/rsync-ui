@@ -82,7 +82,9 @@ class JobsController < ApplicationController
   end
 
   def preview
-    @job = current_user.jobs.build(job_params)
+    @job = current_user
+      .jobs
+      .build(job_params.except(:job_notifications_attributes, :hooks_attributes))
 
     authorize! @job, to: :preview?
 

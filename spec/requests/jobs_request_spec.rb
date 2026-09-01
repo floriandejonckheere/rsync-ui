@@ -386,6 +386,23 @@ RSpec.describe "Jobs" do
         expect { post preview_jobs_path, params: valid_params }
           .not_to change(Job, :count)
       end
+
+      it "does not raise when nested attributes reference existing records" do
+        job = create(:job, user:, source_repository:, destination_repository:)
+        notification = create(:job_notification, job:)
+        hook = create(:hook, job:)
+
+        preview_params = valid_params.deep_merge(
+          job: {
+            job_notifications_attributes: { "0" => { id: notification.id, enabled: true } },
+            hooks_attributes: { "0" => { id: hook.id, enabled: true } },
+          },
+        )
+
+        post preview_jobs_path, params: preview_params
+
+        expect(response).to have_http_status(:ok)
+      end
     end
 
     context "when not authenticated" do
