@@ -1,6 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 import { cable } from "@hotwired/turbo-rails"
 
+const SCROLL_THRESHOLD = 20
+
 export default class extends Controller {
   static targets = ["log", "status", "loadOlderButton"]
   static values = { jobRunId: String, outputUrl: String }
@@ -67,7 +69,11 @@ export default class extends Controller {
   }
 
   #render() {
+    const nearBottom =
+      this.logTarget.scrollHeight - this.logTarget.scrollTop - this.logTarget.clientHeight <= SCROLL_THRESHOLD
+
     this.logTarget.textContent = this.olderContent + [...this.lines, this.current].join("\n")
-    this.logTarget.scrollTop = this.logTarget.scrollHeight
+
+    if (nearBottom) this.logTarget.scrollTop = this.logTarget.scrollHeight
   }
 }
