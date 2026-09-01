@@ -115,7 +115,7 @@ RSpec.describe Rsync::CommandService do
     end
   end
 
-  describe "opt_superuser and opt_rsync_path" do
+  describe "opt_superuser and opt_local_rsync_path" do
     it "defaults to rsync" do
       expect(command).to start_with("rsync ")
     end
@@ -127,12 +127,41 @@ RSpec.describe Rsync::CommandService do
         expect(command).to start_with("sudo rsync ")
       end
 
-      context "when opt_rsync_path is set" do
-        before { job.opt_rsync_path = "/usr/local/bin/rsync" }
+      context "when opt_local_rsync_path is set" do
+        before { job.opt_local_rsync_path = "/usr/local/bin/rsync" }
 
         it "uses the custom path" do
           expect(command).to start_with("sudo /usr/local/bin/rsync ")
         end
+      end
+    end
+  end
+
+  describe "opt_remote_rsync_path" do
+    context "with a remote repository" do
+      let(:server) { build(:server) }
+      let(:source) { build(:repository, :remote, server:, path: "/data/source") }
+
+      context "when opt_remote_rsync_path is set" do
+        before { job.opt_remote_rsync_path = "/usr/local/bin/rsync" }
+
+        it "includes the --rsync-path flag" do
+          expect(command).to include("--rsync-path /usr/local/bin/rsync")
+        end
+      end
+
+      context "when opt_remote_rsync_path is blank" do
+        it "omits the --rsync-path flag" do
+          expect(command).not_to include("--rsync-path")
+        end
+      end
+    end
+
+    context "with local-only repositories" do
+      before { job.opt_remote_rsync_path = "/usr/local/bin/rsync" }
+
+      it "omits the --rsync-path flag" do
+        expect(command).not_to include("--rsync-path")
       end
     end
   end

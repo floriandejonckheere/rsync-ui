@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_01_182133) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_01_182854) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -170,6 +170,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_182133) do
     t.boolean "opt_inplace", default: false, null: false
     t.boolean "opt_itemize_changes", default: false, null: false
     t.boolean "opt_links", default: true, null: false
+    t.string "opt_local_rsync_path"
     t.boolean "opt_no_inc_recursive", default: true, null: false
     t.boolean "opt_numeric_ids", default: false, null: false
     t.boolean "opt_one_file_system", default: false, null: false
@@ -180,7 +181,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_182133) do
     t.boolean "opt_progress2", default: true, null: false
     t.boolean "opt_recursive", default: true, null: false
     t.boolean "opt_relative", default: false, null: false
-    t.string "opt_rsync_path"
+    t.string "opt_remote_rsync_path"
     t.boolean "opt_secluded_args", default: false, null: false
     t.boolean "opt_size_only", default: false, null: false
     t.boolean "opt_specials", default: false, null: false

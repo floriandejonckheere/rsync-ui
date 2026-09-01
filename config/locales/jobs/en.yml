@@ -142,6 +142,9 @@ en:
       opt_links:
         description: Preserve symbolic links
         flag: "--links"
+      opt_local_rsync_path:
+        description: Local rsync path
+        placeholder: e.g. /usr/local/bin/rsync
       opt_no_inc_recursive:
         description: Compute total files upfront
         flag: "--no-inc-recursive"
@@ -175,9 +178,8 @@ en:
       opt_relative:
         description: Relative path names
         flag: "--relative"
-      opt_rsync_path:
-        description: Alternate rsync path
-        macos_hint: macOS ships an outdated version of rsync. Install a modern version (e.g. via Homebrew) and set its path here, such as /opt/homebrew/bin/rsync.
+      opt_remote_rsync_path:
+        description: Remote rsync path
         placeholder: e.g. /usr/local/bin/rsync
       opt_secluded_args:
         description: Protect remote args
@@ -210,6 +212,7 @@ en:
       pattern_placeholder: e.g. *.log
       preview: Preview
       repositories: Repositories
+      rsync_path_macos_hint: macOS ships an outdated version of rsync. Install a modern version (e.g. via Homebrew) and set its path here, such as /opt/homebrew/bin/rsync.
       schedule: Schedule
       schedule_placeholder: 0 2 * * *
       schedule_preview_invalid: Invalid cron expression

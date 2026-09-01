@@ -25,19 +25,29 @@
       </div>
 
       <div class="field">
-        <%= f.label :opt_rsync_path, I18n.t("jobs.form.opt_rsync_path.description") %>
+        <%= f.label :opt_local_rsync_path, I18n.t("jobs.form.opt_local_rsync_path.description") %>
 
-        <%= f.text_field :opt_rsync_path,
-                         placeholder: I18n.t("jobs.form.opt_rsync_path.placeholder"),
+        <%= f.text_field :opt_local_rsync_path,
+                         placeholder: I18n.t("jobs.form.opt_local_rsync_path.placeholder"),
                          autocomplete: "off" %>
-
-        <% if macos_servers(f.object).any? %>
-          <p class="text-sm text-muted-foreground flex items-center gap-2 mt-1">
-            <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
-            <%= I18n.t("jobs.form.opt_rsync_path.macos_hint") %>
-          </p>
-        <% end %>
       </div>
+
+      <% if has_remote_repo %>
+        <div class="field">
+          <%= f.label :opt_remote_rsync_path, I18n.t("jobs.form.opt_remote_rsync_path.description") %>
+
+          <%= f.text_field :opt_remote_rsync_path,
+                           placeholder: I18n.t("jobs.form.opt_remote_rsync_path.placeholder"),
+                           autocomplete: "off" %>
+        </div>
+      <% end %>
+
+      <% if macos_servers(f.object).any? %>
+        <p class="text-sm text-muted-foreground flex items-center gap-2">
+          <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
+          <%= I18n.t("jobs.form.rsync_path_macos_hint") %>
+        </p>
+      <% end %>
 
       <div class="field">
         <%= f.label :opt_ssh_arguments, I18n.t("jobs.form.opt_ssh_arguments.description") %>

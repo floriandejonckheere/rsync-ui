@@ -142,6 +142,7 @@ end
 #  opt_inplace               :boolean          default(FALSE), not null
 #  opt_itemize_changes       :boolean          default(FALSE), not null
 #  opt_links                 :boolean          default(TRUE), not null
+#  opt_local_rsync_path      :string
 #  opt_no_inc_recursive      :boolean          default(TRUE), not null
 #  opt_numeric_ids           :boolean          default(FALSE), not null
 #  opt_one_file_system       :boolean          default(FALSE), not null
@@ -152,7 +153,7 @@ end
 #  opt_progress2             :boolean          default(TRUE), not null
 #  opt_recursive             :boolean          default(TRUE), not null
 #  opt_relative              :boolean          default(FALSE), not null
-#  opt_rsync_path            :string
+#  opt_remote_rsync_path     :string
 #  opt_secluded_args         :boolean          default(FALSE), not null
 #  opt_size_only             :boolean          default(FALSE), not null
 #  opt_specials              :boolean          default(FALSE), not null

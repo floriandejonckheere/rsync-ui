@@ -63,6 +63,7 @@ module Rsync
 
         # Flags
         *ssh_flags,
+        *remote_rsync_path_flags,
         *boolean_flags(BASIC_FLAGS),
         *boolean_flags(ADVANCED_FLAGS),
         *custom_argument_flags,
@@ -80,8 +81,14 @@ module Rsync
     def rsync_path
       [
         ("sudo" if job.opt_superuser),
-        job.opt_rsync_path.presence || "rsync",
+        job.opt_local_rsync_path.presence || "rsync",
       ].compact
+    end
+
+    def remote_rsync_path_flags
+      return [] if job.opt_remote_rsync_path.blank? || remote_server.nil?
+
+      ["--rsync-path", job.opt_remote_rsync_path]
     end
 
     def boolean_flags(map)
