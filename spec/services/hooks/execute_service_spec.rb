@@ -41,6 +41,18 @@ RSpec.describe Hooks::ExecuteService do
         .with("echo hello #{job.name}", pgroup: true)
     end
 
+    context "when the command produces no output" do
+      let(:hook) { create(:hook, :pre, job:, command: "true") }
+
+      it "does not attach the hook output to the job run" do
+        service.call
+
+        job_run.reload
+
+        expect(job_run.pre_hook_output).not_to be_attached
+      end
+    end
+
     context "when the command exits with a non-zero status" do
       let(:hook) { create(:hook, :pre, job:, command: "false") }
 
@@ -54,7 +66,7 @@ RSpec.describe Hooks::ExecuteService do
 
         expect(job_run.pre_hook_status).to eq("failed")
         expect(job_run.pre_hook_exit_status).to eq(1)
-        expect(job_run.pre_hook_output).to be_attached
+        expect(job_run.pre_hook_output).not_to be_attached
       end
     end
 

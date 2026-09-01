@@ -153,6 +153,7 @@ module JobRuns
 
     def attach_log(file)
       return if job_run.output.attached?
+      return if file.size.zero? # rubocop:disable Style/ZeroLengthPredicate -- Tempfile has no #empty?
 
       file.rewind
       job_run.output.attach(

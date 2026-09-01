@@ -51,7 +51,9 @@ module Hooks
         Open3.popen2e(command, pgroup: true) do |_stdin, output, wait_thr|
           job_run.update!(pid: wait_thr.pid)
 
-          file.write(output.read)
+          content = output.read
+
+          file.write(content) if content.present?
 
           wait_thr.value
         end
@@ -67,6 +69,7 @@ module Hooks
     def attach_output(file)
       attachment = job_run.public_send(:"#{hook.hook_type}_hook_output")
       return if attachment.attached?
+      return if file.size.zero? # rubocop:disable Style/ZeroLengthPredicate -- Tempfile has no #empty?
 
       file.rewind
       attachment.attach(
