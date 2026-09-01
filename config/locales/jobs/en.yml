@@ -88,6 +88,7 @@ en:
       opt_acls:
         description: Preserve ACLs
         flag: "--acls"
+        macos_hint: Extended attributes may not transfer correctly to or from macOS hosts
       opt_append:
         description: Append data onto shorter files
         flag: "--append"
@@ -124,6 +125,7 @@ en:
       opt_group:
         description: Preserve group ownership
         flag: "--group"
+        macos_hint: User/group IDs may not map correctly when transferring to or from macOS hosts
       opt_hard_links:
         description: Preserve hard links
         flag: "--hard-links"
@@ -152,6 +154,7 @@ en:
       opt_owner:
         description: Preserve ownership
         flag: "--owner"
+        macos_hint: User/group IDs may not map correctly when transferring to or from macOS hosts
       opt_partial:
         description: Keep partially transferred files
         flag: "--partial"
@@ -173,6 +176,7 @@ en:
         flag: "--relative"
       opt_rsync_path:
         description: Alternate rsync path
+        macos_hint: macOS ships an outdated version of rsync. Install a modern version (e.g. via Homebrew) and set its path here, such as /opt/homebrew/bin/rsync.
         placeholder: e.g. /usr/local/bin/rsync
       opt_secluded_args:
         description: Protect remote args
@@ -201,6 +205,7 @@ en:
       opt_xattrs:
         description: Preserve extended attributes
         flag: "--xattrs"
+        macos_hint: Extended attributes may not transfer correctly to or from macOS hosts
       pattern_placeholder: e.g. *.log
       preview: Preview
       repositories: Repositories

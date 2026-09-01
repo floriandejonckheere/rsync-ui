@@ -30,6 +30,13 @@
         <%= f.text_field :opt_rsync_path,
                          placeholder: I18n.t("jobs.form.opt_rsync_path.placeholder"),
                          autocomplete: "off" %>
+
+        <% if macos_servers(f.object).any? %>
+          <p class="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+            <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
+            <%= I18n.t("jobs.form.opt_rsync_path.macos_hint") %>
+          </p>
+        <% end %>
       </div>
 
       <div class="field">
