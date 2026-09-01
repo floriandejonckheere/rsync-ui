@@ -24,6 +24,7 @@ module JobNotifications
         on_start: boolean_type.cast(row["on_start"]),
         on_success: boolean_type.cast(row["on_success"]),
         on_failure: boolean_type.cast(row["on_failure"]),
+        on_canceled: boolean_type.cast(row["on_canceled"]),
       }
     end
   end

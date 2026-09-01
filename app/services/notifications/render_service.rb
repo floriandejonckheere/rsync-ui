@@ -2,6 +2,13 @@
 
 module Notifications
   class RenderService < ApplicationService
+    NOTIFICATION_TYPES = {
+      "start" => "info",
+      "success" => "success",
+      "failure" => "failure",
+      "canceled" => "warning",
+    }.freeze
+
     attr_reader :job_run, :event
 
     def initialize(job_run, event)
@@ -15,7 +22,7 @@ module Notifications
       {
         title:,
         body:,
-        notification_type: (event == "start" ? "info" : event),
+        notification_type: NOTIFICATION_TYPES.fetch(event),
       }
     end
 

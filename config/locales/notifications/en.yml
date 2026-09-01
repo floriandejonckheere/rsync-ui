@@ -17,6 +17,7 @@ en:
       enable: Enable notification
       test: Test notification
     body:
+      canceled_at: Canceled at
       completed_at: Completed at
       destination: Destination
       duration: Duration
@@ -38,6 +39,8 @@ en:
     enabled:
       'false': Disabled
     events:
+      canceled:
+        title: 'Job canceled: %{job}'
       failure:
         title: 'Job failed: %{job}'
       start:
@@ -80,6 +83,7 @@ en:
       error_details: Error details
       error_type: Error type
       footer: rsync-ui notification
+      header_canceled: Job canceled
       header_failure: Job failed
       header_start: Job started
       header_success: Job completed successfully

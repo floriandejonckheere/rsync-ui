@@ -58,5 +58,21 @@ RSpec.describe Notifications::SendJob do
 
       expect(Notifications::SendService).not_to have_received(:call)
     end
+
+    it "no-ops when on_canceled is false for canceled event" do
+      job_notification.update!(on_canceled: false)
+
+      described_class.new.perform(job_notification.id, job_run.id, "canceled")
+
+      expect(Notifications::SendService).not_to have_received(:call)
+    end
+
+    it "calls SendService for canceled event when on_canceled is true" do
+      job_notification.update!(on_canceled: true)
+
+      described_class.new.perform(job_notification.id, job_run.id, "canceled")
+
+      expect(Notifications::SendService).to have_received(:call).with(notification, job_run, "canceled")
+    end
   end
 end

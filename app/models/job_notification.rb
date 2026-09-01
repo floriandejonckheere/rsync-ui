@@ -14,6 +14,7 @@ end
 #
 #  id              :uuid             not null, primary key
 #  enabled         :boolean          default(TRUE), not null
+#  on_canceled     :boolean          default(FALSE), not null
 #  on_failure      :boolean          default(TRUE), not null
 #  on_start        :boolean          default(FALSE), not null
 #  on_success      :boolean          default(TRUE), not null

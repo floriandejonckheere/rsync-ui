@@ -12,7 +12,7 @@ RSpec.describe JobNotifications::ExportService do
 
   describe "#call" do
     before do
-      create(:job_notification, job:, notification:, enabled: true, on_start: true, on_success: false, on_failure: true)
+      create(:job_notification, job:, notification:, enabled: true, on_start: true, on_success: false, on_failure: true, on_canceled: true)
     end
 
     it "writes a CSV file" do
@@ -26,7 +26,7 @@ RSpec.describe JobNotifications::ExportService do
 
       rows = CSV.read(tmp_path.join("exports.csv"), headers: true)
 
-      expect(rows.headers).to eq(["job_name", "notification_name", "user_email", "enabled", "on_start", "on_success", "on_failure"])
+      expect(rows.headers).to eq(["job_name", "notification_name", "user_email", "enabled", "on_start", "on_success", "on_failure", "on_canceled"])
     end
 
     it "writes one row per job notification" do
@@ -49,6 +49,7 @@ RSpec.describe JobNotifications::ExportService do
       expect(row["on_start"]).to eq("true")
       expect(row["on_success"]).to eq("false")
       expect(row["on_failure"]).to eq("true")
+      expect(row["on_canceled"]).to eq("true")
     end
   end
 end

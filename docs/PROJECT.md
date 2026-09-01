@@ -77,3 +77,4 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Throttle/rate limit status updates
 - [ ] Make streaming job output fixed height, but scrolling (and anchored to the bottom)
 - [ ] Drop `Net::SSH` in favor of plain `ssh`
+- [ ] Make the job wizard breadcrumbs clickable

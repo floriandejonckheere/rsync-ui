@@ -87,6 +87,21 @@ RSpec.describe JobRun do
         .with(job_notification.id, job_run.id, "failure")
     end
 
+    it "enqueues a canceled notification on request_cancel from pending" do
+      expect { job_run.request_cancel! }
+        .to have_enqueued_job(Notifications::SendJob)
+        .with(job_notification.id, job_run.id, "canceled")
+    end
+
+    it "enqueues a canceled notification on cancel" do
+      job_run.update!(status: "running", started_at: Time.zone.now)
+      job_run.request_cancel!
+
+      expect { job_run.cancel! }
+        .to have_enqueued_job(Notifications::SendJob)
+        .with(job_notification.id, job_run.id, "canceled")
+    end
+
     context "when notifications are disabled" do
       with_configuration "notifications" => false
 
@@ -111,6 +126,11 @@ RSpec.describe JobRun do
 
       it "does not enqueue a failure notification on error" do
         expect { job_run.error!(error_class: "RuntimeError", error_message: "boom") }
+          .not_to have_enqueued_job(Notifications::SendJob)
+      end
+
+      it "does not enqueue a canceled notification on request_cancel" do
+        expect { job_run.request_cancel! }
           .not_to have_enqueued_job(Notifications::SendJob)
       end
     end

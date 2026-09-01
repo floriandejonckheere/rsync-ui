@@ -34,6 +34,20 @@ RSpec.describe Notifications::RenderService do
       end
     end
 
+    context "with canceled event" do
+      subject(:result) { described_class.new(job_run, "canceled").call }
+
+      before do
+        job_run.update!(status: "canceled", canceled_at: Time.zone.parse("2026-05-01 10:03:00"))
+      end
+
+      it "returns title, body, and notification_type" do
+        expect(result[:title]).to eq("Job canceled: #{job_run.name}")
+        expect(result[:body]).to include("Canceled at")
+        expect(result[:notification_type]).to eq("warning")
+      end
+    end
+
     context "with failure event" do
       subject(:result) { described_class.new(job_run, "failure").call }
 

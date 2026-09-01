@@ -1,5 +1,5 @@
-job_name,notification_name,user_email,enabled,on_start,on_success,on_failure
-Home backup,Slack,admin@example.com,true,false,true,true
-Home backup,PagerDuty,admin@example.com,true,false,false,true
-Projects backup,Slack,admin@example.com,true,false,false,true
-Photos mirror sync,Email,admin@example.com,true,false,true,true
+job_name,notification_name,user_email,enabled,on_start,on_success,on_failure,on_canceled
+Home backup,Slack,admin@example.com,true,false,true,true,false
+Home backup,PagerDuty,admin@example.com,true,false,false,true,false
+Projects backup,Slack,admin@example.com,true,false,false,true,false
+Photos mirror sync,Email,admin@example.com,true,false,true,true,false

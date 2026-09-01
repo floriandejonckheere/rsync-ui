@@ -8,6 +8,7 @@ class JobRun < ApplicationRecord
     "completed" => "success",
     "failed" => "failure",
     "errored" => "failure",
+    "canceled" => "canceled",
   }.freeze
 
   belongs_to :job

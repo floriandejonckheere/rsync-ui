@@ -160,6 +160,7 @@ class JobsController < ApplicationController
           :on_start,
           :on_success,
           :on_failure,
+          :on_canceled,
           :_destroy,
         ],
         hooks_attributes: [

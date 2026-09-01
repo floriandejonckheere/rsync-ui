@@ -24,6 +24,10 @@ RSpec.describe JobNotification do
     it "defaults on_failure to true" do
       expect(job_notification).to be_on_failure
     end
+
+    it "defaults on_canceled to false" do
+      expect(job_notification).not_to be_on_canceled
+    end
   end
 
   describe "uniqueness" do

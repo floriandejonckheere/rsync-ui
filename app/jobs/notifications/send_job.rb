@@ -8,6 +8,7 @@ module Notifications
       "start" => :on_start?,
       "success" => :on_success?,
       "failure" => :on_failure?,
+      "canceled" => :on_canceled?,
     }.freeze
 
     def perform(job_notification_id, job_run_id, event)

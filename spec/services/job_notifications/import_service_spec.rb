@@ -17,8 +17,8 @@ RSpec.describe JobNotifications::ImportService do
         notification
 
         tmp_path.join("07_job_notifications.csv").write(<<~CSV)
-          job_name,notification_name,user_email,enabled,on_start,on_success,on_failure
-          System backup,Slack,#{user.email},true,true,false,true
+          job_name,notification_name,user_email,enabled,on_start,on_success,on_failure,on_canceled
+          System backup,Slack,#{user.email},true,true,false,true,true
         CSV
       end
 
@@ -44,6 +44,7 @@ RSpec.describe JobNotifications::ImportService do
         expect(job_notification.on_start).to be(true)
         expect(job_notification.on_success).to be(false)
         expect(job_notification.on_failure).to be(true)
+        expect(job_notification.on_canceled).to be(true)
       end
 
       it "is idempotent" do

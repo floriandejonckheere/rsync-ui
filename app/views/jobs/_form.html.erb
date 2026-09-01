@@ -179,6 +179,11 @@
                           <%= jnf.check_box :on_failure %>
                           <%= jnf.label :on_failure, I18n.t("jobs.form.notifications_on_failure") %>
                         </div>
+
+                        <div class="field flex-row items-center gap-4">
+                          <%= jnf.check_box :on_canceled %>
+                          <%= jnf.label :on_canceled, I18n.t("jobs.form.notifications_on_canceled") %>
+                        </div>
                       </div>
                     </div>
                   <% end %>
