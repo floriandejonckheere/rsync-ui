@@ -34,12 +34,13 @@ RSpec.describe Rsync::Progress do
     let(:line) { "105.45M 13% 602.83kB/s 0:02:50 (xfr#495, ir-chk=1020/3825)" }
 
     # rsync's own time field here (0:02:50) is elapsed time, not remaining time, so
-    # remaining_time is derived from bytes/progress/speed instead: (105_450_000 / 13 *
-    # 87) / 602_830 rounds to 1_171 seconds.
+    # remaining_time is derived instead. Since files_transferred/files_total are both
+    # known, they're used in preference to the (0-100) byte percentage: (105_450_000 /
+    # 495 * (3_825 - 495)) / 602_830 rounds to 1_177 seconds.
     it { expect(progress.bytes).to eq 105_450_000 }
     it { expect(progress.progress).to eq 13 }
     it { expect(progress.speed).to eq 602_830 }
-    it { expect(progress.remaining_time).to eq 1_171 }
+    it { expect(progress.remaining_time).to eq 1_177 }
     it { expect(progress).to be_remaining_time_approximate }
     it { expect(progress.files_transferred).to eq 495 }
     it { expect(progress.files_checked).to eq 1_020 }
@@ -49,6 +50,19 @@ RSpec.describe Rsync::Progress do
   context "with a progress line at 0%" do
     let(:line) { "297,199,869 0% 10.02MB/s 0:00:28 (xfr#299, to-chk=67858/68191)" }
 
+    # progress is 0 (rounds down since the huge overall byte total dwarfs what's copied so
+    # far), but files_transferred/files_total are known and non-zero, so remaining_time is
+    # still computed from those instead of coming back nil: (297_199_869 / 299 * (68_191 -
+    # 299)) / 10_020_000 rounds to 6_735 seconds.
+    it { expect(progress.remaining_time).to eq 6_735 }
+    it { expect(progress).to be_remaining_time_approximate }
+  end
+
+  context "with a progress line at 0% and no files transferred yet" do
+    let(:line) { "0 0% 5.00kB/s 0:00:00 (xfr#0, to-chk=68191/68191)" }
+
+    # files_transferred is 0, so it can't be used to estimate (nothing to average bytes
+    # per file over yet); falls back to the byte percentage, which is also 0 here.
     it { expect(progress.remaining_time).to be_nil }
     it { expect(progress).to be_remaining_time_approximate }
   end

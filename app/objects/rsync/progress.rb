@@ -80,10 +80,17 @@ module Rsync
         .sum { |v, i| v * (60**i) }
     end
 
-    # Estimates remaining time for a --info=progress2 line from the bytes transferred so
-    # far and the overall percentage, since rsync's own time field is elapsed time here.
+    # Estimates remaining time for a --info=progress2 line, since rsync's own time field is
+    # elapsed time here. Prefers files_transferred/files_total when both are known: progress
+    # (the overall byte percentage) stays at 0 for a long time on large jobs, since one huge
+    # file can dwarf the whole transfer's byte total, whereas the file count moves steadily
+    # from the very first completed file. Falls back to the byte percentage otherwise.
     def estimate_remaining_time
-      return nil if progress.zero? || speed.zero?
+      return nil if speed.zero?
+
+      return ((bytes.to_f / files_transferred) * (files_total - files_transferred) / speed).round if files_transferred&.positive? && files_total&.positive?
+
+      return nil if progress.zero?
 
       ((bytes.to_f / progress) * (100 - progress) / speed).round
     end
