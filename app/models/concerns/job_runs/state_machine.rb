@@ -127,7 +127,7 @@ module JobRuns
         end
 
         after_transition to: [:completed, :failed, :canceled, :errored] do |job_run, _transition|
-          JobRuns::OutputBuffer.clear(job_run)
+          JobRuns::OutputBuffer.attach(job_run)
         end
 
         after_transition to: [:completed, :failed, :canceled, :errored] do |job_run, transition|

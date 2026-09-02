@@ -181,6 +181,16 @@ RSpec.describe JobRuns::StateMachine do
         expect(JobRuns::OutputBuffer.read(job_run)).to eq ""
       end
 
+      it "attaches any buffered output that was not already attached" do
+        job_run = create(:job_run, :running)
+        Rails.cache.write(JobRuns::OutputBuffer.cache_key(job_run), "file.txt\n")
+
+        job_run.complete!
+
+        expect(job_run.output).to be_attached
+        expect(job_run.output.download).to eq "file.txt\n"
+      end
+
       context "when disk_size is enabled" do
         with_configuration "disk_size" => true
 

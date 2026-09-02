@@ -92,4 +92,42 @@ RSpec.describe JobRuns::OutputBuffer do
       end
     end
   end
+
+  describe ".attach" do
+    context "when content has been buffered and no output is attached" do
+      before { Rails.cache.write(described_class.cache_key(job_run), "file.txt\n") }
+
+      it "attaches the buffered content as the job run's output" do
+        described_class.attach(job_run)
+
+        expect(job_run.output).to be_attached
+        expect(job_run.output.download).to eq "file.txt\n"
+      end
+
+      it "clears the buffer" do
+        described_class.attach(job_run)
+
+        expect(described_class.read(job_run)).to eq ""
+      end
+    end
+
+    context "when output is already attached" do
+      before do
+        job_run.output.attach(io: StringIO.new("existing.txt\n"), filename: "existing.log", content_type: "text/plain")
+        Rails.cache.write(described_class.cache_key(job_run), "file.txt\n")
+      end
+
+      it "does not overwrite the existing output" do
+        expect { described_class.attach(job_run) }.not_to(change { job_run.output.blob.id })
+      end
+    end
+
+    context "when nothing has been buffered" do
+      it "does not attach any output" do
+        described_class.attach(job_run)
+
+        expect(job_run.output).not_to be_attached
+      end
+    end
+  end
 end

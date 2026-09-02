@@ -47,6 +47,20 @@ module JobRuns
       job_run
     end
 
+    def self.attach(job_run)
+      content = read(job_run)
+
+      if content.present? && !job_run.output.attached?
+        job_run.output.attach(
+          io: StringIO.new(content),
+          filename: "job_run_#{job_run.sequence}.log",
+          content_type: "text/plain",
+        )
+      end
+
+      clear(job_run)
+    end
+
     def self.cache_key(job_run)
       "job_runs/#{job_run.id}/output_buffer"
     end
