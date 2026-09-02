@@ -96,12 +96,13 @@
 
   <td class="px-6 py-4">
     <div class="flex items-center justify-end gap-2">
+      <%= link_to job_run_path(job_run),
+                  class: "btn-icon-outline btn-icon-md",
+                  data: { tooltip: I18n.t("job_runs.actions.view_logs"), turbo_frame: "_top" } do %>
+        <%= lucide_icon "eye", class: "h-4 w-4" %>
+      <% end %>
+
       <% if job_run.deletable? && job_run.output.attached? %>
-        <%= link_to job_run_path(job_run),
-                    class: "btn-icon-outline btn-icon-md",
-                    data: { tooltip: I18n.t("job_runs.actions.view_logs"), turbo_frame: "_top" } do %>
-          <%= lucide_icon "eye", class: "h-4 w-4" %>
-        <% end %>
         <%= link_to output_job_run_path(job_run),
                     class: "btn-icon-outline btn-icon-md",
                     data: { tooltip: I18n.t("job_runs.actions.download_logs"), turbo: false } do %>
@@ -121,23 +122,16 @@
                     } do %>
           <%= lucide_icon "trash-2", class: "h-4 w-4" %>
         <% end %>
-      <% elsif live %>
-        <%= link_to job_run_path(job_run),
+      <% elsif job_run.cancelable? %>
+        <%= link_to cancel_job_run_path(job_run),
                     class: "btn-icon-outline btn-icon-md",
-                    data: { tooltip: I18n.t("job_runs.actions.view_logs"), turbo_frame: "_top" } do %>
-          <%= lucide_icon "eye", class: "h-4 w-4" %>
-        <% end %>
-        <% if job_run.cancelable? %>
-          <%= link_to cancel_job_run_path(job_run),
-                      class: "btn-icon-outline btn-icon-md",
-                      data: {
-                        tooltip: I18n.t("job_runs.actions.cancel"),
-                        "turbo-method": :patch,
-                        "turbo-confirm": I18n.t("job_runs.actions.cancel_confirm"),
-                        "turbo-confirm-title": I18n.t("job_runs.actions.cancel_confirm_title"),
-                      } do %>
-            <%= lucide_icon "x", class: "h-4 w-4" %>
-          <% end %>
+                    data: {
+                      tooltip: I18n.t("job_runs.actions.cancel"),
+                      "turbo-method": :patch,
+                      "turbo-confirm": I18n.t("job_runs.actions.cancel_confirm"),
+                      "turbo-confirm-title": I18n.t("job_runs.actions.cancel_confirm_title"),
+                    } do %>
+          <%= lucide_icon "x", class: "h-4 w-4" %>
         <% end %>
       <% end %>
     </div>
