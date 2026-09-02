@@ -48,8 +48,10 @@
         class="text-xs text-gray-500 dark:text-gray-400<%= ' hidden' unless job_run.running? && job_run.speed.present? %>"
         data-job-run-status-target="<%= 'speedInfo' if live %>"
       >
-        <% if job_run.speed.present? %>
-          <%= I18n.t("job_runs.status.running_speed", speed: format_speed(job_run.speed), remaining: format_time(job_run.remaining_time)) %>
+        <% if job_run.speed.present? && job_run.remaining_time.present? %>
+          <%= I18n.t("job_runs.status.running_speed", speed: format_speed(job_run.speed), remaining: format_remaining_time(job_run.remaining_time, approximate: job_run.remaining_time_approximate)) %>
+        <% elsif job_run.speed.present? %>
+          <%= format_speed(job_run.speed) %>
         <% end %>
       </div>
     <% end %>

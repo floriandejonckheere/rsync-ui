@@ -30,4 +30,10 @@ module JobRunHelper
 
     h.positive? ? format("%<h>d:%<m>02d:%<s>02d", h:, m:, s:) : format("%<m>d:%<s>02d", m:, s:)
   end
+
+  def format_remaining_time(seconds, approximate: false)
+    return unless seconds
+
+    "#{'~' if approximate}#{format_time(seconds)}"
+  end
 end

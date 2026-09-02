@@ -19,11 +19,21 @@ module Rsync
                 :progress,
                 :speed,
                 :remaining_time,
+                :remaining_time_approximate,
                 :files_transferred,
                 :files_checked,
                 :files_total
 
-    def initialize(line)
+    alias remaining_time_approximate? remaining_time_approximate
+
+    # `aggregate: true` marks the whole line stream as coming from --info=progress2, which
+    # alternates between two line shapes for the *same* aggregate counters: intermediate
+    # ticks (no `(xfr#N, to-chk=X/Y)` suffix, time field is a real ETA) and end-of-file ticks
+    # (suffix present, time field is elapsed time instead). Trusting rsync's own field on one
+    # shape and computing it on the other produces two disagreeing numbers that flicker in the
+    # UI, so when aggregate is true we always compute remaining_time ourselves for consistency,
+    # regardless of which shape a given line happens to be.
+    def initialize(line, aggregate: false)
       match = PATTERN.match(line)
 
       return unless match
@@ -31,10 +41,12 @@ module Rsync
       @bytes = parse_bytes(match[:bytes])
       @progress = match[:progress].to_i
       @speed = parse_speed(match[:speed])
-      @remaining_time = parse_remaining_time(match[:remaining_time])
       @files_transferred = match[:files_transferred]&.to_i
       @files_checked = match[:files_checked]&.to_i
       @files_total = match[:files_total]&.to_i
+
+      @remaining_time_approximate = aggregate || @files_transferred.present?
+      @remaining_time = @remaining_time_approximate ? estimate_remaining_time : parse_time(match[:remaining_time])
     end
 
     private
@@ -59,13 +71,21 @@ module Rsync
       (match[1].to_f * multiplier).to_i
     end
 
-    def parse_remaining_time(value)
+    def parse_time(value)
       value
         .split(":")
         .map(&:to_i)
         .reverse
         .each_with_index
         .sum { |v, i| v * (60**i) }
+    end
+
+    # Estimates remaining time for a --info=progress2 line from the bytes transferred so
+    # far and the overall percentage, since rsync's own time field is elapsed time here.
+    def estimate_remaining_time
+      return nil if progress.zero? || speed.zero?
+
+      ((bytes.to_f / progress) * (100 - progress) / speed).round
     end
   end
 end

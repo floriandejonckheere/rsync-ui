@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_02_195843) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_02_200512) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -124,6 +124,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_02_195843) do
     t.string "pre_hook_status"
     t.integer "progress"
     t.integer "remaining_time"
+    t.boolean "remaining_time_approximate", default: false, null: false
     t.serial "sequence", null: false
     t.bigint "speed"
     t.datetime "started_at"

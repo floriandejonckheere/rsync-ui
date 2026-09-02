@@ -48,6 +48,7 @@ module JobRuns
           progress: job_run.progress,
           speed: job_run.speed,
           remaining_time: job_run.remaining_time,
+          remaining_time_approximate: job_run.remaining_time_approximate,
         },
       )
     end

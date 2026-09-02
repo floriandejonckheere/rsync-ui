@@ -91,6 +91,9 @@ module JobRuns
           job_run.progress = kwargs[:progress]
           job_run.speed = kwargs[:speed]
           job_run.remaining_time = kwargs[:remaining_time]
+          job_run.remaining_time_approximate = kwargs[:remaining_time_approximate] || false
+
+          true
         end
 
         before_transition on: :error do |job_run, transition|

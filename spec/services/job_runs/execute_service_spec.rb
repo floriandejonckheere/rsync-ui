@@ -266,18 +266,20 @@ RSpec.describe JobRuns::ExecuteService do
       context "when only opt_progress is enabled" do
         let(:options) { { opt_progress: true, opt_progress2: false } }
 
-        it "does not update bytes_copied and progress" do
+        it "updates bytes_copied and progress and writes the last status line to the log with the carriage return replaced by a newline" do
           service.call
 
           job_run.reload
 
-          expect(job_run.bytes_copied).to be_nil
-          expect(job_run.progress).to be_nil
+          expect(job_run.bytes_copied).to eq 1_234_567
+          expect(job_run.progress).to eq 75
+          expect(job_run.output.download).to include status_line.tr("\r", "\n")
+          expect(job_run.output.download).not_to include "\r"
         end
       end
 
-      context "when opt_progress2 is enabled" do
-        let(:options) { { opt_progress: true, opt_progress2: true } }
+      context "when only opt_progress2 is enabled" do
+        let(:options) { { opt_progress: false, opt_progress2: true } }
 
         it "updates bytes_copied and progress and writes the last status line to the log with the carriage return replaced by a newline" do
           service.call
@@ -291,10 +293,10 @@ RSpec.describe JobRuns::ExecuteService do
         end
       end
 
-      context "when opt_progress2 is disabled" do
-        let(:options) { { opt_progress: true, opt_progress2: false } }
+      context "when both opt_progress and opt_progress2 are disabled" do
+        let(:options) { { opt_progress: false, opt_progress2: false } }
 
-        it "writes the status line to the log with the carriage return replaced by a newline" do
+        it "does not update bytes_copied and progress but still writes the status line to the log" do
           service.call
 
           job_run.reload

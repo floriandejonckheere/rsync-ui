@@ -95,6 +95,7 @@ end
 #  pre_hook_status            :string
 #  progress                   :integer
 #  remaining_time             :integer
+#  remaining_time_approximate :boolean          default(FALSE), not null
 #  sequence                   :integer          not null, indexed
 #  speed                      :bigint
 #  started_at                 :datetime         indexed

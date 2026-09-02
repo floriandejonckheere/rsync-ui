@@ -87,7 +87,7 @@ module JobRuns
 
             Rails.logger.debug { "[#{job_run.id}] [#{job_run.name}] #{line.chomp}" }
 
-            status = Rsync::Progress.new(line) if job.opt_progress || job.opt_progress2
+            status = Rsync::Progress.new(line, aggregate: job.opt_progress2) if job.opt_progress || job.opt_progress2
 
             if streaming?
               # Broadcast status or log line
@@ -99,9 +99,9 @@ module JobRuns
               output_buffer << line unless status&.bytes
             end
 
-            if job.opt_progress2 && status&.bytes
+            if (job.opt_progress || job.opt_progress2) && status&.bytes
               # Update statistics on record
-              job_run.tick_progress!(bytes_copied: status.bytes, progress: status.progress, speed: status.speed, remaining_time: status.remaining_time)
+              job_run.tick_progress!(bytes_copied: status.bytes, progress: status.progress, speed: status.speed, remaining_time: status.remaining_time, remaining_time_approximate: status.remaining_time_approximate?)
 
               last_status_line = line
             else

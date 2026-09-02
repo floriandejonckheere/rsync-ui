@@ -105,7 +105,11 @@ export default class extends Controller {
       }
       if (this.hasSpeedInfoTarget) {
         if (data.speed != null && data.remaining_time != null) {
-          this.speedInfoTarget.textContent = `${this.#formatSpeed(data.speed)} · ${this.#formatRemainingTime(data.remaining_time)} remaining`
+          const remaining = `${data.remaining_time_approximate ? "~" : ""}${this.#formatRemainingTime(data.remaining_time)}`
+          this.speedInfoTarget.textContent = `${this.#formatSpeed(data.speed)} · ${remaining} remaining`
+          this.speedInfoTarget.classList.remove("hidden")
+        } else if (data.speed != null) {
+          this.speedInfoTarget.textContent = this.#formatSpeed(data.speed)
           this.speedInfoTarget.classList.remove("hidden")
         } else {
           this.speedInfoTarget.classList.add("hidden")
