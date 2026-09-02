@@ -34,10 +34,9 @@ module JobRunHelper
   def format_remaining_time(seconds, approximate: false)
     return unless seconds
 
+    return "< 1 min" if seconds < 60
+
     h = seconds / 3600
-
-    return "< 1 min" if h.zero?
-
     m = (seconds % 3600) / 60
     formatted = format("%<h>d:%<m>02d", h:, m:)
 

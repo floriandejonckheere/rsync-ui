@@ -65,9 +65,9 @@ export default class extends Controller {
   }
 
   #formatEta(seconds, approximate) {
-    const h = Math.floor(seconds / 3600)
-    if (h === 0) return "< 1 min"
+    if (seconds < 60) return "< 1 min"
 
+    const h = Math.floor(seconds / 3600)
     const m = Math.floor((seconds % 3600) / 60)
     const pad = (n) => String(n).padStart(2, "0")
     return `${approximate ? "~" : ""}${h}:${pad(m)}`
