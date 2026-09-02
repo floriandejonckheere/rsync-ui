@@ -96,7 +96,7 @@ end
 #  progress                   :integer
 #  remaining_time             :integer
 #  sequence                   :integer          not null, indexed
-#  speed                      :integer
+#  speed                      :bigint
 #  started_at                 :datetime         indexed
 #  status                     :string           default("pending"), not null, indexed
 #  success_hook_error_class   :string
