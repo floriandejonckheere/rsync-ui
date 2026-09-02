@@ -36,26 +36,24 @@
         </div>
       <% end %>
 
-      <% %i[opt_hard_links opt_devices opt_specials opt_checksum opt_compress opt_partial opt_backup opt_append opt_numeric_ids opt_itemize_changes opt_secluded_args opt_verbose].each do |field| %>
+      <% %i[opt_hard_links opt_devices opt_specials opt_checksum opt_compress opt_partial opt_backup opt_append opt_numeric_ids opt_itemize_changes opt_secluded_args opt_verbose opt_progress2].each do |field| %>
         <div class="field flex-row items-center gap-4">
           <%= f.check_box field, role: "switch" %>
           <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), data: { tooltip: I18n.t(:flag, scope: [:jobs, :form, field]) } %>
         </div>
       <% end %>
 
-      <% %i[opt_progress2 opt_no_inc_recursive].each do |field| %>
-        <div class="field">
-          <div class="flex-row items-center gap-4 flex">
-            <%= f.check_box field, role: "switch" %>
-            <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), data: { tooltip: I18n.t(:flag, scope: [:jobs, :form, field]) } %>
-          </div>
-
-          <p class="text-sm text-muted-foreground flex items-center gap-2 mt-1">
-            <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
-            <%= I18n.t(:mandatory_hint, scope: [:jobs, :form, field]) %>
-          </p>
+      <div class="field">
+        <div class="flex-row items-center gap-4 flex">
+          <%= f.check_box :opt_no_inc_recursive, role: "switch" %>
+          <%= f.label :opt_no_inc_recursive, I18n.t(:description, scope: [:jobs, :form, :opt_no_inc_recursive]), data: { tooltip: I18n.t(:flag, scope: [:jobs, :form, :opt_no_inc_recursive]) } %>
         </div>
-      <% end %>
+
+        <p class="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+          <%= lucide_icon "info", class: "h-4 w-4 shrink-0" %>
+          <%= I18n.t(:mandatory_hint, scope: [:jobs, :form, :opt_no_inc_recursive]) %>
+        </p>
+      </div>
     </div>
   </div>
 </details>

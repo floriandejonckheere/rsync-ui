@@ -171,7 +171,6 @@ en:
       opt_progress2:
         description: Show total progress
         flag: "--info=progress2"
-        mandatory_hint: Required to show job progress
       opt_recursive:
         description: Recurse into directories
         flag: "--recursive"

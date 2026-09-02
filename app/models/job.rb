@@ -149,7 +149,7 @@ end
 #  opt_owner                 :boolean          default(FALSE), not null
 #  opt_partial               :boolean          default(FALSE), not null
 #  opt_perms                 :boolean          default(FALSE), not null
-#  opt_progress              :boolean          default(TRUE), not null
+#  opt_progress              :boolean          default(FALSE), not null
 #  opt_progress2             :boolean          default(TRUE), not null
 #  opt_recursive             :boolean          default(TRUE), not null
 #  opt_relative              :boolean          default(FALSE), not null
