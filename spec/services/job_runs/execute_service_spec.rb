@@ -699,6 +699,19 @@ RSpec.describe JobRuns::ExecuteService do
             .to have_received(:broadcast)
             .with "job_run_status_#{job_run.id}", hash_including(type: "progress", progress: 75)
         end
+
+        it "does not buffer status lines" do
+          output_buffer = instance_double(JobRuns::OutputBuffer, :<< => nil, flush: nil)
+
+          allow(JobRuns::OutputBuffer)
+            .to receive(:new)
+            .and_return(output_buffer)
+
+          service.call
+
+          expect(output_buffer)
+            .not_to have_received(:<<)
+        end
       end
 
       context "when streaming is disabled" do

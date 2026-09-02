@@ -89,8 +89,10 @@ module JobRuns
               # Broadcast status or log line
               job_run.tick_status!(type: (status&.bytes ? "status" : "log"), content: line)
 
-              # Buffer output so a page connecting mid-run can fetch what already streamed
-              output_buffer << line
+              # Buffer output so a page connecting mid-run can fetch what already streamed.
+              # Status lines are transient progress updates (overwritten in-place via \r) and
+              # are excluded to avoid jumbling historical output when replayed sequentially.
+              output_buffer << line unless status&.bytes
             end
 
             if job.opt_progress2 && status&.bytes
