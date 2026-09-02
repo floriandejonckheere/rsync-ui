@@ -49,6 +49,9 @@ module JobRuns
           speed: job_run.speed,
           remaining_time: job_run.remaining_time,
           remaining_time_approximate: job_run.remaining_time_approximate,
+          bytes_copied: job_run.bytes_copied,
+          files_transferred: job_run.files_transferred,
+          files_total: job_run.files_total,
         },
       )
     end

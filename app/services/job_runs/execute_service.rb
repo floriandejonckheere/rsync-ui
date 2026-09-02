@@ -101,7 +101,15 @@ module JobRuns
 
             if (job.opt_progress || job.opt_progress2) && status&.bytes
               # Update statistics on record
-              job_run.tick_progress!(bytes_copied: status.bytes, progress: status.progress, speed: status.speed, remaining_time: status.remaining_time, remaining_time_approximate: status.remaining_time_approximate?)
+              job_run.tick_progress!(
+                bytes_copied: status.bytes,
+                progress: status.progress,
+                speed: status.speed,
+                remaining_time: status.remaining_time,
+                remaining_time_approximate: status.remaining_time_approximate?,
+                files_transferred: status.files_transferred,
+                files_total: status.files_total,
+              )
 
               last_status_line = line
             else

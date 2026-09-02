@@ -92,6 +92,8 @@ module JobRuns
           job_run.speed = kwargs[:speed]
           job_run.remaining_time = kwargs[:remaining_time]
           job_run.remaining_time_approximate = kwargs[:remaining_time_approximate] || false
+          job_run.files_transferred = kwargs[:files_transferred]
+          job_run.files_total = kwargs[:files_total]
 
           true
         end

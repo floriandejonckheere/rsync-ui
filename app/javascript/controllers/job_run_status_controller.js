@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { cable } from "@hotwired/turbo-rails"
 
 export default class extends Controller {
-  static targets = ["jobStatus", "startedAt", "completedAt", "duration", "bytesCopied", "bytesCopiedValue", "exitStatus", "exitStatusValue", "progressBar", "progressFill", "speedInfo", "logCard", "outputFrame"]
+  static targets = ["jobStatus", "startedAt", "completedAt", "duration", "bytesCopied", "bytesCopiedValue", "exitStatus", "exitStatusValue", "progressBar", "progressFill", "progressDetails", "speedInfo", "logCard", "outputFrame"]
   static values = { jobRunId: String }
 
   async connect() {
@@ -56,12 +56,31 @@ export default class extends Controller {
     return `${bytesPerSec} B/s`
   }
 
+  #formatFileCount(count) {
+    if (count < 1000) return `${count}`
+    return `${Math.round(count / 1000)}k`
+  }
+
+  #formatFilesProgress(transferred, total) {
+    if (transferred == null || total == null) return null
+    return `${this.#formatFileCount(transferred)}/${this.#formatFileCount(total)}`
+  }
+
   #formatRemainingTime(seconds) {
     const h = Math.floor(seconds / 3600)
     const m = Math.floor((seconds % 3600) / 60)
     const s = seconds % 60
     const pad = (n) => String(n).padStart(2, "0")
     return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`
+  }
+
+  #formatEta(seconds, approximate) {
+    const h = Math.floor(seconds / 3600)
+    if (h === 0) return "< 1 min"
+
+    const m = Math.floor((seconds % 3600) / 60)
+    const pad = (n) => String(n).padStart(2, "0")
+    return `${approximate ? "~" : ""}${h}:${pad(m)}`
   }
 
   #relativeTime(isoString) {
@@ -103,9 +122,20 @@ export default class extends Controller {
       if (this.hasProgressFillTarget) {
         this.progressFillTarget.style.transform = `translateX(-${100 - data.progress}%)`
       }
+      if (this.hasProgressDetailsTarget) {
+        if (data.bytes_copied != null) {
+          const files = this.#formatFilesProgress(data.files_transferred, data.files_total)
+          this.progressDetailsTarget.textContent = files
+            ? `${this.#formatBytes(data.bytes_copied)} · ${files} files`
+            : `${this.#formatBytes(data.bytes_copied)} copied`
+          this.progressDetailsTarget.classList.remove("hidden")
+        } else {
+          this.progressDetailsTarget.classList.add("hidden")
+        }
+      }
       if (this.hasSpeedInfoTarget) {
         if (data.speed != null && data.remaining_time != null) {
-          const remaining = `${data.remaining_time_approximate ? "~" : ""}${this.#formatRemainingTime(data.remaining_time)}`
+          const remaining = this.#formatEta(data.remaining_time, data.remaining_time_approximate)
           this.speedInfoTarget.textContent = `${this.#formatSpeed(data.speed)} · ${remaining} remaining`
           this.speedInfoTarget.classList.remove("hidden")
         } else if (data.speed != null) {

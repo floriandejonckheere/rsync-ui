@@ -60,6 +60,8 @@ en:
       failed: Failed
       pending: Pending
       running: Running
+      running_bytes: "%{bytes} copied"
+      running_bytes_with_files: "%{bytes} · %{files} files"
       running_progress: Running (%{progress}%)
       running_speed: "%{speed} · %{remaining} remaining"
     table:
