@@ -83,6 +83,8 @@ end
 #  failure_hook_error_message :text
 #  failure_hook_exit_status   :integer
 #  failure_hook_status        :string
+#  files_total                :integer
+#  files_transferred          :integer
 #  name                       :string           default(""), not null
 #  pid                        :integer
 #  post_hook_error_class      :string
