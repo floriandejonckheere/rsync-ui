@@ -78,3 +78,16 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Make streaming job output fixed height, but scrolling (and anchored to the bottom)
 - [ ] Drop `Net::SSH` in favor of plain `ssh`
 - [ ] Make the job wizard breadcrumbs clickable
+- [ ] Implement backoff for servers: after N failed retries, disable connectivity/resource usage
+
+- [ ] Optimize log streaming:
+
+```
+rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043] [ActionCable] Broadcasting to job_run_logs_b2c7c404-d1cc-44c0-ab4b-fee3a6100e88: {type: "log", content: "admin/2021/May/IMG_20210516_125741.jpg.xmp\n"}
+rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043]   SolidCable::Message Insert (0.5ms)  INSERT INTO "solid_cable_messages" ("created_at","channel","payload","channel_hash") VALUES ('2026-09-02 16:10:24.749403', '\x6a6f625f72756e5f6c6f67735f62326337633430342d643163632d343463302d616234622d666565336136313030653838', '\x7b2274797065223a226c6f67222c22636f6e74656e74223a2261646d696e2f323032312f4d61792f494d475f32303231303531365f3132353734312e6a70672e786d705c6e227d', 8237753626498216333) ON CONFLICT  DO NOTHING RETURNING "id"
+rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043]   TRANSACTION (2.7ms)  COMMIT
+rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043]   Configuration::Boolean Load (0.4ms)  SELECT "configurations".* FROM "configurations" WHERE "configurations"."type" = $1 AND "configurations"."key" = $2 LIMIT $3  [["type", "Configuration::Boolean"], ["key", "notifications"], ["LIMIT", 1]]
+rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043] [b2c7c404-d1cc-44c0-ab4b-fee3a6100e88] [Pictures] admin/2021/May/IMG_20210516_125744.jpg
+rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043]   TRANSACTION (0.3ms)  BEGIN
+rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043]   Configuration::Boolean Load (0.8ms)  SELECT "configurations".* FROM "configurations" WHERE "configurations"."type" = $1 AND "configurations"."key" = $2 LIMIT $3  [["type", "Configuration::Boolean"], ["key", "streaming"], ["LIMIT", 1]]
+```
