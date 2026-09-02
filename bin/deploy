@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+IMAGE=registry.rlyeh.dejonckhee.re/rsync-ui:latest
+REMOTE_COMPOSE_DIR=/data/git/fcloud/compose/rlyeh
+SERVICES="rsync_ui_app rsync_ui_worker"
+
+echo "== Building and pushing image =="
+docker buildx build --platform linux/amd64 -f Dockerfile.prod -t "$IMAGE" --push .
+
+echo
+echo "== Deploying to rlyeh =="
+ssh rlyeh "cd $REMOTE_COMPOSE_DIR && docker compose pull $SERVICES && docker compose up -d $SERVICES"

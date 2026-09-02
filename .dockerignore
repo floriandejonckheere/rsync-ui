@@ -41,6 +41,7 @@
 /.github
 
 # Ignore development files
+/bin/deploy
 /.devcontainer
 /.rubocop.yml
 /.ruby-version
