@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { cable } from "@hotwired/turbo-rails"
 
 export default class extends Controller {
-  static targets = ["jobStatus", "startedAt", "completedAt", "duration", "bytesCopied", "bytesCopiedValue", "exitStatus", "exitStatusValue", "progressBar", "progressFill", "progressDetails", "speedInfo", "logCard", "outputFrame"]
+  static targets = ["jobStatus", "startedAt", "completedAt", "duration", "bytesCopied", "bytesCopiedValue", "exitStatus", "exitStatusValue", "progressBar", "progressFill", "speedInfo", "logCard", "outputFrame"]
   static values = { jobRunId: String }
 
   async connect() {
@@ -54,16 +54,6 @@ export default class extends Controller {
     if (bytesPerSec >= 1e6) return `${(bytesPerSec / 1e6).toFixed(0)} MB/s`
     if (bytesPerSec >= 1e3) return `${(bytesPerSec / 1e3).toFixed(0)} kB/s`
     return `${bytesPerSec} B/s`
-  }
-
-  #formatFileCount(count) {
-    if (count < 1000) return `${count}`
-    return `${Math.round(count / 1000)}k`
-  }
-
-  #formatFilesProgress(transferred, total) {
-    if (transferred == null || total == null) return null
-    return `${this.#formatFileCount(transferred)}/${this.#formatFileCount(total)}`
   }
 
   #formatRemainingTime(seconds) {
@@ -121,17 +111,6 @@ export default class extends Controller {
       }
       if (this.hasProgressFillTarget) {
         this.progressFillTarget.style.transform = `translateX(-${100 - data.progress}%)`
-      }
-      if (this.hasProgressDetailsTarget) {
-        if (data.bytes_copied != null) {
-          const files = this.#formatFilesProgress(data.files_transferred, data.files_total)
-          this.progressDetailsTarget.textContent = files
-            ? `${this.#formatBytes(data.bytes_copied)} · ${files} files`
-            : `${this.#formatBytes(data.bytes_copied)} copied`
-          this.progressDetailsTarget.classList.remove("hidden")
-        } else {
-          this.progressDetailsTarget.classList.add("hidden")
-        }
       }
       if (this.hasSpeedInfoTarget) {
         if (data.speed != null && data.remaining_time != null) {

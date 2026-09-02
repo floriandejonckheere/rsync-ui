@@ -43,16 +43,4 @@ module JobRunHelper
 
     "#{'~' if approximate}#{formatted}"
   end
-
-  def format_file_count(count)
-    return count.to_s if count < 1_000
-
-    "#{(count / 1_000.0).round}k"
-  end
-
-  def format_files_progress(transferred, total)
-    return unless transferred && total
-
-    "#{format_file_count(transferred)}/#{format_file_count(total)}"
-  end
 end

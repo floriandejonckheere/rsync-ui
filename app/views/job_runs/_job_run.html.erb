@@ -43,22 +43,6 @@
       <% end %>
     </span>
 
-    <% if live || (job_run.running? && job_run.bytes_copied.present?) %>
-      <div
-        class="text-xs text-gray-500 dark:text-gray-400<%= ' hidden' unless job_run.running? && job_run.bytes_copied.present? %>"
-        data-job-run-status-target="<%= 'progressDetails' if live %>"
-      >
-        <% if job_run.bytes_copied.present? %>
-          <% files = format_files_progress(job_run.files_transferred, job_run.files_total) %>
-          <% if files %>
-            <%= I18n.t("job_runs.status.running_bytes_with_files", bytes: number_to_human_size(job_run.bytes_copied), files:) %>
-          <% else %>
-            <%= I18n.t("job_runs.status.running_bytes", bytes: number_to_human_size(job_run.bytes_copied)) %>
-          <% end %>
-        <% end %>
-      </div>
-    <% end %>
-
     <% if live || (job_run.running? && job_run.speed.present?) %>
       <div
         class="text-xs text-gray-500 dark:text-gray-400<%= ' hidden' unless job_run.running? && job_run.speed.present? %>"
