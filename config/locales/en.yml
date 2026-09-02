@@ -20,6 +20,8 @@ en:
     title: Background jobs
   nav:
     toggle_sidebar: Toggle sidebar
+    version: "%{name} v%{version} (%{date})"
+    version_git_hash: 'Git hash: %{git_hash}'
   page:
     info: Page %{current} of %{total}
     next: Next

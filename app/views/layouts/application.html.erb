@@ -80,6 +80,13 @@
         <% end %>
 
         <%= render "shared/menu/item", path: edit_user_registration_path, controllers: "registrations", icon: "user-round", title: I18n.t("settings.title") %>
+
+        <div
+          class="mt-8 px-8 text-xs text-gray-400 dark:text-gray-500 text-center"
+          data-tooltip="<%= I18n.t("nav.version_git_hash", git_hash: RsyncUI::Version::GIT_HASH) %>"
+        >
+          <%= I18n.t("nav.version", name: I18n.t("application.name"), version: RsyncUI::VERSION, date: RsyncUI::Version::BUILD_DATE || "development") %>
+        </div>
       </aside>
 
       <div class="flex flex-col w-full p-24 ml-96">

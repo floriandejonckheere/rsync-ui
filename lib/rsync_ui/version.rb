@@ -7,6 +7,9 @@ module RsyncUI
     PATCH = 1
     PRE   = nil
 
+    GIT_HASH = "development"
+    BUILD_DATE = nil
+
     VERSION = [MAJOR, MINOR, PATCH].compact.join(".")
 
     STRING = [VERSION, PRE].compact.join("-")

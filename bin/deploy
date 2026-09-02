@@ -6,8 +6,13 @@ IMAGE=registry.rlyeh.dejonckhee.re/rsync-ui:latest
 REMOTE_COMPOSE_DIR=/data/git/fcloud/compose/rlyeh
 SERVICES="rsync_ui_app rsync_ui_worker"
 
+GIT_HASH=$(git rev-parse --short HEAD)
+BUILD_DATE=$(date -u +%Y-%m-%d)
+
 echo "== Building and pushing image =="
-docker buildx build --platform linux/amd64 -f Dockerfile.prod -t "$IMAGE" --push .
+docker buildx build --platform linux/amd64 -f Dockerfile.prod \
+  --build-arg GIT_HASH="$GIT_HASH" --build-arg BUILD_DATE="$BUILD_DATE" \
+  -t "$IMAGE" --push .
 
 echo
 echo "== Deploying to rlyeh =="

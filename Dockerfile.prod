@@ -121,6 +121,14 @@ COPY --from=ruby /usr/local/bundle /usr/local/bundle
 # Add application
 COPY --chown=$UID:$GID . /app
 
+# Stamp git hash and build date into the version manifest
+ARG GIT_HASH=development
+ARG BUILD_DATE
+RUN sed -i \
+    -e "s/GIT_HASH = \"development\"/GIT_HASH = \"${GIT_HASH}\"/" \
+    -e "s/BUILD_DATE = nil/BUILD_DATE = \"${BUILD_DATE}\"/" \
+    /app/lib/rsync_ui/version.rb
+
 # Copy compiled assets
 COPY --from=assets --chown=$UID:$GID /app/public/assets/ /app/public/assets/
 
