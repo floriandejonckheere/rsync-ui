@@ -327,6 +327,27 @@ RSpec.describe JobRuns::ExecuteService do
           expect(job_run.output.download).not_to include "\r"
         end
       end
+
+      context "when a bare terminal-control artifact with no content is yielded between real lines" do
+        let(:lines) { ["file_a.txt\n", "\r\n", "file_b.txt\n"] }
+
+        before do
+          allow(rsync_execute_service)
+            .to receive(:call) do |&block|
+            lines.each { |line| block.call(line) }
+
+            rsync_result
+          end
+        end
+
+        it "does not write a blank line to the log" do
+          service.call
+
+          job_run.reload
+
+          expect(job_run.output.download).to eq "file_a.txt\nfile_b.txt\n"
+        end
+      end
     end
 
     describe "hooks" do

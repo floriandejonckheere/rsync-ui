@@ -81,6 +81,10 @@ module JobRuns
 
         begin
           result = Rsync::ExecuteService.new(job_run).call do |line|
+            # Skip terminal-control artifacts (bare \r and/or \n with no content), which
+            # rsync emits to reset the cursor between in-place progress updates
+            next if line.strip.empty?
+
             Rails.logger.debug { "[#{job_run.id}] [#{job_run.name}] #{line.chomp}" }
 
             status = Rsync::Progress.new(line) if job.opt_progress || job.opt_progress2
