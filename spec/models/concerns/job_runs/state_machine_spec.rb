@@ -161,6 +161,31 @@ RSpec.describe JobRuns::StateMachine do
         expect(job_run.remaining_time).to eq 120
       end
 
+      it "preserves the previous remaining_time when the new value is nil" do
+        job_run = create(:job_run, :running)
+        job_run.tick_progress!(bytes_copied: 1_000, progress: 50, speed: 3_000, remaining_time: 120)
+
+        job_run.tick_progress!(bytes_copied: 1_100, progress: 55, speed: 0, remaining_time: nil)
+
+        job_run.reload
+
+        expect(job_run.remaining_time).to eq 120
+      end
+
+      it "preserves bytes_copied, progress, files_transferred, and files_total when the new values are nil" do
+        job_run = create(:job_run, :running)
+        job_run.tick_progress!(bytes_copied: 1_000, progress: 50, speed: 3_000, files_transferred: 5, files_total: 10)
+
+        job_run.tick_progress!(bytes_copied: nil, progress: nil, speed: 3_000, files_transferred: nil, files_total: nil)
+
+        job_run.reload
+
+        expect(job_run.bytes_copied).to eq 1_000
+        expect(job_run.progress).to eq 50
+        expect(job_run.files_transferred).to eq 5
+        expect(job_run.files_total).to eq 10
+      end
+
       it "broadcasts the progress event through the throttler" do
         job_run = create(:job_run, :running)
 

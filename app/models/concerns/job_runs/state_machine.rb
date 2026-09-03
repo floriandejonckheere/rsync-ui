@@ -87,13 +87,13 @@ module JobRuns
         before_transition on: :tick_progress do |job_run, transition|
           kwargs = transition.args.first || {}
 
-          job_run.bytes_copied = kwargs[:bytes_copied]
-          job_run.progress = kwargs[:progress]
-          job_run.speed = kwargs[:speed]
-          job_run.remaining_time = kwargs[:remaining_time]
+          job_run.bytes_copied = kwargs[:bytes_copied] if kwargs[:bytes_copied].present?
+          job_run.progress = kwargs[:progress] if kwargs[:progress].present?
+          job_run.speed = kwargs[:speed] if kwargs[:speed].present?
+          job_run.remaining_time = kwargs[:remaining_time] if kwargs[:remaining_time].present?
           job_run.remaining_time_approximate = kwargs[:remaining_time_approximate] || false
-          job_run.files_transferred = kwargs[:files_transferred]
-          job_run.files_total = kwargs[:files_total]
+          job_run.files_transferred = kwargs[:files_transferred] if kwargs[:files_transferred].present?
+          job_run.files_total = kwargs[:files_total] if kwargs[:files_total].present?
 
           true
         end
