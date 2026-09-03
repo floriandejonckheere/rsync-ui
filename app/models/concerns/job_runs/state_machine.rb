@@ -115,7 +115,9 @@ module JobRuns
         after_transition on: :tick_progress do |job_run, _transition|
           next unless Configuration.get("streaming")
 
-          JobRuns::BroadcastService.broadcast_progress(job_run)
+          job_run
+            .throttler
+            .call { JobRuns::BroadcastService.broadcast_progress(job_run) }
         end
 
         after_transition on: :tick_status do |job_run, transition|

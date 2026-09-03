@@ -14,6 +14,10 @@ class JobRun < ApplicationRecord
   belongs_to :job
   belongs_to :user
 
+  # Not persisted: per-process state used to batch ActionCable broadcasts
+  # while this job run is executing.
+  attr_accessor :log_buffer
+
   has_one_attached :output
   has_one_attached :pre_hook_output
   has_one_attached :post_hook_output
@@ -47,6 +51,11 @@ class JobRun < ApplicationRecord
     return unless started_at
 
     (completed_at || Time.current) - started_at
+  end
+
+  # Not persisted: throttles progress broadcasts while this job run is executing.
+  def throttler
+    @throttler ||= ThrottleService.new(interval: 1.second)
   end
 
   private

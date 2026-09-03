@@ -160,6 +160,16 @@ RSpec.describe JobRuns::StateMachine do
         expect(job_run.speed).to eq 3_000
         expect(job_run.remaining_time).to eq 120
       end
+
+      it "broadcasts the progress event through the throttler" do
+        job_run = create(:job_run, :running)
+
+        allow(JobRuns::BroadcastService).to receive(:broadcast_progress)
+
+        job_run.tick_progress!(bytes_copied: 1_000, progress: 50)
+
+        expect(JobRuns::BroadcastService).to have_received(:broadcast_progress).with(job_run)
+      end
     end
 
     describe "on complete" do

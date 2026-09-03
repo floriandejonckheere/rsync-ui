@@ -49,6 +49,16 @@ RSpec.describe JobRun do
     end
   end
 
+  describe "#throttler" do
+    it "returns a memoized ThrottleService" do
+      job_run = build(:job_run)
+      throttler = job_run.throttler
+
+      expect(job_run.throttler).to be(throttler)
+      expect(throttler).to be_an_instance_of(ThrottleService)
+    end
+  end
+
   describe "notifications" do
     with_configuration "notifications" => true
 
