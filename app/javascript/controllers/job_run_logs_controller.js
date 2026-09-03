@@ -39,11 +39,15 @@ export default class extends Controller {
   }
 
   #handleMessage(data) {
-    if (data.type === "log") {
-      this.#appendLog(data.content)
-    } else if (data.type === "status" && this.hasStatusTarget) {
-      this.statusTarget.textContent = data.content
+    for (const entry of data.entries) {
+      if (entry.type === "log") {
+        this.#appendLog(entry.content)
+      } else if (entry.type === "status" && this.hasStatusTarget) {
+        this.statusTarget.textContent = entry.content
+      }
     }
+
+    this.#render()
   }
 
   // rsync progress output uses "\r" to redraw the current line in place rather
@@ -64,8 +68,6 @@ export default class extends Controller {
         this.current += part
       }
     }
-
-    this.#render()
   }
 
   #render() {

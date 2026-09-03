@@ -683,7 +683,7 @@ RSpec.describe JobRuns::ExecuteService do
 
         expect(ActionCable.server)
           .to have_received(:broadcast)
-          .with "job_run_logs_#{job_run.id}", { type: "log", content: line }
+          .with "job_run_logs_#{job_run.id}", { entries: [{ type: "log", content: line }] }
       end
 
       it "buffers the output so it can be fetched while the job run is in progress" do
@@ -712,7 +712,7 @@ RSpec.describe JobRuns::ExecuteService do
 
           expect(ActionCable.server)
             .to have_received(:broadcast)
-            .with "job_run_logs_#{job_run.id}", { type: "status", content: line }
+            .with "job_run_logs_#{job_run.id}", { entries: [{ type: "status", content: line }] }
         end
 
         it "broadcasts the progress event to the status channel" do

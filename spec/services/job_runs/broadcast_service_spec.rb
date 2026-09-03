@@ -61,34 +61,37 @@ RSpec.describe JobRuns::BroadcastService do
   describe ".broadcast_status" do
     let(:job_run) { create(:job_run, :running, job:, user:, progress: 42) }
 
-    describe "status event" do
-      let(:type) { "status" }
-      let(:content) { "  1,234,567  75%  10.00MB/s  0:00:10\r" }
+    describe "status entry" do
+      let(:entries) { [{ type: "status", content: "  1,234,567  75%  10.00MB/s  0:00:10\r" }] }
 
-      it "broadcasts the status event to the job run logs channel" do
-        described_class.broadcast_status(job_run, type, content)
+      it "broadcasts the entries to the job run logs channel" do
+        described_class.broadcast_status(job_run, entries)
 
         expect(ActionCable.server)
           .to have_received(:broadcast)
           .with(
             "job_run_logs_#{job_run.id}",
-            hash_including(type:, content:),
+            { entries: },
           )
       end
     end
 
-    describe "log event" do
-      let(:type) { "log" }
-      let(:content) { "file.txt\n" }
+    describe "multiple entries" do
+      let(:entries) do
+        [
+          { type: "log", content: "file.txt\n" },
+          { type: "log", content: "other.txt\n" },
+        ]
+      end
 
-      it "broadcasts the log event to the job run logs channel" do
-        described_class.broadcast_status(job_run, type, content)
+      it "broadcasts all entries in a single message" do
+        described_class.broadcast_status(job_run, entries)
 
         expect(ActionCable.server)
           .to have_received(:broadcast)
           .with(
             "job_run_logs_#{job_run.id}",
-            hash_including(type:, content:),
+            { entries: },
           )
       end
     end

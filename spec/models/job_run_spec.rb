@@ -59,6 +59,16 @@ RSpec.describe JobRun do
     end
   end
 
+  describe "#log_flusher" do
+    it "returns a memoized FlushService" do
+      job_run = build(:job_run)
+      log_flusher = job_run.log_flusher
+
+      expect(job_run.log_flusher).to be(log_flusher)
+      expect(log_flusher).to be_an_instance_of(FlushService)
+    end
+  end
+
   describe "notifications" do
     with_configuration "notifications" => true
 

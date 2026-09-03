@@ -56,13 +56,10 @@ module JobRuns
       )
     end
 
-    def self.broadcast_status(job_run, type, content)
+    def self.broadcast_status(job_run, entries)
       ActionCable.server.broadcast(
         "job_run_logs_#{job_run.id}",
-        {
-          type:,
-          content:,
-        },
+        { entries: },
       )
     end
 

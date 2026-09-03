@@ -172,6 +172,37 @@ RSpec.describe JobRuns::StateMachine do
       end
     end
 
+    describe "on tick_status" do
+      it "broadcasts the entry through the flusher" do
+        job_run = create(:job_run, :running)
+
+        allow(JobRuns::BroadcastService).to receive(:broadcast_status)
+
+        job_run.tick_status!(type: "log", content: "file.txt\n")
+
+        expect(JobRuns::BroadcastService)
+          .to have_received(:broadcast_status)
+          .with(job_run, [{ type: "log", content: "file.txt\n" }])
+      end
+
+      it "batches entries ticked within the same interval" do
+        job_run = create(:job_run, :running)
+
+        allow(JobRuns::BroadcastService).to receive(:broadcast_status)
+
+        job_run.tick_status!(type: "log", content: "first.txt\n")
+        job_run.tick_status!(type: "log", content: "second.txt\n")
+
+        expect(JobRuns::BroadcastService)
+          .to have_received(:broadcast_status)
+          .with(job_run, [{ type: "log", content: "first.txt\n" }])
+
+        expect(JobRuns::BroadcastService)
+          .not_to have_received(:broadcast_status)
+          .with(job_run, [{ type: "log", content: "second.txt\n" }])
+      end
+    end
+
     describe "on complete" do
       it "sets completed_at" do
         job_run = create(:job_run, :running)
@@ -189,6 +220,20 @@ RSpec.describe JobRuns::StateMachine do
         job_run.complete!
 
         expect(JobRuns::OutputBuffer.read(job_run)).to eq ""
+      end
+
+      it "flushes any buffered log entries left over from the throttle interval" do
+        job_run = create(:job_run, :running)
+
+        allow(JobRuns::BroadcastService).to receive(:broadcast_status)
+        job_run.tick_status!(type: "log", content: "first.txt\n")
+        job_run.tick_status!(type: "log", content: "second.txt\n")
+
+        job_run.complete!
+
+        expect(JobRuns::BroadcastService)
+          .to have_received(:broadcast_status)
+          .with(job_run, [{ type: "log", content: "second.txt\n" }])
       end
 
       it "attaches any buffered output that was not already attached" do

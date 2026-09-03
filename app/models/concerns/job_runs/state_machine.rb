@@ -124,7 +124,11 @@ module JobRuns
           next unless Configuration.get("streaming")
 
           kwargs = transition.args.first || {}
-          JobRuns::BroadcastService.broadcast_status(job_run, kwargs[:type], kwargs[:content])
+          entry = { type: kwargs[:type], content: kwargs[:content] }
+
+          job_run
+            .log_flusher
+            .call(entry) { |entries| JobRuns::BroadcastService.broadcast_status(job_run, entries) }
         end
 
         after_transition on: :request_cancel do |job_run, _transition|
@@ -139,6 +143,10 @@ module JobRuns
 
         after_transition to: [:completed, :failed, :canceled, :errored] do |job_run, transition|
           next unless Configuration.get("streaming")
+
+          job_run
+            .log_flusher
+            .call(force: true) { |entries| JobRuns::BroadcastService.broadcast_status(job_run, entries) }
 
           JobRuns::BroadcastService.broadcast_complete(job_run, from: transition.from)
         end
