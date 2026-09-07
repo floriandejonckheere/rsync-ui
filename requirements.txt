@@ -1,1 +1,1 @@
-apprise==1.13.0
+apprise==1.13.1
