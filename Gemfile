@@ -11,6 +11,11 @@ gem "ostruct"
 # CGI [https://github.com/ruby/cgi]
 gem "cgi"
 
+# JSON [https://github.com/ruby/json]
+# Pinned below 3.x: json 3.0 made JSON.parse's `options` argument keyword-only,
+# which breaks ActiveSupport 8.1's positional `JSON.parse(json, options)` call.
+gem "json", "~> 2.9"
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.1"
 
