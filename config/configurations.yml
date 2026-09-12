@@ -6,7 +6,7 @@
 - key: resource_usage.interval
   type: integer
   category: resource_usage
-  default: 15
+  default: 240
   minimum: 1
   maximum:
   dependencies:
