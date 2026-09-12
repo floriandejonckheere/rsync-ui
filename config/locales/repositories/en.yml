@@ -66,6 +66,7 @@ en:
       read_only: Read-only
       size: Size
       size_failed: 'Size measurement failed: %{error}'
+      size_in_bytes: "%{size} bytes"
       type: Type
     title: Repositories
     types:
