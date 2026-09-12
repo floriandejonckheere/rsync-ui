@@ -54,6 +54,35 @@ For remote repositories, the server should be mounted as a local directory, and 
   - [ ] Disable connectivity polling for archived servers
   - [ ] Disable scheduling for archived jobs
 
+### Presets
+
+In the job form, add a dropdown with "presets" that, when selected, pre-select a certain set of options that are best for a specific use case.
+
+#### Borg preset
+
+Essential flags:
+
+- `--archive`: preserves permissions, ownership, timestamps, symlinks, which is critical for Borg's integrity
+- `--delete-after`: removes files on destination that aren't in source, maintaining consistency
+- `--whole-file`: avoids the delta-transfer algorithm; Borg data is already compressed, so byte-level syncing is inefficient
+- `--numeric-ids`: preserves numeric user/group IDs in case they differ between systems
+
+Recommended flags:
+
+- `-H`/`--hard-links` (hard links): preserves hard links within the Borg repo
+- `--sparse`: efficiently handles sparse files
+- `-x`/`--one-file-system`: don't cross filesystem boundaries accidentally
+- `-P`: equivalent to `--partial --progress`: resume interrupted transfers and show progress
+
+Avoid:
+
+- `-z`/`--compress`: Borg data is already compressed; this wastes CPU
+- `--ignore-existing`: you want to overwrite files if they've changed
+
+Hooks:
+
+- `[ ! -e "$repo/lock.exclusive" ] && [ ! -e "$repo/lock.shared" ]`: check for presence of exclusive/shared locks
+
 ### Smaller TODOs
 
 - [ ] Make application responsive
@@ -79,6 +108,7 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Drop `Net::SSH` in favor of plain `ssh`
 - [x] Make the job wizard breadcrumbs clickable
 - [ ] Implement backoff for servers: after N failed retries, disable connectivity/resource usage
+- [ ] Repository disk size: count files and directories as well
 
 - [ ] Optimize log streaming:
 
