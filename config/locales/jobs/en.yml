@@ -88,26 +88,26 @@ en:
       notifications_on_success: On success
       opt_acls:
         description: Preserve ACLs
-        flag: "--acls"
+        flag: "-A, --acls"
         macos_hint: Extended attributes may not transfer correctly to or from macOS hosts
       opt_append:
         description: Append data onto shorter files
         flag: "--append"
       opt_archive:
         description: Archive mode
-        flag: "--archive"
+        flag: "-a, --archive"
       opt_arguments:
         description: Additional arguments
         placeholder: e.g. --bwlimit=1000
       opt_backup:
         description: Make backups
-        flag: "--backup"
+        flag: "-b, --backup"
       opt_checksum:
         description: Skip based on checksum
-        flag: "--checksum"
+        flag: "-c, --checksum"
       opt_compress:
         description: Enable compression
-        flag: "--compress"
+        flag: "-z, --compress"
       opt_delete:
         description: Delete extra files on destination
         flag: "--delete"
@@ -131,17 +131,17 @@ en:
         flag: "--devices"
       opt_dry_run:
         description: Dry run
-        flag: "--dry-run"
+        flag: "-n, --dry-run"
       opt_existing:
         description: Only update existing files on destination
         flag: "--existing"
       opt_group:
         description: Preserve group ownership
-        flag: "--group"
+        flag: "-g, --group"
         macos_hint: User/group IDs may not map correctly when transferring to or from macOS hosts
       opt_hard_links:
         description: Preserve hard links
-        flag: "--hard-links"
+        flag: "-H, --hard-links"
       opt_ignore_existing:
         description: Ignore existing files on destination
         flag: "--ignore-existing"
@@ -150,10 +150,10 @@ en:
         flag: "--inplace"
       opt_itemize_changes:
         description: Show itemized changes list
-        flag: "--itemize-changes"
+        flag: "-i, --itemize-changes"
       opt_links:
         description: Preserve symbolic links
-        flag: "--links"
+        flag: "-l, --links"
       opt_local_rsync_path:
         description: Local rsync path
         placeholder: e.g. /usr/local/bin/rsync
@@ -166,17 +166,17 @@ en:
         flag: "--numeric-ids"
       opt_one_file_system:
         description: Do not leave filesystem
-        flag: "--one-file-system"
+        flag: "-x, --one-file-system"
       opt_owner:
         description: Preserve ownership
-        flag: "--owner"
+        flag: "-o, --owner"
         macos_hint: User/group IDs may not map correctly when transferring to or from macOS hosts
       opt_partial:
         description: Keep partially transferred files
         flag: "--partial"
       opt_perms:
         description: Preserve permissions
-        flag: "--perms"
+        flag: "-p, --perms"
       opt_progress:
         description: Show progress
         flag: "--progress"
@@ -185,16 +185,16 @@ en:
         flag: "--info=progress2"
       opt_recursive:
         description: Recurse into directories
-        flag: "--recursive"
+        flag: "-r, --recursive"
       opt_relative:
         description: Relative path names
-        flag: "--relative"
+        flag: "-R, --relative"
       opt_remote_rsync_path:
         description: Remote rsync path
         placeholder: e.g. /usr/local/bin/rsync
       opt_secluded_args:
         description: Protect remote args
-        flag: "--secluded-args"
+        flag: "-s, --secluded-args"
       opt_size_only:
         description: Size only
         flag: "--size-only"
@@ -209,16 +209,16 @@ en:
         description: Run as superuser
       opt_times:
         description: Preserve timestamps
-        flag: "--times"
+        flag: "-t, --times"
       opt_update:
         description: Skip newer files
-        flag: "--update"
+        flag: "-u, --update"
       opt_verbose:
         description: Verbose
-        flag: "--verbose"
+        flag: "-v, --verbose"
       opt_xattrs:
         description: Preserve extended attributes
-        flag: "--xattrs"
+        flag: "-X, --xattrs"
         macos_hint: Extended attributes may not transfer correctly to or from macOS hosts
       pattern_placeholder: e.g. *.log
       preview: Preview
