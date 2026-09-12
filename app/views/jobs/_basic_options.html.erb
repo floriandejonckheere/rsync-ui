@@ -38,7 +38,7 @@
         </div>
       <% end %>
 
-      <% %i[opt_one_file_system opt_delete opt_delete_excluded opt_existing opt_ignore_existing opt_update opt_dry_run opt_inplace opt_size_only opt_progress].each do |field| %>
+      <% %i[opt_one_file_system opt_delete opt_delete_before opt_delete_during opt_delete_delay opt_delete_after opt_delete_excluded opt_existing opt_ignore_existing opt_update opt_dry_run opt_inplace opt_size_only opt_progress].each do |field| %>
         <div class="field flex-row items-center gap-4">
           <%= f.check_box field, role: "switch" %>
           <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), data: { tooltip: I18n.t(:flag, scope: [:jobs, :form, field]) } %>

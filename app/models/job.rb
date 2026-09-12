@@ -130,6 +130,10 @@ end
 #  opt_checksum              :boolean          default(FALSE), not null
 #  opt_compress              :boolean          default(FALSE), not null
 #  opt_delete                :boolean          default(FALSE), not null
+#  opt_delete_after          :boolean          default(FALSE), not null
+#  opt_delete_before         :boolean          default(FALSE), not null
+#  opt_delete_delay          :boolean          default(FALSE), not null
+#  opt_delete_during         :boolean          default(FALSE), not null
 #  opt_delete_excluded       :boolean          default(FALSE), not null
 #  opt_devices               :boolean          default(FALSE), not null
 #  opt_dry_run               :boolean          default(FALSE), not null

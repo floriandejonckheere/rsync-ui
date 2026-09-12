@@ -111,6 +111,18 @@ en:
       opt_delete:
         description: Delete extra files on destination
         flag: "--delete"
+      opt_delete_after:
+        description: Delete after transfer
+        flag: "--delete-after"
+      opt_delete_before:
+        description: Delete before transfer
+        flag: "--delete-before"
+      opt_delete_delay:
+        description: Find deletions during transfer, delete after
+        flag: "--delete-delay"
+      opt_delete_during:
+        description: Delete during transfer
+        flag: "--delete-during"
       opt_delete_excluded:
         description: Delete excluded files on destination
         flag: "--delete-excluded"
