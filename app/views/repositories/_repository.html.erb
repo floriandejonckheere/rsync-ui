@@ -44,7 +44,13 @@
 
   <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
     <div class="flex items-center gap-1.5">
-      <%= repository.disk_size ? number_to_human_size(repository.disk_size) : "—" %>
+      <% if repository.disk_size %>
+        <span data-tooltip="<%= I18n.t("repositories.table.size_in_bytes", size: number_with_delimiter(repository.disk_size)) %>">
+          <%= number_to_human_size(repository.disk_size) %>
+        </span>
+      <% else %>
+        —
+      <% end %>
 
       <% if repository.disk_size_failed? %>
         <div
