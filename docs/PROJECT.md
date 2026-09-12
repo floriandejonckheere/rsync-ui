@@ -74,10 +74,10 @@ For remote repositories, the server should be mounted as a local directory, and 
 - [ ] Allow discovery of partitions/disks on the server and measure resource usage per partition/disk
 - [ ] Too many `SolidCable::TrimJob` jobs when using ActionCable
 - [ ] Only run SyncSSHConfig job periodically, not on startup
-- [ ] Throttle/rate limit status updates
+- [x] Throttle/rate limit status updates
 - [ ] Make streaming job output fixed height, but scrolling (and anchored to the bottom)
 - [ ] Drop `Net::SSH` in favor of plain `ssh`
-- [ ] Make the job wizard breadcrumbs clickable
+- [x] Make the job wizard breadcrumbs clickable
 - [ ] Implement backoff for servers: after N failed retries, disable connectivity/resource usage
 
 - [ ] Optimize log streaming:
