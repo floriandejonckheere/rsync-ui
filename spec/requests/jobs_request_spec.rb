@@ -122,6 +122,23 @@ RSpec.describe "Jobs" do
         expect(user.jobs.last.opt_exclude).to eq ["*.tmp"]
       end
 
+      it "saves delete timing options" do
+        post jobs_path, params: {
+          job: valid_params[:job].merge(
+            opt_delete_before: true,
+            opt_delete_during: true,
+            opt_delete_delay: true,
+            opt_delete_after: true,
+          ),
+        }
+
+        job = user.jobs.last
+        expect(job.opt_delete_before).to be(true)
+        expect(job.opt_delete_during).to be(true)
+        expect(job.opt_delete_delay).to be(true)
+        expect(job.opt_delete_after).to be(true)
+      end
+
       it "saves empty arrays when blank pattern values are submitted" do
         post jobs_path, params: {
           job: valid_params[:job].merge(opt_include: ["", ""], opt_exclude: [""]),
@@ -259,6 +276,23 @@ RSpec.describe "Jobs" do
         expect(response.body).to include(I18n.t("jobs.update.success"))
       end
 
+      it "updates the delete timing options" do
+        patch job_path(job), params: {
+          job: {
+            opt_delete_before: true,
+            opt_delete_during: true,
+            opt_delete_delay: true,
+            opt_delete_after: true,
+          },
+        }
+
+        job.reload
+        expect(job.opt_delete_before).to be(true)
+        expect(job.opt_delete_during).to be(true)
+        expect(job.opt_delete_delay).to be(true)
+        expect(job.opt_delete_after).to be(true)
+      end
+
       context "with invalid params" do
         let(:invalid_params) { { job: { name: "", schedule: "invalid" } } }
 
@@ -373,6 +407,15 @@ RSpec.describe "Jobs" do
         expect(response.body).to include("rsync \\")
         expect(response.body).to include("--archive")
         expect(response.body).to include("--dry-run")
+      end
+
+      it "returns the command preview with delete timing options" do
+        post preview_jobs_path, params: {
+          job: valid_params[:job].merge(opt_delete: true, opt_delete_delay: true),
+        }
+
+        expect(response.body).to include("--delete")
+        expect(response.body).to include("--delete-delay")
       end
 
       it "includes source and destination placeholders when repositories are absent" do
