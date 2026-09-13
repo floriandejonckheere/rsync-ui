@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_12_183427) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_12_183428) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -148,6 +148,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_12_183427) do
   end
 
   create_table "jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "category"
     t.datetime "created_at", null: false
     t.text "description"
     t.uuid "destination_repository_id", null: false
@@ -202,6 +203,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_12_183427) do
     t.uuid "source_repository_id", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
+    t.index ["category"], name: "index_jobs_on_category"
     t.index ["description"], name: "index_jobs_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["destination_repository_id"], name: "index_jobs_on_destination_repository_id"
     t.index ["name"], name: "index_jobs_on_name"
