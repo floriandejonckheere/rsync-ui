@@ -57,6 +57,9 @@ class Job < ApplicationRecord
                                 allow_destroy: true,
                                 reject_if: proc { |attrs| attrs["command"].blank? }
 
+  normalizes :category,
+             with: ->(category) { category.strip.presence }
+
   validates :name,
             presence: true
 
@@ -119,6 +122,7 @@ end
 # Table name: jobs
 #
 #  id                        :uuid             not null, primary key
+#  category                  :string           indexed
 #  description               :text             indexed
 #  enabled                   :boolean          default(TRUE), not null
 #  name                      :string           not null, indexed, indexed
@@ -176,6 +180,7 @@ end
 #
 # Indexes
 #
+#  index_jobs_on_category                   (category)
 #  index_jobs_on_description_trgm           (description) USING gin
 #  index_jobs_on_destination_repository_id  (destination_repository_id)
 #  index_jobs_on_name                       (name)

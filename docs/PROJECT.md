@@ -85,6 +85,7 @@ Hooks:
 
 ### Smaller TODOs
 
+- [x] Group jobs by category on the jobs index
 - [ ] Make application responsive
 - [ ] Make job run immutable and reproducible
   - [ ] Temporary: lock job, repositories, hooks, notifications rows when executing job

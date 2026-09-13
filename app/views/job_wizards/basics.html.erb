@@ -88,6 +88,21 @@
                           rows: 3,
                           autocomplete: "off" %>
         </div>
+
+        <div class="field">
+          <%= f.label :category, I18n.t("job_wizards.form.category") %>
+
+          <%= f.text_field :category,
+                           placeholder: I18n.t("job_wizards.form.category_placeholder"),
+                           autocomplete: "off",
+                           list: "job-categories" %>
+
+          <datalist id="job-categories">
+            <% @categories.each do |category| %>
+              <option value="<%= category %>"></option>
+            <% end %>
+          </datalist>
+        </div>
       </div>
     </section>
   </div>

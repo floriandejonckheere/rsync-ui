@@ -38,10 +38,12 @@ en:
       add_pattern: Add pattern
       advanced_options: Advanced options
       basic_options: Basic options
+      category: Category
+      category_placeholder: (Optional) category
       copy_command: Copy command
       custom_options: Custom options
       description: Description
-      description_placeholder: Optional description for this job
+      description_placeholder: (Optional) description
       destination_repository: Destination repository
       destination_repository_placeholder: Select a destination repository
       destination_repository_search_placeholder: Search repositories...
@@ -242,6 +244,7 @@ en:
         placeholder: Search by name or description...
       subtitle: Manage synchronization jobs between repositories
       title: Jobs
+      uncategorized: Uncategorized
     new:
       subtitle: Add a new synchronization job
       title: New job

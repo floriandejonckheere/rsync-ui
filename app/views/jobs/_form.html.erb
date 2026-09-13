@@ -52,6 +52,21 @@
                               autocomplete: "off" %>
             </div>
 
+            <div class="field">
+              <%= f.label :category, I18n.t("jobs.form.category") %>
+
+              <%= f.text_field :category,
+                               placeholder: I18n.t("jobs.form.category_placeholder"),
+                               autocomplete: "off",
+                               list: "job-categories" %>
+
+              <datalist id="job-categories">
+                <% @categories.each do |category| %>
+                  <option value="<%= category %>"></option>
+                <% end %>
+              </datalist>
+            </div>
+
             <div
               class="field"
               data-controller="cron-preview"

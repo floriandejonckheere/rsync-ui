@@ -13,6 +13,9 @@ class JobForm < ApplicationForm
   attribute :description,
             :string
 
+  attribute :category,
+            :string
+
   attribute :sync_type,
             :string
 

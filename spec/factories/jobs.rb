@@ -5,6 +5,7 @@ FactoryBot.define do
     user
     name { FFaker::Lorem.words(2).join(" ").titleize }
     description { nil }
+    category { nil }
     schedule { nil }
     enabled { true }
 

@@ -31,7 +31,7 @@ RSpec.describe "JobWizards" do
 
   describe "the local_to_local flow" do
     it "creates a job with two local repositories" do
-      patch job_wizard_path(:basics), params: { job_wizard: { name: "Local Backup", description: "desc", sync_type: "local_to_local" } }
+      patch job_wizard_path(:basics), params: { job_wizard: { name: "Local Backup", description: "desc", category: "Backups", sync_type: "local_to_local" } }
       expect(response).to redirect_to(job_wizard_path(:source))
 
       patch job_wizard_path(:source), params: { job_wizard: { path: "/data/source" } }
@@ -50,6 +50,7 @@ RSpec.describe "JobWizards" do
 
       job = user.jobs.last
       expect(job.name).to eq("Local Backup")
+      expect(job.category).to eq("Backups")
       expect(job.source_repository).to be_local
       expect(job.destination_repository).to be_local
       expect(job.source_repository.path).to eq("/data/source")

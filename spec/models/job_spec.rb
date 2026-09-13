@@ -67,6 +67,24 @@ RSpec.describe Job do
     end
   end
 
+  describe "normalization" do
+    it "strips surrounding whitespace from the category" do
+      job = build(:job, category: "  Backups  ")
+
+      job.valid?
+
+      expect(job.category).to eq("Backups")
+    end
+
+    it "normalizes a blank category to nil" do
+      job = build(:job, category: "   ")
+
+      job.valid?
+
+      expect(job.category).to be_nil
+    end
+  end
+
   describe "#local?" do
     it "returns true when both repositories are local" do
       job = build(:job, source_repository: build(:repository, :local), destination_repository: build(:repository, :local))

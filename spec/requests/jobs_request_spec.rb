@@ -14,6 +14,63 @@ RSpec.describe "Jobs" do
         expect(response).to have_http_status(:ok)
       end
 
+      context "when jobs have categories" do
+        it "renders uncategorized jobs before the categorized ones" do
+          categorized_job = create(:job, user:, name: "Alpha job", category: "Backups")
+          uncategorized_job = create(:job, user:, name: "Zebra job")
+
+          get jobs_path
+
+          expect(response.body.index(uncategorized_job.name)).to be < response.body.index(categorized_job.name)
+        end
+
+        it "groups the categorized jobs per category" do
+          backups_job = create(:job, user:, name: "Zebra job", category: "Backups")
+          mirrors_job = create(:job, user:, name: "Alpha job", category: "Mirrors")
+
+          get jobs_path
+
+          expect(response.body).to include("Backups", "Mirrors")
+          expect(response.body.index(backups_job.name)).to be < response.body.index(mirrors_job.name)
+        end
+
+        it "renders an uncategorized heading when categories are present" do
+          create(:job, user:, name: "Nightly backup")
+          create(:job, user:, name: "Offsite mirror", category: "Mirrors")
+
+          get jobs_path
+
+          expect(response.body).to include(I18n.t("jobs.index.uncategorized"))
+        end
+
+        it "does not render an uncategorized heading when no job has a category" do
+          create(:job, user:, name: "Nightly backup")
+
+          get jobs_path
+
+          expect(response.body).not_to include(I18n.t("jobs.index.uncategorized"))
+        end
+
+        it "sorts the jobs within each category" do
+          create(:job, user:, name: "Beta job", category: "Backups")
+          create(:job, user:, name: "Alpha job", category: "Backups")
+
+          get jobs_path, params: { sort: "name", direction: "desc" }
+
+          expect(response.body.index("Beta job")).to be < response.body.index("Alpha job")
+        end
+
+        it "does not render categories without matching jobs when searching" do
+          create(:job, user:, name: "Nightly backup", category: "Backups")
+          create(:job, user:, name: "Offsite mirror", category: "Mirrors")
+
+          get jobs_path, params: { query: "Nightly" }
+
+          expect(response.body).to include("Backups")
+          expect(response.body).not_to include("Mirrors")
+        end
+      end
+
       context "when sort parameters are present" do
         it "sorts jobs by name ascending" do
           z_job = create(:job, user:, name: "Zebra job")
@@ -104,6 +161,12 @@ RSpec.describe "Jobs" do
         follow_redirect!
 
         expect(response.body).to include(I18n.t("jobs.create.success"))
+      end
+
+      it "saves the category" do
+        post jobs_path, params: { job: valid_params[:job].merge(category: "Backups") }
+
+        expect(user.jobs.last.category).to eq("Backups")
       end
 
       it "saves opt_include patterns" do
@@ -274,6 +337,20 @@ RSpec.describe "Jobs" do
         follow_redirect!
 
         expect(response.body).to include(I18n.t("jobs.update.success"))
+      end
+
+      it "updates the category" do
+        patch job_path(job), params: { job: { category: "Backups" } }
+
+        expect(job.reload.category).to eq("Backups")
+      end
+
+      it "clears the category when it is submitted blank" do
+        job.update!(category: "Backups")
+
+        patch job_path(job), params: { job: { category: "" } }
+
+        expect(job.reload.category).to be_nil
       end
 
       it "updates the delete timing options" do

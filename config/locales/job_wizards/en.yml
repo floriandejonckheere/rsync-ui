@@ -2,8 +2,10 @@
 en:
   job_wizards:
     form:
+      category: Category
+      category_placeholder: "(Optional) category"
       description: Description
-      description_placeholder: Optional description for this job
+      description_placeholder: "(Optional) description"
       finish: Create job
       name: Name
       name_placeholder: Daily backup

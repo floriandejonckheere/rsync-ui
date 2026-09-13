@@ -17,7 +17,8 @@ class JobWizardsController < ApplicationController
   def show
     case step
     when :basics
-      @form = JobForm.new(wizard_state.slice("name", "description", "sync_type"))
+      @form = JobForm.new(wizard_state.slice("name", "description", "category", "sync_type"))
+      @categories = categories
     when :source
       @form = PathForm.new(path: wizard_state["source_path"], server_id: wizard_state["source_server_id"])
       @servers = servers if job_form.remote_to_local?
@@ -106,11 +107,20 @@ class JobWizardsController < ApplicationController
     authorized_scope(Server.order(:name), type: :relation)
   end
 
+  def categories
+    authorized_scope(Job.all, type: :relation)
+      .where.not(category: nil)
+      .distinct
+      .order(:category)
+      .pluck(:category)
+  end
+
   def update_basics
     @form = JobForm.new(basics_params)
+    @categories = categories
 
     if @form.valid?
-      wizard_state.merge!(@form.attributes.slice("name", "description", "sync_type"))
+      wizard_state.merge!(@form.attributes.slice("name", "description", "category", "sync_type"))
 
       # Sync type may have changed which leg requires a server; drop stale server choices
       wizard_state["source_server_id"] = nil
@@ -126,6 +136,7 @@ class JobWizardsController < ApplicationController
       .permit(
         :name,
         :description,
+        :category,
         :sync_type,
       )
   end
@@ -314,6 +325,7 @@ class JobWizardsController < ApplicationController
       attributes.to_h.merge(
         name: job_form.name,
         description: job_form.description,
+        category: job_form.category,
         source_repository: build_repository(:source),
         destination_repository: build_repository(:destination),
       ),
