@@ -524,10 +524,10 @@
   dependencies:
     tslib "^2.4.0"
 
-basecoat-css@^0.3.11:
-  version "0.3.11"
-  resolved "https://registry.yarnpkg.com/basecoat-css/-/basecoat-css-0.3.11.tgz#53a87547df70ece98183be002252dc0c81183417"
-  integrity sha512-cU91Egcg9AhKJ1HswpKFItHC//FWDt1T8AlL5Yk9Fh5I2WYe+QhN3MtiVJ2vemqFF4iAM1vfbikhhjc+vkr2zA==
+basecoat-css@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/basecoat-css/-/basecoat-css-1.0.2.tgz#e85e8ce3ec452c3cc38a696b1d269b7168176f6c"
+  integrity sha512-C6I5rr7HziIAoBYNGPO5U6HaU/6FuF3iVp++IgoEqqJ836is3XoRty6l1ibXqxnoIRZNnOAYDMX8QxVC+58zhw==
 
 braces@^3.0.3:
   version "3.0.3"
