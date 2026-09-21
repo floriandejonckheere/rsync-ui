@@ -4,53 +4,32 @@
 <% input_id = local_assigns[:input_id] %>
 
 <div
-  class="select"
+  class="combobox w-full"
   <% if select_data.present? %>
     <% select_data.each do |key, val| %>
       data-<%= key.to_s.dasherize %>="<%= val %>"
     <% end %>
   <% end %>
 >
-  <button
-    type="button"
-    class="btn-outline w-full"
-    aria-haspopup="listbox"
-    aria-expanded="false"
-  >
-    <span>
-      <%= options.find { |_, v| v.to_s == value.to_s }&.first || blank_label %>
-    </span>
-
-    <%= lucide_icon "chevron-down", class: "h-4 w-4 opacity-50" %>
-  </button>
-
   <input
-    type="hidden"
-    name="<%= name %>"
-    value="<%= value %>"
-    id="<%= input_id %>"
-    <% if input_data.present? %>
-      <% input_data.each do |key, val| %>
-        data-<%= key.to_s.dasherize %>="<%= val %>"
-      <% end %>
-    <% end %>
-    <%= "required" if required %>
+    type="text"
+    role="combobox"
+    placeholder="<%= placeholder %>"
+    autocomplete="off"
+    aria-autocomplete="list"
+    aria-expanded="false"
+    aria-controls="<%= input_id || name.to_s.parameterize %>-listbox"
   >
+
+  <%= lucide_icon "chevron-down", class: "combobox-trigger-icon" %>
 
   <div data-popover aria-hidden="true">
-    <header>
-      <%= lucide_icon "search", class: "h-4 w-4 opacity-50" %>
-
-      <input
-        type="text"
-        role="combobox"
-        placeholder="<%= placeholder %>"
-        autocomplete="off"
-      >
-    </header>
-
-    <div role="listbox">
-      <div role="option" data-value><%= blank_label %></div>
+    <div
+      role="listbox"
+      id="<%= input_id || name.to_s.parameterize %>-listbox"
+      aria-orientation="vertical"
+    >
+      <div role="option" data-value=""><%= blank_label %></div>
 
       <% options.each do |option_label, option_value, option_data| %>
         <div
@@ -65,4 +44,17 @@
       <% end %>
     </div>
   </div>
+
+  <input
+    type="hidden"
+    name="<%= name %>"
+    value="<%= value %>"
+    id="<%= input_id %>"
+    <% if input_data.present? %>
+      <% input_data.each do |key, val| %>
+        data-<%= key.to_s.dasherize %>="<%= val %>"
+      <% end %>
+    <% end %>
+    <%= "required" if required %>
+  >
 </div>

@@ -1,39 +1,27 @@
 <%# locals: (label:, name:, options:, value:, blank_label:, placeholder:) %>
+<% listbox_id = "#{name.to_s.parameterize}-listbox" %>
+
 <div class="flex flex-col gap-1.5">
   <label class="text-sm font-medium text-gray-500 dark:text-gray-400">
     <%= label %>
   </label>
 
-  <div class="select" data-action="change->filter#submit">
-    <button
-      type="button"
-      class="btn-outline"
-      aria-haspopup="listbox"
+  <div class="combobox" data-action="change->filter#submit">
+    <input
+      type="text"
+      role="combobox"
+      placeholder="<%= placeholder %>"
+      autocomplete="off"
+      aria-autocomplete="list"
       aria-expanded="false"
+      aria-controls="<%= listbox_id %>"
     >
-      <span>
-        <%= options.find { |_, v| v.to_s == value.to_s }&.first || blank_label %>
-      </span>
 
-      <%= lucide_icon "chevron-down", class: "h-4 w-4 opacity-50" %>
-    </button>
-
-    <input type="hidden" name="<%= name %>" value="<%= value %>">
+    <%= lucide_icon "chevron-down", class: "combobox-trigger-icon" %>
 
     <div data-popover aria-hidden="true">
-      <header>
-        <%= lucide_icon "search", class: "h-4 w-4 opacity-50" %>
-
-        <input
-          type="text"
-          role="combobox"
-          placeholder="<%= placeholder %>"
-          autocomplete="off"
-        >
-      </header>
-
-      <div role="listbox">
-        <div role="option" data-value><%= blank_label %></div>
+      <div role="listbox" id="<%= listbox_id %>" aria-orientation="vertical">
+        <div role="option" data-value=""><%= blank_label %></div>
 
         <% options.each do |option_label, option_value| %>
           <div role="option" data-value="<%= option_value %>">
@@ -42,5 +30,7 @@
         <% end %>
       </div>
     </div>
+
+    <input type="hidden" name="<%= name %>" value="<%= value %>">
   </div>
 </div>
