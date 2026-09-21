@@ -43,6 +43,21 @@
                               autocomplete: "off" %>
             </div>
 
+            <div class="field">
+              <%= f.label :category, I18n.t("repositories.form.category") %>
+
+              <%= f.text_field :category,
+                               placeholder: I18n.t("repositories.form.category_placeholder"),
+                               autocomplete: "off",
+                               list: "repository-categories" %>
+
+              <datalist id="repository-categories">
+                <% @categories.each do |category| %>
+                  <option value="<%= category %>"></option>
+                <% end %>
+              </datalist>
+            </div>
+
             <div class="field flex-row items-center gap-4">
               <%= f.check_box :read_only, role: "switch" %>
 

@@ -61,6 +61,34 @@ RSpec.describe "Repositories" do
         end
       end
 
+      context "when repositories have categories" do
+        it "renders uncategorized repositories before the categorized ones" do
+          categorized = create(:repository, user:, name: "Alpha item", category: "Production")
+          uncategorized = create(:repository, user:, name: "Zebra item")
+
+          get repositories_path
+
+          expect(response.body.index(uncategorized.name)).to be < response.body.index(categorized.name)
+        end
+
+        it "renders an uncategorized heading when categories are present" do
+          create(:repository, user:, name: "First item")
+          create(:repository, user:, name: "Second item", category: "Staging")
+
+          get repositories_path
+
+          expect(response.body).to include("Staging", I18n.t("repositories.index.uncategorized"))
+        end
+
+        it "does not render an uncategorized heading when no repository has a category" do
+          create(:repository, user:, name: "First item")
+
+          get repositories_path
+
+          expect(response.body).not_to include(I18n.t("repositories.index.uncategorized"))
+        end
+      end
+
       context "when sort parameters are present" do
         it "sorts repositories by name ascending" do
           z_repo = create(:repository, user:, name: "Zebra repo")
@@ -130,6 +158,12 @@ RSpec.describe "Repositories" do
           .to change(user.repositories, :count).by(1)
 
         expect(response).to redirect_to(repositories_path)
+      end
+
+      it "saves the category" do
+        post repositories_path, params: { repository: valid_params[:repository].merge(category: "Production") }
+
+        expect(Repository.last.category).to eq("Production")
       end
 
       it "displays success message" do
@@ -247,6 +281,14 @@ RSpec.describe "Repositories" do
 
         expect(repository.reload.name).to eq("Updated Repo")
         expect(response).to redirect_to(repositories_path)
+      end
+
+      it "clears the category when it is submitted blank" do
+        repository.update!(category: "Production")
+
+        patch repository_path(repository), params: { repository: { category: "" } }
+
+        expect(repository.reload.category).to be_nil
       end
 
       it "displays success message" do

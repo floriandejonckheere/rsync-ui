@@ -1,0 +1,24 @@
+<%# locals: (repositories:) %>
+<table class="w-full text-sm">
+  <thead>
+    <tr class="border-b border-gray-100 dark:border-gray-700">
+      <th class="py-4 w-10"></th>
+
+      <%= render "shared/sort_header", column: "name", label: I18n.t("repositories.table.name") %>
+
+      <%= render "shared/sort_header", column: "repository_type", label: I18n.t("repositories.table.type") %>
+
+      <%= render "shared/sort_header", column: "path", label: I18n.t("repositories.table.path") %>
+
+      <%= render "shared/sort_header", column: "disk_size", label: I18n.t("repositories.table.size") %>
+
+      <th class="px-6 py-4"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% repositories.each do |repository| %>
+      <%= render "repository", repository: %>
+    <% end %>
+  </tbody>
+</table>

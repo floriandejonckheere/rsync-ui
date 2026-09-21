@@ -6,6 +6,7 @@ FactoryBot.define do
 
     name { FFaker::Lorem.word.capitalize }
     description { nil }
+    category { nil }
     repository_type { "local" }
     path { "/data/#{FFaker::Lorem.word}" }
     read_only { false }

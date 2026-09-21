@@ -35,31 +35,37 @@
       </p>
     </div>
   <% else %>
-    <div class="card p-0">
-      <table class="w-full text-sm">
-        <thead>
-          <tr class="border-b border-gray-100 dark:border-gray-700">
-            <th class="py-4 w-10"></th>
+    <% grouped_repositories = @repositories.group_by { |repository| repository.category.presence } %>
+    <% uncategorized_repositories = grouped_repositories.delete(nil) %>
 
-            <%= render "shared/sort_header", column: "name", label: I18n.t("repositories.table.name") %>
-
-            <%= render "shared/sort_header", column: "repository_type", label: I18n.t("repositories.table.type") %>
-
-            <%= render "shared/sort_header", column: "path", label: I18n.t("repositories.table.path") %>
-
-            <%= render "shared/sort_header", column: "disk_size", label: I18n.t("repositories.table.size") %>
-
-            <th class="px-6 py-4"></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <% @repositories.each do |repository| %>
-            <%= render "repository", repository: %>
+    <div class="flex flex-col gap-6">
+      <% if uncategorized_repositories.present? %>
+        <div>
+          <% if grouped_repositories.any? %>
+            <h2 class="mt-10 mb-6 text-2xl font-semibold dark:text-gray-100">
+              <%= I18n.t("repositories.index.uncategorized") %>
+            </h2>
           <% end %>
-        </tbody>
-      </table>
+
+          <div class="card p-0">
+            <%= render "table", repositories: uncategorized_repositories %>
+          </div>
+        </div>
+      <% end %>
+
+      <% grouped_repositories.each do |category, category_repositories| %>
+        <div>
+          <h2 class="mt-10 mb-6 text-2xl font-semibold dark:text-gray-100">
+            <%= category %>
+          </h2>
+
+          <div class="card p-0">
+            <%= render "table", repositories: category_repositories %>
+          </div>
+        </div>
+      <% end %>
     </div>
+
     <% if @pagy.pages > 1 %>
       <%= render "shared/pagination", pagy: @pagy, path_method: :repositories_path %>
     <% end %>

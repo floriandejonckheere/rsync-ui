@@ -11,6 +11,24 @@ RSpec.describe Repository do
     it { is_expected.to have_many(:destination_jobs).dependent(:destroy) }
   end
 
+  describe "normalization" do
+    it "strips surrounding whitespace from the category" do
+      repository = build(:repository, category: "  Production  ")
+
+      repository.valid?
+
+      expect(repository.category).to eq("Production")
+    end
+
+    it "normalizes a blank category to nil" do
+      repository = build(:repository, category: "   ")
+
+      repository.valid?
+
+      expect(repository.category).to be_nil
+    end
+  end
+
   describe "validations" do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:path) }

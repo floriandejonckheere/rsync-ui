@@ -29,6 +29,9 @@ class Repository < ApplicationRecord
     failed: "failed",
   }, prefix: :disk_size, validate: { allow_nil: true }
 
+  normalizes :category,
+             with: ->(category) { category.strip.presence }
+
   validates :name,
             presence: true
 
@@ -49,6 +52,7 @@ end
 # Table name: repositories
 #
 #  id                      :uuid             not null, primary key
+#  category                :string           indexed
 #  description             :text             indexed
 #  disk_size               :bigint
 #  disk_size_error_class   :string
@@ -66,6 +70,7 @@ end
 #
 # Indexes
 #
+#  index_repositories_on_category               (category)
 #  index_repositories_on_description_trgm       (description gin_trgm_ops) USING gin
 #  index_repositories_on_disk_size_measured_at  (disk_size_measured_at)
 #  index_repositories_on_name                   (name)

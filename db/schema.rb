@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_21_180000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_21_180100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -225,6 +225,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_21_180000) do
   end
 
   create_table "repositories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "category"
     t.datetime "created_at", null: false
     t.text "description"
     t.bigint "disk_size"
@@ -239,6 +240,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_21_180000) do
     t.uuid "server_id"
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
+    t.index ["category"], name: "index_repositories_on_category"
     t.index ["description"], name: "index_repositories_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["disk_size_measured_at"], name: "index_repositories_on_disk_size_measured_at"
     t.index ["name"], name: "index_repositories_on_name"
