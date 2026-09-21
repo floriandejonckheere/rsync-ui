@@ -71,6 +71,34 @@ RSpec.describe "Servers" do
         end
       end
 
+      context "when servers have categories" do
+        it "renders uncategorized servers before the categorized ones" do
+          categorized = create(:server, user:, name: "Alpha item", category: "Production")
+          uncategorized = create(:server, user:, name: "Zebra item")
+
+          get servers_path
+
+          expect(response.body.index(uncategorized.name)).to be < response.body.index(categorized.name)
+        end
+
+        it "renders an uncategorized heading when categories are present" do
+          create(:server, user:, name: "First item")
+          create(:server, user:, name: "Second item", category: "Staging")
+
+          get servers_path
+
+          expect(response.body).to include("Staging", I18n.t("servers.index.uncategorized"))
+        end
+
+        it "does not render an uncategorized heading when no server has a category" do
+          create(:server, user:, name: "First item")
+
+          get servers_path
+
+          expect(response.body).not_to include(I18n.t("servers.index.uncategorized"))
+        end
+      end
+
       context "when sort parameters are present" do
         it "sorts servers by name ascending" do
           zebra = create(:server, user:, name: "Zebra server")
@@ -162,6 +190,12 @@ RSpec.describe "Servers" do
         expect(response).to redirect_to(servers_path)
       end
 
+      it "saves the category" do
+        post servers_path, params: { server: valid_params[:server].merge(category: "Production") }
+
+        expect(Server.last.category).to eq("Production")
+      end
+
       it "displays success message" do
         post servers_path, params: valid_params
 
@@ -243,6 +277,14 @@ RSpec.describe "Servers" do
         expect(server.name).to eq("Updated Server")
         expect(server.operating_system).to eq("macos")
         expect(response).to redirect_to(servers_path)
+      end
+
+      it "clears the category when it is submitted blank" do
+        server.update!(category: "Production")
+
+        patch server_path(server), params: { server: { category: "" } }
+
+        expect(server.reload.category).to be_nil
       end
 
       it "displays success message" do

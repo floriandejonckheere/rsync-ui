@@ -35,6 +35,8 @@ en:
       success: Server fingerprinted successfully
     form:
       authentication: Authentication
+      category: Category
+      category_placeholder: "(Optional) category"
       connection: Connection
       credentials_encrypted_hint: Credentials are securely encrypted and stored in the database
       credentials_hint: Provide either a password or an SSH key (not both).
@@ -80,6 +82,7 @@ en:
         placeholder: Search by name, description, or host...
       subtitle: Manage remote SSH servers
       title: Servers
+      uncategorized: Uncategorized
     measure:
       success: Resource usage measurement scheduled.
     new:

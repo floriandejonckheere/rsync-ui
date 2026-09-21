@@ -9,6 +9,24 @@ RSpec.describe Server do
     it { is_expected.to have_many(:audits).dependent(:destroy) }
   end
 
+  describe "normalization" do
+    it "strips surrounding whitespace from the category" do
+      server = build(:server, category: "  Production  ")
+
+      server.valid?
+
+      expect(server.category).to eq("Production")
+    end
+
+    it "normalizes a blank category to nil" do
+      server = build(:server, category: "   ")
+
+      server.valid?
+
+      expect(server.category).to be_nil
+    end
+  end
+
   describe "validations" do
     it { is_expected.to validate_presence_of(:name) }
     xit { is_expected.to validate_presence_of(:slug) }

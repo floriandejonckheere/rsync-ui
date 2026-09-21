@@ -1,0 +1,36 @@
+<%# locals: (servers:) %>
+<table class="w-full text-sm">
+  <thead>
+    <tr class="border-b border-gray-100 dark:border-gray-700">
+      <% if Configuration.get("connectivity") %>
+        <th class="py-4 w-10"></th>
+      <% end %>
+
+      <th class="py-4 w-10"></th>
+
+      <%= render "shared/sort_header", column: "name", label: I18n.t("servers.table.name") %>
+
+      <%= render "shared/sort_header", column: "host", label: I18n.t("servers.table.host") %>
+
+      <% if Configuration.get("resource_usage") %>
+        <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+          <%= I18n.t("servers.table.disk") %>
+        </th>
+        <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+          <%= I18n.t("servers.table.memory") %>
+        </th>
+        <th class="px-6 py-4 text-left font-medium text-gray-500 dark:text-gray-400">
+          <%= I18n.t("servers.table.cpu") %>
+        </th>
+      <% end %>
+
+      <th class="px-6 py-4"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% servers.each do |server| %>
+      <%= render "server", server: %>
+    <% end %>
+  </tbody>
+</table>

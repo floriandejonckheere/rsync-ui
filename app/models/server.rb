@@ -21,6 +21,9 @@ class Server < ApplicationRecord
     hetzner: "hetzner",
   }, validate: true
 
+  normalizes :category,
+             with: ->(category) { category.strip.presence }
+
   validates :name,
             presence: true
 
@@ -118,6 +121,7 @@ end
 # Table name: servers
 #
 #  id               :uuid             not null, primary key
+#  category         :string           indexed
 #  description      :text             indexed
 #  error_class      :string
 #  error_message    :text
@@ -140,6 +144,7 @@ end
 #
 # Indexes
 #
+#  index_servers_on_category          (category)
 #  index_servers_on_description_trgm  (description gin_trgm_ops) USING gin
 #  index_servers_on_host              (host)
 #  index_servers_on_host_trgm         (host gin_trgm_ops) USING gin

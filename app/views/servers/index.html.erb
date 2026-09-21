@@ -35,58 +35,37 @@
       </p>
     </div>
   <% else %>
-    <div class="card p-0">
-      <table class="w-full text-sm">
-        <thead>
-          <tr class="border-b border-gray-100 dark:border-gray-700">
-            <% if Configuration.get("connectivity") %>
-              <th class="py-4 w-10"></th>
-            <% end %>
+    <% grouped_servers = @servers.group_by { |server| server.category.presence } %>
+    <% uncategorized_servers = grouped_servers.delete(nil) %>
 
-            <th class="py-4 w-10"></th>
-
-            <%= render "shared/sort_header", column: "name", label: I18n.t("servers.table.name") %>
-
-            <%= render "shared/sort_header", column: "host", label: I18n.t("servers.table.host") %>
-
-            <% if Configuration.get("resource_usage") %>
-              <th
-                class="
-                  px-6 py-4 text-left font-medium text-gray-500
-                  dark:text-gray-400
-                "
-              >
-                <%= I18n.t("servers.table.disk") %>
-              </th>
-              <th
-                class="
-                  px-6 py-4 text-left font-medium text-gray-500
-                  dark:text-gray-400
-                "
-              >
-                <%= I18n.t("servers.table.memory") %>
-              </th>
-              <th
-                class="
-                  px-6 py-4 text-left font-medium text-gray-500
-                  dark:text-gray-400
-                "
-              >
-                <%= I18n.t("servers.table.cpu") %>
-              </th>
-            <% end %>
-
-            <th class="px-6 py-4"></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <% @servers.each do |server| %>
-            <%= render "server", server: %>
+    <div class="flex flex-col gap-6">
+      <% if uncategorized_servers.present? %>
+        <div>
+          <% if grouped_servers.any? %>
+            <h2 class="mt-10 mb-6 text-2xl font-semibold dark:text-gray-100">
+              <%= I18n.t("servers.index.uncategorized") %>
+            </h2>
           <% end %>
-        </tbody>
-      </table>
+
+          <div class="card p-0">
+            <%= render "table", servers: uncategorized_servers %>
+          </div>
+        </div>
+      <% end %>
+
+      <% grouped_servers.each do |category, category_servers| %>
+        <div>
+          <h2 class="mt-10 mb-6 text-2xl font-semibold dark:text-gray-100">
+            <%= category %>
+          </h2>
+
+          <div class="card p-0">
+            <%= render "table", servers: category_servers %>
+          </div>
+        </div>
+      <% end %>
     </div>
+
     <% if @pagy.pages > 1 %>
       <%= render "shared/pagination", pagy: @pagy, path_method: :servers_path %>
     <% end %>

@@ -26,6 +26,23 @@
         </div>
       <% end %>
 
+      <% if extended %>
+        <div class="field">
+          <%= f.label :category, I18n.t("servers.form.category") %>
+
+          <%= f.text_field :category,
+                           placeholder: I18n.t("servers.form.category_placeholder"),
+                           autocomplete: "off",
+                           list: "server-categories" %>
+
+          <datalist id="server-categories">
+            <% @categories.each do |category| %>
+              <option value="<%= category %>"></option>
+            <% end %>
+          </datalist>
+        </div>
+      <% end %>
+
       <% if Configuration.get("resource_usage") %>
         <div class="field">
           <%= f.label :operating_system, I18n.t("servers.form.operating_system") %>
