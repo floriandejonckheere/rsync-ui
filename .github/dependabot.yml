@@ -5,6 +5,11 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      # json 3.x breaks ActiveSupport 8.1's positional JSON.parse(json, options) call
+      - dependency-name: "json"
+        update-types:
+          - "version-update:semver-major"
     groups:
       dependencies-major:
         update-types:
