@@ -66,10 +66,10 @@ end
 #
 # Indexes
 #
-#  index_repositories_on_description_trgm       (description) USING gin
+#  index_repositories_on_description_trgm       (description gin_trgm_ops) USING gin
 #  index_repositories_on_disk_size_measured_at  (disk_size_measured_at)
 #  index_repositories_on_name                   (name)
-#  index_repositories_on_name_trgm              (name) USING gin
+#  index_repositories_on_name_trgm              (name gin_trgm_ops) USING gin
 #  index_repositories_on_path                   (path)
 #  index_repositories_on_repository_type        (repository_type)
 #  index_repositories_on_server_id              (server_id)

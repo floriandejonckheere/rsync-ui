@@ -140,11 +140,11 @@ end
 #
 # Indexes
 #
-#  index_servers_on_description_trgm  (description) USING gin
+#  index_servers_on_description_trgm  (description gin_trgm_ops) USING gin
 #  index_servers_on_host              (host)
-#  index_servers_on_host_trgm         (host) USING gin
+#  index_servers_on_host_trgm         (host gin_trgm_ops) USING gin
 #  index_servers_on_name              (name)
-#  index_servers_on_name_trgm         (name) USING gin
+#  index_servers_on_name_trgm         (name gin_trgm_ops) USING gin
 #  index_servers_on_slug              (slug) UNIQUE
 #  index_servers_on_user_id           (user_id)
 #

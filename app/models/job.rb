@@ -181,10 +181,10 @@ end
 # Indexes
 #
 #  index_jobs_on_category                   (category)
-#  index_jobs_on_description_trgm           (description) USING gin
+#  index_jobs_on_description_trgm           (description gin_trgm_ops) USING gin
 #  index_jobs_on_destination_repository_id  (destination_repository_id)
 #  index_jobs_on_name                       (name)
-#  index_jobs_on_name_trgm                  (name) USING gin
+#  index_jobs_on_name_trgm                  (name gin_trgm_ops) USING gin
 #  index_jobs_on_schedule                   (schedule)
 #  index_jobs_on_source_repository_id       (source_repository_id)
 #  index_jobs_on_user_id                    (user_id)
