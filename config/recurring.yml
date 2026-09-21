@@ -18,7 +18,7 @@ default: &default
     schedule: every hour at minute 12
   trim_solid_cable_messages:
     class: "SolidCable::TrimJob"
-    schedule: every hour at minute 30
+    schedule: every 5 minutes
   purge_audits:
     class: "Audits::PurgeJob"
     schedule: every day at 3am
