@@ -38,6 +38,10 @@ export default class extends Controller {
     }
   }
 
+  scrollToBottom() {
+    this.logTarget.scrollTop = this.logTarget.scrollHeight
+  }
+
   #handleMessage(data) {
     for (const entry of data.entries) {
       if (entry.type === "log") {

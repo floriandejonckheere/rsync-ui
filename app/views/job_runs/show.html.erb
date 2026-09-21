@@ -99,6 +99,16 @@
       >
         <%= lucide_icon "file-text", class: "h-4 w-4" %>
         <span><%= I18n.t("job_runs.show.output_file") %></span>
+
+        <button
+          type="button"
+          class="btn-icon-outline btn-icon-md ml-auto"
+          data-tooltip="<%= I18n.t("job_runs.actions.scroll_to_bottom") %>"
+          aria-label="<%= I18n.t("job_runs.actions.scroll_to_bottom") %>"
+          data-action="job-run-logs#scrollToBottom"
+        >
+          <%= lucide_icon "arrow-down-to-line", class: "h-4 w-4" %>
+        </button>
       </div>
 
       <div class="px-6 pt-4">
