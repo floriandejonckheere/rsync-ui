@@ -96,6 +96,16 @@ jobs:
             exit 1
           fi
 
+      - name: Check i18n files are normalized
+        run: |
+          bundle exec i18n-tasks normalize
+
+          if ! git diff --exit-code config/locales/; then
+            echo "Error: i18n files are not normalized. Please run 'i18n-tasks normalize' and commit the changes."
+            git diff config/locales/
+            exit 1
+          fi
+
       - name: Security vulnerability scan
         run: |
           bundle exec brakeman --no-pager
