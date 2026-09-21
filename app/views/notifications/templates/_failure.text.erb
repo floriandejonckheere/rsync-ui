@@ -2,7 +2,7 @@
 **<%= t("notifications.body.job_id") %>:** <%= job_run.sequence %>
 **<%= t("notifications.body.source") %>:** <%= job_run.job.source_repository.name %><%= " (#{I18n.t("jobs.table.on_server", server: job_run.job.source_repository.server.name)})" if job_run.job.source_repository.server.present? %>
 **<%= t("notifications.body.destination") %>:** <%= job_run.job.destination_repository.name %><%= " (#{I18n.t("jobs.table.on_server", server: job_run.job.destination_repository.server.name)})" if job_run.job.destination_repository.server.present? %>
-**<%= t("notifications.body.started_at") %>:** <%= l(job_run.started_at, format: :long) %>
+**<%= t("notifications.body.started_at") %>:** <%= l(job_run.started_at, format: :long) if job_run.started_at %>
 **<%= t("notifications.body.completed_at") %>:** <%= l(job_run.completed_at, format: :long) if job_run.completed_at %>
 **<%= t("notifications.body.duration") %>:** <%= distance_of_time_in_words(job_run.duration) if job_run.duration %>
 **<%= t("notifications.body.trigger") %>:** <%= job_run.trigger %>

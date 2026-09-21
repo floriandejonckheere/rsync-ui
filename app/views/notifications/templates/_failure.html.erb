@@ -85,15 +85,17 @@
         </div>
       <% end %>
 
-      <div style="margin-top: 12px;">
-        <span style="color: #666; font-size: 13px; font-weight: 500;">
-          <%= t("notifications.templates.duration") %>:
-        </span>
+      <% if job_run.started_at && job_run.completed_at %>
+        <div style="margin-top: 12px;">
+          <span style="color: #666; font-size: 13px; font-weight: 500;">
+            <%= t("notifications.templates.duration") %>:
+          </span>
 
-        <span style="color: #333; font-size: 14px; margin-left: 8px;">
-          <%= distance_of_time_in_words(job_run.started_at, job_run.completed_at) %>
-        </span>
-      </div>
+          <span style="color: #333; font-size: 14px; margin-left: 8px;">
+            <%= distance_of_time_in_words(job_run.started_at, job_run.completed_at) %>
+          </span>
+        </div>
+      <% end %>
     </div>
   </div>
 

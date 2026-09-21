@@ -66,5 +66,20 @@ RSpec.describe Notifications::RenderService do
         expect(result[:notification_type]).to eq("failure")
       end
     end
+
+    context "with failure event on a run that never started" do
+      subject(:result) { described_class.new(pending_run, "failure").call }
+
+      let(:pending_run) { create(:job_run, status: "pending", trigger: "manual", started_at: nil) }
+
+      before do
+        pending_run.error!(error_class: "Stuck", error_message: "Job was not picked up by a worker within the grace period")
+      end
+
+      it "renders without a duration" do
+        expect(result[:body]).to include("Stuck")
+        expect(result[:body]).not_to include("Duration")
+      end
+    end
   end
 end
