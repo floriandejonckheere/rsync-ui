@@ -3,17 +3,18 @@
 class ServersController < ApplicationController
   include Searchable
   include Sortable
+  include CategoryOptions
 
   before_action :authenticate_user!
   before_action :set_server, only: [:edit, :update, :destroy, :measure, :deploy, :test, :fingerprint]
-  before_action :set_categories, only: [:new, :edit, :create, :update]
+  categorizes Server, only: [:new, :edit, :create, :update]
 
   def index
     servers = authorized_scope(Server.includes(:resource_usage), type: :relation)
     servers = search_for(servers, "name", "description", "host")
     servers = sort_for(servers, allowed: ["name", "host"], default: { name: :asc })
 
-    servers = group_by_category(servers)
+    servers = servers.grouped_by_category
 
     @pagy, @servers = pagy(servers)
 
@@ -204,24 +205,6 @@ class ServersController < ApplicationController
 
   def set_server
     @server = Server.find(params[:id])
-  end
-
-  def set_categories
-    @categories = authorized_scope(Server.all, type: :relation)
-      .where.not(category: nil)
-      .distinct
-      .order(:category)
-      .pluck(:category)
-  end
-
-  # Keep records of the same category together (uncategorized first) while preserving the
-  # user-selected sort within each category, so that groups don't interleave across pages
-  def group_by_category(scope)
-    sort = scope.order_values
-
-    scope
-      .reorder(Arel.sql("servers.category ASC NULLS FIRST"))
-      .order(sort)
   end
 
   def server_params

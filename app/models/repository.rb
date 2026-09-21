@@ -2,6 +2,7 @@
 
 class Repository < ApplicationRecord
   include Duplicatable
+  include Categorizable
 
   belongs_to :user
   belongs_to :server,
@@ -28,9 +29,6 @@ class Repository < ApplicationRecord
     ok: "ok",
     failed: "failed",
   }, prefix: :disk_size, validate: { allow_nil: true }
-
-  normalizes :category,
-             with: ->(category) { category.strip.presence }
 
   validates :name,
             presence: true

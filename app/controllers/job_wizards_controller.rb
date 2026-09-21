@@ -2,6 +2,7 @@
 
 class JobWizardsController < ApplicationController
   include Wicked::Wizard
+  include CategoryOptions
 
   SESSION_KEY = :job_wizard
 
@@ -18,7 +19,7 @@ class JobWizardsController < ApplicationController
     case step
     when :basics
       @form = JobForm.new(wizard_state.slice("name", "description", "category", "sync_type"))
-      @categories = categories
+      @categories = categories_for(Job)
     when :source
       @form = PathForm.new(path: wizard_state["source_path"], server_id: wizard_state["source_server_id"])
       @servers = servers if job_form.remote_to_local?
@@ -107,17 +108,9 @@ class JobWizardsController < ApplicationController
     authorized_scope(Server.order(:name), type: :relation)
   end
 
-  def categories
-    authorized_scope(Job.all, type: :relation)
-      .where.not(category: nil)
-      .distinct
-      .order(:category)
-      .pluck(:category)
-  end
-
   def update_basics
     @form = JobForm.new(basics_params)
-    @categories = categories
+    @categories = categories_for(Job)
 
     if @form.valid?
       wizard_state.merge!(@form.attributes.slice("name", "description", "category", "sync_type"))

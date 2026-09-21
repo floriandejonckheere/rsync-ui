@@ -3,17 +3,18 @@
 class JobsController < ApplicationController
   include Searchable
   include Sortable
+  include CategoryOptions
 
   before_action :authenticate_user!
   before_action :set_job, only: [:edit, :duplicate, :update, :destroy]
   before_action :set_repositories, only: [:new, :edit, :duplicate, :create, :update, :preview]
-  before_action :set_categories, only: [:new, :edit, :duplicate, :create, :update]
+  categorizes Job, only: [:new, :edit, :duplicate, :create, :update]
 
   def index
     jobs = authorized_scope(Job.includes(:source_repository, :destination_repository).all, type: :relation)
     jobs = search_for(jobs, "name", "description")
     jobs = sort_for(jobs, allowed: ["name", "schedule"], default: { name: :asc })
-    jobs = group_by_category(jobs)
+    jobs = jobs.grouped_by_category
 
     @pagy, @jobs = pagy(jobs)
 
@@ -103,24 +104,6 @@ class JobsController < ApplicationController
 
   def set_repositories
     @repositories = authorized_scope(Repository.order(:name), type: :relation)
-  end
-
-  def set_categories
-    @categories = authorized_scope(Job.all, type: :relation)
-      .where.not(category: nil)
-      .distinct
-      .order(:category)
-      .pluck(:category)
-  end
-
-  # Keep jobs of the same category together (uncategorized first) while preserving the
-  # user-selected sort within each category, so that groups don't interleave across pages
-  def group_by_category(scope)
-    sort = scope.order_values
-
-    scope
-      .reorder(Arel.sql("jobs.category ASC NULLS FIRST"))
-      .order(sort)
   end
 
   def job_params

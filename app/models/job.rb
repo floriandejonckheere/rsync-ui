@@ -2,6 +2,7 @@
 
 class Job < ApplicationRecord
   include Duplicatable
+  include Categorizable
 
   duplicates_associations :hooks,
                           :job_notifications
@@ -56,9 +57,6 @@ class Job < ApplicationRecord
   accepts_nested_attributes_for :hooks,
                                 allow_destroy: true,
                                 reject_if: proc { |attrs| attrs["command"].blank? }
-
-  normalizes :category,
-             with: ->(category) { category.strip.presence }
 
   validates :name,
             presence: true

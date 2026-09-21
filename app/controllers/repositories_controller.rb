@@ -3,18 +3,19 @@
 class RepositoriesController < ApplicationController
   include Searchable
   include Sortable
+  include CategoryOptions
 
   before_action :authenticate_user!
   before_action :set_repository, only: [:edit, :duplicate, :update, :destroy, :measure]
   before_action :set_servers, only: [:new, :edit, :duplicate, :create, :update]
-  before_action :set_categories, only: [:new, :edit, :duplicate, :create, :update]
+  categorizes Repository, only: [:new, :edit, :duplicate, :create, :update]
 
   def index
     repositories = authorized_scope(Repository.all, type: :relation)
     repositories = search_for(repositories, "name", "description")
     repositories = sort_for(repositories, allowed: ["name", "repository_type", "path", "disk_size"], default: { name: :asc })
 
-    repositories = group_by_category(repositories)
+    repositories = repositories.grouped_by_category
 
     @pagy, @repositories = pagy(repositories)
 
@@ -85,24 +86,6 @@ class RepositoriesController < ApplicationController
   def set_servers
     owner = @repository&.user || current_user
     @servers = owner.servers.order(:name)
-  end
-
-  def set_categories
-    @categories = authorized_scope(Repository.all, type: :relation)
-      .where.not(category: nil)
-      .distinct
-      .order(:category)
-      .pluck(:category)
-  end
-
-  # Keep records of the same category together (uncategorized first) while preserving the
-  # user-selected sort within each category, so that groups don't interleave across pages
-  def group_by_category(scope)
-    sort = scope.order_values
-
-    scope
-      .reorder(Arel.sql("repositories.category ASC NULLS FIRST"))
-      .order(sort)
   end
 
   def repository_params

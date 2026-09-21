@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Server < ApplicationRecord
+  include Categorizable
+
   encrypts :password,
            :ssh_key
 
@@ -20,9 +22,6 @@ class Server < ApplicationRecord
     macos: "macos",
     hetzner: "hetzner",
   }, validate: true
-
-  normalizes :category,
-             with: ->(category) { category.strip.presence }
 
   validates :name,
             presence: true
