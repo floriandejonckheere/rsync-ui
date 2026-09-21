@@ -85,7 +85,6 @@ Hooks:
 
 ### Smaller TODOs
 
-- [x] Group jobs by category on the jobs index
 - [ ] Make application responsive
 - [ ] Make job run immutable and reproducible
   - [ ] Temporary: lock job, repositories, hooks, notifications rows when executing job
@@ -104,10 +103,8 @@ Hooks:
 - [ ] Allow discovery of partitions/disks on the server and measure resource usage per partition/disk
 - [ ] Too many `SolidCable::TrimJob` jobs when using ActionCable
 - [ ] Only run SyncSSHConfig job periodically, not on startup
-- [x] Throttle/rate limit status updates
 - [ ] Make streaming job output fixed height, but scrolling (and anchored to the bottom)
 - [ ] Drop `Net::SSH` in favor of plain `ssh`
-- [x] Make the job wizard breadcrumbs clickable
 - [ ] Implement backoff for servers: after N failed retries, disable connectivity/resource usage
 - [ ] Repository disk size: count files and directories as well
 
