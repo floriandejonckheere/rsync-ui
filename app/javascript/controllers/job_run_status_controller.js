@@ -39,7 +39,7 @@ export default class extends Controller {
     if (!startedAt) return
 
     const seconds = Math.max(0, Math.floor((Date.now() - new Date(startedAt)) / 1000))
-    this.durationTarget.textContent = this.#formatRemainingTime(seconds)
+    this.durationTarget.textContent = this.#formatDuration(seconds)
   }
 
   #formatBytes(bytes) {
@@ -56,12 +56,13 @@ export default class extends Controller {
     return `${bytesPerSec} B/s`
   }
 
-  #formatRemainingTime(seconds) {
+  #formatDuration(seconds) {
     const h = Math.floor(seconds / 3600)
     const m = Math.floor((seconds % 3600) / 60)
     const s = seconds % 60
-    const pad = (n) => String(n).padStart(2, "0")
-    return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`
+    if (h > 0) return `${h}h ${m}m ${s}s`
+    if (m > 0) return `${m}m ${s}s`
+    return `${s}s`
   }
 
   #formatEta(seconds, approximate) {
@@ -69,8 +70,7 @@ export default class extends Controller {
 
     const h = Math.floor(seconds / 3600)
     const m = Math.floor((seconds % 3600) / 60)
-    const pad = (n) => String(n).padStart(2, "0")
-    return `${approximate ? "~" : ""}${h}:${pad(m)}`
+    return `${approximate ? "~" : ""}${h > 0 ? `${h}h ` : ""}${m}m`
   }
 
   #relativeTime(isoString) {
@@ -138,7 +138,7 @@ export default class extends Controller {
       this.#stopDurationTimer()
       if (this.hasDurationTarget && data.started_at && data.completed_at) {
         const seconds = Math.max(0, Math.floor((new Date(data.completed_at) - new Date(data.started_at)) / 1000))
-        this.durationTarget.textContent = this.#formatRemainingTime(seconds)
+        this.durationTarget.textContent = this.#formatDuration(seconds)
       }
       if (this.hasBytesCopiedTarget && this.hasBytesCopiedValueTarget && data.bytes_copied) {
         this.bytesCopiedValueTarget.textContent = this.#formatBytes(data.bytes_copied)

@@ -28,7 +28,13 @@ module JobRunHelper
     m = (seconds % 3600) / 60
     s = seconds % 60
 
-    h.positive? ? format("%<h>d:%<m>02d:%<s>02d", h:, m:, s:) : format("%<m>d:%<s>02d", m:, s:)
+    if h.positive?
+      "#{h}h #{m}m #{s}s"
+    elsif m.positive?
+      "#{m}m #{s}s"
+    else
+      "#{s}s"
+    end
   end
 
   def format_remaining_time(seconds, approximate: false)
@@ -38,7 +44,7 @@ module JobRunHelper
 
     h = seconds / 3600
     m = (seconds % 3600) / 60
-    formatted = format("%<h>d:%<m>02d", h:, m:)
+    formatted = h.positive? ? "#{h}h #{m}m" : "#{m}m"
 
     "#{'~' if approximate}#{formatted}"
   end
