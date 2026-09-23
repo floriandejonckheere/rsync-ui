@@ -16,8 +16,8 @@
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%# = tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="icon" href="/icon-white.png" type="image/png">
+    <link rel="icon" href="/icon-white.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
@@ -50,8 +50,9 @@
         "
       >
         <div class="my-12 text-center">
-          <%= link_to root_path, class: "text-3xl text-gray-700 dark:text-gray-200", style: "letter-spacing: 0.25em;" do %>
-            <%= I18n.t("application.name") %>
+          <%= link_to root_path, class: "inline-flex items-center gap-3 text-3xl [font-variant-caps:small-caps] text-gray-700 dark:text-gray-200", style: "letter-spacing: 0.25em;" do %>
+            <%= render "shared/logo", class: "size-12 shrink-0" %>
+            <span class="[text-box:trim-both_ex_alphabetic]"><%= I18n.t("application.name") %></span>
           <% end %>
         </div>
 
