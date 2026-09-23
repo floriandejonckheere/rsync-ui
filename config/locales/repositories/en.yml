@@ -64,6 +64,7 @@ en:
       subtitle: Add a new repository
       title: New repository
     table:
+      jobs: Jobs
       name: Name
       path: Path
       read_only: Read-only

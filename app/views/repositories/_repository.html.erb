@@ -65,6 +65,21 @@
     </div>
   </td>
 
+  <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
+    <% jobs = repository.source_jobs + repository.destination_jobs %>
+
+    <% if jobs.empty? %>
+      &mdash;
+    <% else %>
+      <%= safe_join(jobs.map { |job|
+        link_to job.name,
+                edit_job_path(job),
+                class: "hover:underline",
+                data: { turbo_frame: "_top" }
+      }, ", ") %>
+    <% end %>
+  </td>
+
   <td class="px-6 py-4">
     <div class="flex items-center justify-end gap-2">
       <%= button_to measure_repository_path(repository),

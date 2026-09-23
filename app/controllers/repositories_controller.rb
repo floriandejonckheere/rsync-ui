@@ -12,6 +12,7 @@ class RepositoriesController < ApplicationController
 
   def index
     repositories = authorized_scope(Repository.all, type: :relation)
+    repositories = repositories.includes(:source_jobs, :destination_jobs)
     repositories = search_for(repositories, "name", "description")
     repositories = sort_for(repositories, allowed: ["name", "repository_type", "path", "disk_size"], default: { name: :asc })
 
