@@ -23,6 +23,9 @@ class User < ApplicationRecord
   has_many :notifications,
            dependent: :destroy
 
+  has_many :categories,
+           dependent: :destroy
+
   validates :first_name,
             presence: true
 

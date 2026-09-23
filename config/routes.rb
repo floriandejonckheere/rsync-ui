@@ -25,6 +25,8 @@ Rails.application.routes.draw do
 
   resources :configurations, only: [:index, :update]
 
+  resources :categories, only: [:update]
+
   resources :tasks, only: [] do
     member do
       post :run
@@ -99,6 +101,8 @@ end
 #                           configurations GET    /configurations(.:format)                                                                         configurations#index
 #                            configuration PATCH  /configurations/:id(.:format)                                                                     configurations#update
 #                                          PUT    /configurations/:id(.:format)                                                                     configurations#update
+#                                 category PATCH  /categories/:id(.:format)                                                                         categories#update
+#                                          PUT    /categories/:id(.:format)                                                                         categories#update
 #                                 run_task POST   /tasks/:id/run(.:format)                                                                          tasks#run
 #                              test_server POST   /servers/:id/test(.:format)                                                                       servers#test
 #                           measure_server POST   /servers/:id/measure(.:format)                                                                    servers#measure

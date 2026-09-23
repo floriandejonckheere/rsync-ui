@@ -10,7 +10,6 @@ FactoryBot.define do
     slug { generate(:server_slug) }
     host { FFaker::Internet.domain_name }
     port { 22 }
-    category { nil }
     username { FFaker::Internet.user_name }
     password { FFaker::Internet.password }
     fingerprint { NetSSHHelpers::DEFAULT_FINGERPRINT }

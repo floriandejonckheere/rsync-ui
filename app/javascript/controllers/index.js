@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import CategoryEditorController from "./category_editor_controller"
+application.register("category-editor", CategoryEditorController)
+
 import ClipboardController from "./clipboard_controller"
 application.register("clipboard", ClipboardController)
 

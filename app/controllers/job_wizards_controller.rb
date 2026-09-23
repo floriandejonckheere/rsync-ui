@@ -318,7 +318,7 @@ class JobWizardsController < ApplicationController
       attributes.to_h.merge(
         name: job_form.name,
         description: job_form.description,
-        category: job_form.category,
+        category_name: job_form.category,
         source_repository: build_repository(:source),
         destination_repository: build_repository(:destination),
       ),

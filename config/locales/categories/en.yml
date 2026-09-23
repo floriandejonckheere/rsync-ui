@@ -1,0 +1,9 @@
+---
+en:
+  categories:
+    heading:
+      edit: Edit category
+      name: Category name
+    update:
+      error: 'Category could not be updated: %{errors}'
+      success: Category was successfully updated.

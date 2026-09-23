@@ -1,0 +1,38 @@
+<div class="mt-10 mb-6" data-controller="category-editor">
+  <div class="flex items-center gap-2" data-category-editor-target="display">
+    <h2 class="text-2xl font-semibold dark:text-gray-100">
+      <%= category.name %>
+    </h2>
+
+    <% if allowed_to?(:update?, category) %>
+      <button
+        type="button"
+        class="btn-icon-ghost"
+        data-tooltip="<%= I18n.t("categories.heading.edit") %>"
+        aria-label="<%= I18n.t("categories.heading.edit") %>"
+        data-action="category-editor#edit"
+      >
+        <%= lucide_icon "pencil", class: "h-4 w-4" %>
+      </button>
+    <% end %>
+  </div>
+
+  <% if allowed_to?(:update?, category) %>
+    <%= form_with model: category,
+                  class: "hidden",
+                  data: {
+                    turbo_frame: "_top",
+                    category_editor_target: "form",
+                  } do |f| %>
+      <%= f.text_field :name,
+                       class: "input text-2xl font-semibold max-w-md",
+                       required: true,
+                       autocomplete: "off",
+                       aria: { label: I18n.t("categories.heading.name") },
+                       data: {
+                         category_editor_target: "input",
+                         action: "keydown.esc->category-editor#cancel blur->category-editor#cancel",
+                       } %>
+    <% end %>
+  <% end %>
+</div>

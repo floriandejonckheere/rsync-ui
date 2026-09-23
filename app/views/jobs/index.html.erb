@@ -35,7 +35,7 @@
       </p>
     </div>
   <% else %>
-    <% grouped_jobs = @jobs.group_by { |job| job.category.presence } %>
+    <% grouped_jobs = @jobs.group_by(&:category) %>
     <% uncategorized_jobs = grouped_jobs.delete(nil) %>
 
     <div class="flex flex-col gap-6">
@@ -55,9 +55,7 @@
 
       <% grouped_jobs.each do |category, category_jobs| %>
         <div>
-          <h2 class="mt-10 mb-6 text-2xl font-semibold dark:text-gray-100">
-            <%= category %>
-          </h2>
+          <%= render "shared/category_heading", category: %>
 
           <div class="card p-0">
             <%= render "table", jobs: category_jobs %>

@@ -94,7 +94,15 @@ class RepositoriesController < ApplicationController
   def repository_params
     permitted = params
       .require(:repository)
-      .permit(:name, :description, :category, :repository_type, :server_id, :path, :read_only)
+      .permit(
+        :name,
+        :description,
+        :category_name,
+        :repository_type,
+        :server_id,
+        :path,
+        :read_only,
+      )
 
     permitted[:server_id] = nil if permitted[:repository_type] == "local"
     permitted

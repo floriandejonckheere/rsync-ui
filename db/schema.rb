@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_23_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_23_150300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -58,6 +58,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_140000) do
     t.index ["exit_status"], name: "index_audits_on_exit_status"
     t.index ["server_id"], name: "index_audits_on_server_id"
     t.index ["started_at"], name: "index_audits_on_started_at"
+  end
+
+  create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "categorizable_type", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.index "user_id, categorizable_type, lower((name)::text)", name: "index_categories_on_user_id_and_categorizable_type_and_name", unique: true
+    t.index ["user_id"], name: "index_categories_on_user_id"
   end
 
   create_table "configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -148,7 +158,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_140000) do
   end
 
   create_table "jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "category"
+    t.uuid "category_id"
     t.datetime "created_at", null: false
     t.text "description"
     t.uuid "destination_repository_id", null: false
@@ -203,7 +213,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_140000) do
     t.uuid "source_repository_id", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
-    t.index ["category"], name: "index_jobs_on_category"
+    t.index ["category_id"], name: "index_jobs_on_category_id"
     t.index ["description"], name: "index_jobs_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["destination_repository_id"], name: "index_jobs_on_destination_repository_id"
     t.index ["name"], name: "index_jobs_on_name"
@@ -225,7 +235,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_140000) do
   end
 
   create_table "repositories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "category"
+    t.uuid "category_id"
     t.datetime "created_at", null: false
     t.text "description"
     t.bigint "disk_size"
@@ -240,7 +250,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_140000) do
     t.uuid "server_id"
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
-    t.index ["category"], name: "index_repositories_on_category"
+    t.index ["category_id"], name: "index_repositories_on_category_id"
     t.index ["description"], name: "index_repositories_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["disk_size_measured_at"], name: "index_repositories_on_disk_size_measured_at"
     t.index ["name"], name: "index_repositories_on_name"
@@ -273,7 +283,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_140000) do
   end
 
   create_table "servers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "category"
+    t.uuid "category_id"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "error_class"
@@ -293,7 +303,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_140000) do
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
     t.string "username", null: false
-    t.index ["category"], name: "index_servers_on_category"
+    t.index ["category_id"], name: "index_servers_on_category_id"
     t.index ["description"], name: "index_servers_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["host"], name: "index_servers_on_host"
     t.index ["host"], name: "index_servers_on_host_trgm", opclass: :gin_trgm_ops, using: :gin
@@ -482,18 +492,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_140000) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "audits", "servers", on_delete: :cascade
+  add_foreign_key "categories", "users", on_delete: :cascade
   add_foreign_key "hooks", "jobs"
   add_foreign_key "job_notifications", "jobs"
   add_foreign_key "job_notifications", "notifications", on_delete: :restrict
   add_foreign_key "job_runs", "jobs"
   add_foreign_key "job_runs", "users"
+  add_foreign_key "jobs", "categories", on_delete: :nullify
   add_foreign_key "jobs", "repositories", column: "destination_repository_id", on_delete: :restrict
   add_foreign_key "jobs", "repositories", column: "source_repository_id", on_delete: :restrict
   add_foreign_key "jobs", "users"
   add_foreign_key "notifications", "users"
+  add_foreign_key "repositories", "categories", on_delete: :nullify
   add_foreign_key "repositories", "servers", on_delete: :restrict
   add_foreign_key "repositories", "users"
   add_foreign_key "resource_usages", "servers"
+  add_foreign_key "servers", "categories", on_delete: :nullify
   add_foreign_key "servers", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

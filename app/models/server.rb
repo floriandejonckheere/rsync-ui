@@ -120,7 +120,6 @@ end
 # Table name: servers
 #
 #  id               :uuid             not null, primary key
-#  category         :string           indexed
 #  description      :text             indexed
 #  error_class      :string
 #  error_message    :text
@@ -139,11 +138,12 @@ end
 #  username         :string           not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  category_id      :uuid             indexed
 #  user_id          :uuid             not null, indexed
 #
 # Indexes
 #
-#  index_servers_on_category          (category)
+#  index_servers_on_category_id       (category_id)
 #  index_servers_on_description_trgm  (description gin_trgm_ops) USING gin
 #  index_servers_on_host              (host)
 #  index_servers_on_host_trgm         (host gin_trgm_ops) USING gin
@@ -154,5 +154,6 @@ end
 #
 # Foreign Keys
 #
+#  fk_rails_...  (category_id => categories.id) ON DELETE => nullify
 #  fk_rails_...  (user_id => users.id)
 #

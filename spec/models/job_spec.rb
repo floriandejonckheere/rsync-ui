@@ -69,19 +69,19 @@ RSpec.describe Job do
 
   describe "normalization" do
     it "strips surrounding whitespace from the category" do
-      job = build(:job, category: "  Backups  ")
+      job = build(:job, category_name: "  Backups  ")
 
       job.valid?
 
-      expect(job.category).to eq("Backups")
+      expect(job.category_name).to eq("Backups")
     end
 
     it "normalizes a blank category to nil" do
-      job = build(:job, category: "   ")
+      job = build(:job, category_name: "   ")
 
       job.valid?
 
-      expect(job.category).to be_nil
+      expect(job.category_name).to be_nil
     end
   end
 

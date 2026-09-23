@@ -215,7 +215,7 @@ class ServersController < ApplicationController
       .permit(
         :name,
         :description,
-        :category,
+        :category_name,
         :path,
         :operating_system,
         :host,

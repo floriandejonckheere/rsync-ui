@@ -95,7 +95,7 @@ RSpec.describe "Servers" do
 
       context "when servers have categories" do
         it "renders uncategorized servers before the categorized ones" do
-          categorized = create(:server, user:, name: "Alpha item", category: "Production")
+          categorized = create(:server, user:, name: "Alpha item", category_name: "Production")
           uncategorized = create(:server, user:, name: "Zebra item")
 
           get servers_path
@@ -105,7 +105,7 @@ RSpec.describe "Servers" do
 
         it "renders an uncategorized heading when categories are present" do
           create(:server, user:, name: "First item")
-          create(:server, user:, name: "Second item", category: "Staging")
+          create(:server, user:, name: "Second item", category_name: "Staging")
 
           get servers_path
 
@@ -213,9 +213,9 @@ RSpec.describe "Servers" do
       end
 
       it "saves the category" do
-        post servers_path, params: { server: valid_params[:server].merge(category: "Production") }
+        post servers_path, params: { server: valid_params[:server].merge(category_name: "Production") }
 
-        expect(Server.last.category).to eq("Production")
+        expect(Server.last.category_name).to eq("Production")
       end
 
       it "displays success message" do
@@ -302,9 +302,9 @@ RSpec.describe "Servers" do
       end
 
       it "clears the category when it is submitted blank" do
-        server.update!(category: "Production")
+        server.update!(category_name: "Production")
 
-        patch server_path(server), params: { server: { category: "" } }
+        patch server_path(server), params: { server: { category_name: "" } }
 
         expect(server.reload.category).to be_nil
       end

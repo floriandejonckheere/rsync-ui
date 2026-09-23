@@ -85,7 +85,7 @@ RSpec.describe "Repositories" do
 
       context "when repositories have categories" do
         it "renders uncategorized repositories before the categorized ones" do
-          categorized = create(:repository, user:, name: "Alpha item", category: "Production")
+          categorized = create(:repository, user:, name: "Alpha item", category_name: "Production")
           uncategorized = create(:repository, user:, name: "Zebra item")
 
           get repositories_path
@@ -95,7 +95,7 @@ RSpec.describe "Repositories" do
 
         it "renders an uncategorized heading when categories are present" do
           create(:repository, user:, name: "First item")
-          create(:repository, user:, name: "Second item", category: "Staging")
+          create(:repository, user:, name: "Second item", category_name: "Staging")
 
           get repositories_path
 
@@ -183,9 +183,9 @@ RSpec.describe "Repositories" do
       end
 
       it "saves the category" do
-        post repositories_path, params: { repository: valid_params[:repository].merge(category: "Production") }
+        post repositories_path, params: { repository: valid_params[:repository].merge(category_name: "Production") }
 
-        expect(Repository.last.category).to eq("Production")
+        expect(Repository.last.category_name).to eq("Production")
       end
 
       it "displays success message" do
@@ -306,9 +306,9 @@ RSpec.describe "Repositories" do
       end
 
       it "clears the category when it is submitted blank" do
-        repository.update!(category: "Production")
+        repository.update!(category_name: "Production")
 
-        patch repository_path(repository), params: { repository: { category: "" } }
+        patch repository_path(repository), params: { repository: { category_name: "" } }
 
         expect(repository.reload.category).to be_nil
       end

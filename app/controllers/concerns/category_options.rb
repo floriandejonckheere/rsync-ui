@@ -13,6 +13,9 @@ module CategoryOptions
   private
 
   def categories_for(model)
-    authorized_scope(model.all, type: :relation).categories
+    authorized_scope(Category.where(categorizable_type: model.name), type: :relation)
+      .distinct
+      .order(:name)
+      .pluck(:name)
   end
 end

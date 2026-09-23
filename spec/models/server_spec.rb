@@ -11,19 +11,19 @@ RSpec.describe Server do
 
   describe "normalization" do
     it "strips surrounding whitespace from the category" do
-      server = build(:server, category: "  Production  ")
+      server = build(:server, category_name: "  Production  ")
 
       server.valid?
 
-      expect(server.category).to eq("Production")
+      expect(server.category_name).to eq("Production")
     end
 
     it "normalizes a blank category to nil" do
-      server = build(:server, category: "   ")
+      server = build(:server, category_name: "   ")
 
       server.valid?
 
-      expect(server.category).to be_nil
+      expect(server.category_name).to be_nil
     end
   end
 

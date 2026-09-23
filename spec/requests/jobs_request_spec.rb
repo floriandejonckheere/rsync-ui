@@ -16,7 +16,7 @@ RSpec.describe "Jobs" do
 
       context "when jobs have categories" do
         it "renders uncategorized jobs before the categorized ones" do
-          categorized_job = create(:job, user:, name: "Alpha job", category: "Backups")
+          categorized_job = create(:job, user:, name: "Alpha job", category_name: "Backups")
           uncategorized_job = create(:job, user:, name: "Zebra job")
 
           get jobs_path
@@ -25,8 +25,8 @@ RSpec.describe "Jobs" do
         end
 
         it "groups the categorized jobs per category" do
-          backups_job = create(:job, user:, name: "Zebra job", category: "Backups")
-          mirrors_job = create(:job, user:, name: "Alpha job", category: "Mirrors")
+          backups_job = create(:job, user:, name: "Zebra job", category_name: "Backups")
+          mirrors_job = create(:job, user:, name: "Alpha job", category_name: "Mirrors")
 
           get jobs_path
 
@@ -34,9 +34,17 @@ RSpec.describe "Jobs" do
           expect(response.body.index(backups_job.name)).to be < response.body.index(mirrors_job.name)
         end
 
+        it "renders an inline form to rename the category" do
+          job = create(:job, user:, category_name: "Backups")
+
+          get jobs_path
+
+          expect(response.body).to include(I18n.t("categories.heading.edit"), category_path(job.category))
+        end
+
         it "renders an uncategorized heading when categories are present" do
           create(:job, user:, name: "Nightly backup")
-          create(:job, user:, name: "Offsite mirror", category: "Mirrors")
+          create(:job, user:, name: "Offsite mirror", category_name: "Mirrors")
 
           get jobs_path
 
@@ -52,8 +60,8 @@ RSpec.describe "Jobs" do
         end
 
         it "sorts the jobs within each category" do
-          create(:job, user:, name: "Beta job", category: "Backups")
-          create(:job, user:, name: "Alpha job", category: "Backups")
+          create(:job, user:, name: "Beta job", category_name: "Backups")
+          create(:job, user:, name: "Alpha job", category_name: "Backups")
 
           get jobs_path, params: { sort: "name", direction: "desc" }
 
@@ -61,8 +69,8 @@ RSpec.describe "Jobs" do
         end
 
         it "does not render categories without matching jobs when searching" do
-          create(:job, user:, name: "Nightly backup", category: "Backups")
-          create(:job, user:, name: "Offsite mirror", category: "Mirrors")
+          create(:job, user:, name: "Nightly backup", category_name: "Backups")
+          create(:job, user:, name: "Offsite mirror", category_name: "Mirrors")
 
           get jobs_path, params: { query: "Nightly" }
 
@@ -164,9 +172,9 @@ RSpec.describe "Jobs" do
       end
 
       it "saves the category" do
-        post jobs_path, params: { job: valid_params[:job].merge(category: "Backups") }
+        post jobs_path, params: { job: valid_params[:job].merge(category_name: "Backups") }
 
-        expect(user.jobs.last.category).to eq("Backups")
+        expect(user.jobs.last.category_name).to eq("Backups")
       end
 
       it "saves opt_include patterns" do
@@ -340,15 +348,15 @@ RSpec.describe "Jobs" do
       end
 
       it "updates the category" do
-        patch job_path(job), params: { job: { category: "Backups" } }
+        patch job_path(job), params: { job: { category_name: "Backups" } }
 
-        expect(job.reload.category).to eq("Backups")
+        expect(job.reload.category_name).to eq("Backups")
       end
 
       it "clears the category when it is submitted blank" do
-        job.update!(category: "Backups")
+        job.update!(category_name: "Backups")
 
-        patch job_path(job), params: { job: { category: "" } }
+        patch job_path(job), params: { job: { category_name: "" } }
 
         expect(job.reload.category).to be_nil
       end

@@ -28,9 +28,9 @@
 
       <% if extended %>
         <div class="field">
-          <%= f.label :category, I18n.t("servers.form.category") %>
+          <%= f.label :category_name, I18n.t("servers.form.category") %>
 
-          <%= f.text_field :category,
+          <%= f.text_field :category_name,
                            placeholder: I18n.t("servers.form.category_placeholder"),
                            autocomplete: "off",
                            list: "server-categories" %>

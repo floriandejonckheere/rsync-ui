@@ -112,7 +112,7 @@ class JobsController < ApplicationController
       .permit(
         :name,
         :description,
-        :category,
+        :category_name,
         :source_repository_id,
         :destination_repository_id,
         :schedule,

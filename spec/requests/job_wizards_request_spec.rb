@@ -50,7 +50,7 @@ RSpec.describe "JobWizards" do
 
       job = user.jobs.last
       expect(job.name).to eq("Local Backup")
-      expect(job.category).to eq("Backups")
+      expect(job.category_name).to eq("Backups")
       expect(job.source_repository).to be_local
       expect(job.destination_repository).to be_local
       expect(job.source_repository.path).to eq("/data/source")

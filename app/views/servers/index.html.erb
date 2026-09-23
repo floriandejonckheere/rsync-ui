@@ -35,7 +35,7 @@
       </p>
     </div>
   <% else %>
-    <% grouped_servers = @servers.group_by { |server| server.category.presence } %>
+    <% grouped_servers = @servers.group_by(&:category) %>
     <% uncategorized_servers = grouped_servers.delete(nil) %>
 
     <div class="flex flex-col gap-6">
@@ -55,9 +55,7 @@
 
       <% grouped_servers.each do |category, category_servers| %>
         <div>
-          <h2 class="mt-10 mb-6 text-2xl font-semibold dark:text-gray-100">
-            <%= category %>
-          </h2>
+          <%= render "shared/category_heading", category: %>
 
           <div class="card p-0">
             <%= render "table", servers: category_servers %>

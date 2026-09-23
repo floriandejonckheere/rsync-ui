@@ -120,7 +120,6 @@ end
 # Table name: jobs
 #
 #  id                        :uuid             not null, primary key
-#  category                  :string           indexed
 #  description               :text             indexed
 #  enabled                   :boolean          default(TRUE), not null
 #  name                      :string           not null, indexed, indexed
@@ -172,13 +171,14 @@ end
 #  schedule                  :string           indexed
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
+#  category_id               :uuid             indexed
 #  destination_repository_id :uuid             not null, indexed
 #  source_repository_id      :uuid             not null, indexed
 #  user_id                   :uuid             not null, indexed
 #
 # Indexes
 #
-#  index_jobs_on_category                   (category)
+#  index_jobs_on_category_id                (category_id)
 #  index_jobs_on_description_trgm           (description gin_trgm_ops) USING gin
 #  index_jobs_on_destination_repository_id  (destination_repository_id)
 #  index_jobs_on_name                       (name)
@@ -189,6 +189,7 @@ end
 #
 # Foreign Keys
 #
+#  fk_rails_...  (category_id => categories.id) ON DELETE => nullify
 #  fk_rails_...  (destination_repository_id => repositories.id) ON DELETE => restrict
 #  fk_rails_...  (source_repository_id => repositories.id) ON DELETE => restrict
 #  fk_rails_...  (user_id => users.id)
