@@ -305,7 +305,9 @@ Create a [personal access token on GitHub](https://github.com/settings/tokens/ne
 
 Update the changelog and bump the version in `lib/rsync_ui/version.rb`.
 Create a tag for the version and push it to GitHub.
-A Docker image will automatically be built and pushed to the registry.
+A Docker image will automatically be built and pushed to the registry (e.g. `ghcr.io/floriandejonckheere/rsync-ui:1.0.0`).
+The build fails if the version in `lib/rsync_ui/version.rb` (including the pre-release suffix, e.g. `v1.0.0-rc1`) does not match the tag.
+Every push to `main` also builds and pushes the `latest` image.
 
 ```sh
 nano CHANGELOG.md lib/rsync_ui/version.rb
