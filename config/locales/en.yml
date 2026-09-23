@@ -1,8 +1,8 @@
 ---
 en:
   application:
-    name: rsync ui
-    title: "%{name} - %{title}"
+    name: Rsync UI
+    title: "%{title} - %{name}"
   auth:
     sign_out: Sign out
     toggle_theme: Toggle theme

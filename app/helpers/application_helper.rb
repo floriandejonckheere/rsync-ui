@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  def page_title
+    title = CGI.unescapeHTML(content_for(:title).to_s).squish
+
+    return t("application.name") if title.blank?
+
+    t("application.title", name: t("application.name"), title:)
+  end
+
   def server_link(server, absolute_url: false)
     return if server.blank?
 
