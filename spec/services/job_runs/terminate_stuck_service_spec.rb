@@ -124,6 +124,24 @@ RSpec.describe JobRuns::TerminateStuckService do
             .not_to(change { job_run.reload.attributes })
         end
       end
+
+      context "when blocked by another running job run for the same job" do
+        let!(:job_run) { create(:job_run, :pending, job:, user:, created_at: 2.minutes.ago) }
+
+        before do
+          create(:job_run, :running, job:, user:, pid: 99_999)
+
+          allow(Process)
+            .to receive(:kill)
+            .with(0, -99_999)
+            .and_return 1
+        end
+
+        it "does not modify the job run" do
+          expect { service.call }
+            .not_to(change { job_run.reload.attributes })
+        end
+      end
     end
 
     context "with completed, failed, or canceled job runs older than the threshold" do

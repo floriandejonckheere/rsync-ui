@@ -7,8 +7,12 @@ module JobRuns
 
       Rails.logger.info { "Terminating all job runs stuck since #{threshold.iso8601}" }
 
-      # Terminate pending job runs
-      JobRun.pending.where(created_at: ...threshold).find_each do |job_run|
+      # Terminate pending job runs, except those blocked by concurrency limits
+      # (another job run for the same job is already running)
+      JobRun.pending
+        .where(created_at: ...threshold)
+        .where.not(job_id: JobRun.running.select(:job_id))
+        .find_each do |job_run|
         Rails.logger.info { "Terminating stuck job run #{job_run.id} (still pending after grace period)" }
 
         job_run.error!(error_class: "Stuck", error_message: "Job was not picked up by a worker within the grace period")
