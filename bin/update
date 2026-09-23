@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#
+# Update the development environment: pull and rebuild images, install dependencies,
+# and restart the application (which prepares the database on startup).
+#
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+run() {
+  docker compose run --rm --no-deps --entrypoint "" "$@"
+}
+
+echo "== Pulling images =="
+docker compose pull --ignore-buildable
+
+echo
+echo "== Building images =="
+docker compose build
+
+echo
+echo "== Installing Ruby gems =="
+run -u root app bundle install
+
+echo
+echo "== Installing JavaScript dependencies =="
+run -u root app yarn install
+
+echo
+echo "== Restarting application =="
+docker compose up -d
+docker compose up -d --force-recreate --no-deps app worker

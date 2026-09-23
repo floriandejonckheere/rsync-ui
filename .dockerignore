@@ -41,7 +41,13 @@
 /.github
 
 # Ignore development files
+/bin/brakeman
 /bin/deploy
+/bin/dev
+/bin/docker-entrypoint
+/bin/rubocop
+/bin/setup
+/bin/update
 /.devcontainer
 /.rubocop.yml
 /.ruby-version
