@@ -7,7 +7,7 @@ class CategoriesController < ApplicationController
   def update
     authorize! @category
 
-    fallback_location = polymorphic_path(@category.categorizable_type.constantize)
+    fallback_location = polymorphic_path(@category.categorizable_class)
 
     if @category.update(category_params)
       redirect_back_or_to fallback_location, notice: t(".success")

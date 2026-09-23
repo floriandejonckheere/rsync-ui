@@ -22,9 +22,16 @@ class Category < ApplicationRecord
   scope :named,
         ->(name) { where("LOWER(#{quoted_table_name}.name) = LOWER(?)", name.to_s.strip) }
 
+  # Model class of the categorizable type, resolved through the allowlist
+  def categorizable_class
+    CATEGORIZABLE_TYPES
+      .find { |type| type == categorizable_type }
+      &.constantize
+  end
+
   # Records of the categorizable type assigned to this category
   def records
-    categorizable_type.constantize.where(category: self)
+    categorizable_class.where(category: self)
   end
 end
 

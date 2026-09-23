@@ -52,6 +52,20 @@ RSpec.describe Category do
     end
   end
 
+  describe "#categorizable_class" do
+    it "returns the model class of the categorizable type" do
+      category = build(:category, categorizable_type: "Server")
+
+      expect(category.categorizable_class).to eq(Server)
+    end
+
+    it "returns nil for a type outside the allowlist" do
+      category = build(:category, categorizable_type: "User")
+
+      expect(category.categorizable_class).to be_nil
+    end
+  end
+
   describe "#records" do
     it "returns the records of the categorizable type in the category" do
       job = create(:job, category_name: "Backups")
