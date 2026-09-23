@@ -10,7 +10,7 @@ class ServersController < ApplicationController
   categorizes Server, only: [:new, :edit, :create, :update]
 
   def index
-    servers = authorized_scope(Server.includes(:resource_usage), type: :relation)
+    servers = authorized_scope(Server.includes(:resource_usage, :repositories), type: :relation)
     servers = search_for(servers, "name", "description", "host")
     servers = sort_for(servers, allowed: ["name", "host"], default: { name: :asc })
 
@@ -59,9 +59,11 @@ class ServersController < ApplicationController
   def destroy
     authorize! @server
 
-    @server.destroy!
-
-    redirect_to servers_path, notice: t(".success"), status: :see_other
+    if @server.destroy
+      redirect_to servers_path, notice: t(".success"), status: :see_other
+    else
+      redirect_to servers_path, alert: t(".failure"), status: :see_other
+    end
   end
 
   def measure

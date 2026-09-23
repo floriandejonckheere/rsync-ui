@@ -5,7 +5,7 @@ RSpec.describe Server do
 
   describe "associations" do
     it { is_expected.to belong_to(:user) }
-    it { is_expected.to have_many(:repositories).dependent(:destroy) }
+    it { is_expected.to have_many(:repositories).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:audits).dependent(:destroy) }
   end
 
@@ -263,6 +263,34 @@ RSpec.describe Server do
         server.validate
 
         expect(server.ssh_key).to eq ssh_key
+      end
+    end
+  end
+
+  describe "#destroy" do
+    subject(:server) { create(:server) }
+
+    context "when the server is not used by any repository" do
+      it "destroys the server" do
+        server.destroy
+
+        expect(server).to be_destroyed
+      end
+    end
+
+    context "when the server is used by a repository" do
+      before { create(:repository, :remote, server:) }
+
+      it "does not destroy the server" do
+        server.destroy
+
+        expect(server).not_to be_destroyed
+      end
+
+      it "adds an error on base" do
+        server.destroy
+
+        expect(server.errors[:base]).to be_present
       end
     end
   end

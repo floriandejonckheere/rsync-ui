@@ -12,7 +12,7 @@ class Server < ApplicationRecord
           dependent: :destroy
 
   has_many :repositories,
-           dependent: :destroy
+           dependent: :restrict_with_error
 
   has_many :audits,
            dependent: :destroy

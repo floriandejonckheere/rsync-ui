@@ -80,6 +80,6 @@ end
 #
 # Foreign Keys
 #
-#  fk_rails_...  (server_id => servers.id) ON DELETE => cascade
+#  fk_rails_...  (server_id => servers.id) ON DELETE => restrict
 #  fk_rails_...  (user_id => users.id)
 #

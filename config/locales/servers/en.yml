@@ -17,6 +17,7 @@ en:
       delete: Delete server
       delete_confirm: Are you sure you want to delete this server? This action cannot be undone.
       delete_confirm_title: Delete server
+      delete_disabled: Server cannot be deleted because it is used by one or more repositories.
       edit: Edit server
       measure: Measure resource usage
     create:
@@ -26,6 +27,7 @@ en:
       missing_details: Host, port, username, and password are required to generate and deploy an SSH key.
       success: Deploy successful
     destroy:
+      failure: Server cannot be deleted because it is used by one or more repositories.
       success: Server was successfully deleted.
     edit:
       title: Edit server

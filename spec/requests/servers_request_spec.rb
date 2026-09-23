@@ -14,6 +14,28 @@ RSpec.describe "Servers" do
         expect(response).to have_http_status(:ok)
       end
 
+      context "when a server is used by a repository" do
+        it "disables the delete button" do
+          server = create(:server, user:)
+          create(:repository, :remote, server:)
+
+          get servers_path
+
+          expect(response.body).to include(I18n.t("servers.actions.delete_disabled"))
+        end
+      end
+
+      context "when a server is not used by any repository" do
+        it "enables the delete button" do
+          create(:server, user:)
+
+          get servers_path
+
+          expect(response.body).to include(I18n.t("servers.actions.delete"))
+          expect(response.body).not_to include(I18n.t("servers.actions.delete_disabled"))
+        end
+      end
+
       context "when a query parameter is present" do
         it "filters servers by name" do
           matching_server = create(:server, user:, name: "Production server")
@@ -399,6 +421,24 @@ RSpec.describe "Servers" do
         follow_redirect!
 
         expect(response.body).to include(I18n.t("servers.destroy.success"))
+      end
+
+      context "when the server is used by a repository" do
+        before { create(:repository, :remote, server:) }
+
+        it "does not destroy the server" do
+          expect do
+            delete server_path(server)
+          end.not_to change(Server, :count)
+        end
+
+        it "displays a failure message" do
+          delete server_path(server)
+
+          follow_redirect!
+
+          expect(response.body).to include(I18n.t("servers.destroy.failure"))
+        end
       end
     end
 
