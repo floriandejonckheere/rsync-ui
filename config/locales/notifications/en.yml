@@ -12,6 +12,7 @@ en:
       delete: Delete notification
       delete_confirm: Are you sure you want to delete this notification? This action cannot be undone.
       delete_confirm_title: Delete notification
+      delete_disabled: Notification cannot be deleted because it is used by one or more jobs.
       disable: Disable notification
       edit: Edit notification
       enable: Enable notification
@@ -33,6 +34,7 @@ en:
     create:
       success: Notification was successfully created.
     destroy:
+      failure: Notification cannot be deleted because it is used by one or more jobs.
       success: Notification was successfully deleted.
     edit:
       title: Edit notification

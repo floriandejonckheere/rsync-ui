@@ -6,7 +6,7 @@ class Notification < ApplicationRecord
   belongs_to :user
 
   has_many :job_notifications,
-           dependent: :destroy
+           dependent: :restrict_with_error
 
   has_many :jobs,
            through: :job_notifications

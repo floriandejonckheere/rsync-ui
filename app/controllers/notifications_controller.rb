@@ -10,7 +10,7 @@ class NotificationsController < ApplicationController
   before_action :set_notification_or_new, only: [:test]
 
   def index
-    notifications = authorized_scope(Notification.all, type: :relation)
+    notifications = authorized_scope(Notification.includes(:jobs), type: :relation)
     notifications = search_for(notifications, "name", "description")
     notifications = sort_for(notifications, allowed: ["name"], default: { name: :asc })
 
@@ -55,9 +55,11 @@ class NotificationsController < ApplicationController
   def destroy
     authorize! @notification
 
-    @notification.destroy!
-
-    redirect_to notifications_path, notice: t(".success"), status: :see_other
+    if @notification.destroy
+      redirect_to notifications_path, notice: t(".success"), status: :see_other
+    else
+      redirect_to notifications_path, alert: t(".failure"), status: :see_other
+    end
   end
 
   def test

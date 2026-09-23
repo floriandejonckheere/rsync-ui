@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_23_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_23_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -484,7 +484,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_130000) do
   add_foreign_key "audits", "servers", on_delete: :cascade
   add_foreign_key "hooks", "jobs"
   add_foreign_key "job_notifications", "jobs"
-  add_foreign_key "job_notifications", "notifications"
+  add_foreign_key "job_notifications", "notifications", on_delete: :restrict
   add_foreign_key "job_runs", "jobs"
   add_foreign_key "job_runs", "users"
   add_foreign_key "jobs", "repositories", column: "destination_repository_id", on_delete: :restrict

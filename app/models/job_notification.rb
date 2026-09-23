@@ -32,5 +32,5 @@ end
 # Foreign Keys
 #
 #  fk_rails_...  (job_id => jobs.id)
-#  fk_rails_...  (notification_id => notifications.id)
+#  fk_rails_...  (notification_id => notifications.id) ON DELETE => restrict
 #

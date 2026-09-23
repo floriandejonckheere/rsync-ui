@@ -23,6 +23,28 @@ RSpec.describe "Notifications" do
         expect(response.body).not_to include(no_match.name)
       end
 
+      context "when a notification is used by a job" do
+        it "disables the delete button" do
+          notification = create(:notification, user:)
+          create(:job_notification, notification:)
+
+          get notifications_path
+
+          expect(response.body).to include(I18n.t("notifications.actions.delete_disabled"))
+        end
+      end
+
+      context "when a notification is not used by any job" do
+        it "enables the delete button" do
+          create(:notification, user:)
+
+          get notifications_path
+
+          expect(response.body).to include(I18n.t("notifications.actions.delete"))
+          expect(response.body).not_to include(I18n.t("notifications.actions.delete_disabled"))
+        end
+      end
+
       context "when feature is disabled" do
         before { Configuration.set("notifications", false) }
 
@@ -104,6 +126,23 @@ RSpec.describe "Notifications" do
       delete notification_path(other)
 
       expect(response).to have_http_status(:forbidden)
+    end
+
+    context "when the notification is used by a job" do
+      before { create(:job_notification, notification:) }
+
+      it "does not destroy the notification" do
+        expect { delete notification_path(notification) }
+          .not_to change(Notification, :count)
+      end
+
+      it "displays a failure message" do
+        delete notification_path(notification)
+
+        follow_redirect!
+
+        expect(response.body).to include(I18n.t("notifications.destroy.failure"))
+      end
     end
   end
 
