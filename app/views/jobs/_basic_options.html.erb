@@ -23,8 +23,8 @@
       <% end %>
 
       <% %i[opt_owner opt_group].each do |field| %>
-        <div class="field">
-          <div class="flex-row items-center gap-4 flex">
+        <div>
+          <div class="field flex-row items-center gap-4">
             <%= f.check_box field, role: "switch" %>
             <%= f.label field, I18n.t(:description, scope: [:jobs, :form, field]), data: { tooltip: I18n.t(:flag, scope: [:jobs, :form, field]) } %>
           </div>
