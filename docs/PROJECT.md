@@ -92,7 +92,7 @@ Hooks:
   - [ ] Save repository in the database
   - [ ] Save notifications in the database
 - [ ] Allow retrying jobs, or automatic retry (e.g. with incremental/exponential backoff)
-- [ ] Update branding
+- [x] Update branding
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
 - [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
 - [ ] Implement support for OAuth2 authentication

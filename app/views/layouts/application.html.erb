@@ -50,10 +50,7 @@
         "
       >
         <div class="my-12 text-center">
-          <%= link_to root_path, class: "inline-flex items-center gap-3 text-3xl [font-variant-caps:small-caps] text-gray-700 dark:text-gray-200", style: "letter-spacing: 0.25em;" do %>
-            <%= render "shared/logo", class: "size-12 shrink-0" %>
-            <span class="[text-box:trim-both_ex_alphabetic]"><%= I18n.t("application.name") %></span>
-          <% end %>
+          <%= render "shared/brand" %>
         </div>
 
         <%= render "shared/menu/item", path: root_path, controllers: ["dashboard", "job_wizards"], icon: "circle-gauge", title: I18n.t("dashboard.title") %>

@@ -1,8 +1,14 @@
-# Rsync UI
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/logo-dark.png">
+    <img alt="Rsync UI" src="docs/images/logo-light.png" width="430">
+  </picture>
+</p>
 
-[![Continuous Integration](https://github.com/floriandejonckheere/rsync-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/floriandejonckheere/rsync-ui/actions/workflows/ci.yml)
-
-![Release](https://img.shields.io/github/v/release/floriandejonckheere/rsync-ui?label=Latest%20release)
+<p align="center">
+  <a href="https://github.com/floriandejonckheere/rsync-ui/actions/workflows/ci.yml"><img alt="Continuous Integration" src="https://github.com/floriandejonckheere/rsync-ui/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/floriandejonckheere/rsync-ui/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/floriandejonckheere/rsync-ui?label=Latest%20release"></a>
+</p>
 
 Rsync UI is a web application that lets you create, schedule, and execute file synchronization jobs with just a few clicks, powered by [rsync](https://github.com/RsyncProject/rsync).
 
