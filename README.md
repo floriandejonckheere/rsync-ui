@@ -86,7 +86,8 @@ Rsync UI is distributed as a Docker image and is meant to be run with Docker com
        ADMIN_EMAIL: admin@example.com # Default administrator account
        ADMIN_PASSWORD: my-admin-password # Default administrator password
      depends_on:
-       - postgres
+       postgres:
+         condition: service_healthy
 
    services:
      web:
@@ -106,6 +107,11 @@ Rsync UI is distributed as a Docker image and is meant to be run with Docker com
        environment:
          POSTGRES_USER: postgres
          POSTGRES_PASSWORD: my-postgres-password
+       healthcheck:
+         test: ["CMD", "pg_isready", "-U", "postgres"]
+         interval: 2s
+         timeout: 5s
+         retries: 30
 
    volumes:
      postgres:

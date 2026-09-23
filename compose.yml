@@ -1,18 +1,21 @@
 x-app: &app
   build: .
+  image: rsync-ui:development
   volumes:
-    - .:/app/:cached
+    - .:/app/
     - bundle:/usr/local/bundle/
     - npm:/app/node_modules/
     - ssh:/app/.ssh
-    - ./docker/hosts:/etc/hosts:ro
+    - storage:/app/tmp/storage
     - ./docker/pre_sync.sh:/usr/local/bin/pre_sync.sh:ro
     - ./docker/post_sync.sh:/usr/local/bin/post_sync.sh:ro
-    - ./tmp/data/app:/data:cached
-  tmpfs:
-    - /app/tmp/storage:mode=755,uid=1000,gid=1000
-  depends_on:
-    - postgres
+    - ./tmp/data/app:/data
+  extra_hosts:
+    - "nas:172.16.200.101"
+    - "backup:172.16.200.102"
+    - "backup.example.com:172.16.200.102"
+    - "mirror:172.16.200.103"
+    - "mirror.example.com:172.16.200.103"
   env_file:
     - .development.env
   networks:
@@ -28,7 +31,12 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
 
   app:
     <<: *app
@@ -37,13 +45,31 @@ services:
     command: foreman start
     tty: true
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nas:
+        condition: service_started
+      backup:
+        condition: service_started
+      mirror:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "--header", "Host: localhost", "http://127.0.0.1:3000/up"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 30s
 
   worker:
     <<: *app
     hostname: worker
     command: bin/jobs
     tty: true
+    depends_on:
+      app:
+        condition: service_healthy
 
   nas:
     image: alpine:3.23
@@ -80,6 +106,11 @@ volumes:
   bundle:
   npm:
   ssh:
+  storage:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+      o: "mode=755,uid=1000,gid=1000"
 
 networks:
   default: {}
