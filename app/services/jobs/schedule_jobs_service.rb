@@ -12,7 +12,10 @@ module Jobs
         prev_tick = cron.previous_time(now).to_t
         last_scheduled_run = job.job_runs.scheduled.order(:created_at).last
 
-        next if last_scheduled_run && last_scheduled_run.created_at >= prev_tick
+        # Ticks before the job existed are not missed runs
+        last_run_at = [last_scheduled_run&.created_at, job.created_at].compact.max
+
+        next if last_run_at >= prev_tick
 
         job_run = JobRuns::CreateService
           .new(job:, user: job.user, trigger: "scheduled")

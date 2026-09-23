@@ -9,7 +9,7 @@ RSpec.describe Jobs::ScheduleJobsService do
 
   describe "#call" do
     context "when a job has a cron schedule and has never run" do
-      let!(:job) { create(:job, user:, schedule: "0 2 * * *") }
+      let!(:job) { create(:job, user:, schedule: "0 2 * * *", created_at: 1.week.ago) }
 
       it "creates a scheduled job run and enqueues execution" do
         service.call
@@ -26,7 +26,7 @@ RSpec.describe Jobs::ScheduleJobsService do
     end
 
     context "when a job has a cron schedule and already ran in the current tick" do
-      let!(:job) { create(:job, user:, schedule: "0 2 * * *") }
+      let!(:job) { create(:job, user:, schedule: "0 2 * * *", created_at: 1.week.ago) }
 
       it "does not create another job run" do
         create(:job_run, job:, user:, trigger: :scheduled, created_at: Time.zone.local(2026, 4, 19, 2, 0, 5))
@@ -37,7 +37,7 @@ RSpec.describe Jobs::ScheduleJobsService do
     end
 
     context "when a job has a cron schedule and last ran before the current tick" do
-      let!(:job) { create(:job, user:, schedule: "0 2 * * *") }
+      let!(:job) { create(:job, user:, schedule: "0 2 * * *", created_at: 1.week.ago) }
 
       it "creates a new scheduled job run" do
         create(:job_run, job:, user:, trigger: :scheduled, created_at: Time.zone.local(2026, 4, 18, 2, 0, 5))
@@ -58,6 +58,15 @@ RSpec.describe Jobs::ScheduleJobsService do
       end
     end
 
+    context "when a job was created after the most recent tick" do
+      let!(:job) { create(:job, user:, schedule: "0 2 * * *", created_at: Time.zone.local(2026, 4, 19, 2, 0, 15)) }
+
+      it "does not create a job run" do
+        expect { service.call }
+          .not_to(change { job.job_runs.count })
+      end
+    end
+
     context "when a job has no schedule" do
       it "does not create a job run" do
         create(:job, user:, schedule: nil)
@@ -68,7 +77,7 @@ RSpec.describe Jobs::ScheduleJobsService do
     end
 
     context "when a job has an invalid cron expression" do
-      let!(:job) { create(:job, user:, schedule: "0 2 * * *") }
+      let!(:job) { create(:job, user:, schedule: "0 2 * * *", created_at: 1.week.ago) }
 
       it "does not create a job run and does not raise" do
         job.update_column(:schedule, "bogus") # rubocop:disable Rails/SkipsModelValidations
