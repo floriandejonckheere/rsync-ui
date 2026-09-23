@@ -13,12 +13,14 @@ en:
       delete: Delete repository
       delete_confirm: Are you sure you want to delete this repository? This action cannot be undone.
       delete_confirm_title: Delete repository
+      delete_disabled: Repository cannot be deleted because it is used in one or more jobs.
       duplicate: Duplicate repository
       edit: Edit repository
       measure: Measure disk size
     create:
       success: Repository was successfully created.
     destroy:
+      failure: Repository cannot be deleted because it is used in one or more jobs.
       success: Repository was successfully deleted.
     duplicate:
       name: "%{repository_name} (copy)"

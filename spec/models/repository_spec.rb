@@ -7,8 +7,8 @@ RSpec.describe Repository do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:server).optional }
 
-    it { is_expected.to have_many(:source_jobs).dependent(:destroy) }
-    it { is_expected.to have_many(:destination_jobs).dependent(:destroy) }
+    it { is_expected.to have_many(:source_jobs).dependent(:restrict_with_error) }
+    it { is_expected.to have_many(:destination_jobs).dependent(:restrict_with_error) }
   end
 
   describe "normalization" do

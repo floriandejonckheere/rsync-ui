@@ -100,15 +100,20 @@
         <%= lucide_icon "copy", class: "h-4 w-4" %>
       <% end %>
 
-      <%= link_to repository_path(repository),
-                  class: "btn-icon-outline btn-icon-md text-red-600 hover:text-red-700 dark:text-red-400",
-                  data: {
-                    tooltip: I18n.t("repositories.actions.delete"),
-                    "turbo-method": :delete,
-                    "turbo-confirm": I18n.t("repositories.actions.delete_confirm"),
-                    "turbo-confirm-title": I18n.t("repositories.actions.delete_confirm_title"),
-                    "turbo-confirm-destructive": true,
-                  } do %>
+      <% deletable = jobs.empty? %>
+
+      <%= button_to repository_path(repository),
+                    method: :delete,
+                    class: "btn-icon-outline btn-icon-md text-red-600 hover:text-red-700 dark:text-red-400#{" cursor-not-allowed opacity-50" unless deletable}",
+                    disabled: !deletable,
+                    form_class: "contents",
+                    data: {
+                      tooltip: deletable ? I18n.t("repositories.actions.delete") : I18n.t("repositories.actions.delete_disabled"),
+                      turbo_frame: "_top",
+                      "turbo-confirm": I18n.t("repositories.actions.delete_confirm"),
+                      "turbo-confirm-title": I18n.t("repositories.actions.delete_confirm_title"),
+                      "turbo-confirm-destructive": true,
+                    } do %>
         <%= lucide_icon "trash-2", class: "h-4 w-4" %>
       <% end %>
     </div>

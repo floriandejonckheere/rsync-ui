@@ -61,6 +61,28 @@ RSpec.describe "Repositories" do
         end
       end
 
+      context "when a repository is used by a job" do
+        it "disables the delete button" do
+          repository = create(:repository, :local, user:)
+          create(:job, user:, source_repository: repository)
+
+          get repositories_path
+
+          expect(response.body).to include(I18n.t("repositories.actions.delete_disabled"))
+        end
+      end
+
+      context "when a repository is not used by any job" do
+        it "enables the delete button" do
+          create(:repository, user:)
+
+          get repositories_path
+
+          expect(response.body).to include(I18n.t("repositories.actions.delete"))
+          expect(response.body).not_to include(I18n.t("repositories.actions.delete_disabled"))
+        end
+      end
+
       context "when repositories have categories" do
         it "renders uncategorized repositories before the categorized ones" do
           categorized = create(:repository, user:, name: "Alpha item", category: "Production")
@@ -357,6 +379,34 @@ RSpec.describe "Repositories" do
         follow_redirect!
 
         expect(response.body).to include(I18n.t("repositories.destroy.success"))
+      end
+
+      context "when the repository is used as a job's source repository" do
+        before { create(:job, user:, source_repository: repository) }
+
+        it "does not destroy the repository and displays a failure message" do
+          expect { delete repository_path(repository) }
+            .not_to change Repository, :count
+
+          follow_redirect!
+
+          expect(response.body).to include(I18n.t("repositories.destroy.failure"))
+        end
+      end
+
+      context "when the repository is used as a job's destination repository" do
+        before { create(:job, user:, destination_repository: repository) }
+
+        it "does not destroy the repository and displays a failure message" do
+          expect { delete repository_path(repository) }
+            .not_to change Repository, :count
+
+          delete repository_path(repository)
+
+          follow_redirect!
+
+          expect(response.body).to include(I18n.t("repositories.destroy.failure"))
+        end
       end
     end
 

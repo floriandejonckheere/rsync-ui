@@ -189,7 +189,7 @@ end
 #
 # Foreign Keys
 #
-#  fk_rails_...  (destination_repository_id => repositories.id) ON DELETE => cascade
-#  fk_rails_...  (source_repository_id => repositories.id) ON DELETE => cascade
+#  fk_rails_...  (destination_repository_id => repositories.id) ON DELETE => restrict
+#  fk_rails_...  (source_repository_id => repositories.id) ON DELETE => restrict
 #  fk_rails_...  (user_id => users.id)
 #

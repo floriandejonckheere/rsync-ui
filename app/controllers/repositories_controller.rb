@@ -65,9 +65,11 @@ class RepositoriesController < ApplicationController
   def destroy
     authorize! @repository
 
-    @repository.destroy!
-
-    redirect_to repositories_path, notice: t(".success"), status: :see_other
+    if @repository.destroy
+      redirect_to repositories_path, notice: t(".success"), status: :see_other
+    else
+      redirect_to repositories_path, alert: t(".failure"), status: :see_other
+    end
   end
 
   def measure

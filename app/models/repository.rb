@@ -12,13 +12,13 @@ class Repository < ApplicationRecord
            class_name: "Job",
            foreign_key: :source_repository_id,
            inverse_of: :source_repository,
-           dependent: :destroy
+           dependent: :restrict_with_error
 
   has_many :destination_jobs,
            class_name: "Job",
            foreign_key: :destination_repository_id,
            inverse_of: :destination_repository,
-           dependent: :destroy
+           dependent: :restrict_with_error
 
   enum :repository_type, {
     local: "local",
