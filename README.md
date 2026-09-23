@@ -8,6 +8,7 @@
 <p align="center">
   <a href="https://github.com/floriandejonckheere/rsync-ui/actions/workflows/ci.yml"><img alt="Continuous Integration" src="https://github.com/floriandejonckheere/rsync-ui/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/floriandejonckheere/rsync-ui/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/floriandejonckheere/rsync-ui?label=Latest%20release"></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/floriandejonckheere/rsync-ui"></a>
 </p>
 
 Rsync UI is a web application that lets you create, schedule, and execute file synchronization jobs with just a few clicks, powered by [rsync](https://github.com/RsyncProject/rsync).
@@ -49,97 +50,174 @@ Rsync UI is a web application that lets you create, schedule, and execute file s
 
 ## Getting started
 
-Rsync UI runs as a set of Docker containers. Docker compose is the recommended way to run the application.
+Rsync UI is distributed as a Docker image and is meant to be run with Docker compose.
 
-```yml
-x-app: &app
-  image: ghcr.io/floriandejonckheere/rsync-ui:latest
-  volumes:
-    - rsync_ui:/app/storage/ # Directory for rsync logs
-    - /path/to/storage:/data/storage:ro # Your local storage directories
-    - /path/to/backup:/data/storage:rw # Your local storage directories
-  environment:
-    SECRET_KEY_BASE: my-secret # Application secret key
-    ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: my-secret # Encryption secret key
-    ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY: my-secret # Encryption secret key
-    ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT: my-secret # Encryption secret key
+### Requirements
 
-    PG_HOST: postgres
-    PG_USER: rsync_ui
-    PG_PASSWORD: rsync_ui
-    PG_DATABASE: rsync_ui
+- Docker with the Docker compose plugin
+- A reverse proxy that terminates TLS (see [Reverse proxy](#reverse-proxy))
 
-    APP_HOST: rsync-ui.example.com # URL of the application
-    APP_EMAIL: rsync-ui@example.com # Email address of the application
+### Installation
 
-    ADMIN_EMAIL: rsync-ui@example.com # Default admin account
-    ADMIN_PASSWORD: rsync-ui # Default admin password
-  depends_on:
-    - postgres
+1. Create a `compose.yml` file:
 
-services:
-  web:
-    <<: *app
-    hostname: rsync_ui_app
-    ports:
-      - "3000:3000"
+   ```yml
+   x-app: &app
+     image: ghcr.io/floriandejonckheere/rsync-ui:latest
+     restart: unless-stopped
+     volumes:
+       - rsync_ui:/app/storage/ # Application storage (rsync logs)
+       - /path/to/storage:/data/storage:ro # Local directory to back up (read-only)
+       - /path/to/backup:/data/backup:rw # Local directory to back up to (read-write)
+     environment:
+       SECRET_KEY_BASE: my-secret # Application secret key
+       ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: my-secret # Encryption secret key
+       ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY: my-secret # Encryption secret key
+       ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT: my-secret # Encryption secret key
 
-  worker:
-    <<: *app
-    command: bin/jobs
-    hostname: rsync_ui_worker
+       PG_HOST: postgres
+       PG_USER: rsync_ui
+       PG_PASSWORD: my-password
+       PG_DATABASE: rsync_ui
 
-  postgres:
-    image: postgres:18
-    volumes:
-      - postgres:/var/lib/postgresql/18/docker/
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
+       APP_HOST: rsync-ui.example.com # Public hostname of the application
+       APP_EMAIL: rsync-ui@example.com # Sender address of emails sent by the application
 
-volumes:
-  postgres:
-  rsync_ui:
+       ADMIN_EMAIL: admin@example.com # Default administrator account
+       ADMIN_PASSWORD: my-admin-password # Default administrator password
+     depends_on:
+       - postgres
+
+   services:
+     web:
+       <<: *app
+       ports:
+         - "127.0.0.1:3000:3000"
+
+     worker:
+       <<: *app
+       command: bin/jobs
+
+     postgres:
+       image: postgres:18
+       restart: unless-stopped
+       volumes:
+         - postgres:/var/lib/postgresql/18/docker/
+       environment:
+         POSTGRES_USER: postgres
+         POSTGRES_PASSWORD: my-postgres-password
+
+   volumes:
+     postgres:
+     rsync_ui:
+   ```
+
+   Generate each secret with `openssl rand -hex 32`, and replace the passwords with strong, unique values.
+
+2. Start the database:
+
+   ```sh
+   docker compose up -d postgres
+   ```
+
+3. Create the database user and database for the application, using the `PG_USER`, `PG_PASSWORD` and `PG_DATABASE` values from step 1:
+
+   ```sh
+   docker compose exec postgres psql -U postgres \
+     -c "CREATE USER rsync_ui WITH PASSWORD 'my-password';" \
+     -c "CREATE DATABASE rsync_ui OWNER rsync_ui;"
+   ```
+
+4. Start the application:
+
+   ```sh
+   docker compose up -d
+   ```
+
+   The database schema is created automatically on first start, and the administrator account is created using `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
+
+5. Configure your reverse proxy to forward `https://rsync-ui.example.com` to port 3000, and sign in with the administrator account.
+
+### Reverse proxy
+
+Rsync UI does not handle TLS itself, and serves plain HTTP on port 3000.
+Run it behind a reverse proxy (e.g. [Caddy](https://caddyserver.com/), [Traefik](https://traefik.io/) or [nginx](https://nginx.org/)) that terminates TLS.
+The reverse proxy must:
+
+- Serve the application on the hostname configured in `APP_HOST`
+- Set the `X-Forwarded-Proto` header
+- Support WebSocket connections (used for real-time updates)
+
+For example, using Caddy (which sets up TLS certificates automatically):
+
+```
+rsync-ui.example.com {
+  reverse_proxy localhost:3000
+}
 ```
 
-Generate secrets using `openssl rand -hex 32`.
+### Local storage
 
-### Docker compose
+Local directories are mounted into the container under `/data`, and can be added as local repositories in the application (e.g. `/data/storage`).
 
-The easiest way to get started is to use Docker compose:
+The application runs as user and group ID `1000` inside the container, so this user needs read access to source directories and write access to destination directories.
 
-1. Install Docker and Docker compose
-2. Clone the repository
-3. Run `docker-compose up -d`
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+### Configuration
+
+Besides the variables in the example above, the following optional environment variables are available:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `RAILS_LOG_LEVEL` | `info` | Log level (`debug`, `info`, `warn`, `error`, `fatal`) |
+| `JOB_CONCURRENCY` | `1` | Number of background job worker processes |
+| `RAILS_MAX_THREADS` | `5` | Number of web server threads (also the database connection pool size) |
+| `MISSION_CONTROL` | `0` | Set to `1` to enable the background job dashboard for administrators |
+| `SKIP_CREDENTIALS_CHECK` | `0` | Set to `1` to skip checking the required environment variables on startup |
+| `SKIP_CONFIGURATION_CHECK` | `0` | Set to `1` to skip checking the application configuration on startup |
+| `SKIP_SSH_CONFIG_SYNC` | `0` | Set to `1` to skip regenerating the SSH configuration on startup |
+
+### Health check
+
+The application exposes a health check endpoint at `/up`, which returns HTTP 200 when the application is running, and HTTP 500 otherwise.
+
+### Upgrading
+
+Pull the latest image and restart the containers:
+
+```sh
+docker compose pull
+docker compose up -d
+```
+
+Database migrations are run automatically on startup.
+Read the [changelog](CHANGELOG.md) before upgrading.
+
+### Backups
+
+All application data (servers, repositories, jobs and their history) is stored in the PostgreSQL database.
+Back up the database regularly, for example:
+
+```sh
+docker compose exec postgres pg_dump -U postgres rsync_ui > rsync_ui.sql
+```
+
+Server credentials (passwords and SSH keys) are encrypted in the database using the `ACTIVE_RECORD_ENCRYPTION_*` keys.
+Store these keys together with your backups: without them, the encrypted credentials cannot be restored.
 
 ## Development
 
-First, ensure you have a working Docker environment.
+First, ensure you have a working Docker environment with the Docker compose plugin.
 
 ### Start the application
 
-Pull the images and start the containers:
+Build the images and start the containers:
 
-```
-docker-compose up -d
-```
-
-Set up the PostgreSQL database:
-
-```
-docker-compose exec app bundle exec rails db:setup
+```sh
+docker compose up -d
 ```
 
-Load sample data into the PostgreSQL database:
-
-```
-docker-compose exec app bundle exec rails database:seed
-```
-
-The application is now available at [http://localhost:3000](http://localhost:3000).
+On startup, the database is created, migrated, and seeded with sample data.
+The application is now available at [http://localhost:3000](http://localhost:3000). Sign in with the administrator account configured in `.development.env`.
 
 ### Development environment
 
@@ -171,78 +249,64 @@ To reset all destination repositories back to their initial empty state, run fro
 docker/reset.sh
 ```
 
-### Dependencies
+### Updating
 
-Use the `bin/update` script to update your development environment dependencies.
+Run the `bin/update` script to pull and rebuild the images, install the Ruby and JavaScript dependencies, and restart the application:
+
+```sh
+bin/update
+```
+
+### Useful commands
+
+```sh
+docker compose logs -f app worker                                       # Follow application and background worker logs
+docker compose exec app bash                                            # Open a shell in the application container
+docker compose exec app bundle exec rails console                       # Open a Rails console
+docker compose exec app bundle exec rails db:migrate                    # Run database migrations
+docker compose exec app bundle exec rails database:seed                 # Seed the database with sample data
+docker compose exec app bundle exec rspec                               # Run the test suite
+docker compose exec app bundle exec rspec spec/path/to/file_spec.rb:12  # Run a single test
+docker compose exec app bundle exec rubocop                             # Lint Ruby code
+docker compose exec app yarn herb:format                                # Format ERB templates
+docker compose exec app bundle exec brakeman                            # Run a security scan
+```
+
+See [docs/COMMANDS.md](docs/COMMANDS.md) for more commands.
 
 ### Debugging
 
 Call `binding.break` anywhere in the source code to start a debugger.
 
-### Testing
+### Environment variables
 
-Run the test suite:
-
-```
-rspec
-```
-
-### Secrets
-
-#### Repository secrets
-
-Secrets for release and deployment:
-
-- `GHCR_USER` (Github Container Registry username)
-- `GHCR_TOKEN` (Github Container Registry token)
-
-Create a [personal access token on GitHub](https://github.com/settings/tokens/new?description=Rsync+UI+(CI)&scopes=repo,write:packages).
-
-Secrets for deployment:
-
-- `SSH_HOST` (deployment host)
-- `SSH_USER` (deployment user)
-- `SSH_KEY` (private key)
-
-#### Environment secrets
-
-Secrets for deployment:
-
-- `SECRET_KEY_BASE` (application secret)
-- `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` (encryption secret)
-- `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` (encryption secret)
-- `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` (encryption secret)
-
-- `PG_HOST` (PostgreSQL host)
-- `PG_USER` (database username)
-- `PG_PASSWORD` (database password)
-
-- `APP_HOST` (application hostname)
-- `APP_EMAIL` (application email)
-
-- `ADMIN_EMAIL` (administrator account email)
-- `ADMIN_PASSWORD` (administrator account password)
-
-- `POSTGRES_PASSWORD` (postgres user password, only for postgres container)
-
-When adding more application environment variables, do not forget to add them in the following files, and on GitHub as environment secrets:
+When adding application environment variables, do not forget to add them in the following places:
 
 - `.development.env`
-- `.github/workflows/cd.yml`
-- `ops/compose.yml`
+- `config/initializers/credentials.rb` (if the variable is required in production)
+- The [Installation](#installation) or [Configuration](#configuration) section of this README
+
+### Repository secrets
+
+The CI workflow needs the following repository secrets to push Docker images to the GitHub Container Registry:
+
+- `GHCR_USER` (GitHub Container Registry username)
+- `GHCR_TOKEN` (GitHub Container Registry token)
+
+Create a [personal access token on GitHub](https://github.com/settings/tokens/new?description=Rsync+UI+(CI)&scopes=repo,write:packages).
 
 ### Releasing
 
 Update the changelog and bump the version in `lib/rsync_ui/version.rb`.
-Create a tag for the version and push it to Github.
+Create a tag for the version and push it to GitHub.
 A Docker image will automatically be built and pushed to the registry.
 
 ```sh
-nano lib/rsync_ui/version.rb
-git add lib/rsync_ui/version.rb
+nano CHANGELOG.md lib/rsync_ui/version.rb
+git add CHANGELOG.md lib/rsync_ui/version.rb
 git commit -m "Bump version to v1.0.0"
 git tag v1.0.0
-git push origin master
+git push origin main
 git push origin v1.0.0
 ```
 
