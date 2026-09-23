@@ -107,6 +107,8 @@ Hooks:
 - [ ] Drop `Net::SSH` in favor of plain `ssh`
 - [ ] Implement backoff for servers: after N failed retries, disable connectivity/resource usage
 - [ ] Repository disk size: count files and directories as well
+- [ ] Remote repositories (source/destination): add option to ping server before starting job, configure cancel/abort if not reachable 
+- [ ] (Local) repository path: allow browsing/selecting existing directories
 
 - [ ] Optimize log streaming:
 
