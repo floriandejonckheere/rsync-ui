@@ -109,6 +109,7 @@ Hooks:
 - [ ] Repository disk size: count files and directories as well
 - [ ] Remote repositories (source/destination): add option to ping server before starting job, configure cancel/abort if not reachable 
 - [ ] (Local) repository path: allow browsing/selecting existing directories
+- [ ] Keep a small graph of transfer speeds
 
 - [ ] Optimize log streaming:
 
