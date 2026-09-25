@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove the "Sync SSH config" maintenance task, the SSH config is kept in sync automatically
+
+### Security
+
+- Only write SSH private keys to disk while a job is running, and pass SSH passwords through the environment instead of a file
+
 ## [v1.0.0-rc.1] - 2026-09-25
 
 First release candidate.

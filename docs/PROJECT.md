@@ -99,10 +99,9 @@ Hooks:
 - [ ] Improve auditing: add login, change password, notification sending
 - [ ] Do not bind postgres to port 5432, otherwise you can't use git worktrees
 - [ ] Audit codebase
-- [ ] SSH config: write password/private key only when invoking SSH commands
+- [x] SSH config: write password/private key only when invoking SSH commands
 - [ ] Allow discovery of partitions/disks on the server and measure resource usage per partition/disk
 - [ ] Too many `SolidCable::TrimJob` jobs when using ActionCable
-- [ ] Only run SyncSSHConfig job periodically, not on startup
 - [ ] Make streaming job output fixed height, but scrolling (and anchored to the bottom)
 - [ ] Drop `Net::SSH` in favor of plain `ssh`
 - [ ] Implement backoff for servers: after N failed retries, disable connectivity/resource usage

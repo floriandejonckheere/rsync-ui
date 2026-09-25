@@ -13,13 +13,8 @@ RSpec.describe Servers::SSHConfigService do
 
       before { service.call }
 
-      it "writes the private key to ~/.ssh/<slug>.pem" do
-        key_file = tmpdir
-          .join("#{server.slug}.pem")
-
-        expect(key_file).to exist
-        expect(key_file.read).to eq server.ssh_key
-        expect(key_file.stat.mode & 0o777).to eq 0o600
+      it "does not write the private key" do
+        expect(tmpdir.join("#{server.slug}.pem")).not_to exist
       end
 
       it "writes a Host config file entry with IdentityFile" do
@@ -31,7 +26,7 @@ RSpec.describe Servers::SSHConfigService do
         expect(config).to include "HostName #{server.host}"
         expect(config).to include "Port #{server.port}"
         expect(config).to include "User #{server.username}"
-        expect(config).to include "IdentityFile #{tmpdir.join("#{server.slug}.pem")}"
+        expect(config).to include "IdentityFile ${RSYNC_UI_IDENTITY_FILE}"
         expect(config).to include "IdentitiesOnly yes"
       end
 
@@ -45,13 +40,8 @@ RSpec.describe Servers::SSHConfigService do
 
       before { service.call }
 
-      it "writes the password to ~/.ssh/<slug>_password" do
-        password_file = tmpdir
-          .join("#{server.slug}_password")
-
-        expect(password_file).to exist
-        expect(password_file.read).to eq server.password
-        expect(password_file.stat.mode & 0o777).to eq 0o600
+      it "does not write the password" do
+        expect(tmpdir.join("#{server.slug}_password")).not_to exist
       end
 
       it "writes a Host config file entry without IdentityFile" do
@@ -170,34 +160,34 @@ RSpec.describe Servers::SSHConfigService do
       end
     end
 
-    context "with orphaned key files" do
-      let!(:server) { create(:server, :with_ssh_key) }
-      let(:orphan_slug) { "deleted-server" }
+    context "with key and password files written by previous versions" do
+      let!(:key_server) { create(:server, :with_ssh_key) }
+      let!(:pass_server) { create(:server, :with_password) }
 
       before do
-        # Write orphan private key file
+        # Write private key file
         tmpdir
-          .join("#{orphan_slug}.pem")
-          .write("orphan key")
+          .join("#{key_server.slug}.pem")
+          .write("key")
 
-        # Write orphan password file
+        # Write password file
         tmpdir
-          .join("#{orphan_slug}_password")
-          .write("orphan pass")
+          .join("#{pass_server.slug}_password")
+          .write("pass")
 
         service.call
       end
 
-      it "removes the orphaned key file" do
-        expect(tmpdir.join("#{orphan_slug}.pem")).not_to exist
+      it "removes the key file" do
+        expect(tmpdir.join("#{key_server.slug}.pem")).not_to exist
       end
 
-      it "removes the orphaned password file" do
-        expect(tmpdir.join("#{orphan_slug}_password")).not_to exist
+      it "removes the password file" do
+        expect(tmpdir.join("#{pass_server.slug}_password")).not_to exist
       end
 
-      it "keeps files for existing servers" do
-        expect(tmpdir.join("#{server.slug}.pem")).to exist
+      it "keeps the known_hosts files for existing servers" do
+        expect(tmpdir.join("#{key_server.slug}_known_hosts")).to exist
       end
     end
 
