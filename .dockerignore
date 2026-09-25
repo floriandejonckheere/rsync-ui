@@ -42,6 +42,7 @@
 
 # Ignore development files
 /bin/brakeman
+/bin/changelog
 /bin/deploy
 /bin/dev
 /bin/docker-entrypoint

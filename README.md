@@ -303,10 +303,16 @@ Create a [personal access token on GitHub](https://github.com/settings/tokens/ne
 
 ### Releasing
 
-Update the changelog and bump the version in `lib/rsync_ui/version.rb`.
+Add your changes to the `Unreleased` section of the [changelog](CHANGELOG.md) as you go, and bump the version in `lib/rsync_ui/version.rb` when releasing.
 Create a tag for the version and push it to GitHub.
-A Docker image will automatically be built and pushed to the registry (e.g. `ghcr.io/floriandejonckheere/rsync-ui:1.0.0`).
-The build fails if the version in `lib/rsync_ui/version.rb` (including the pre-release suffix, e.g. `v1.0.0-rc1`) does not match the tag.
+The build fails if the version in `lib/rsync_ui/version.rb` (including the pre-release suffix, e.g. `v1.0.0-rc.1`) does not match the tag.
+
+Once the tag passes the tests, the CI workflow:
+
+1. Builds a Docker image and pushes it to the registry (e.g. `ghcr.io/floriandejonckheere/rsync-ui:v1.0.0`)
+2. Moves the `Unreleased` changelog entries to a new version section (dated today), updates the comparison links, and commits the result to `main` (using `bin/changelog`)
+3. Creates a GitHub release with the changelog entries of the version as release notes (marked as pre-release if the version has a suffix, e.g. `-rc.1`)
+
 Every push to `main` also builds and pushes the `latest` image.
 
 ```sh
@@ -316,7 +322,11 @@ git commit -m "Bump version to v1.0.0"
 git tag v1.0.0
 git push origin main
 git push origin v1.0.0
+git pull # After the workflow has committed the changelog
 ```
+
+If the `Unreleased` section is empty (and the changelog has no section for the version), no release is created.
+If `main` is a protected branch, allow GitHub Actions to push to it.
 
 ## License
 

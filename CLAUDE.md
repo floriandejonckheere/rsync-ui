@@ -73,6 +73,13 @@ Create one commit:
 - When installing additional gems or dependencies, per gem/dependency, with commit message `Add <gem> gem` or `Add <package> dependency`.
 - When modifying the database schema (e.g. creating a table or adding a column to an existing table), per schema change/migration file.
 
+### Releases
+
+- Record user-facing changes under the `## [Unreleased]` section of `CHANGELOG.md` (Keep a Changelog format), in the same commit as the change.
+- Never add version sections, dates, or comparison links to `CHANGELOG.md` manually: the CI workflow does this with `bin/changelog` when a `v*` tag is pushed, commits the result to `main`, and creates a GitHub release from it.
+- To release, bump the version in `lib/rsync_ui/version.rb` (commit message `Bump version to vX.Y.Z`) and tag the commit `vX.Y.Z`; the tag must match the version. Docker images are tagged with the `v` prefix (e.g. `ghcr.io/floriandejonckheere/rsync-ui:v1.0.0`).
+- See the "Releasing" section in [README.md](README.md) for the full process.
+
 ## Project Management
 
 The current status of the tasks and features is tracked in [docs/PROJECT.md](docs/PROJECT.md).

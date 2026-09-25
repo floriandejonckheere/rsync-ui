@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+#
+# Move the "Unreleased" changelog entries to a new version section, update the
+# comparison links, and print the release notes for that version.
+# Does not modify the changelog if the version section already exists.
+#
+# Usage: bin/changelog VERSION [DATE]  (DATE defaults to today, UTC)
+#
+
+require "date"
+
+abort "Usage: #{$PROGRAM_NAME} VERSION [DATE]" unless ARGV.size.between?(1, 2)
+
+version = "v#{ARGV[0].delete_prefix("v")}"
+date = ARGV[1] || Date.today.iso8601
+path = File.expand_path("../CHANGELOG.md", __dir__)
+changelog = File.read(path)
+
+unless changelog.match?(/^## \[#{Regexp.escape(version)}\]/)
+  unreleased_link = changelog[/^\[Unreleased\]: (\S+)$/, 1] or abort "No [Unreleased] link found in CHANGELOG.md"
+
+  # Previous version is the base of the "Unreleased" comparison link (if any)
+  repository, previous, branch = unreleased_link.match(%r{\A(.+?)(?:/compare/(\S+?)\.{2,3}(\S+))?\z}).captures
+
+  version_link = previous ? "#{repository}/compare/#{previous}..#{version}" : "#{repository}/releases/tag/#{version}"
+
+  changelog = changelog
+    .sub(/^## \[Unreleased\]\n/, "## [Unreleased]\n\n## [#{version}] - #{date}\n")
+    .sub(/^\[Unreleased\]: \S+$/, "[Unreleased]: #{repository}/compare/#{version}..#{branch || "main"}\n[#{version}]: #{version_link}")
+
+  File.write(path, changelog)
+end
+
+# Print the release notes (contents of the version section)
+notes = changelog[/^## \[#{Regexp.escape(version)}\][^\n]*\n(.*?)(?=^## |^\[[^\]]+\]: )/m, 1].to_s.strip
+
+abort "No changelog entries found for version #{version}" if notes.empty?
+
+puts notes
