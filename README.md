@@ -301,6 +301,9 @@ The CI workflow needs the following repository secrets to push Docker images to 
 
 Create a [personal access token on GitHub](https://github.com/settings/tokens/new?description=Rsync+UI+(CI)&scopes=repo,write:packages).
 
+The cleanup workflow deletes untagged images from the registry every Sunday (and can be run manually, by default as a dry run).
+It uses the workflow token, so the repository needs the `Admin` role in the package's "Manage Actions access" settings.
+
 ### Releasing
 
 Add your changes to the `Unreleased` section of the [changelog](CHANGELOG.md) as you go, and bump the version in `lib/rsync_ui/version.rb` when releasing.

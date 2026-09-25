@@ -1,0 +1,36 @@
+name: Clean up images
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Only log the images that would be deleted'
+        type: boolean
+        default: true
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    name: Delete untagged images
+    runs-on: ubuntu-latest
+
+    permissions:
+      packages: write
+
+    steps:
+      # Untagged platform and attestation manifests referenced by tagged images are kept
+      - name: Delete untagged images
+        uses: dataaxiom/ghcr-cleanup-action@d52806a0dc70b430571a37da1fde39733ffd640f # v1.2.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          package: ${{ github.event.repository.name }}
+          delete-untagged: true
+          delete-ghost-images: true
+          delete-partial-images: true
+          validate: true
+          dry-run: ${{ inputs.dry-run || false }}
