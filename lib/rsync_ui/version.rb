@@ -2,10 +2,10 @@
 
 module RsyncUI
   module Version
-    MAJOR = 0
+    MAJOR = 1
     MINOR = 0
-    PATCH = 1
-    PRE   = nil
+    PATCH = 0
+    PRE   = "rc.1"
 
     GIT_HASH = "development"
     BUILD_DATE = nil
