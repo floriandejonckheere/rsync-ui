@@ -45,6 +45,7 @@
 /bin/deploy
 /bin/dev
 /bin/docker-entrypoint
+/bin/icons
 /bin/rubocop
 /bin/setup
 /bin/update

@@ -87,6 +87,13 @@ docker compose exec app yarn build:js        # Build JavaScript with esbuild
 docker compose exec app yarn build:css       # Build CSS with Tailwind
 ```
 
+## Icons
+```bash
+bin/icons                                    # Convert all public/icon*.svg to PNG (requires librsvg on the host)
+bin/icons public/icon-black.svg              # Convert a single icon
+SIZE=1024 bin/icons                          # Override the output size (default: 512)
+```
+
 ## Annotations
 ```bash
 docker compose exec app bundle exec annotaterb models     # Annotate models with schema info

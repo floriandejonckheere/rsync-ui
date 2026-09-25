@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+#
+# Convert SVG icons in public/ to PNG (512x512, transparent background).
+# Requires librsvg (macOS: brew install librsvg, Debian: apt install librsvg2-bin).
+#
+# Usage: bin/icons [FILE.svg...]  (defaults to public/icon*.svg)
+#
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+SIZE="${SIZE:-512}"
+
+if ! command -v rsvg-convert >/dev/null; then
+  echo "rsvg-convert is required (install librsvg)" >&2
+  exit 1
+fi
+
+if [ "$#" -eq 0 ]; then
+  set -- public/icon*.svg
+fi
+
+for svg in "$@"; do
+  png="${svg%.svg}.png"
+  echo "== ${svg} -> ${png} =="
+  rsvg-convert --width "${SIZE}" --height "${SIZE}" --keep-aspect-ratio --output "${png}" "${svg}"
+done
