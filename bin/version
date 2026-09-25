@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+#
+# Write a version to lib/rsync_ui/version.rb.
+#
+# Usage: bin/version VERSION  (e.g. v1.2.3 or v1.2.3-rc.1)
+#
+
+abort "Usage: #{$PROGRAM_NAME} VERSION" unless ARGV.size == 1
+
+match = ARGV[0].match(/\Av?(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.]+))?\z/)
+
+abort "Invalid version #{ARGV[0]} (expected vMAJOR.MINOR.PATCH[-PRE])" unless match
+
+major, minor, patch, pre = match.captures
+path = File.expand_path("../lib/rsync_ui/version.rb", __dir__)
+
+version = File.read(path)
+  .sub(/^(\s*MAJOR\s*=\s*).*$/, "\\1#{major}")
+  .sub(/^(\s*MINOR\s*=\s*).*$/, "\\1#{minor}")
+  .sub(/^(\s*PATCH\s*=\s*).*$/, "\\1#{patch}")
+  .sub(/^(\s*PRE\s*=\s*).*$/, "\\1#{pre ? "\"#{pre}\"" : 'nil'}")
+
+File.write(path, version)

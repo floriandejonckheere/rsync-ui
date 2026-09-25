@@ -193,7 +193,12 @@ jobs:
           VERSION=$(ruby -r ./lib/rsync_ui/version -e 'puts RsyncUI::VERSION')
 
           if [[ "v${VERSION}" != "${GITHUB_REF_NAME}" ]]; then
-            echo "::error file=lib/rsync_ui/version.rb::Version in lib/rsync_ui/version.rb (${VERSION}) does not match tag ${GITHUB_REF_NAME}"
+            echo "::error file=lib/rsync_ui/version.rb::Version in lib/rsync_ui/version.rb (${VERSION}) does not match tag ${GITHUB_REF_NAME} (use bin/release to release)"
+            exit 1
+          fi
+
+          if ! grep -q "^## \[${GITHUB_REF_NAME}\]" CHANGELOG.md; then
+            echo "::error file=CHANGELOG.md::No changelog section found for ${GITHUB_REF_NAME} (use bin/release to release)"
             exit 1
           fi
 
@@ -252,21 +257,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6.0.2
         with:
-          ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 1
 
-      - name: Update changelog
+      - name: Extract release notes
         run: |
           bin/changelog "${GITHUB_REF_NAME}" > RELEASE_NOTES.md
 
           cat RELEASE_NOTES.md
-
-          if ! git diff --quiet CHANGELOG.md; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -m "Update changelog for ${GITHUB_REF_NAME}" CHANGELOG.md
-            git push origin HEAD
-          fi
 
       - name: Create GitHub release
         env:

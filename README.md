@@ -306,30 +306,24 @@ It uses the workflow token, so the repository needs the `Admin` role in the pack
 
 ### Releasing
 
-Add your changes to the `Unreleased` section of the [changelog](CHANGELOG.md) as you go, and bump the version in `lib/rsync_ui/version.rb` when releasing.
-Create a tag for the version and push it to GitHub.
-The build fails if the version in `lib/rsync_ui/version.rb` (including the pre-release suffix, e.g. `v1.0.0-rc.1`) does not match the tag.
-
-Once the tag passes the tests, the CI workflow:
-
-1. Builds a Docker image and pushes it to the registry (e.g. `ghcr.io/floriandejonckheere/rsync-ui:v1.0.0`)
-2. Moves the `Unreleased` changelog entries to a new version section (dated today), updates the comparison links, and commits the result to `main` (using `bin/changelog`)
-3. Creates a GitHub release with the changelog entries of the version as release notes (marked as pre-release if the version has a suffix, e.g. `-rc.1`)
-
-Every push to `main` also builds and pushes the `latest` image.
+Add your changes to the `Unreleased` section of the [changelog](CHANGELOG.md) as you go.
+To release a version (`vMAJOR.MINOR.PATCH`, optionally with a pre-release suffix, e.g. `v1.0.0-rc.1`), run from an up-to-date, clean `main` branch:
 
 ```sh
-nano CHANGELOG.md lib/rsync_ui/version.rb
-git add CHANGELOG.md lib/rsync_ui/version.rb
-git commit -m "Bump version to v1.0.0"
-git tag v1.0.0
-git push origin main
-git push origin v1.0.0
-git pull # After the workflow has committed the changelog
+bin/release v1.0.0
 ```
 
-If the `Unreleased` section is empty (and the changelog has no section for the version), no release is created.
-If `main` is a protected branch, allow GitHub Actions to push to it.
+The script:
+
+1. Writes the version to `lib/rsync_ui/version.rb` (using `bin/version`)
+2. Moves the `Unreleased` changelog entries to a new version section (dated today) and updates the comparison links (using `bin/changelog`)
+3. Commits the changes (`Bump version to v1.0.0`) and tags the commit `v1.0.0`
+4. Shows the release notes, and asks for confirmation before pushing `main` and the tag to GitHub
+
+Once the tag passes the tests, the CI workflow verifies that the tag matches the version and changelog, builds a Docker image and pushes it to the registry (e.g. `ghcr.io/floriandejonckheere/rsync-ui:v1.0.0`), and creates a GitHub release with the changelog entries of the version as release notes (marked as pre-release if the version has a suffix).
+Every push to `main` also builds and pushes the `latest` image.
+
+The script refuses to release if the `Unreleased` section is empty.
 
 ## License
 

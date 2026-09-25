@@ -76,8 +76,9 @@ Create one commit:
 ### Releases
 
 - Record user-facing changes under the `## [Unreleased]` section of `CHANGELOG.md` (Keep a Changelog format), in the same commit as the change.
-- Never add version sections, dates, or comparison links to `CHANGELOG.md` manually: the CI workflow does this with `bin/changelog` when a `v*` tag is pushed, commits the result to `main`, and creates a GitHub release from it.
-- To release, bump the version in `lib/rsync_ui/version.rb` (commit message `Bump version to vX.Y.Z`) and tag the commit `vX.Y.Z`; the tag must match the version. Docker images are tagged with the `v` prefix (e.g. `ghcr.io/floriandejonckheere/rsync-ui:v1.0.0`).
+- Never bump the version in `lib/rsync_ui/version.rb`, add version sections, dates, or comparison links to `CHANGELOG.md`, or create version tags manually.
+- Releases are made with `bin/release vX.Y.Z` (or `vX.Y.Z-PRE`) from a clean, up-to-date `main`: it writes the version, updates the changelog, commits (`Bump version to vX.Y.Z`), tags, and pushes after confirmation. Never run it unless the user explicitly asks for a release.
+- Pushing the tag triggers CI, which verifies the version, builds the Docker image (tagged with the `v` prefix, e.g. `ghcr.io/floriandejonckheere/rsync-ui:v1.0.0`), and creates a GitHub release from the changelog.
 - See the "Releasing" section in [README.md](README.md) for the full process.
 
 ## Project Management

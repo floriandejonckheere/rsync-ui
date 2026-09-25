@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+#
+# Release a new version: write the version to lib/rsync_ui/version.rb, move the
+# "Unreleased" changelog entries to a new version section, commit, tag, and push.
+# Pushing the tag triggers the CI workflow, which builds the Docker image and
+# creates the GitHub release.
+#
+# Usage: bin/release VERSION  (e.g. v1.2.3 or v1.2.3-rc.1)
+#
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+BRANCH="main"
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 VERSION" >&2
+  exit 1
+fi
+
+VERSION="v${1#v}"
+
+if ! [[ "${VERSION}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
+  echo "Invalid version ${VERSION} (expected vMAJOR.MINOR.PATCH[-PRE])" >&2
+  exit 1
+fi
+
+if [ "$(git branch --show-current)" != "${BRANCH}" ]; then
+  echo "Releases must be made from the ${BRANCH} branch" >&2
+  exit 1
+fi
+
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Working tree is not clean, commit or stash your changes first" >&2
+  exit 1
+fi
+
+git fetch --quiet --tags origin "${BRANCH}"
+
+if [ "$(git rev-parse HEAD)" != "$(git rev-parse "origin/${BRANCH}")" ]; then
+  echo "Local ${BRANCH} is not up to date with origin/${BRANCH}" >&2
+  exit 1
+fi
+
+if git rev-parse --quiet --verify "refs/tags/${VERSION}" > /dev/null; then
+  echo "Tag ${VERSION} already exists" >&2
+  exit 1
+fi
+
+bin/version "${VERSION}"
+
+if ! NOTES=$(bin/changelog "${VERSION}"); then
+  git checkout -- lib/rsync_ui/version.rb CHANGELOG.md
+  exit 1
+fi
+
+git commit --quiet -m "Bump version to ${VERSION}" lib/rsync_ui/version.rb CHANGELOG.md
+git tag "${VERSION}"
+
+echo "== Release notes for ${VERSION} =="
+echo "${NOTES}"
+echo
+git show --stat --oneline HEAD
+echo
+
+read -r -p "Push ${BRANCH} and ${VERSION} to origin? [y/N] " CONFIRM
+
+if [[ "${CONFIRM}" =~ ^[Yy]$ ]]; then
+  git push --atomic origin "${BRANCH}" "refs/tags/${VERSION}"
+else
+  echo "Not pushed. To push: git push --atomic origin ${BRANCH} refs/tags/${VERSION}"
+  echo "To undo: git tag -d ${VERSION} && git reset --hard HEAD~1"
+fi

@@ -47,9 +47,11 @@
 /bin/dev
 /bin/docker-entrypoint
 /bin/icons
+/bin/release
 /bin/rubocop
 /bin/setup
 /bin/update
+/bin/version
 /.devcontainer
 /.rubocop.yml
 /.ruby-version

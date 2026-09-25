@@ -94,13 +94,16 @@ bin/icons public/icon-black.svg              # Convert a single icon
 SIZE=1024 bin/icons                          # Override the output size (default: 512)
 ```
 
-## Changelog
+## Releasing
 ```bash
-bin/changelog v1.2.3                         # Move "Unreleased" entries to v1.2.3 (today), update links, print release notes
+bin/release v1.2.3                           # Bump version, update changelog, commit, tag, and push (after confirmation)
+bin/release v1.2.3-rc.1                      # Release a pre-release version
+bin/version v1.2.3                           # Only write version 1.2.3 to lib/rsync_ui/version.rb
+bin/changelog v1.2.3                         # Only move "Unreleased" entries to v1.2.3 (today), update links, print release notes
 bin/changelog v1.2.3 2026-01-31              # Same, with an explicit release date
 ```
 
-The release workflow runs `bin/changelog` automatically when a `v*` tag is pushed, and commits the result to `main`.
+The CI workflow runs `bin/changelog` on the pushed tag to extract the release notes for the GitHub release.
 
 ## Annotations
 ```bash
