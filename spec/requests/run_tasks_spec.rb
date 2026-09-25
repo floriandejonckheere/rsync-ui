@@ -5,20 +5,6 @@ RSpec.describe "Run tasks" do
 
   before { sign_in admin, scope: :user }
 
-  describe "sync_ssh_config" do
-    let(:task) { create(:task, class_name: "Servers::SyncSSHConfigTask") }
-
-    it "calls Servers::SSHConfigService" do
-      allow(Servers::SSHConfigService)
-        .to receive :call
-
-      run(task)
-
-      expect(Servers::SSHConfigService)
-        .to have_received :call
-    end
-  end
-
   describe "execute_jobs" do
     let(:task) { create(:task, class_name: "Jobs::ExecuteTask") }
 

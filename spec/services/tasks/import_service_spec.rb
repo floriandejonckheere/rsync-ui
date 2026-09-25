@@ -17,7 +17,7 @@ RSpec.describe Tasks::ImportService do
 
       task = Task.find_by!(name: "test_import_task")
 
-      expect(task.class_name).to eq "Servers::SyncSSHConfigTask"
+      expect(task.class_name).to eq "Audits::PurgeTask"
       expect(task.configuration).to be_nil
     end
 
