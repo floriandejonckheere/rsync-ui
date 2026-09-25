@@ -78,7 +78,7 @@ Create one commit:
 - Record user-facing changes under the `## [Unreleased]` section of `CHANGELOG.md` (Keep a Changelog format), in the same commit as the change.
 - Never bump the version in `lib/rsync_ui/version.rb`, add version sections, dates, or comparison links to `CHANGELOG.md`, or create version tags manually.
 - Releases are made with `bin/release vX.Y.Z` (or `vX.Y.Z-PRE`) from a clean, up-to-date `main`: it writes the version, updates the changelog, commits (`Bump version to vX.Y.Z`), tags, and pushes after confirmation. Never run it unless the user explicitly asks for a release.
-- Pushing the tag triggers CI, which verifies the version, builds the Docker image (tagged with the `v` prefix, e.g. `ghcr.io/floriandejonckheere/rsync-ui:v1.0.0`), and creates a GitHub release from the changelog.
+- Pushing the tag triggers CI, which verifies the version, builds the Docker image (tagged with the `v` prefix, e.g. `ghcr.io/floriandejonckheere/rsync-ui:v1.0.0`, and `latest` for stable versions; pushes to `main` are tagged `main`), and creates a GitHub release from the changelog.
 - See the "Releasing" section in [README.md](README.md) for the full process.
 
 ## Project Management

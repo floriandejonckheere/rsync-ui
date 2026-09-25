@@ -63,7 +63,7 @@ Rsync UI is distributed as a Docker image and is meant to be run with Docker com
 
    ```yml
    x-app: &app
-     image: ghcr.io/floriandejonckheere/rsync-ui:latest
+     image: ghcr.io/floriandejonckheere/rsync-ui:v1.0.0
      restart: unless-stopped
      volumes:
        - rsync_ui:/app/storage/ # Application storage (rsync logs)
@@ -119,6 +119,12 @@ Rsync UI is distributed as a Docker image and is meant to be run with Docker com
    ```
 
    Generate each secret with `openssl rand -hex 32`, and replace the passwords with strong, unique values.
+
+   The following image tags are available:
+
+   - `vX.Y.Z` (e.g. `v1.0.0`): a specific release (recommended)
+   - `latest`: the most recent stable release
+   - `main`: the current development version (unreleased, not recommended for production)
 
 2. Start the database:
 
@@ -188,7 +194,8 @@ The application exposes a health check endpoint at `/up`, which returns HTTP 200
 
 ### Upgrading
 
-Pull the latest image and restart the containers:
+Read the [changelog](CHANGELOG.md) before upgrading.
+Change the image tag in `compose.yml` to the new version (e.g. `ghcr.io/floriandejonckheere/rsync-ui:v1.0.0`), then pull the image and restart the containers:
 
 ```sh
 docker compose pull
@@ -196,7 +203,6 @@ docker compose up -d
 ```
 
 Database migrations are run automatically on startup.
-Read the [changelog](CHANGELOG.md) before upgrading.
 
 ### Backups
 
@@ -320,8 +326,8 @@ The script:
 3. Commits the changes (`Bump version to v1.0.0`) and tags the commit `v1.0.0`
 4. Shows the release notes, and asks for confirmation before pushing `main` and the tag to GitHub
 
-Once the tag passes the tests, the CI workflow verifies that the tag matches the version and changelog, builds a Docker image and pushes it to the registry (e.g. `ghcr.io/floriandejonckheere/rsync-ui:v1.0.0`), and creates a GitHub release with the changelog entries of the version as release notes (marked as pre-release if the version has a suffix).
-Every push to `main` also builds and pushes the `latest` image.
+Once the tag passes the tests, the CI workflow verifies that the tag matches the version and changelog, builds a Docker image and pushes it to the registry (e.g. `ghcr.io/floriandejonckheere/rsync-ui:v1.0.0`, and `latest` for stable versions), and creates a GitHub release with the changelog entries of the version as release notes (marked as pre-release if the version has a suffix).
+Every push to `main` also builds and pushes the `main` image.
 
 The script refuses to release if the `Unreleased` section is empty.
 
