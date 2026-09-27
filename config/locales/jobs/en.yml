@@ -237,6 +237,10 @@ en:
       options_documentation_html: See the %{link} for more information
       options_documentation_link: rsync documentation
       pattern_placeholder: e.g. *.log
+      ping: job if server is unreachable
+      ping_action: Action if server is unreachable
+      ping_action_abort: Abort
+      ping_action_cancel: Cancel
       preview: Preview
       repositories: Repositories
       rsync_path_macos_hint: macOS ships an outdated version of rsync. Install a modern version (e.g. via Homebrew) and set its path here, such as /opt/homebrew/bin/rsync.

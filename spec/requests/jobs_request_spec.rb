@@ -361,6 +361,13 @@ RSpec.describe "Jobs" do
         expect(response).to redirect_to(jobs_path)
       end
 
+      it "updates the ping settings" do
+        patch job_path(job), params: { job: { ping: true, ping_action: "cancel" } }
+
+        expect(job.reload).to be_ping
+        expect(job).to be_ping_cancel
+      end
+
       it "displays success message" do
         patch job_path(job), params: update_params
 
