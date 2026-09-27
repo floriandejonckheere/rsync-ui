@@ -18,8 +18,6 @@ en:
       success: Job queued successfully.
     destroy:
       success: Job run was successfully deleted.
-    execute:
-      server_unreachable: 'Server unreachable: %{server}'
     index:
       empty: No job runs have been recorded yet.
       empty_filtered: No job runs match the selected filters.

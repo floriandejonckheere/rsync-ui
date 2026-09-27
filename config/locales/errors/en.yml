@@ -1,0 +1,7 @@
+---
+en:
+  errors:
+    servers:
+      unreachable:
+        description: Could not reach %{server}
+        title: Server unreachable
