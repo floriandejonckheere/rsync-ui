@@ -107,6 +107,9 @@ All pages should be accessible and work in a handheld device.
 
 #### High priority
 
+- [ ] Allow hooks to access to the source/destination repository
+  - [ ] `{source_repository}`, `{destination_repository}` path variables
+  - [ ] Ability to ssh into source/destination server
 - [ ] Make job run immutable and reproducible
   - [ ] Temporary: lock job, repositories, hooks, notifications rows when executing job
   - [ ] Save hooks in the database
@@ -120,7 +123,6 @@ All pages should be accessible and work in a handheld device.
 - [ ] Implement support for OAuth2 authentication
 - [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
 - [ ] Implement backoff for servers: after N failed retries, disable connectivity/resource usage
-
 
 #### Low priority
 
