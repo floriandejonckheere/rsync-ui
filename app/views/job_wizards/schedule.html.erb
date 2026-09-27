@@ -12,7 +12,8 @@
 
 <%= render "progress" %>
 
-<%= form_with model: @job, url: wizard_path, method: :patch, scope: :job_wizard, id: "job-wizard-form", class: "form" do |f| %>
+<%= form_with model: @job, url: wizard_path, method: :patch, scope: :job_wizard, id: "job-wizard-form", class: "form",
+              data: { controller: "implied-options" } do |f| %>
   <% content_for :actions do %>
     <button
       type="submit"

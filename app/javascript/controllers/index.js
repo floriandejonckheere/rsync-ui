@@ -40,6 +40,9 @@ application.register("filter", FilterController)
 import GaugeController from "./gauge_controller"
 application.register("gauge", GaugeController)
 
+import ImpliedOptionsController from "./implied_options_controller"
+application.register("implied-options", ImpliedOptionsController)
+
 import JobRunLogsController from "./job_run_logs_controller"
 application.register("job-run-logs", JobRunLogsController)
 

@@ -3,7 +3,7 @@
 
 <%= form_with model: job, id: "job-form", class: "form",
               data: {
-                controller: "unsaved-changes command-preview ssh-arguments",
+                controller: "unsaved-changes command-preview ssh-arguments implied-options",
                 "command-preview-url-value": preview_jobs_path,
                 "ssh-arguments-remote-ids-value": remote_repository_ids.to_json,
                 action: "change->ssh-arguments#update",

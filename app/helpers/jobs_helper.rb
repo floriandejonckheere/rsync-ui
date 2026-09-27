@@ -7,4 +7,14 @@ module JobsHelper
       .select(&:macos?)
       .uniq
   end
+
+  def implied_options_data(field)
+    return {} unless Job::IMPLIED_OPTIONS.key?(field)
+
+    {
+      implied_options_target: "source",
+      action: "implied-options#sync",
+      implies: Job::IMPLIED_OPTIONS[field].join(" "),
+    }
+  end
 end

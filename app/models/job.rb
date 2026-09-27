@@ -81,6 +81,23 @@ class Job < ApplicationRecord
     :opt_delete_excluded,
   ].freeze
 
+  # Options that enable other options when set
+  IMPLIED_OPTIONS = {
+    opt_archive: [
+      :opt_recursive,
+      :opt_links,
+      :opt_perms,
+      :opt_times,
+      :opt_owner,
+      :opt_group,
+      :opt_devices,
+      :opt_specials,
+    ],
+    opt_append: [
+      :opt_inplace,
+    ],
+  }.freeze
+
   def local?
     source_repository.local? && destination_repository.local?
   end
