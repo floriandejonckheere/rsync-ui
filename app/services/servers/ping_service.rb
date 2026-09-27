@@ -4,8 +4,6 @@ module Servers
   class PingService < ApplicationService
     TIMEOUT = 5
 
-    class UnreachableError < StandardError; end
-
     attr_reader :server
 
     def initialize(server)

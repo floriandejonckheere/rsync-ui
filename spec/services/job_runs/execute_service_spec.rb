@@ -335,7 +335,7 @@ RSpec.describe JobRuns::ExecuteService do
 
           expect(job_run).to be_errored
           expect(job_run.completed_at).to be_present
-          expect(job_run.error_class).to eq "Servers::PingService::UnreachableError"
+          expect(job_run.error_class).to eq "Servers::UnreachableError"
           expect(job_run.error_message).to include job.destination_repository.server.name
         end
 

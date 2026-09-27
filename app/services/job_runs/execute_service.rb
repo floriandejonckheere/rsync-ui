@@ -84,17 +84,17 @@ module JobRuns
     end
 
     def handle_unreachable_server
-      error_message = I18n.t("job_runs.execute.server_unreachable", server: job.remote_server.name)
+      error = Servers::UnreachableError.new(server: job.remote_server.name)
 
-      Rails.logger.info { "[#{job_run.id}] [#{job_run.name}] #{error_message}" }
+      Rails.logger.info { "[#{job_run.id}] [#{job_run.name}] #{error.message}" }
 
       if job.ping_cancel?
-        job_run.error_message = error_message
+        job_run.error_message = error.message
         job_run.request_cancel!
 
         cancel
       else
-        job_run.error!(error_class: Servers::PingService::UnreachableError.name, error_message:)
+        job_run.error!(error_class: error.class.name, error_message: error.message)
 
         run_hook(job.failure_hook)
       end
