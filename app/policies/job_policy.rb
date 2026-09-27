@@ -17,6 +17,14 @@ class JobPolicy < ApplicationPolicy
     user.present?
   end
 
+  def bulk_edit?
+    user.present?
+  end
+
+  def bulk_update?
+    user.present?
+  end
+
   def create?
     user.present?
   end

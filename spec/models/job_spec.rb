@@ -89,6 +89,18 @@ RSpec.describe Job do
     end
   end
 
+  describe "TOGGLEABLE_OPTIONS" do
+    it "contains every boolean rsync option exactly once" do
+      boolean_options = described_class
+        .columns
+        .select { |c| c.name.start_with?("opt_") && c.type == :boolean }
+        .map { |c| c.name.to_sym }
+
+      expect(described_class::TOGGLEABLE_OPTIONS)
+        .to match_array boolean_options
+    end
+  end
+
   describe "normalization" do
     it "strips surrounding whitespace from the category" do
       job = build(:job, category_name: "  Backups  ")

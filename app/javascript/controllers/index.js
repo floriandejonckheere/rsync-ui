@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import BulkEditController from "./bulk_edit_controller"
+application.register("bulk-edit", BulkEditController)
+
 import CategoryEditorController from "./category_editor_controller"
 application.register("category-editor", CategoryEditorController)
 

@@ -62,6 +62,8 @@ Rails.application.routes.draw do
   resources :jobs, except: :show do
     collection do
       post :preview
+      get :bulk_edit
+      patch :bulk_update
     end
 
     member do
@@ -137,6 +139,8 @@ end
 #                                          PUT    /notifications/:id(.:format)                                                                      notifications#update
 #                                          DELETE /notifications/:id(.:format)                                                                      notifications#destroy
 #                             preview_jobs POST   /jobs/preview(.:format)                                                                           jobs#preview
+#                           bulk_edit_jobs GET    /jobs/bulk_edit(.:format)                                                                         jobs#bulk_edit
+#                         bulk_update_jobs PATCH  /jobs/bulk_update(.:format)                                                                       jobs#bulk_update
 #                            duplicate_job GET    /jobs/:id/duplicate(.:format)                                                                     jobs#duplicate
 #                                     jobs GET    /jobs(.:format)                                                                                   jobs#index
 #                                          POST   /jobs(.:format)                                                                                   jobs#create

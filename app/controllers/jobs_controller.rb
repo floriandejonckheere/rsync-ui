@@ -84,6 +84,31 @@ class JobsController < ApplicationController
     redirect_to jobs_path, notice: t(".success"), status: :see_other
   end
 
+  def bulk_edit
+    authorize! :job
+
+    @jobs = bulk_jobs
+  end
+
+  def bulk_update
+    authorize! :job
+
+    @jobs = bulk_jobs
+    @jobs.each { |job| job.assign_attributes(bulk_job_params(job)) }
+
+    changed_jobs = @jobs.select(&:changed?)
+    changed_jobs.each { |job| authorize! job, to: :update? }
+
+    # Validate every changed job (not just up to the first invalid one) to report all errors at once
+    if changed_jobs.map(&:valid?).all?
+      Job.transaction { changed_jobs.each(&:save!) }
+
+      redirect_to jobs_path, notice: t(".success", count: changed_jobs.size), status: :see_other
+    else
+      render :bulk_edit, status: :unprocessable_content
+    end
+  end
+
   def preview
     @job = current_user
       .jobs
@@ -100,6 +125,23 @@ class JobsController < ApplicationController
 
   def set_job
     @job = Job.find(params[:id])
+  end
+
+  def bulk_jobs
+    jobs = authorized_scope(Job.all, type: :relation)
+      .order(:name)
+      .grouped_by_category
+
+    jobs.to_a
+  end
+
+  # Missing jobs or options are left untouched (e.g. options locked because they are implied by another option)
+  def bulk_job_params(job)
+    @bulk_job_params ||= params
+      .permit(jobs: @jobs.to_h { |j| [j.id, Job::TOGGLEABLE_OPTIONS] })
+      .fetch(:jobs, {})
+
+    @bulk_job_params.fetch(job.id, {})
   end
 
   def set_repositories

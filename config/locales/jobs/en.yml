@@ -24,6 +24,16 @@ en:
       edit: Edit job
       enable: Enable job
       run: Run job
+    bulk_edit:
+      option: Option
+      submit: Save changes
+      subtitle: Compare and toggle the options of all jobs at once
+      title: Bulk edit jobs
+    bulk_update:
+      success:
+        one: 1 job was successfully updated.
+        other: "%{count} jobs were successfully updated."
+        zero: No jobs were changed.
     create:
       success: Job was successfully created.
     destroy:
@@ -240,6 +250,7 @@ en:
       submit_create: Create job
       submit_update: Update job
     index:
+      bulk_edit: Bulk edit
       empty: No jobs have been configured yet.
       new: New job
       search:

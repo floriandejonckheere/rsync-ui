@@ -1,0 +1,185 @@
+<% content_for :title do %>
+  <%= I18n.t("jobs.bulk_edit.title") %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= I18n.t("jobs.bulk_edit.subtitle") %>
+<% end %>
+
+<% content_for :back do %>
+  <%= render "shared/menu/back", path: jobs_path %>
+<% end %>
+
+<% if @jobs.empty? %>
+  <div class="card flex flex-col items-center justify-center py-16 gap-4 text-gray-400">
+    <%= lucide_icon "arrow-right-left", class: "h-12 w-12" %>
+
+    <p class="text-lg">
+      <%= I18n.t("jobs.index.empty") %>
+    </p>
+  </div>
+<% else %>
+  <% content_for :actions do %>
+    <button
+      type="submit"
+      form="bulk-edit-form"
+      class="btn-icon-outline btn-icon-lg"
+      data-tooltip="<%= I18n.t("jobs.bulk_edit.submit") %>"
+    >
+      <%= lucide_icon "check", class: "h-6 w-6" %>
+    </button>
+  <% end %>
+
+  <% grouped_jobs = @jobs.group_by(&:category) %>
+  <% show_categories = grouped_jobs.keys.any?(&:present?) %>
+  <% jobs = grouped_jobs.values.flatten %>
+
+  <%= form_with url: bulk_update_jobs_path,
+                method: :patch,
+                id: "bulk-edit-form",
+                class: "form",
+                data: {
+                  controller: "unsaved-changes bulk-edit",
+                  action: "submit->bulk-edit#submit",
+                  "bulk-edit-implied-value": Job::IMPLIED_OPTIONS.to_json,
+                  "bulk-edit-delete-timing-value": Job::DELETE_TIMING_OPTIONS.to_json,
+                } do %>
+    <% invalid_jobs = jobs.select { |job| job.errors.any? } %>
+
+    <% if invalid_jobs.any? %>
+      <div class="mb-8">
+        <% invalid_jobs.each do |job| %>
+          <% job.errors.each do |error| %>
+            <div class="alert-destructive mt-5">
+              <%= lucide_icon "circle-alert", class: "w-4 h-4 inline" %>
+
+              <h2><%= job.name %></h2>
+
+              <section><%= error.full_message %></section>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="card p-0 overflow-x-auto contain-inline-size">
+      <table class="w-full text-sm">
+        <thead>
+          <% if show_categories %>
+            <tr class="border-b border-gray-100 dark:border-gray-700">
+              <th class="sticky left-0 z-10 bg-card"></th>
+
+              <% grouped_jobs.each do |category, category_jobs| %>
+                <th
+                  colspan="<%= category_jobs.size %>"
+                  class="
+                    px-4 pt-4 pb-2 text-center font-semibold border-l
+                    border-gray-100 dark:border-gray-700 dark:text-gray-100
+                  "
+                >
+                  <%= category&.name || I18n.t("jobs.index.uncategorized") %>
+                </th>
+              <% end %>
+            </tr>
+          <% end %>
+
+          <tr class="border-b border-gray-100 dark:border-gray-700">
+            <th
+              class="
+                sticky left-0 z-10 w-px bg-card pl-6 pr-3 py-4 text-left
+                font-medium text-gray-500 dark:text-gray-400
+              "
+            >
+              <%= I18n.t("jobs.bulk_edit.option") %>
+            </th>
+
+            <% jobs.each do |job| %>
+              <th
+                class="
+                  px-4 py-4 text-center font-medium align-bottom
+                  <%= job.errors.any? ? "text-destructive" : "text-gray-900 dark:text-gray-100" %>
+                "
+              >
+                <%= link_to job.name,
+                            edit_job_path(job),
+                            class: "block max-w-40 mx-auto truncate hover:underline",
+                            title: job.name %>
+              </th>
+            <% end %>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% { basic_options: Job::BASIC_OPTIONS, advanced_options: Job::ADVANCED_OPTIONS }.each do |section, options| %>
+            <tr class="border-b border-gray-100 dark:border-gray-700">
+              <th
+                colspan="<%= jobs.size + 1 %>"
+                class="px-6 pt-6 pb-3 text-left text-base font-semibold"
+              >
+                <span class="sticky left-6">
+                  <%= I18n.t(section, scope: [:jobs, :form]) %>
+                </span>
+              </th>
+            </tr>
+
+            <% options.each do |option| %>
+              <tr
+                class="
+                  border-b border-gray-100 dark:border-gray-700 last:border-b-0
+                  hover:bg-gray-50 dark:hover:bg-gray-700/50
+                "
+              >
+                <th
+                  scope="row"
+                  class="
+                    sticky left-0 z-10 w-px bg-card pl-6 pr-3 py-2 text-left
+                    font-normal
+                  "
+                >
+                  <div class="whitespace-nowrap">
+                    <%= I18n.t(:description, scope: [:jobs, :form, option]) %>
+                  </div>
+
+                  <% flag = I18n.t(:flag, scope: [:jobs, :form, option], default: nil) %>
+
+                  <% if flag %>
+                    <div
+                      class="
+                        font-mono text-[11px] text-gray-400
+                        dark:text-gray-500 whitespace-nowrap
+                      "
+                    >
+                      <%= flag %>
+                    </div>
+                  <% end %>
+                </th>
+
+                <% jobs.each do |job| %>
+                  <td
+                    class="px-4 py-2 text-center cursor-pointer"
+                    data-action="click->bulk-edit#toggleCell"
+                  >
+                    <div class="field flex-row items-center justify-center">
+                      <%= fields_for "jobs[#{job.id}]", job do |jf| %>
+                        <%= jf.check_box option,
+                                         role: "switch",
+                                         aria: { label: "#{job.name}: #{I18n.t(:description, scope: [:jobs, :form, option])}" },
+                                         data: {
+                                           bulk_edit_target: "option",
+                                           job: job.id,
+                                           option:,
+                                           saved: job.attribute_in_database(option),
+                                           action: "bulk-edit#toggle",
+                                         } %>
+                      <% end %>
+                    </div>
+                  </td>
+                <% end %>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+<% end %>

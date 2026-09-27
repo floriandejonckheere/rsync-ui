@@ -13,6 +13,10 @@
              frame: "jobs_list",
              placeholder: I18n.t("jobs.index.search.placeholder") %>
 
+  <%= link_to bulk_edit_jobs_path, data: { tooltip: I18n.t("jobs.index.bulk_edit") }, class: "btn-icon-outline btn-icon-lg" do %>
+    <%= lucide_icon "table-properties", class: "h-6 w-6" %>
+  <% end %>
+
   <%= link_to new_job_path, data: { tooltip: I18n.t("jobs.index.new") }, class: "btn-icon-outline btn-icon-lg" do %>
     <%= lucide_icon "plus", class: "h-6 w-6" %>
   <% end %>

@@ -17,6 +17,14 @@ RSpec.describe JobPolicy do
     it { is_expected.to be_create }
   end
 
+  describe "#bulk_edit?" do
+    it { is_expected.to be_bulk_edit }
+  end
+
+  describe "#bulk_update?" do
+    it { is_expected.to be_bulk_update }
+  end
+
   describe "#edit?" do
     it { is_expected.to be_edit }
 

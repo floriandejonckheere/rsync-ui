@@ -484,6 +484,160 @@ RSpec.describe "Jobs" do
     end
   end
 
+  describe "GET /jobs/bulk_edit" do
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      it "renders the jobs as columns and the options as rows" do
+        job = create(:job, user:, name: "Nightly backup")
+
+        get bulk_edit_jobs_path
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(job.name, I18n.t("jobs.form.opt_archive.description"), "jobs[#{job.id}][opt_archive]")
+      end
+
+      it "groups the jobs per category" do
+        create(:job, user:, name: "Nightly backup", category_name: "Backups")
+        create(:job, user:, name: "Offsite mirror")
+
+        get bulk_edit_jobs_path
+
+        expect(response.body).to include("Backups", I18n.t("jobs.index.uncategorized"))
+        expect(response.body.index("Offsite mirror")).to be < response.body.index("Nightly backup")
+      end
+
+      it "does not render jobs of other users" do
+        job = create(:job, user: other_user, name: "Foreign job")
+
+        get bulk_edit_jobs_path
+
+        expect(response.body).not_to include(job.name)
+      end
+
+      it "renders an empty state when there are no jobs" do
+        get bulk_edit_jobs_path
+
+        expect(response.body).to include(I18n.t("jobs.index.empty"))
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        get bulk_edit_jobs_path
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe "PATCH /jobs/bulk_update" do
+    let!(:job) { create(:job, user:, opt_compress: false, opt_checksum: false) }
+    let!(:other_job) { create(:job, user:, name: "Offsite mirror", opt_compress: true) }
+
+    context "when authenticated" do
+      before { sign_in user, scope: :user }
+
+      it "updates the options of every job" do
+        patch bulk_update_jobs_path, params: {
+          jobs: {
+            job.id => { opt_compress: "1", opt_checksum: "1" },
+            other_job.id => { opt_compress: "0" },
+          },
+        }
+
+        expect(job.reload).to have_attributes(opt_compress: true, opt_checksum: true)
+        expect(other_job.reload.opt_compress).to be(false)
+        expect(response).to redirect_to(jobs_path)
+      end
+
+      it "only saves the jobs that changed" do
+        expect do
+          patch bulk_update_jobs_path, params: {
+            jobs: {
+              job.id => { opt_compress: "1" },
+              other_job.id => { opt_compress: "1" },
+            },
+          }
+        end.not_to(change { other_job.reload.updated_at })
+
+        follow_redirect!
+
+        expect(response.body).to include(I18n.t("jobs.bulk_update.success", count: 1))
+      end
+
+      it "leaves options that are not submitted untouched" do
+        job.update!(opt_recursive: false)
+
+        patch bulk_update_jobs_path, params: { jobs: { job.id => { opt_archive: "1" } } }
+
+        expect(job.reload).to have_attributes(opt_archive: true, opt_recursive: false)
+      end
+
+      it "does not update non-option attributes" do
+        patch bulk_update_jobs_path, params: { jobs: { job.id => { name: "Hacked", opt_arguments: "--rsh=evil" } } }
+
+        expect(job.reload).to have_attributes(name: job.name, opt_arguments: job.opt_arguments)
+      end
+
+      it "does not update jobs of other users" do
+        foreign_job = create(:job, user: other_user, opt_compress: false)
+
+        patch bulk_update_jobs_path, params: { jobs: { foreign_job.id => { opt_compress: "1" } } }
+
+        expect(foreign_job.reload.opt_compress).to be(false)
+      end
+
+      it "ignores malformed parameters" do
+        patch bulk_update_jobs_path, params: { jobs: { job.id => "1" } }
+
+        expect(response).to redirect_to(jobs_path)
+      end
+
+      context "when a job is invalid" do
+        let(:params) do
+          {
+            jobs: {
+              job.id => { opt_compress: "1" },
+              other_job.id => { opt_delete: "1", opt_delete_before: "1", opt_delete_after: "1" },
+            },
+          }
+        end
+
+        it "does not update any job" do
+          patch(bulk_update_jobs_path, params:)
+
+          expect(job.reload.opt_compress).to be(false)
+          expect(other_job.reload.opt_delete).to be(false)
+        end
+
+        it "re-renders the page with the errors" do
+          patch(bulk_update_jobs_path, params:)
+
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(response.body).to include(other_job.name, I18n.t("activerecord.errors.models.job.attributes.base.multiple_delete_timings"))
+        end
+
+        it "keeps the submitted values while exposing the saved values" do
+          patch(bulk_update_jobs_path, params:)
+
+          checkbox = response.parsed_body.at_css("input[type='checkbox'][name='jobs[#{job.id}][opt_compress]']")
+
+          expect(checkbox.to_h).to include("checked" => "checked", "data-saved" => "false")
+        end
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to sign in" do
+        patch bulk_update_jobs_path, params: { jobs: { job.id => { opt_compress: "1" } } }
+
+        expect(response).to redirect_to(new_user_session_path)
+        expect(job.reload.opt_compress).to be(false)
+      end
+    end
+  end
+
   describe "POST /jobs/preview" do
     let(:source_repository) { create(:repository, user:) }
     let(:destination_repository) { create(:repository, user:) }
