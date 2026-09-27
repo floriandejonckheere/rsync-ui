@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.0.0-rc.2] - 2026-09-27
+
 ### Added
 
 - Automatically toggle `--delete` when toggling `--delete-{before,during,after}` and disable the mutually exclusive ones
@@ -19,5 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 First release candidate.
 
-[Unreleased]: https://github.com/floriandejonckheere/rsync-ui/compare/v1.0.0-rc.1..main
+[Unreleased]: https://github.com/floriandejonckheere/rsync-ui/compare/v1.0.0-rc.2..main
+[v1.0.0-rc.2]: https://github.com/floriandejonckheere/rsync-ui/compare/v1.0.0-rc.1..v1.0.0-rc.2
 [v1.0.0-rc.1]: https://github.com/floriandejonckheere/rsync-ui/releases/tag/v1.0.0-rc.1
