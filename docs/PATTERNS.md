@@ -111,6 +111,44 @@ end
 <%= f.select :state, Model.states.keys.map { |s| [s.humanize, s] } %>
 ```
 
+## Error Pattern
+
+Custom errors live in `app/errors` (one class per file, namespaced by domain), inherit from `ApplicationError`, and use translated messages.
+`ApplicationError` looks up `errors.<key>.title` and `errors.<key>.description` (interpolated with the context), and builds the message as `"<title>: <description>"`.
+
+**Create Error** (`app/errors/servers/unreachable_error.rb`):
+```ruby
+# frozen_string_literal: true
+
+module Servers
+  class UnreachableError < ApplicationError
+    def initialize(**context)
+      super("servers.unreachable", **context)
+    end
+  end
+end
+```
+
+**In Locale Files** (`config/locales/errors/en.yml`):
+```yaml
+en:
+  errors:
+    servers:
+      unreachable:
+        description: "Could not reach %{server}"
+        title: "Server unreachable"
+```
+
+**Usage:**
+```ruby
+raise Servers::UnreachableError.new(server: "NAS")
+# => Servers::UnreachableError: Server unreachable: Could not reach NAS
+
+# Or, to record the error without raising
+error = Servers::UnreachableError.new(server: "NAS")
+job_run.error!(error_class: error.class.name, error_message: error.message)
+```
+
 ## ActiveStorage Pattern
 
 **In Model:**
