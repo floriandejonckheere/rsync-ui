@@ -151,6 +151,11 @@ group :development, :test do
   gem "with_model"
 end
 
+group :test do
+  # Acceptance test framework for web applications [https://github.com/teamcapybara/capybara]
+  gem "capybara"
+end
+
 group :development do
   # Event-based file watcher for faster development [https://github.com/guard/listen]
   gem "listen"
