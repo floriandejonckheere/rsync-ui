@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Make bulk edit page table headers sticky
 - Only show custom SSH arguments in the remote shell option of the command preview
 
+### Fixed
+
+- Restore styling of the include/exclude pattern inputs
+
 ## [v1.0.0-rc.2] - 2026-09-27
 
 ### Added

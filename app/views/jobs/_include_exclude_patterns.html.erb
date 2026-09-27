@@ -27,7 +27,7 @@
         >
           <template data-pattern-list-target="template">
             <div data-pattern-row class="flex gap-2 items-center mb-2">
-              <input type="text" class="flex-1" autocomplete="off">
+              <input type="text" class="input flex-1" autocomplete="off">
 
               <button
                 type="button"
@@ -53,7 +53,7 @@
                   name="<%= f.field_name(:opt_include, multiple: true) %>"
                   value="<%= pattern %>"
                   placeholder="<%= I18n.t("jobs.form.pattern_placeholder") %>"
-                  class="flex-1"
+                  class="input flex-1"
                   autocomplete="off"
                 >
 
@@ -91,7 +91,7 @@
         >
           <template data-pattern-list-target="template">
             <div data-pattern-row class="flex gap-2 items-center mb-2">
-              <input type="text" class="flex-1" autocomplete="off">
+              <input type="text" class="input flex-1" autocomplete="off">
 
               <button
                 type="button"
@@ -117,7 +117,7 @@
                   name="<%= f.field_name(:opt_exclude, multiple: true) %>"
                   value="<%= pattern %>"
                   placeholder="<%= I18n.t("jobs.form.pattern_placeholder") %>"
-                  class="flex-1"
+                  class="input flex-1"
                   autocomplete="off"
                 >
 
