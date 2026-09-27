@@ -22,6 +22,9 @@ module JobRuns
         job_run.start!
       end
 
+      # Ping remote server, and cancel or abort if unreachable
+      return handle_unreachable_server unless server_reachable?
+
       # Run pre-hook
       pre_hook_success = run_hook(job.pre_hook)
       return cancel if canceling?
@@ -71,6 +74,31 @@ module JobRuns
     end
 
     private
+
+    def server_reachable?
+      return true unless job.ping? && job.remote_server
+
+      Servers::PingService
+        .new(job.remote_server)
+        .call
+    end
+
+    def handle_unreachable_server
+      error_message = I18n.t("job_runs.execute.server_unreachable", server: job.remote_server.name)
+
+      Rails.logger.info { "[#{job_run.id}] [#{job_run.name}] #{error_message}" }
+
+      if job.ping_cancel?
+        job_run.error_message = error_message
+        job_run.request_cancel!
+
+        cancel
+      else
+        job_run.error!(error_class: Servers::PingService::UnreachableError.name, error_message:)
+
+        run_hook(job.failure_hook)
+      end
+    end
 
     def run_rsync
       Rails.logger.debug { "[#{job_run.id}] [#{job_run.name}] Running command #{job_run.command.inspect}" }
