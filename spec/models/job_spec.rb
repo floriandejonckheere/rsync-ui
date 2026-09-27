@@ -65,6 +65,28 @@ RSpec.describe Job do
 
       expect(job).to be_valid
     end
+
+    it "is invalid with multiple delete timing options" do
+      job = build(:job, opt_delete: true, opt_delete_before: true, opt_delete_after: true)
+
+      expect(job).not_to be_valid
+      expect(job.errors).to be_of_kind(:base, :multiple_delete_timings)
+    end
+
+    it "is valid with a single delete timing option" do
+      job = build(:job, opt_delete: true, opt_delete_delay: true, opt_delete_excluded: true)
+
+      expect(job).to be_valid
+    end
+
+    described_class::DELETE_OPTIONS.each do |option|
+      it "is invalid with #{option} but without opt_delete" do
+        job = build(:job, opt_delete: false, option => true)
+
+        expect(job).not_to be_valid
+        expect(job.errors).to be_of_kind(:base, :delete_required)
+      end
+    end
   end
 
   describe "normalization" do

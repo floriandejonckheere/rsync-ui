@@ -6,6 +6,8 @@ en:
         job:
           attributes:
             base:
+              delete_required: Delete must be enabled when using a delete timing or delete excluded option
+              multiple_delete_timings: Only one of delete before, during, delay, or after can be enabled
               not_both_remote: Source and destination cannot both be remote
             destination_repository:
               read_only: cannot be read-only

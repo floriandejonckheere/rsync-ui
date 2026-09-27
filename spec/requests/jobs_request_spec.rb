@@ -196,18 +196,40 @@ RSpec.describe "Jobs" do
       it "saves delete timing options" do
         post jobs_path, params: {
           job: valid_params[:job].merge(
-            opt_delete_before: true,
-            opt_delete_during: true,
+            opt_delete: true,
             opt_delete_delay: true,
-            opt_delete_after: true,
+            opt_delete_excluded: true,
           ),
         }
 
         job = user.jobs.last
-        expect(job.opt_delete_before).to be(true)
-        expect(job.opt_delete_during).to be(true)
+        expect(job.opt_delete).to be(true)
         expect(job.opt_delete_delay).to be(true)
-        expect(job.opt_delete_after).to be(true)
+        expect(job.opt_delete_excluded).to be(true)
+      end
+
+      it "does not save multiple delete timing options" do
+        expect do
+          post jobs_path, params: {
+            job: valid_params[:job].merge(
+              opt_delete: true,
+              opt_delete_before: true,
+              opt_delete_after: true,
+            ),
+          }
+        end.not_to change(Job, :count)
+
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "does not save delete options without opt_delete" do
+        expect do
+          post jobs_path, params: {
+            job: valid_params[:job].merge(opt_delete: false, opt_delete_after: true),
+          }
+        end.not_to change(Job, :count)
+
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "saves empty arrays when blank pattern values are submitted" do
@@ -364,17 +386,13 @@ RSpec.describe "Jobs" do
       it "updates the delete timing options" do
         patch job_path(job), params: {
           job: {
-            opt_delete_before: true,
-            opt_delete_during: true,
-            opt_delete_delay: true,
+            opt_delete: true,
             opt_delete_after: true,
           },
         }
 
         job.reload
-        expect(job.opt_delete_before).to be(true)
-        expect(job.opt_delete_during).to be(true)
-        expect(job.opt_delete_delay).to be(true)
+        expect(job.opt_delete).to be(true)
         expect(job.opt_delete_after).to be(true)
       end
 

@@ -66,6 +66,21 @@ class Job < ApplicationRecord
   validate :validate_destination_repository_writable
   validate :validate_schedule
 
+  validate :validate_opt_single_delete_timing
+  validate :validate_opt_delete_enabled
+
+  DELETE_TIMING_OPTIONS = [
+    :opt_delete_before,
+    :opt_delete_during,
+    :opt_delete_delay,
+    :opt_delete_after,
+  ].freeze
+
+  DELETE_OPTIONS = [
+    *DELETE_TIMING_OPTIONS,
+    :opt_delete_excluded,
+  ].freeze
+
   def local?
     source_repository.local? && destination_repository.local?
   end
@@ -112,6 +127,19 @@ class Job < ApplicationRecord
     errors.add(:schedule, :invalid)
   rescue StandardError
     errors.add(:schedule, :invalid)
+  end
+
+  def validate_opt_single_delete_timing
+    return if DELETE_TIMING_OPTIONS.count { |option| public_send(option) } <= 1
+
+    errors.add(:base, :multiple_delete_timings)
+  end
+
+  def validate_opt_delete_enabled
+    return if opt_delete?
+    return if DELETE_OPTIONS.none? { |option| public_send(option) }
+
+    errors.add(:base, :delete_required)
   end
 end
 

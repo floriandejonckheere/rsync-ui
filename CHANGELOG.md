@@ -10,8 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Automatically toggle `--delete` when toggling `--delete-{before,during,after}` and disable the mutually exclusive ones
+- Add a validation to make `--delete-{before,during,after,delay}` mutually exclusive
 
-## [v1.0.0-rc.1] - 2026-09-25 
+## [v1.0.0-rc.1] - 2026-09-25
 
 First release candidate.
 
