@@ -63,9 +63,15 @@
       </div>
     <% end %>
 
-    <div class="card p-0 overflow-x-auto contain-inline-size">
+    <div class="card p-0 overflow-auto max-h-[calc(100vh-6rem)] contain-inline-size">
       <table class="w-full text-sm">
-        <thead>
+        <thead
+          class="
+            sticky top-0 z-20 bg-card [&_th]:bg-card
+            [&>tr:last-child>th]:shadow-[inset_0_-1px_0_var(--color-gray-100)]
+            dark:[&>tr:last-child>th]:shadow-[inset_0_-1px_0_var(--color-gray-700)]
+          "
+        >
           <% if show_categories %>
             <tr class="border-b border-gray-100 dark:border-gray-700">
               <th class="sticky left-0 z-10 bg-card"></th>
