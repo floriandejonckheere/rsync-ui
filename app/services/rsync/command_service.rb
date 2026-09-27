@@ -84,13 +84,22 @@ module Rsync
 
     def rsync_path
       [
-        ("sudo" if job.opt_superuser),
+        *sudo,
         job.opt_local_rsync_path.presence || "rsync",
-      ].compact
+      ]
+    end
+
+    def sudo
+      return [] unless job.opt_superuser
+
+      # Preserve the environment variables carrying the credentials (see Rsync::ExecuteService)
+      return ["sudo"] unless job.remote_server
+
+      ["sudo", "--preserve-env=SSHPASS,#{Servers::SSHConfigService::IDENTITY_FILE_ENV}"]
     end
 
     def remote_rsync_path_flags
-      return [] if job.opt_remote_rsync_path.blank? || remote_server.nil?
+      return [] if job.opt_remote_rsync_path.blank? || job.remote_server.nil?
 
       ["--rsync-path", job.opt_remote_rsync_path]
     end
@@ -100,8 +109,7 @@ module Rsync
     end
 
     def ssh_flags
-      # Only one server (source/destination) can be remote
-      server = remote_server
+      server = job.remote_server
 
       return [] unless server
 
@@ -109,21 +117,14 @@ module Rsync
 
       remote_shell =
         if server.ssh_key.present?
-          # Authenticate using private key (via the SSH config file)
+          # Authenticate using private key (via the SSH config file, key is written by Rsync::ExecuteService)
           "ssh -F #{ssh_home}/config#{ssh_args}"
         else
-          # Authenticate using password (via the non-interactive sshpass command)
-          "sshpass -f #{ssh_home}/#{server.slug}_password ssh -F #{ssh_home}/config#{ssh_args}"
+          # Authenticate using password (via the non-interactive sshpass command, password is passed by Rsync::ExecuteService)
+          "sshpass -e ssh -F #{ssh_home}/config#{ssh_args}"
         end
 
       ["-e", remote_shell]
-    end
-
-    def remote_server
-      [job.source_repository, job.destination_repository]
-        .compact
-        .find(&:remote?)
-        &.server
     end
 
     def ssh_home

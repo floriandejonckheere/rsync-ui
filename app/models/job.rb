@@ -74,6 +74,14 @@ class Job < ApplicationRecord
     !local?
   end
 
+  # Only one repository (source/destination) can be remote
+  def remote_server
+    [source_repository, destination_repository]
+      .compact
+      .find(&:remote?)
+      &.server
+  end
+
   def scheduled_next_run
     return unless enabled? && schedule.present?
 

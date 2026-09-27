@@ -1,5 +1,4 @@
 name,class_name,configuration
-sync_ssh_config,Servers::SyncSSHConfigTask,
 execute_jobs,Jobs::ExecuteTask,scheduler
 terminate_stuck_job_runs,JobRuns::TerminateStuckTask,scheduler
 check_connectivity,Servers::CheckConnectivityTask,connectivity

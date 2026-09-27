@@ -125,6 +125,28 @@ RSpec.describe Job do
     end
   end
 
+  describe "#remote_server" do
+    it "returns nil when both repositories are local" do
+      job = build(:job, source_repository: build(:repository, :local), destination_repository: build(:repository, :local))
+
+      expect(job.remote_server).to be_nil
+    end
+
+    it "returns the server of the remote source repository" do
+      source_repository = build(:repository, :remote)
+      job = build(:job, source_repository:, destination_repository: build(:repository, :local))
+
+      expect(job.remote_server).to eq source_repository.server
+    end
+
+    it "returns the server of the remote destination repository" do
+      destination_repository = build(:repository, :remote)
+      job = build(:job, source_repository: build(:repository, :local), destination_repository:)
+
+      expect(job.remote_server).to eq destination_repository.server
+    end
+  end
+
   describe "#scheduled_next_run" do
     it "returns nil when the job is disabled" do
       job = build(:job, schedule: "0 2 * * *", enabled: false)

@@ -58,8 +58,8 @@ RSpec.describe Rsync::CommandService do
     context "with password authentication" do
       let(:server) { build(:server, :with_password) }
 
-      it "includes sshpass with the password file" do
-        expect(command).to include "-e \"sshpass -f #{ssh_home}/#{server.slug}_password ssh -F #{ssh_home}/config\""
+      it "includes sshpass reading the password from the environment" do
+        expect(command).to include "-e \"sshpass -e ssh -F #{ssh_home}/config\""
       end
     end
 
@@ -132,6 +132,14 @@ RSpec.describe Rsync::CommandService do
 
         it "uses the custom path" do
           expect(command).to start_with("sudo /usr/local/bin/rsync ")
+        end
+      end
+
+      context "with a remote repository" do
+        let(:source) { build(:repository, :remote, path: "/data/source") }
+
+        it "preserves the credential environment variables" do
+          expect(command).to start_with("sudo --preserve-env=SSHPASS,RSYNC_UI_IDENTITY_FILE rsync ")
         end
       end
     end

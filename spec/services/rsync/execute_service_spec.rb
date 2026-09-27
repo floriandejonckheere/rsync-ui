@@ -79,6 +79,50 @@ RSpec.describe Rsync::ExecuteService do
       end
     end
 
+    describe "credentials" do
+      let(:server) { create(:server, :with_ssh_key) }
+      let(:source_repository) { create(:repository, :remote, server:, user:) }
+      let(:job) { create(:job, user:, source_repository:, destination_repository: create(:repository, :local, user:)) }
+
+      context "with private key authentication" do
+        let(:job_run) { create(:job_run, :pending, job:, user:, command: "sh -c 'cat \"$RSYNC_UI_IDENTITY_FILE\"; stat -c %a \"$RSYNC_UI_IDENTITY_FILE\"'") }
+
+        it "writes the private key only while the command is running" do
+          lines = []
+
+          service.call { |line| lines << line }
+
+          expect(lines.join).to eq "#{server.ssh_key}600\n"
+        end
+
+        it "removes the private key afterwards" do
+          key_path = nil
+          allow(Open3).to receive(:popen2e).and_wrap_original do |method, env, *args, **kwargs, &block|
+            key_path = env["RSYNC_UI_IDENTITY_FILE"]
+
+            method.call(env, *args, **kwargs, &block)
+          end
+
+          service.call
+
+          expect(File).not_to exist(key_path)
+        end
+      end
+
+      context "with password authentication" do
+        let(:server) { create(:server, :with_password) }
+        let(:job_run) { create(:job_run, :pending, job:, user:, command: "sh -c 'echo \"$SSHPASS\"'") }
+
+        it "passes the password through the environment" do
+          lines = []
+
+          service.call { |line| lines << line }
+
+          expect(lines).to eq ["#{server.password}\n"]
+        end
+      end
+    end
+
     describe "timeouts" do
       before do
         allow(Timeout)

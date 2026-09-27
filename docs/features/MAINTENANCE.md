@@ -84,14 +84,6 @@ Services:
 
 ## Tasks
 
-### Sync SSH config
-
-Name: `sync_ssh_config`
-Description: Sync the SSH config file with the database
-Class: `Servers::SyncSSHConfigTask` (implemented; class name differs from the `Tasks::SSHConfigService` name originally planned below)
-
-The class should call `Servers::SyncSSHConfigService.call`.
-
 Implemented, but not planned above — seeded in `db/seeds/02_tasks.csv`:
 - [x] `execute_jobs` — `Jobs::ExecuteTask`, depends on `scheduler`
 - [x] `terminate_stuck_job_runs` — `JobRuns::TerminateStuckTask`, depends on `scheduler`

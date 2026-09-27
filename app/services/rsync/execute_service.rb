@@ -19,9 +19,22 @@ module Rsync
     # This service merely waits for the process to exit and reports the
     # status. Callers must check job_run.canceling? after the call to
     # distinguish "exited non-zero because of SIGTERM" from a regular failure.
-    def call(&block)
+    def call(&)
+      # Private key and password are only written for the duration of the command
+      with_credentials { |env| execute(env, &) }
+    rescue Timeout::Error
+      Rails.logger.debug { "[#{job_run.id}] [#{job_run.name}] Timed out after #{timeout.inspect}" }
+
+      raise Timeout::Error, "execution expired after #{timeout.inspect}"
+    ensure
+      job_run.update_column(:pid, nil) if job_run.persisted? # rubocop:disable Rails/SkipsModelValidations
+    end
+
+    private
+
+    def execute(env, &block)
       Timeout.timeout(timeout.in_seconds) do
-        Open3.popen2e(*Shellwords.split(job_run.command), pgroup: true) do |_stdin, output, wait_thr|
+        Open3.popen2e(env, *Shellwords.split(job_run.command), pgroup: true) do |_stdin, output, wait_thr|
           job_run.update!(pid: wait_thr.pid)
 
           # Binary string buffer
@@ -50,15 +63,27 @@ module Rsync
           ExecutionResult.new(success: wait_thr.value.success?, exit_status: wait_thr.value.exitstatus)
         end
       end
-    rescue Timeout::Error
-      Rails.logger.debug { "[#{job_run.id}] [#{job_run.name}] Timed out after #{timeout.inspect}" }
-
-      raise Timeout::Error, "execution expired after #{timeout.inspect}"
-    ensure
-      job_run.update_column(:pid, nil) if job_run.persisted? # rubocop:disable Rails/SkipsModelValidations
     end
 
-    private
+    # Yields the environment variables required to authenticate against the remote server (if any)
+    def with_credentials
+      server = job_run.job.remote_server
+
+      if server&.ssh_key.present?
+        # Write private key to a private temporary directory, removed afterwards
+        Dir.mktmpdir("rsync_ui_ssh") do |dir|
+          key_path = File.join(dir, "id")
+          File.write(key_path, server.ssh_key, perm: 0o600)
+
+          yield({ Servers::SSHConfigService::IDENTITY_FILE_ENV => key_path })
+        end
+      elsif server&.password.present?
+        # Pass password to sshpass through the environment
+        yield({ "SSHPASS" => server.password })
+      else
+        yield({})
+      end
+    end
 
     def timeout
       Configuration.get("jobs.timeout").minutes

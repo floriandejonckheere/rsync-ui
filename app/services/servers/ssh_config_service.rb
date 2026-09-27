@@ -4,6 +4,9 @@ module Servers
   class SSHConfigService < ApplicationService
     SSH_DIR = Pathname.new(Dir.home).join(".ssh").freeze
 
+    # Environment variable pointing to the private key, set only while an SSH command is running
+    IDENTITY_FILE_ENV = "RSYNC_UI_IDENTITY_FILE"
+
     attr_reader :ssh_dir
 
     def initialize(ssh_dir: SSH_DIR)
@@ -22,22 +25,8 @@ module Servers
       servers = Server.all.to_a
       server_slugs = servers.map(&:slug)
 
-      # Write private key, password, and known_hosts files
+      # Write known_hosts files (private keys and passwords are only written when invoking SSH commands)
       servers.each do |server|
-        if server.ssh_key.present?
-          key_path = ssh_dir.join("#{server.slug}.pem")
-          key_path.write(server.ssh_key)
-
-          # Set correct permissions
-          key_path.chmod(0o600)
-        elsif server.password.present?
-          pass_path = ssh_dir.join("#{server.slug}_password")
-          pass_path.write(server.password)
-
-          # Set correct permissions
-          pass_path.chmod(0o600)
-        end
-
         next unless verify_host_key?
 
         known_hosts_path = ssh_dir.join("#{server.slug}_known_hosts")
@@ -55,21 +44,12 @@ module Servers
         known_hosts_path.chmod(0o600)
       end
 
-      # Clean up orphan files
+      # Clean up orphan known_hosts files, and private key and password files written by previous versions
       ssh_dir.each_child do |path|
         basename = path.basename.to_s
 
-        stem = if basename.end_with?(".pem")
-                 basename.delete_suffix(".pem")
-               elsif basename.end_with?("_password")
-                 basename.delete_suffix("_password")
-               elsif basename.end_with?("_known_hosts")
-                 basename.delete_suffix("_known_hosts")
-               else
-                 next
-               end
-
-        next if server_slugs.include?(stem)
+        next if basename.end_with?("_known_hosts") && server_slugs.include?(basename.delete_suffix("_known_hosts"))
+        next unless basename.end_with?(".pem", "_password", "_known_hosts")
 
         path.delete
       end
@@ -94,7 +74,7 @@ module Servers
         end
 
         if server.ssh_key.present?
-          lines << "  IdentityFile #{ssh_dir.join("#{server.slug}.pem")}"
+          lines << "  IdentityFile ${#{IDENTITY_FILE_ENV}}"
           lines << "  IdentitiesOnly yes"
         end
 

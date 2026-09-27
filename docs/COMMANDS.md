@@ -128,7 +128,7 @@ docker compose restart worker                                   # Restart backgr
 
 ## SSH Config Management
 
-The application manages `~/.ssh/config` and per-server key/password files automatically via `Servers::SSHConfigService`. The config is regenerated on server create/update/destroy and at application startup.
+The application manages `~/.ssh/config` and per-server `known_hosts` files automatically via `Servers::SSHConfigService`. The config is regenerated on server create/update/destroy and at application startup. Private keys and passwords are only provided while an rsync command is running.
 
 **Prerequisites (included in Docker image):**
 - `sshpass` — used to pass SSH passwords non-interactively for rsync jobs with password authentication
