@@ -25,6 +25,9 @@ application.register("confirm-dialog", ConfirmDialogController)
 import CronPreviewController from "./cron_preview_controller"
 application.register("cron-preview", CronPreviewController)
 
+import DeleteOptionsController from "./delete_options_controller"
+application.register("delete-options", DeleteOptionsController)
+
 import DialogController from "./dialog_controller"
 application.register("dialog", DialogController)
 

@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [v1.0.0-rc.1] - 2026-09-25
+### Added
+
+- Automatically toggle `--delete` when toggling `--delete-{before,during,after}` and disable the mutually exclusive ones
+
+## [v1.0.0-rc.1] - 2026-09-25 
 
 First release candidate.
 
