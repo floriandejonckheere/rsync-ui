@@ -58,6 +58,11 @@ class Job < ApplicationRecord
                                 allow_destroy: true,
                                 reject_if: proc { |attrs| attrs["command"].blank? }
 
+  enum :ping_action, {
+    abort: "abort",
+    cancel: "cancel",
+  }, prefix: :ping, validate: true
+
   validates :name,
             presence: true
 
@@ -155,6 +160,13 @@ class Job < ApplicationRecord
 
   def remote?
     !local?
+  end
+
+  # A job has at most one remote repository, as rsync does not support remote-to-remote transfers
+  def remote_server
+    [source_repository, destination_repository]
+      .find(&:remote?)
+      &.server
   end
 
   def scheduled_next_run
@@ -264,6 +276,8 @@ end
 #  opt_update                :boolean          default(FALSE), not null
 #  opt_verbose               :boolean          default(FALSE), not null
 #  opt_xattrs                :boolean          default(FALSE), not null
+#  ping                      :boolean          default(FALSE), not null
+#  ping_action               :string           default("abort"), not null
 #  schedule                  :string           indexed
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
