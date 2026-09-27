@@ -159,6 +159,8 @@ class JobsController < ApplicationController
         :destination_repository_id,
         :schedule,
         :enabled,
+        :ping,
+        :ping_action,
         :opt_archive,
         :opt_recursive,
         :opt_relative,

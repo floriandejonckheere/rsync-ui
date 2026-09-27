@@ -131,6 +131,18 @@
                          placeholder: I18n.t("jobs.form.destination_repository_search_placeholder"),
                          required: true %>
             </div>
+
+            <div class="field flex-row items-center gap-2">
+              <%= f.check_box :ping, role: "switch", class: "mr-2" %>
+
+              <%= f.select :ping_action,
+                           [[I18n.t("jobs.form.ping_action_abort"), "abort"],
+                            [I18n.t("jobs.form.ping_action_cancel"), "cancel"]],
+                           {},
+                           { class: "select h-7 w-auto py-0 pl-1.5 pr-7 text-sm", aria: { label: I18n.t("jobs.form.ping_action") } } %>
+
+              <%= f.label :ping, I18n.t("jobs.form.ping") %>
+            </div>
           </div>
         </section>
       </div>

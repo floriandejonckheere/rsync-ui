@@ -113,7 +113,7 @@ All pages should be accessible and work in a handheld device.
   - [ ] Save repository in the database
   - [ ] Save notifications in the database
 - [ ] (Local) repository path: allow browsing/selecting existing directories
-- [ ] Remote repositories (source/destination): add option to ping server before starting job, configure cancel/abort if not reachable 
+- [x] Remote repositories (source/destination): add option to ping server before starting job, configure cancel/abort if not reachable
 
 #### Medium priority
 
