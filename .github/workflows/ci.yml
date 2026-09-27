@@ -113,6 +113,69 @@ jobs:
           bundle exec brakeman --no-pager
           bundle exec yarn audit
 
+  system:
+    name: System test application
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg18-trixie
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USERNAME: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Install libvips
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libvips-dev
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
+        with:
+          ruby-version: 4.0.1
+          bundler-cache: true
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: 'yarn'
+
+      - name: Prepare database
+        env:
+          RAILS_ENV: test
+          PG_HOST: localhost
+          ADMIN_EMAIL: admin@example.com
+          ADMIN_PASSWORD: password
+        run: |
+          bundle exec rails db:create db:prepare --trace
+          bundle exec rails database:seed:production --trace
+          bundle exec rails assets:precompile
+
+      # Uses the Chrome that ships with the GitHub runner
+      - name: System test
+        env:
+          RAILS_ENV: test
+          PG_HOST: localhost
+        run: bundle exec rspec spec/system --format documentation
+
   integration:
     name: Integration test application
     runs-on: ubuntu-latest
@@ -173,7 +236,7 @@ jobs:
   build:
     name: Build application
     runs-on: ubuntu-latest
-    needs: [test, integration]
+    needs: [test, system, integration]
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
 
     steps:

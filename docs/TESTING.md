@@ -76,8 +76,11 @@ System specs (`spec/system/`) drive a headless Chromium through [Capybara](https
 - Sign in with `sign_in user, scope: :user`
 - Collapsed `<details>` sections must be opened before interacting with their fields (Capybara only finds visible fields)
 - The JavaScript and CSS bundles must be built (`yarn build`); the watchers in `docker compose up` take care of this in development
-- Run them with `docker compose exec app bundle exec rspec spec/system`
-- Chromium is installed in the development image; CI uses the Chrome that ships with the GitHub runner
+- System specs are slow and need a browser, so they are excluded from a regular `rspec` run. They only run when requested explicitly:
+  - Run only system specs (directory, files or lines): `docker compose exec app bundle exec rspec spec/system`
+  - Run the whole suite including system specs: `docker compose exec -e SYSTEM_SPECS=1 app bundle exec rspec`
+  - Mixing system specs with other specs (e.g. `rspec spec/system spec/models`) excludes the system specs
+- Chromium is installed in the development image; CI runs the system specs in a separate `system` job, using the Chrome that ships with the GitHub runner
 
 ## Browser testing
 
