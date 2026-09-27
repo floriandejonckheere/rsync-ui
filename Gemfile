@@ -154,6 +154,9 @@ end
 group :test do
   # Acceptance test framework for web applications [https://github.com/teamcapybara/capybara]
   gem "capybara"
+
+  # Capybara driver for headless Chrome [https://github.com/rubycdp/cuprite]
+  gem "cuprite"
 end
 
 group :development do
