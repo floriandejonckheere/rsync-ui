@@ -25,7 +25,7 @@ Second row:
 Third row:
 - Per server, one card with the name and the resource usage (already exists)
 
-### Browse repositories
+### Repository browser
 
 Allow the user to browse the repositories and their contents.
 This is useful for debugging and troubleshooting.
@@ -83,42 +83,50 @@ Hooks:
 
 - `[ ! -e "$repo/lock.exclusive" ] && [ ! -e "$repo/lock.shared" ]`: check for presence of exclusive/shared locks
 
+### Responsiveness
+
+Make the application responsive.
+All pages should be accessible and work in a handheld device.
+
+- [ ] Make sidebar collapsible
+- [ ] Make sign in page responsive
+- [ ] Make application template responsive
+- [ ] Make application pages responsive
+  - [ ] Dashboard
+  - [ ] Activity log
+  - [ ] Servers
+  - [ ] Repositories
+  - [ ] Jobs
+    - [ ] Special attention to horizontally scrollable bulk edit page
+  - [ ] Notifications
+  - [ ] Audits
+  - [ ] Configuration
+  - [ ] Account
+ 
 ### Smaller TODOs
 
-- [ ] Make application responsive
+#### High priority
+
 - [ ] Make job run immutable and reproducible
   - [ ] Temporary: lock job, repositories, hooks, notifications rows when executing job
   - [ ] Save hooks in the database
   - [ ] Save repository in the database
   - [ ] Save notifications in the database
-- [ ] Allow retrying jobs, or automatic retry (e.g. with incremental/exponential backoff)
-- [x] Update branding
-- [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
-- [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
-- [ ] Implement support for OAuth2 authentication
-- [ ] Improve auditing: add login, change password, notification sending
-- [x] Do not bind postgres to port 5432, otherwise you can't use git worktrees
-- [ ] Audit codebase
-- [ ] SSH config: write password/private key only when invoking SSH commands
-- [ ] Allow discovery of partitions/disks on the server and measure resource usage per partition/disk
-- [ ] Too many `SolidCable::TrimJob` jobs when using ActionCable
-- [ ] Only run SyncSSHConfig job periodically, not on startup
-- [ ] Make streaming job output fixed height, but scrolling (and anchored to the bottom)
-- [ ] Drop `Net::SSH` in favor of plain `ssh`
-- [ ] Implement backoff for servers: after N failed retries, disable connectivity/resource usage
-- [ ] Repository disk size: count files and directories as well
-- [ ] Remote repositories (source/destination): add option to ping server before starting job, configure cancel/abort if not reachable 
 - [ ] (Local) repository path: allow browsing/selecting existing directories
-- [ ] Keep a small graph of transfer speeds
+- [ ] Remote repositories (source/destination): add option to ping server before starting job, configure cancel/abort if not reachable 
 
-- [ ] Optimize log streaming:
+#### Medium priority
 
-```
-rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043] [ActionCable] Broadcasting to job_run_logs_b2c7c404-d1cc-44c0-ab4b-fee3a6100e88: {type: "log", content: "admin/2021/May/IMG_20210516_125741.jpg.xmp\n"}
-rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043]   SolidCable::Message Insert (0.5ms)  INSERT INTO "solid_cable_messages" ("created_at","channel","payload","channel_hash") VALUES ('2026-09-02 16:10:24.749403', '\x6a6f625f72756e5f6c6f67735f62326337633430342d643163632d343463302d616234622d666565336136313030653838', '\x7b2274797065223a226c6f67222c22636f6e74656e74223a2261646d696e2f323032312f4d61792f494d475f32303231303531365f3132353734312e6a70672e786d705c6e227d', 8237753626498216333) ON CONFLICT  DO NOTHING RETURNING "id"
-rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043]   TRANSACTION (2.7ms)  COMMIT
-rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043]   Configuration::Boolean Load (0.4ms)  SELECT "configurations".* FROM "configurations" WHERE "configurations"."type" = $1 AND "configurations"."key" = $2 LIMIT $3  [["type", "Configuration::Boolean"], ["key", "notifications"], ["LIMIT", 1]]
-rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043] [b2c7c404-d1cc-44c0-ab4b-fee3a6100e88] [Pictures] admin/2021/May/IMG_20210516_125744.jpg
-rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043]   TRANSACTION (0.3ms)  BEGIN
-rsync_ui_worker-1  | [ActiveJob] [JobRuns::ExecuteJob] [86647f14-24c5-45b8-9094-a048df096043]   Configuration::Boolean Load (0.8ms)  SELECT "configurations".* FROM "configurations" WHERE "configurations"."type" = $1 AND "configurations"."key" = $2 LIMIT $3  [["type", "Configuration::Boolean"], ["key", "streaming"], ["LIMIT", 1]]
-```
+- [ ] Implement support for OAuth2 authentication
+- [ ] Prevent command injection in "custom rsync command" and "custom rsync options"
+- [ ] Implement backoff for servers: after N failed retries, disable connectivity/resource usage
+
+
+#### Low priority
+
+- [ ] Allow retrying jobs, or automatic retry (e.g. with incremental/exponential backoff)
+- [ ] Allow custom scripts on startup (e.g. installing packages, https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers)
+- [ ] Improve auditing: add login, change password, notification sending
+- [x] SSH config: write password/private key only when invoking SSH commands
+- [ ] Allow discovery of partitions/disks on the server and measure resource usage per partition/disk
+- [ ] Repository disk size: count files and directories as well
