@@ -37,6 +37,7 @@ This document describes the testing setup, conventions, and CI/CD pipeline.
 - Request specs go in `spec/requests/{controller}_request_spec.rb`
 - Policy specs go in `spec/policies/{policy}_spec.rb`
 - Service specs go in `spec/services/{service}_spec.rb`
+- System specs go in `spec/system/{resource}/{feature}_spec.rb`
 - Factories are shared and go in `spec/factories/`
 - Specs should always have a subject defined with `subject(:my_object) { ... }`, and use the factory if possible
 - Use `build(:factory)` for unsaved records, `create(:factory)` for persisted records
@@ -44,6 +45,7 @@ This document describes the testing setup, conventions, and CI/CD pipeline.
 - Use `create` in request/integration specs when you need persisted data
 - Leverage factory traits for different states: `create(:user, :admin)`
 - Never stub `Configuration.get` directly with `allow(Configuration).to receive(:get)`. The `Configuration` model is a thin wrapper around persisted settings; mocking it bypasses the real read/write path and produces brittle, leaky tests. Always go through the `with_configuration` helper instead — it sets the value before the example and restores the original after, so configuration changes never leak between examples.
+- When using test helpers, define them at the bottom of the file, after any `describe` and `context` blocks.
 - When testing different configurations, use the `with_configuration` helper:
   ```ruby
   context "when notifications are enabled" do
@@ -66,6 +68,16 @@ This document describes the testing setup, conventions, and CI/CD pipeline.
     end
   end
   ```
+
+## System specs
+
+System specs (`spec/system/`) drive a headless Chromium through [Capybara](https://github.com/teamcapybara/capybara) and [Cuprite](https://github.com/rubycdp/cuprite) (configured in `spec/support/capybara.rb`). Use them to cover behaviour implemented in Stimulus controllers, since they exercise the controllers together with the ERB wiring (targets, actions, values).
+
+- Sign in with `sign_in user, scope: :user`
+- Collapsed `<details>` sections must be opened before interacting with their fields (Capybara only finds visible fields)
+- The JavaScript and CSS bundles must be built (`yarn build`); the watchers in `docker compose up` take care of this in development
+- Run them with `docker compose exec app bundle exec rspec spec/system`
+- Chromium is installed in the development image; CI uses the Chrome that ships with the GitHub runner
 
 ## Browser testing
 

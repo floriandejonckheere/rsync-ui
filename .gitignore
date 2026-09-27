@@ -65,3 +65,6 @@ spec/examples.txt
 /.worktrees
 /.superpowers
 /.worktrees
+
+# Chromium profile created by system specs (HOME is the app directory in Docker)
+/.config/
