@@ -21,6 +21,16 @@ RSpec.describe Job do
   describe "validations" do
     it { is_expected.to validate_presence_of(:name) }
 
+    it { is_expected.to define_enum_for(:ping_action).with_values(abort: "abort", cancel: "cancel").backed_by_column_of_type(:string).with_prefix(:ping) }
+
+    it "defaults to not pinging the servers" do
+      expect(described_class.new).not_to be_ping
+    end
+
+    it "defaults to aborting when the servers are unreachable" do
+      expect(described_class.new).to be_ping_abort
+    end
+
     it "is invalid when the destination repository matches the source repository" do
       repository = build(:repository)
 
@@ -156,6 +166,28 @@ RSpec.describe Job do
       job = build(:job, source_repository: build(:repository, :local), destination_repository: build(:repository, :remote))
 
       expect(job.remote?).to be(true)
+    end
+  end
+
+  describe "#remote_server" do
+    it "returns nil when both repositories are local" do
+      job = build(:job, source_repository: build(:repository, :local), destination_repository: build(:repository, :local))
+
+      expect(job.remote_server).to be_nil
+    end
+
+    it "returns the server of the remote source repository" do
+      source_repository = build(:repository, :remote)
+      job = build(:job, source_repository:, destination_repository: build(:repository, :local))
+
+      expect(job.remote_server).to eq source_repository.server
+    end
+
+    it "returns the server of the remote destination repository" do
+      destination_repository = build(:repository, :remote)
+      job = build(:job, source_repository: build(:repository, :local), destination_repository:)
+
+      expect(job.remote_server).to eq destination_repository.server
     end
   end
 
