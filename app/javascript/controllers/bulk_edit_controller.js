@@ -4,7 +4,7 @@ import { Controller } from "@hotwired/stimulus"
 // and only submits the modified jobs
 export default class extends Controller {
   static targets = ["option"]
-  static values = { implied: Object, deleteTiming: Array }
+  static values = { implied: Object, delete: Array, deleteTiming: Array }
 
   connect() {
     this.options = new Map(this.optionTargets.map(option => [this.key(option.dataset.job, option.dataset.option), option]))
@@ -16,7 +16,10 @@ export default class extends Controller {
     const { job, option } = event.currentTarget.dataset
 
     // Enabling a more specific delete option enables --delete
-    if (event.currentTarget.checked && option.startsWith("opt_delete_")) this.option(job, "opt_delete").checked = true
+    if (event.currentTarget.checked && this.deleteValue.includes(option)) this.option(job, "opt_delete").checked = true
+
+    // Disabling --delete disables the more specific delete options
+    if (!event.currentTarget.checked && option === "opt_delete") this.deleteValue.forEach(name => this.option(job, name).checked = false)
 
     this.sync(job)
   }

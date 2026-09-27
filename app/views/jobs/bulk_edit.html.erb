@@ -42,6 +42,7 @@
                   controller: "unsaved-changes bulk-edit",
                   action: "submit->bulk-edit#submit",
                   "bulk-edit-implied-value": Job::IMPLIED_OPTIONS.to_json,
+                  "bulk-edit-delete-value": Job::DELETE_OPTIONS.to_json,
                   "bulk-edit-delete-timing-value": Job::DELETE_TIMING_OPTIONS.to_json,
                 } do %>
     <% invalid_jobs = jobs.select { |job| job.errors.any? } %>

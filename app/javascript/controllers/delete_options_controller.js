@@ -1,9 +1,18 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["delete", "timing"]
+  static targets = ["delete", "timing", "excluded"]
 
   connect() {
+    this.syncTimings()
+  }
+
+  // Disabling --delete disables the more specific delete options
+  toggleDelete() {
+    if (this.deleteTarget.checked) return
+
+    [...this.timingTargets, ...this.excludedTargets].forEach(option => option.checked = false)
+
     this.syncTimings()
   }
 

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Automatically toggle `--delete` when toggling `--delete-{before,during,after}` and disable the mutually exclusive ones
+- Automatically disable `--delete-{before,during,delay,after,excluded}` when disabling `--delete`
 - Add a validation to make `--delete-{before,during,after,delay}` mutually exclusive
 - Automatically enable and lock the options implied by `--archive` and `--append` in the job form
 - Add a bulk edit page to compare and toggle the rsync options of all jobs at once
