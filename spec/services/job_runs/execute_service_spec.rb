@@ -253,6 +253,100 @@ RSpec.describe JobRuns::ExecuteService do
       end
     end
 
+    describe "pinging the server" do
+      let(:ping_service) { instance_double(Servers::PingService, call: reachable) }
+      let(:reachable) { true }
+
+      before do
+        allow(Servers::PingService)
+          .to receive(:new)
+          .and_return(ping_service)
+      end
+
+      context "when pinging is disabled" do
+        let(:options) { { ping: false } }
+
+        it "does not ping the server" do
+          service.call
+
+          expect(Servers::PingService).not_to have_received(:new)
+          expect(job_run.reload).to be_completed
+        end
+      end
+
+      context "when pinging is enabled and the server is reachable" do
+        let(:options) { { ping: true, ping_action: "abort" } }
+
+        it "pings the remote server" do
+          service.call
+
+          expect(Servers::PingService).to have_received(:new).once.with(job.destination_repository.server)
+        end
+
+        it "runs rsync" do
+          service.call
+
+          expect(rsync_execute_service).to have_received(:call)
+          expect(job_run.reload).to be_completed
+        end
+      end
+
+      context "when pinging is enabled and both repositories are local" do
+        let(:options) { { ping: true, destination_repository: create(:repository, :local, user:) } }
+
+        it "does not ping" do
+          service.call
+
+          expect(Servers::PingService).not_to have_received(:new)
+          expect(job_run.reload).to be_completed
+        end
+      end
+
+      context "when the job is set to cancel and the server is unreachable" do
+        let(:options) { { ping: true, ping_action: "cancel" } }
+        let(:reachable) { false }
+
+        it "transitions to canceled" do
+          service.call
+
+          job_run.reload
+
+          expect(job_run).to be_canceled
+          expect(job_run.canceled_at).to be_present
+          expect(job_run.completed_at).to be_present
+          expect(job_run.error_message).to include job.destination_repository.server.name
+        end
+
+        it "skips the rsync execution" do
+          service.call
+
+          expect(rsync_execute_service).not_to have_received(:call)
+        end
+      end
+
+      context "when the job is set to abort and the server is unreachable" do
+        let(:options) { { ping: true, ping_action: "abort" } }
+        let(:reachable) { false }
+
+        it "transitions to errored" do
+          service.call
+
+          job_run.reload
+
+          expect(job_run).to be_errored
+          expect(job_run.completed_at).to be_present
+          expect(job_run.error_class).to eq "Servers::PingService::UnreachableError"
+          expect(job_run.error_message).to include job.destination_repository.server.name
+        end
+
+        it "skips the rsync execution" do
+          service.call
+
+          expect(rsync_execute_service).not_to have_received(:call)
+        end
+      end
+    end
+
     describe "progress tracking" do
       let(:status_line) { "  1,234,567  75%  10.00MB/s  0:00:10\r" }
 
