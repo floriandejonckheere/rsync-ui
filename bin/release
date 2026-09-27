@@ -59,7 +59,7 @@ git tag "${VERSION}"
 echo "== Release notes for ${VERSION} =="
 echo "${NOTES}"
 echo
-git show --stat --oneline HEAD
+git show HEAD
 echo
 
 read -r -p "Push ${BRANCH} and ${VERSION} to origin? [y/N] " CONFIRM
