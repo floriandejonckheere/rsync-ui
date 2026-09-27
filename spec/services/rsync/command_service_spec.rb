@@ -99,6 +99,18 @@ RSpec.describe Rsync::CommandService do
             expect(command).to include("ssh -F #{ssh_home}/config -vvv")
           end
         end
+
+        context "when previewing" do
+          subject(:command) { described_class.call(job:, preview: true) }
+
+          let(:server) { build(:server, :with_password) }
+
+          it "only includes the ssh arguments" do
+            expect(command).to include("-e \"ssh -vvv\"")
+            expect(command).not_to include("sshpass")
+            expect(command).not_to include("ssh -F")
+          end
+        end
       end
 
       context "when opt_ssh_arguments is blank" do
@@ -109,6 +121,16 @@ RSpec.describe Rsync::CommandService do
 
           it "does not append extra content to the -e flag" do
             expect(command).to include("-e \"ssh -F #{ssh_home}/config\"")
+          end
+        end
+
+        context "when previewing" do
+          subject(:command) { described_class.call(job:, preview: true) }
+
+          let(:server) { build(:server, :with_ssh_key) }
+
+          it "omits the remote shell" do
+            expect(command).not_to include("-e ")
           end
         end
       end

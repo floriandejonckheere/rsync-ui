@@ -48,12 +48,14 @@ module Rsync
       opt_no_inc_recursive: "--no-inc-recursive",
     }.freeze
 
-    attr_reader :job
+    attr_reader :job,
+                :preview
 
-    def initialize(job:)
+    def initialize(job:, preview: false)
       super()
 
       @job = job
+      @preview = preview
     end
 
     def call
@@ -108,7 +110,12 @@ module Rsync
       ssh_args = job.opt_ssh_arguments.present? ? " #{job.opt_ssh_arguments.strip}" : ""
 
       remote_shell =
-        if server.ssh_key.present?
+        if preview
+          # Hide authentication details in preview, only show custom SSH arguments
+          return [] if ssh_args.blank?
+
+          "ssh#{ssh_args}"
+        elsif server.ssh_key.present?
           # Authenticate using private key (via the SSH config file)
           "ssh -F #{ssh_home}/config#{ssh_args}"
         else

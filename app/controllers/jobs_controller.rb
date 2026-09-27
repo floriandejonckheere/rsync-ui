@@ -28,7 +28,7 @@ class JobsController < ApplicationController
 
     build_hooks(@job)
 
-    @command = Rsync::CommandService.new(job: @job)
+    @command = Rsync::CommandService.new(job: @job, preview: true)
   end
 
   def edit
@@ -36,7 +36,7 @@ class JobsController < ApplicationController
 
     build_hooks(@job)
 
-    @command = Rsync::CommandService.new(job: @job)
+    @command = Rsync::CommandService.new(job: @job, preview: true)
   end
 
   def duplicate
@@ -47,7 +47,7 @@ class JobsController < ApplicationController
 
     build_hooks(@job)
 
-    @command = Rsync::CommandService.new(job: @job)
+    @command = Rsync::CommandService.new(job: @job, preview: true)
   end
 
   def create
@@ -58,7 +58,7 @@ class JobsController < ApplicationController
     if @job.save
       redirect_to jobs_path, notice: t(".success")
     else
-      @command = Rsync::CommandService.new(job: @job)
+      @command = Rsync::CommandService.new(job: @job, preview: true)
 
       render :new, status: :unprocessable_content
     end
@@ -70,7 +70,7 @@ class JobsController < ApplicationController
     if @job.update(job_params)
       redirect_to jobs_path, notice: t(".success")
     else
-      @command = Rsync::CommandService.new(job: @job)
+      @command = Rsync::CommandService.new(job: @job, preview: true)
 
       render :edit, status: :unprocessable_content
     end
@@ -116,7 +116,7 @@ class JobsController < ApplicationController
 
     authorize! @job, to: :preview?
 
-    @command = Rsync::CommandService.new(job: @job)
+    @command = Rsync::CommandService.new(job: @job, preview: true)
 
     render partial: "preview"
   end
