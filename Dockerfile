@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/rsy
 
 ENV RUNTIME_DEPS gmp openssh postgresql py3-pip python3 rsync sshpass vips
 ENV BUILD_DEPS build-base cmake curl-dev esbuild git gmp-dev libffi-dev nodejs-current npm perl postgresql-dev yaml-dev
+ENV TEST_DEPS chromium
 
 ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
@@ -21,7 +22,7 @@ RUN addgroup -g $GID $USER
 RUN adduser -D -u $UID -G $USER -h $APP_HOME $USER
 
 # Install system dependencies
-RUN apk add --no-cache $BUILD_DEPS $RUNTIME_DEPS
+RUN apk add --no-cache $BUILD_DEPS $RUNTIME_DEPS $TEST_DEPS
 
 # Install Apprise (notification dispatcher)
 ADD requirements.txt $APP_HOME
