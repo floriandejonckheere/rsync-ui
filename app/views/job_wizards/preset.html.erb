@@ -1,0 +1,60 @@
+<% content_for :title do %>
+  <%= I18n.t("job_wizards.title") %>
+<% end %>
+
+<% content_for :subtitle do %>
+  <%= wizard_summary || I18n.t("job_wizards.subtitle") %>
+<% end %>
+
+<% content_for :back do %>
+  <%= render "shared/menu/back", path: previous_wizard_path %>
+<% end %>
+
+<%= render "progress" %>
+
+<%= form_with model: @form, url: wizard_path, method: :patch, scope: :job_wizard, id: "job-wizard-form", class: "form" do |f| %>
+  <% content_for :actions do %>
+    <button
+      type="submit"
+      form="job-wizard-form"
+      class="btn-icon-outline btn-icon-lg"
+      data-tooltip="<%= I18n.t("job_wizards.form.next") %>"
+    >
+      <%= lucide_icon "arrow-right", class: "h-6 w-6" %>
+    </button>
+  <% end %>
+
+  <% if @form.errors.any? %>
+    <div class="mb-8">
+      <%= render "shared/forms/messages", model: @form %>
+    </div>
+  <% end %>
+
+  <div class="card max-w-2xl">
+    <header>
+      <h2><%= I18n.t("job_wizards.steps.preset") %></h2>
+      <p><%= I18n.t("job_wizards.form.preset_help") %></p>
+    </header>
+
+    <section>
+      <fieldset class="flex flex-col gap-4">
+        <% [[nil, I18n.t("job_wizards.form.preset_none"), I18n.t("job_wizards.form.preset_none_description")],
+            *JobPreset.all.map { |preset| [preset.key, preset.name, preset.description] }].each do |key, name, description| %>
+          <label
+            class="
+              border rounded p-4 flex items-start gap-4 cursor-pointer
+              has-[:checked]:border-primary
+            "
+          >
+            <%= f.radio_button :preset, key.to_s, checked: @form.preset.to_s == key.to_s, class: "input mt-1" %>
+
+            <span class="flex flex-col gap-1">
+              <span class="font-semibold text-base"><%= name %></span>
+              <span class="text-sm text-muted-foreground font-normal"><%= description %></span>
+            </span>
+          </label>
+        <% end %>
+      </fieldset>
+    </section>
+  </div>
+<% end %>

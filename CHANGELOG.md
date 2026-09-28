@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Optionally ping the server of the remote repository before starting a job, and cancel or abort the job run if it is unreachable
+- Add presets with recommended rsync options for common use cases (Borg repository, Restic repository, exact mirror, archive, VM images and large files, previous versions, slow network, trial run) to the job form and the new job wizard
 
 ### Changed
 

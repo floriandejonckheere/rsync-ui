@@ -28,8 +28,10 @@ class JobWizardsController < ApplicationController
       @servers = servers if job_form.local_to_remote?
     when :source_server, :destination_server
       @server = current_user.servers.build
+    when :preset
+      @form = JobForm.new(wizard_state.slice("preset"))
     when :schedule
-      @job = Job.new
+      @job = Job.new(JobPreset.find(job_form.preset)&.attributes || {})
     end
 
     render_wizard
@@ -47,6 +49,8 @@ class JobWizardsController < ApplicationController
       update_destination
     when :destination_server
       update_destination_server
+    when :preset
+      update_preset
     when :schedule
       update_schedule
     end
@@ -68,6 +72,7 @@ class JobWizardsController < ApplicationController
     list << :destination_server unless job_form.destination_server_complete?
 
     # Always present
+    list << :preset
     list << :schedule
 
     self.steps = list
@@ -185,7 +190,7 @@ class JobWizardsController < ApplicationController
 
       # The next step depends on data just written above (whether a new server needs to
       # be created), so it cannot rely on wicked's `@next_step` computed from stale state
-      next_step = wizard_state["destination_server_id"] == PathForm::NEW_SERVER ? :destination_server : :schedule
+      next_step = wizard_state["destination_server_id"] == PathForm::NEW_SERVER ? :destination_server : :preset
 
       redirect_to wizard_path(next_step)
     else
@@ -214,6 +219,22 @@ class JobWizardsController < ApplicationController
     end
 
     render_wizard(@server)
+  end
+
+  def update_preset
+    @form = JobForm.new(wizard_state.merge(preset_params.to_h))
+
+    wizard_state["preset"] = @form.preset.presence if @form.valid?
+
+    render_wizard(@form)
+  end
+
+  def preset_params
+    params
+      .fetch(:job_wizard, {})
+      .permit(
+        :preset,
+      )
   end
 
   def build_path_form(attributes, requires_server:)

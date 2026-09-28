@@ -31,11 +31,18 @@ class JobForm < ApplicationForm
   attribute :destination_server_id,
             :string
 
+  attribute :preset,
+            :string
+
   validates :name,
             presence: true
 
   validates :sync_type,
             inclusion: { in: SYNC_TYPES }
+
+  validates :preset,
+            inclusion: { in: JobPreset.keys },
+            allow_blank: true
 
   def remote_to_local? = sync_type == "remote_to_local"
   def local_to_remote? = sync_type == "local_to_remote"
@@ -47,5 +54,6 @@ class JobForm < ApplicationForm
   def source_server_complete? = source_server_id != PathForm::NEW_SERVER
   def destination_complete? = destination_path.present? && (!local_to_remote? || destination_server_id.present?)
   def destination_server_complete? = destination_server_id != PathForm::NEW_SERVER
+  def preset_complete? = true
   def schedule_complete? = true
 end

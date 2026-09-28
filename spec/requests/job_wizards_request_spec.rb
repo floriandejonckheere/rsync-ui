@@ -38,7 +38,7 @@ RSpec.describe "JobWizards" do
       expect(response).to redirect_to(job_wizard_path(:destination))
 
       patch job_wizard_path(:destination), params: { job_wizard: { path: "/data/destination" } }
-      expect(response).to redirect_to(job_wizard_path(:schedule))
+      expect(response).to redirect_to(job_wizard_path(:preset))
 
       expect do
         patch job_wizard_path(:schedule), params: { job_wizard: { schedule: "0 2 * * *", enabled: "1" } }
@@ -67,7 +67,7 @@ RSpec.describe "JobWizards" do
       expect(response).to redirect_to(job_wizard_path(:destination))
 
       patch job_wizard_path(:destination), params: { job_wizard: { path: "/remote/path", server_id: server.id } }
-      expect(response).to redirect_to(job_wizard_path(:schedule))
+      expect(response).to redirect_to(job_wizard_path(:preset))
 
       expect { patch job_wizard_path(:schedule), params: { job_wizard: {} } }
         .to change(Job, :count).by(1)
@@ -100,13 +100,64 @@ RSpec.describe "JobWizards" do
       expect(response).to redirect_to(job_wizard_path(:destination))
 
       patch job_wizard_path(:destination), params: { job_wizard: { path: "/data/destination" } }
-      expect(response).to redirect_to(job_wizard_path(:schedule))
+      expect(response).to redirect_to(job_wizard_path(:preset))
 
       patch job_wizard_path(:schedule), params: { job_wizard: {} }
 
       job = user.jobs.last
       expect(job.source_repository).to be_remote
       expect(job.source_repository.server).to eq(Server.last)
+    end
+  end
+
+  describe "the preset step" do
+    before do
+      patch job_wizard_path(:basics), params: { job_wizard: { name: "Borg Mirror", sync_type: "local_to_local" } }
+      patch job_wizard_path(:source), params: { job_wizard: { path: "/data/borg" } }
+      patch job_wizard_path(:destination), params: { job_wizard: { path: "/backup/borg" } }
+    end
+
+    it "renders the presets" do
+      get job_wizard_path(:preset)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(JobPreset.find("borg").name)
+    end
+
+    it "pre-fills the options of the schedule step with the selected preset" do
+      patch job_wizard_path(:preset), params: { job_wizard: { preset: "borg" } }
+      expect(response).to redirect_to(job_wizard_path(:schedule))
+
+      get job_wizard_path(:schedule)
+
+      html = response.parsed_body
+      expect(html.at_css("#job_wizard_opt_numeric_ids")["checked"]).to be_present
+      expect(html.at_css("#job_wizard_opt_compress")["checked"]).to be_nil
+      expect(html.at_css("#job_wizard_opt_arguments").text.strip).to eq("--whole-file --sparse")
+    end
+
+    it "creates a job with the (modified) options of the selected preset" do
+      patch job_wizard_path(:preset), params: { job_wizard: { preset: "borg" } }
+
+      patch job_wizard_path(:schedule), params: { job_wizard: JobPreset.find("borg").attributes.merge(opt_numeric_ids: false) }
+
+      job = user.jobs.last
+      expect(job).to have_attributes(opt_archive: true, opt_delete_after: true, opt_hard_links: true, opt_numeric_ids: false, opt_arguments: "--whole-file --sparse")
+    end
+
+    it "does not pre-fill the options without a preset" do
+      patch job_wizard_path(:preset), params: { job_wizard: { preset: "" } }
+      expect(response).to redirect_to(job_wizard_path(:schedule))
+
+      get job_wizard_path(:schedule)
+
+      expect(response.parsed_body.at_css("#job_wizard_opt_archive")["checked"]).to be_nil
+    end
+
+    it "re-renders the preset step with an unknown preset" do
+      patch job_wizard_path(:preset), params: { job_wizard: { preset: "unknown" } }
+
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
