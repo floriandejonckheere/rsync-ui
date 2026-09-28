@@ -1,0 +1,27 @@
+---
+en:
+  job_presets:
+    archive:
+      description: Copy new and changed files while preserving attributes, but never delete files on the destination. Suited for photo, video and document archives.
+      name: Archive (never delete)
+    borg:
+      description: Mirror a Borg (or other compressed and deduplicated) backup repository. Transfers whole files, preserves numeric IDs and hard links, removes stale segments after the transfer, and does not compress already compressed data.
+      name: Borg repository
+    large_files:
+      description: Synchronize large files that change in place, such as virtual machine images and database files. Updates files in place instead of rewriting a full copy, and preserves sparse files. Stop or snapshot virtual machines and databases before running the job, to avoid copying inconsistent data.
+      name: VM images and large files
+    mirror:
+      description: Keep an exact replica of the source, including permissions, ownership, hard links, ACLs and extended attributes. Files removed from the source are removed from the destination after the transfer.
+      name: Exact mirror
+    restic:
+      description: Mirror a Restic backup repository. Restic never modifies existing files, so files already present on the destination are skipped, whole files are transferred, and stale files are removed after the transfer.
+      name: Restic repository
+    slow_network:
+      description: Synchronize over a slow or unreliable network connection. Compresses data in transit, keeps partially transferred files to resume interrupted transfers, and aborts stalled connections after five minutes.
+      name: Slow or unreliable network
+    trial_run:
+      description: Add a dry run to the current options, listing the changes that would be made without transferring or deleting any files. Disable the dry run once the output looks right.
+      name: Trial run
+    versions:
+      description: Mirror the source, but keep the previous version of changed and deleted files on the destination (suffixed with ~) instead of overwriting or removing them.
+      name: Keep previous versions
