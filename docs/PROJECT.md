@@ -57,6 +57,20 @@ For remote repositories, the server should be mounted as a local directory, and 
 ### Presets
 
 In the job form, add a dropdown with "presets" that, when selected, pre-select a certain set of options that are best for a specific use case.
+Presets are defined in `JobPreset` (`app/objects/job_preset.rb`).
+
+- [x] Add a preset selector to the job form (warns that the current options will be overwritten)
+- [x] Add a preset step to the new job wizard (options can still be modified in the next step)
+- [x] Borg preset
+- [x] Exact mirror preset: `--archive --delete --delete-after --numeric-ids --hard-links --acls --xattrs --one-file-system --partial`
+- [x] Archive (never delete) preset: `--archive --hard-links --partial`
+- [x] Slow or unreliable network preset: `--archive --delete --delete-after --compress --partial --timeout=300`
+- [x] Restic preset: `--archive --delete --delete-after --ignore-existing --numeric-ids --one-file-system --whole-file`
+- [x] VM images and large files preset: `--archive --delete --delete-after --inplace --numeric-ids --sparse`
+- [x] Keep previous versions preset: `--archive --delete --delete-after --backup`
+- [x] Trial run preset (additive, keeps the other options): `--dry-run --itemize-changes`
+- [ ] Keep previous versions preset: dated backup directories (`--backup-dir`, requires a date/path substitution in the custom rsync arguments)
+- [ ] Borg preset: add the lock check pre-hook (requires a `{source_path}` hook variable, and only works for local sources)
 
 #### Borg preset
 

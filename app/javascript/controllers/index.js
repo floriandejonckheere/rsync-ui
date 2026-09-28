@@ -61,6 +61,9 @@ application.register("pattern-list", PatternListController)
 import PieChartController from "./pie_chart_controller"
 application.register("pie-chart", PieChartController)
 
+import PresetController from "./preset_controller"
+application.register("preset", PresetController)
+
 import RepositoryTypeController from "./repository_type_controller"
 application.register("repository-type", RepositoryTypeController)
 

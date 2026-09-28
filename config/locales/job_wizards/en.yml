@@ -13,6 +13,9 @@ en:
       next: Next
       path: Path
       path_placeholder: "/data/example"
+      preset_help: Start from a set of recommended rsync options for your use case. You can still change every option in the next step.
+      preset_none: No preset
+      preset_none_description: Start from the default rsync options.
       server: Server
       server_placeholder: Select a server
       server_search_placeholder: Search servers...
@@ -33,6 +36,7 @@ en:
       basics: Basics
       destination: Destination
       destination_server: New destination server
+      preset: Preset
       schedule: Schedule & options
       source: Source
       source_server: New source server

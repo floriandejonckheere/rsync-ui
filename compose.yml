@@ -1,6 +1,9 @@
 x-app: &app
   build: .
   image: rsync-ui:development
+  # Run an init process as PID 1 that reaps orphaned processes (e.g. Chrome processes spawned by system specs),
+  # instead of foreman, which shuts down all processes when an unknown child process exits
+  init: true
   volumes:
     - .:/app/
     - bundle:/usr/local/bundle/
