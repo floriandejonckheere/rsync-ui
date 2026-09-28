@@ -241,6 +241,14 @@ en:
       ping_action: Action if server is unreachable
       ping_action_abort: Abort
       ping_action_cancel: Cancel
+      preset: Preset
+      preset_confirm: Applying this preset will overwrite the current basic, advanced and custom rsync options. Do you want to continue?
+      preset_confirm_additive: Applying this preset will enable additional rsync options. Your other options are kept. Do you want to continue?
+      preset_confirm_button: Apply preset
+      preset_confirm_title: Apply preset
+      preset_label: Use case
+      preset_placeholder: Select a preset
+      preset_warning: Selecting a preset overwrites the current basic, advanced and custom rsync options, unless the preset only adds options (such as the trial run).
       preview: Preview
       repositories: Repositories
       rsync_path_macos_hint: macOS ships an outdated version of rsync. Install a modern version (e.g. via Homebrew) and set its path here, such as /opt/homebrew/bin/rsync.

@@ -1,0 +1,48 @@
+<%# locals: () %>
+<div
+  class="card"
+  data-controller="preset"
+  data-preset-presets-value="<%= JobPreset.all.to_h { |preset| [preset.key, preset.attributes] }.to_json %>"
+>
+  <header>
+    <h2><%= I18n.t("jobs.form.preset") %></h2>
+  </header>
+
+  <section>
+    <div class="field">
+      <label for="job-preset"><%= I18n.t("jobs.form.preset_label") %></label>
+
+      <select
+        id="job-preset"
+        class="select w-full"
+        data-preset-target="select"
+        data-action="preset#select"
+        data-turbo-confirm-title="<%= I18n.t("jobs.form.preset_confirm_title") %>"
+        data-turbo-confirm-button="<%= I18n.t("jobs.form.preset_confirm_button") %>"
+      >
+        <option value=""><%= I18n.t("jobs.form.preset_placeholder") %></option>
+
+        <% JobPreset.all.each do |preset| %>
+          <option
+            value="<%= preset.key %>"
+            data-description="<%= preset.description %>"
+            data-confirm="<%= I18n.t(preset.additive? ? "jobs.form.preset_confirm_additive" : "jobs.form.preset_confirm") %>"
+          >
+            <%= preset.name %>
+          </option>
+        <% end %>
+      </select>
+
+      <span
+        class="text-muted-foreground mt-1 text-sm"
+        data-preset-target="description"
+        hidden
+      ></span>
+
+      <p class="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+        <%= lucide_icon "triangle-alert", class: "h-4 w-4 shrink-0" %>
+        <%= I18n.t("jobs.form.preset_warning") %>
+      </p>
+    </div>
+  </section>
+</div>
