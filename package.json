@@ -2,8 +2,8 @@
   "name": "rsync-ui",
   "private": true,
   "devDependencies": {
-    "@herb-tools/formatter": "^0.10.4",
-    "@herb-tools/linter": "^0.10.4",
+    "@herb-tools/formatter": "^0.11.0",
+    "@herb-tools/linter": "^0.11.0",
     "esbuild": "^0.28.1"
   },
   "scripts": {
