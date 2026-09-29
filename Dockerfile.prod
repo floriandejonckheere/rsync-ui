@@ -68,6 +68,7 @@ ADD bin                                     /app/bin
 ADD lib                                     /app/lib
 ADD config/application.rb                   /app/config/application.rb
 ADD config/boot.rb                          /app/config/boot.rb
+ADD config/cable.yml                        /app/config/cable.yml
 ADD config/configurations.yml              /app/config/configurations.yml
 ADD config/database.yml                     /app/config/database.yml
 ADD config/environment.rb                   /app/config/environment.rb
