@@ -177,6 +177,12 @@ RSpec.describe "Jobs" do
         expect(user.jobs.last.category_name).to eq("Backups")
       end
 
+      it "saves the rsync version" do
+        post jobs_path, params: { job: valid_params[:job].merge(rsync_version: "3.4.2") }
+
+        expect(user.jobs.last.rsync_version).to eq("3.4.2")
+      end
+
       it "saves opt_include patterns" do
         post jobs_path, params: {
           job: valid_params[:job].merge(opt_include: ["*.log", "docs/"], opt_exclude: []),
@@ -374,6 +380,19 @@ RSpec.describe "Jobs" do
         follow_redirect!
 
         expect(response.body).to include(I18n.t("jobs.update.success"))
+      end
+
+      it "updates the rsync version" do
+        patch job_path(job), params: { job: { rsync_version: "3.4.2" } }
+
+        expect(job.reload.rsync_version).to eq("3.4.2")
+      end
+
+      it "does not update the job with an unknown rsync version" do
+        patch job_path(job), params: { job: { rsync_version: "2.6.9" } }
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(job.reload.rsync_version).to eq("3.5.1")
       end
 
       it "updates the category" do

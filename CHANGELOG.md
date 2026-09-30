@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Optionally ping the server of the remote repository before starting a job, and cancel or abort the job run if it is unreachable
+- Select the rsync version per job
 
 ### Changed
 

@@ -244,6 +244,7 @@ en:
       preview: Preview
       repositories: Repositories
       rsync_path_macos_hint: macOS ships an outdated version of rsync. Install a modern version (e.g. via Homebrew) and set its path here, such as /opt/homebrew/bin/rsync.
+      rsync_version: Rsync version
       schedule: Schedule
       schedule_placeholder: 0 2 * * *
       schedule_preview_invalid: Invalid cron expression

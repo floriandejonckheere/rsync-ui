@@ -67,6 +67,15 @@
               </datalist>
             </div>
 
+            <div class="field">
+              <%= f.label :rsync_version, I18n.t("jobs.form.rsync_version") %>
+
+              <%= f.select :rsync_version,
+                           Job::RSYNC_VERSIONS,
+                           {},
+                           { class: "select" } %>
+            </div>
+
             <div
               class="field"
               data-controller="cron-preview"

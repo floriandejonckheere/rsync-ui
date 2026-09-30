@@ -155,6 +155,7 @@ class JobsController < ApplicationController
         :name,
         :description,
         :category_name,
+        :rsync_version,
         :source_repository_id,
         :destination_repository_id,
         :schedule,
