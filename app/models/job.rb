@@ -51,6 +51,17 @@ class Job < ApplicationRecord
           dependent: :destroy,
           inverse_of: :job
 
+  # Supported rsync versions, most recent first
+  RSYNC_VERSIONS = [
+    "3.5.1",
+    "3.5.0",
+    "3.4.4",
+    "3.4.3",
+    "3.4.2",
+    "3.4.1",
+    "3.4.0",
+  ].freeze
+
   accepts_nested_attributes_for :job_notifications,
                                 allow_destroy: true
 
@@ -65,6 +76,9 @@ class Job < ApplicationRecord
 
   validates :name,
             presence: true
+
+  validates :rsync_version,
+            inclusion: { in: RSYNC_VERSIONS }
 
   validate :validate_different_repositories
   validate :validate_not_both_remote
@@ -278,6 +292,7 @@ end
 #  opt_xattrs                :boolean          default(FALSE), not null
 #  ping                      :boolean          default(FALSE), not null
 #  ping_action               :string           default("abort"), not null
+#  rsync_version             :string           default("3.5.1"), not null
 #  schedule                  :string           indexed
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null

@@ -23,6 +23,12 @@ RSpec.describe Job do
 
     it { is_expected.to define_enum_for(:ping_action).with_values(abort: "abort", cancel: "cancel").backed_by_column_of_type(:string).with_prefix(:ping) }
 
+    it { is_expected.to validate_inclusion_of(:rsync_version).in_array(["3.5.1", "3.5.0", "3.4.4", "3.4.3", "3.4.2", "3.4.1", "3.4.0"]) }
+
+    it "defaults to the most recent rsync version" do
+      expect(described_class.new.rsync_version).to eq(described_class::RSYNC_VERSIONS.first)
+    end
+
     it "defaults to not pinging the servers" do
       expect(described_class.new).not_to be_ping
     end
