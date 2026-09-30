@@ -4,6 +4,9 @@ require "shellwords"
 
 module Rsync
   class CommandService < ApplicationService
+    # Supported rsync versions are compiled side by side in the Docker image (see docker/rsync/build.sh)
+    RSYNC_PATH = "/usr/lib/rsync/%<version>s/rsync"
+
     BASIC_FLAGS = {
       opt_archive: "--archive",
       opt_recursive: "--recursive",
@@ -87,7 +90,7 @@ module Rsync
     def rsync_path
       [
         ("sudo" if job.opt_superuser),
-        job.opt_local_rsync_path.presence || "rsync",
+        job.opt_local_rsync_path.presence || format(RSYNC_PATH, version: job.rsync_version),
       ].compact
     end
 

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Run jobs with the rsync binary of their selected rsync version, unless a custom local rsync path is set
 - Make bulk edit page table headers sticky
 - Only show custom SSH arguments in the remote shell option of the command preview
 
