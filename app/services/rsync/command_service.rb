@@ -90,7 +90,7 @@ module Rsync
     def rsync_path
       [
         ("sudo" if job.opt_superuser),
-        job.opt_local_rsync_path.presence || format(RSYNC_PATH, version: job.rsync_version),
+        job.opt_local_rsync_path.presence || format(RSYNC_PATH, version: job.resolved_rsync_version),
       ].compact
     end
 

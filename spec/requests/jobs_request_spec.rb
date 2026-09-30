@@ -126,6 +126,12 @@ RSpec.describe "Jobs" do
 
         expect(response).to have_http_status(:ok)
       end
+
+      it "selects the latest rsync version by default" do
+        get new_job_path
+
+        expect(response.body).to include('<option selected="selected" value="latest">')
+      end
     end
 
     context "when not authenticated" do
@@ -388,11 +394,19 @@ RSpec.describe "Jobs" do
         expect(job.reload.rsync_version).to eq("3.4.2")
       end
 
+      it "updates the rsync version to the latest version" do
+        job.update!(rsync_version: "3.4.2")
+
+        patch job_path(job), params: { job: { rsync_version: "latest" } }
+
+        expect(job.reload.rsync_version).to eq("latest")
+      end
+
       it "does not update the job with an unknown rsync version" do
         patch job_path(job), params: { job: { rsync_version: "2.6.9" } }
 
         expect(response).to have_http_status(:unprocessable_content)
-        expect(job.reload.rsync_version).to eq("3.5.1")
+        expect(job.reload.rsync_version).to eq("latest")
       end
 
       it "updates the category" do

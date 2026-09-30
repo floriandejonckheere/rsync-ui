@@ -211,7 +211,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_30_120000) do
     t.boolean "opt_xattrs", default: false, null: false
     t.boolean "ping", default: false, null: false
     t.string "ping_action", default: "abort", null: false
-    t.string "rsync_version", default: "3.5.1", null: false
+    t.string "rsync_version", default: "latest", null: false
     t.string "schedule"
     t.uuid "source_repository_id", null: false
     t.datetime "updated_at", null: false

@@ -138,7 +138,7 @@ RSpec.describe Rsync::CommandService do
   end
 
   describe "opt_superuser and opt_local_rsync_path" do
-    it "defaults to the rsync binary of the job's rsync version" do
+    it "defaults to the rsync binary of the most recent rsync version" do
       expect(command).to start_with("/usr/lib/rsync/3.5.1/rsync ")
     end
 

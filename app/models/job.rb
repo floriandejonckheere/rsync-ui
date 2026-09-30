@@ -51,6 +51,9 @@ class Job < ApplicationRecord
           dependent: :destroy,
           inverse_of: :job
 
+  # Always resolves to the most recent supported rsync version
+  RSYNC_VERSION_LATEST = "latest"
+
   # Supported rsync versions, most recent first
   RSYNC_VERSIONS = [
     "3.5.1",
@@ -78,7 +81,7 @@ class Job < ApplicationRecord
             presence: true
 
   validates :rsync_version,
-            inclusion: { in: RSYNC_VERSIONS }
+            inclusion: { in: [RSYNC_VERSION_LATEST, *RSYNC_VERSIONS] }
 
   validate :validate_different_repositories
   validate :validate_not_both_remote
@@ -181,6 +184,11 @@ class Job < ApplicationRecord
     [source_repository, destination_repository]
       .find(&:remote?)
       &.server
+  end
+
+  # Concrete rsync version, resolving "latest" to the most recent supported version
+  def resolved_rsync_version
+    rsync_version == RSYNC_VERSION_LATEST ? RSYNC_VERSIONS.first : rsync_version
   end
 
   def scheduled_next_run
@@ -292,7 +300,7 @@ end
 #  opt_xattrs                :boolean          default(FALSE), not null
 #  ping                      :boolean          default(FALSE), not null
 #  ping_action               :string           default("abort"), not null
-#  rsync_version             :string           default("3.5.1"), not null
+#  rsync_version             :string           default("latest"), not null
 #  schedule                  :string           indexed
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null

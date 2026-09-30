@@ -23,10 +23,10 @@ RSpec.describe Job do
 
     it { is_expected.to define_enum_for(:ping_action).with_values(abort: "abort", cancel: "cancel").backed_by_column_of_type(:string).with_prefix(:ping) }
 
-    it { is_expected.to validate_inclusion_of(:rsync_version).in_array(["3.5.1", "3.5.0", "3.4.4", "3.4.3", "3.4.2", "3.4.1", "3.4.0"]) }
+    it { is_expected.to validate_inclusion_of(:rsync_version).in_array(["latest", "3.5.1", "3.5.0", "3.4.4", "3.4.3", "3.4.2", "3.4.1", "3.4.0"]) }
 
-    it "defaults to the most recent rsync version" do
-      expect(described_class.new.rsync_version).to eq(described_class::RSYNC_VERSIONS.first)
+    it "defaults to the latest rsync version" do
+      expect(described_class.new.rsync_version).to eq("latest")
     end
 
     ["Dockerfile", "Dockerfile.prod"].each do |dockerfile|
@@ -202,6 +202,20 @@ RSpec.describe Job do
       job = build(:job, source_repository: build(:repository, :local), destination_repository:)
 
       expect(job.remote_server).to eq destination_repository.server
+    end
+  end
+
+  describe "#resolved_rsync_version" do
+    it "resolves the latest rsync version to the most recent supported version" do
+      job = build(:job, rsync_version: "latest")
+
+      expect(job.resolved_rsync_version).to eq("3.5.1")
+    end
+
+    it "returns a specific rsync version as is" do
+      job = build(:job, rsync_version: "3.4.1")
+
+      expect(job.resolved_rsync_version).to eq("3.4.1")
     end
   end
 

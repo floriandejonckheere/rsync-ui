@@ -71,7 +71,8 @@
               <%= f.label :rsync_version, I18n.t("jobs.form.rsync_version") %>
 
               <%= f.select :rsync_version,
-                           Job::RSYNC_VERSIONS,
+                           [[I18n.t("jobs.form.rsync_version_latest", version: Job::RSYNC_VERSIONS.first), Job::RSYNC_VERSION_LATEST],
+                            *Job::RSYNC_VERSIONS],
                            {},
                            { class: "select" } %>
             </div>
