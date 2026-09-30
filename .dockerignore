@@ -76,6 +76,7 @@
 /compose.yml
 /Dockerfile*
 /docker/
+!/docker/rsync/build.sh
 
 # Ignore IDE and tool cache files
 /.idea

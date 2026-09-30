@@ -29,6 +29,14 @@ RSpec.describe Job do
       expect(described_class.new.rsync_version).to eq(described_class::RSYNC_VERSIONS.first)
     end
 
+    ["Dockerfile", "Dockerfile.prod"].each do |dockerfile|
+      it "compiles every rsync version in #{dockerfile}" do
+        versions = Rails.root.join(dockerfile).read[/^ARG RSYNC_VERSIONS="(.*)"$/, 1]
+
+        expect(versions.split).to eq(described_class::RSYNC_VERSIONS)
+      end
+    end
+
     it "defaults to not pinging the servers" do
       expect(described_class.new).not_to be_ping
     end

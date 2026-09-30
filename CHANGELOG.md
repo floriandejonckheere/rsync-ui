@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Optionally ping the server of the remote repository before starting a job, and cancel or abort the job run if it is unreachable
 - Select the rsync version per job
+- Ship rsync 3.4.0 up to 3.5.1 side by side in the Docker image
 
 ### Changed
 
