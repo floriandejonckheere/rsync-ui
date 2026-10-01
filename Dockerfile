@@ -1,5 +1,5 @@
 # Compile all supported rsync versions side by side (see Job::RSYNC_VERSIONS)
-FROM alpine:3.23 AS rsync
+FROM alpine:3.24 AS rsync
 
 ARG RSYNC_VERSIONS="3.5.1 3.5.0 3.4.4 3.4.3 3.4.2 3.4.1 3.4.0"
 
@@ -8,7 +8,7 @@ RUN apk add --no-cache acl-dev attr-dev autoconf automake build-base libidn2-dev
 COPY docker/rsync/build.sh /usr/local/bin/build-rsync
 RUN build-rsync $RSYNC_VERSIONS
 
-FROM ruby:4.0.7-alpine3.23
+FROM ruby:4.0.7-alpine3.24
 
 LABEL maintainer="Florian Dejonckheere <florian@floriandejonckheere.be>"
 LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/rsync-ui
