@@ -64,8 +64,8 @@ FROM ruby AS node
 # Install Yarn
 RUN apk add --no-cache nodejs-current npm esbuild
 
-# Enable corepack
-RUN corepack enable
+# Install and enable corepack (no longer bundled with Node.js since v25)
+RUN npm install -g corepack && corepack enable
 
 # Install NPM dependencies
 ADD package.json /app

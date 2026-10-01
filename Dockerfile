@@ -56,8 +56,8 @@ RUN bundle install --jobs 4 --retry 3 --verbose
 # Force (re-)compilation of native extensions
 RUN gem pristine --all
 
-# Enable corepack
-RUN corepack enable
+# Install and enable corepack (no longer bundled with Node.js since v25)
+RUN npm install -g corepack && corepack enable
 
 # Install NPM dependencies
 ADD package.json /app
