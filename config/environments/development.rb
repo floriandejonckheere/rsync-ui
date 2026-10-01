@@ -97,6 +97,7 @@ Rails.application.configure do
   config.hosts = [
     "host.docker.internal",
     "localhost",
+    *ENV.fetch("RAILS_DEVELOPMENT_HOSTS", "").split(","),
   ]
 
   # Disable HTTP basic authentication for Mission Control.

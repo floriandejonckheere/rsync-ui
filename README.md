@@ -301,12 +301,8 @@ When adding application environment variables, do not forget to add them in the 
 
 ### Repository secrets
 
-The CI workflow needs the following repository secrets to push Docker images to the GitHub Container Registry:
-
-- `GHCR_USER` (GitHub Container Registry username)
-- `GHCR_TOKEN` (GitHub Container Registry token)
-
-Create a [personal access token on GitHub](https://github.com/settings/tokens/new?description=Rsync+UI+(CI)&scopes=repo,write:packages).
+The CI and CD workflows authenticate with the GitHub Container Registry using the built-in `GITHUB_TOKEN`, so no registry secrets are needed.
+The repository needs the `Write` role in the package's "Manage Actions access" settings.
 
 The cleanup workflow deletes untagged images from the registry every Sunday (and can be run manually, by default as a dry run).
 It uses the workflow token, so the repository needs the `Admin` role in the package's "Manage Actions access" settings.
