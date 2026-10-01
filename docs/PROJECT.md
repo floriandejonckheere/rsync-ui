@@ -132,3 +132,4 @@ All pages should be accessible and work in a handheld device.
 - [x] SSH config: write password/private key only when invoking SSH commands
 - [ ] Allow discovery of partitions/disks on the server and measure resource usage per partition/disk
 - [ ] Repository disk size: count files and directories as well
+- [ ] Generate and send weekly digests
