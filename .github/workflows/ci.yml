@@ -111,7 +111,12 @@ jobs:
       - name: Security vulnerability scan
         run: |
           bundle exec brakeman --no-pager
-          bundle exec yarn audit
+
+          # braces (advisory 1240992) has no patched release yet; ignore until one is available
+          if bundle exec yarn audit --json | jq -e 'select(.type == "auditAdvisory" and .data.advisory.id != 1240992)' > /dev/null; then
+            bundle exec yarn audit
+            exit 1
+          fi
 
   system:
     name: System test application
