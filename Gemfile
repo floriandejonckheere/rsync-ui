@@ -29,7 +29,7 @@ gem "csv"
 gem "propshaft"
 
 # PostgreSQL relational database [https://www.postgresql.org/]
-gem "pg", "~> 1.6"
+gem "pg", "~> 1.7"
 
 # SSH client [https://github.com/net-ssh/net-ssh]
 gem "bcrypt_pbkdf", ">= 1.0", "< 2.0"
