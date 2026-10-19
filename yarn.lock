@@ -585,10 +585,10 @@ clear-module@^4.1.3:
     parent-module "^2.0.0"
     resolve-from "^5.0.0"
 
-cronstrue@^3.31.0:
-  version "3.31.0"
-  resolved "https://registry.yarnpkg.com/cronstrue/-/cronstrue-3.31.0.tgz#4b271b041b5f58046ac2a6ec082cfcd462b56437"
-  integrity sha512-P+qVKwM6CHu6lWfQIq13DCBx95pxY/2zCQhIJvu5FsEsOlt9ZtuUI124V1LafoPsqHH09ruRsentTc4sbWxQHA==
+cronstrue@^3.32.0:
+  version "3.32.0"
+  resolved "https://registry.yarnpkg.com/cronstrue/-/cronstrue-3.32.0.tgz#412562a5208e26e8cddda4c26540cf3acc664110"
+  integrity sha512-OHTec7+5nosN4UsitwgBDQ0bofGZF3H4pLqgqa93NR3nExNlhtVHcO2JY3jRognrFH8Bl9oAooT0hyCjSyOU+Q==
 
 cssesc@^3.0.0:
   version "3.0.0"

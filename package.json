@@ -21,7 +21,7 @@
     "@tailwindcss/cli": "^4.3.2",
     "basecoat-css": "^1.0.2",
     "chart.js": "^4.5.1",
-    "cronstrue": "^3.31.0",
+    "cronstrue": "^3.32.0",
     "tailwindcss": "^4.1.12"
   },
   "resolutions": {
