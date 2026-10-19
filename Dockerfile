@@ -13,7 +13,7 @@ FROM ruby:4.0.7-alpine3.24
 LABEL maintainer="Florian Dejonckheere <florian@floriandejonckheere.be>"
 LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/rsync-ui
 
-ENV RUNTIME_DEPS acl-libs libcrypto3 libidn2 lz4-libs popt xxhash zlib zstd-libs gmp openssh postgresql py3-pip python3 rsync sshpass vips
+ENV RUNTIME_DEPS acl-libs libcrypto3 libidn2 lz4-libs popt xxhash zlib zstd-libs gmp openssh postgresql py3-pip python3 rsync sshpass sudo vips
 ENV BUILD_DEPS build-base cmake curl-dev esbuild git gmp-dev libffi-dev nodejs-current npm perl postgresql-dev yaml-dev
 ENV TEST_DEPS chromium
 
@@ -33,6 +33,10 @@ RUN adduser -D -u $UID -G $USER -h $APP_HOME $USER
 
 # Install system dependencies
 RUN apk add --no-cache $BUILD_DEPS $RUNTIME_DEPS $TEST_DEPS
+
+# Allow jobs with "Run as superuser" enabled to run the bundled rsync binaries as root
+RUN echo "$USER ALL=(root) NOPASSWD: /usr/lib/rsync/*/rsync, /usr/bin/rsync" > /etc/sudoers.d/rsync && \
+    chmod 0440 /etc/sudoers.d/rsync
 
 # Copy compiled rsync versions
 COPY --from=rsync /usr/lib/rsync /usr/lib/rsync

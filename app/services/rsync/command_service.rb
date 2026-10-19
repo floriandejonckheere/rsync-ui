@@ -89,7 +89,8 @@ module Rsync
 
     def rsync_path
       [
-        ("sudo" if job.opt_superuser),
+        # Fail instead of waiting for a password if sudo does not allow the command (see Dockerfile)
+        *(["sudo", "-n"] if job.opt_superuser),
         job.opt_local_rsync_path.presence || format(RSYNC_PATH, version: job.resolved_rsync_version),
       ].compact
     end

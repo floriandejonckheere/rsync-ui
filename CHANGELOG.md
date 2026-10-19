@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Install and configure sudo in the Docker image, so that jobs can run as superuser
+
 ## [v1.0.0] - 2026-10-08
 
 ### Added

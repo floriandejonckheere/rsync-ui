@@ -31,7 +31,7 @@ LABEL org.opencontainers.image.source=https://github.com/floriandejonckheere/rsy
 WORKDIR /app
 
 # Install runtime dependencies only
-RUN apk add --no-cache acl-libs libcrypto3 libidn2 lz4-libs popt xxhash zlib zstd-libs gmp libpq openssh python3 rsync sshpass tzdata vips
+RUN apk add --no-cache acl-libs libcrypto3 libidn2 lz4-libs popt xxhash zlib zstd-libs gmp libpq openssh python3 rsync sshpass sudo tzdata vips
 
 # Copy compiled rsync versions
 COPY --from=rsync /usr/lib/rsync /usr/lib/rsync
@@ -128,6 +128,10 @@ ARG GID=1000
 
 RUN addgroup -g $GID $USER && \
     adduser -D -u $UID -G $USER -h /app/ $USER
+
+# Allow jobs with "Run as superuser" enabled to run the bundled rsync binaries as root
+RUN echo "$USER ALL=(root) NOPASSWD: /usr/lib/rsync/*/rsync, /usr/bin/rsync" > /etc/sudoers.d/rsync && \
+    chmod 0440 /etc/sudoers.d/rsync
 
 # Copy installed gems from build stage
 COPY --from=ruby /usr/local/bundle /usr/local/bundle

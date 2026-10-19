@@ -162,14 +162,14 @@ RSpec.describe Rsync::CommandService do
       before { job.opt_superuser = true }
 
       it "defaults to sudo rsync" do
-        expect(command).to start_with("sudo /usr/lib/rsync/3.5.1/rsync ")
+        expect(command).to start_with("sudo -n /usr/lib/rsync/3.5.1/rsync ")
       end
 
       context "when opt_local_rsync_path is set" do
         before { job.opt_local_rsync_path = "/usr/local/bin/rsync" }
 
         it "uses the custom path" do
-          expect(command).to start_with("sudo /usr/local/bin/rsync ")
+          expect(command).to start_with("sudo -n /usr/local/bin/rsync ")
         end
       end
     end
