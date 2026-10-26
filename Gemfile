@@ -34,7 +34,7 @@ gem "pg", "~> 1.7"
 # SSH client [https://github.com/net-ssh/net-ssh]
 gem "bcrypt_pbkdf", ">= 1.0", "< 2.0"
 gem "ed25519", ">= 1.2", "< 2.0"
-gem "net-ssh", "~> 7.3"
+gem "net-ssh", "~> 8.0"
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
