@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update Ruby to 4.0.9
 
+### Added
+
+- Publish the Docker image for both `linux/amd64` and `linux/arm64` (e.g. Apple Silicon, Raspberry Pi with a 64-bit OS)
+
 ## [v1.0.1] - 2026-10-20
 
 ### Fixed

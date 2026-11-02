@@ -55,7 +55,7 @@ Rsync UI is distributed as a Docker image and is meant to be run with Docker com
 
 ### Requirements
 
-- Docker with the Docker compose plugin
+- Docker with the Docker compose plugin, on a `linux/amd64` or `linux/arm64` host
 - A reverse proxy that terminates TLS (see [Reverse proxy](#reverse-proxy))
 
 ### Installation
