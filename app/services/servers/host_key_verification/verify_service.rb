@@ -17,6 +17,10 @@ module Servers
 
         true
       end
+
+      def verify_signature
+        yield
+      end
     end
   end
 end
