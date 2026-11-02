@@ -14,7 +14,11 @@ module NetSSHHelpers
     allow(Net::SSH)
       .to receive(:start) do |_host, _user, opts = {}, &block|
         if (verifier = opts[:verify_host_key]) && verifier.respond_to?(:verify)
+          # Net::SSH >= 8 requires custom verifiers to implement verify_signature
+          raise ArgumentError, "verifier must implement verify_signature" unless verifier.respond_to?(:verify_signature)
+
           verifier.verify({ fingerprint:, key: })
+          verifier.verify_signature { true }
         end
 
         block.call(ssh)

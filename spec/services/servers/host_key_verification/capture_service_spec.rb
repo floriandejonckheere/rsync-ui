@@ -13,4 +13,11 @@ RSpec.describe Servers::HostKeyVerification::CaptureService do
       expect(service.host_key).to eq NetSSHHelpers::DEFAULT_HOST_KEY
     end
   end
+
+  describe "#verify_signature" do
+    it "returns the result of the signature check" do
+      expect(service.verify_signature { true }).to be true
+      expect(service.verify_signature { false }).to be false
+    end
+  end
 end
