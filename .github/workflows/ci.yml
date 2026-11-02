@@ -45,7 +45,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
         with:
-          ruby-version: 4.0.1
+          ruby-version: 4.0.9
           bundler-cache: true
 
       - name: Enable corepack
@@ -151,7 +151,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
         with:
-          ruby-version: 4.0.1
+          ruby-version: 4.0.9
           bundler-cache: true
 
       - name: Enable corepack
@@ -215,7 +215,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
         with:
-          ruby-version: 4.0.1
+          ruby-version: 4.0.9
           bundler-cache: true
 
       - name: Enable corepack
