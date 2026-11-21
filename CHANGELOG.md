@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update Ruby to 4.0.10
 - Update Bundler to 4.1.0
+- Update Ruby dependencies: bootsnap 1.26.2, brakeman 8.1.1, ferrum 0.20.2, hashdiff 1.2.2, image_processing 2.2.1, pagy 43.8.5, parser 3.3.14.0, puma 8.1.2, rack 3.2.9, regexp_parser 2.13.4, rubocop 1.92.3, rubocop-ast 1.53.0, state_machines 0.305.0, state_machines-activemodel 0.300.0, state_machines-activerecord 0.304.0, thruster 0.1.28, webmock 3.36.0, websocket-driver 0.9.0 and websocket-extensions 0.2.0
 
 ## [v1.1.0] - 2026-11-02
 
