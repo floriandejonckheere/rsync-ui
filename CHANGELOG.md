@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.1.1] - 2026-11-21
+
 ### Changed
 
 - Update net-ssh to 8.1.2
@@ -68,7 +70,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 First release candidate.
 
-[Unreleased]: https://github.com/floriandejonckheere/rsync-ui/compare/v1.1.0..main
+[Unreleased]: https://github.com/floriandejonckheere/rsync-ui/compare/v1.1.1..main
+[v1.1.1]: https://github.com/floriandejonckheere/rsync-ui/compare/v1.1.0..v1.1.1
 [v1.1.0]: https://github.com/floriandejonckheere/rsync-ui/compare/v1.0.1..v1.1.0
 [v1.0.1]: https://github.com/floriandejonckheere/rsync-ui/compare/v1.0.0..v1.0.1
 [v1.0.0]: https://github.com/floriandejonckheere/rsync-ui/compare/v1.0.0-rc.2..v1.0.0
