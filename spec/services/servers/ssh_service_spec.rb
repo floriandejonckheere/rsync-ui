@@ -56,6 +56,34 @@ RSpec.describe Servers::SSHService do
     end
   end
 
+  describe "public key algorithms" do
+    before { stub_ssh }
+
+    context "when the server uses an SSH key" do
+      let(:server) { create(:server, :with_ssh_key) }
+
+      it "enables ssh-rsa for legacy servers" do
+        service.call
+
+        expect(Net::SSH)
+          .to have_received(:start)
+          .with(server.host, server.username, hash_including(pubkey_algorithms: ["+ssh-rsa"]))
+      end
+    end
+
+    context "when the server uses a password" do
+      let(:server) { create(:server, :with_password) }
+
+      it "does not set public key algorithms" do
+        service.call
+
+        expect(Net::SSH)
+          .to have_received(:start)
+          .with(server.host, server.username, hash_excluding(:pubkey_algorithms))
+      end
+    end
+  end
+
   describe "audit creation" do
     before { stub_ssh(output: "ok\n") }
 

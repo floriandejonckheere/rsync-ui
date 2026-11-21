@@ -4,6 +4,10 @@ module Servers
   class SSHService < ApplicationService
     CONNECT_TIMEOUT = 10
 
+    # Since net-ssh 8.1, RSA keys are skipped on servers that do not advertise server-sig-algs (OpenSSH 7.1 and older),
+    # unless ssh-rsa is enabled. Append it, so that the SHA-2 RSA algorithms are still preferred on newer servers.
+    PUBKEY_ALGORITHMS = ["+ssh-rsa"].freeze
+
     attr_reader :server
 
     def initialize(server)
@@ -64,6 +68,7 @@ module Servers
       if server.ssh_key.present?
         opts[:key_data] = [server.ssh_key]
         opts[:keys_only] = true
+        opts[:pubkey_algorithms] = PUBKEY_ALGORITHMS
       elsif server.password.present?
         opts[:password] = server.password
         opts[:auth_methods] = ["password"]
