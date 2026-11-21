@@ -9,8 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update net-ssh to 8.1.2
 - Update Ruby to 4.0.10
 - Update Bundler to 4.1.0
+- Update Rails to 8.1.4.1
+- Update action_policy to 0.7.8, connection_pool to 3.0.3, cuprite to 0.20.1, herb to 0.11.2, i18n-tasks to 1.2.1, irb to 1.19.0, minitest to 6.1.0, nokogiri to 1.19.7, prism to 2.1.0, rspec-rails to 8.1.0 (rspec-core 3.13.7, rspec-expectations 3.13.6, rspec-mocks 3.13.9, rspec-support 3.13.8) and solid_queue to 1.7.2
+- Update tailwindcss and @tailwindcss/cli to 4.3.5, cronstrue to 3.39.0, and @herb-tools/formatter and @herb-tools/linter to 0.11.2
+- Update JavaScript dependencies: @rails/actioncable 8.1.400, enhanced-resolve 5.26.0, postcss 8.5.32, postcss-import 17.0.1, postcss-selector-parser 7.1.7, resolve 1.22.13, tslib 2.9.1 and others
+- Update apprise to 2.1.0
+- Update ruby/setup-ruby to 1.338.0 and docker/login-action to 4.8.0 in CI
 - Update Ruby dependencies: bootsnap 1.26.2, brakeman 8.1.1, ferrum 0.20.2, hashdiff 1.2.2, image_processing 2.2.1, pagy 43.8.5, parser 3.3.14.0, puma 8.1.2, rack 3.2.9, regexp_parser 2.13.4, rubocop 1.92.3, rubocop-ast 1.53.0, state_machines 0.305.0, state_machines-activemodel 0.300.0, state_machines-activerecord 0.304.0, thruster 0.1.28, webmock 3.36.0, websocket-driver 0.9.0 and websocket-extensions 0.2.0
 
 ## [v1.1.0] - 2026-11-02
